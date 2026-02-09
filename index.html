@@ -897,6 +897,23 @@
     margin: 0;
     max-width: 100%;
   }
+  /* Composed masonry - normal gaps, no crop */
+  .img-compose {
+    columns: 2;
+    column-gap: 0.75rem;
+    margin: 1.5rem 0;
+  }
+  .img-compose .project-img {
+    margin: 0 0 0.75rem 0;
+    max-width: 100%;
+    break-inside: avoid;
+  }
+  .img-compose .project-img img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    display: block;
+  }
   /* Tight grid - no gaps, masonry-like */
   .img-grid-tight {
     display: grid;
@@ -1439,15 +1456,16 @@ const projects = [
     year: "2024",
     cover: `img/whitenoise.jpg`,
     images: [],
-    content: `<p>A collection of album covers combining graphic design and photography — "Visual Harmonies: A Fusion of Lens and Design."</p>
+    content: `<p>A collection of album covers combining graphic design and photography — "Visual Harmonies: A Fusion of Lens and Design." Each cover was shot and designed from scratch using Photoshop and Illustrator.</p>
 <div class="img-grid-3">
 <div class="project-img"><img src="img/all/Loya-Passion-Update-05.jpg" alt="Album cover - Passion update" loading="lazy"></div>
 <div class="project-img"><img src="img/all/Loya-Passion-4.jpg" alt="Album cover - Passion series 4" loading="lazy"></div>
 <div class="project-img"><img src="img/all/Loya-Passion-6.jpg" alt="Album cover - Passion series 6" loading="lazy"></div>
+</div>
+<div class="img-grid-2 img-grid-match-above">
 <div class="project-img"><img src="img/all/scribbleboy.jpg" alt="Scribbleboy album cover" loading="lazy"></div>
 <div class="project-img"><img src="img/all/Loya-Passion-1.jpg" alt="Album cover - Passion series 1" loading="lazy"></div>
-</div>
-<p>Each cover was shot and designed from scratch using Photoshop and Illustrator.</p>`
+</div>`
   },
   {
     title: "Photography Portfolio",
@@ -1457,24 +1475,17 @@ const projects = [
     cover: `img/Portfolio_01.jpg`,
     images: [],
     content: `<p>Black-and-white photographs from my early exploration of photography — experimenting with light, shadow, texture, and contrast.</p>
-<div class="img-grid-2">
+<div class="img-compose">
 <div class="project-img"><img src="img/all/20231115_VIS201_Loya_Portfolio_03.jpg" alt="B&W photograph 3" loading="lazy"></div>
 <div class="project-img"><img src="img/all/20231012_VIS201_Loya_Portfolio_09.jpg" alt="B&W photograph 9" loading="lazy"></div>
-</div>
-<div class="img-grid-2">
 <div class="project-img"><img src="img/all/20231002_VIS201_Loya_Portfolio_07.jpg" alt="B&W photograph 7" loading="lazy"></div>
 <div class="project-img"><img src="img/all/20231026_VIS201_Loya_Portfolio_02.jpg" alt="B&W photograph 2" loading="lazy"></div>
-</div>
-<div class="img-grid-2">
 <div class="project-img"><img src="img/all/20231012_VIS201_Loya_Portfolio_05.jpg" alt="B&W photograph 5" loading="lazy"></div>
 <div class="project-img"><img src="img/all/20231102_VIS201_Loya_Portfolio_04.jpg" alt="B&W photograph 4" loading="lazy"></div>
-</div>
-
-<div class="img-grid-2">
 <div class="project-img"><img src="img/all/20231109_VIS201_Loya_Portfolio_06.jpg" alt="B&W photograph 6" loading="lazy"></div>
 <div class="project-img"><img src="img/all/20231108_VIS201_Loya_Portfolio_10.jpg" alt="B&W photograph 10" loading="lazy"></div>
-</div>
-<div class="project-img img-portrait"><img src="img/all/20231014_VIS201_Loya_Portfolio_08.jpg" alt="B&W photograph 8" loading="lazy"></div>`
+<div class="project-img"><img src="img/all/20231014_VIS201_Loya_Portfolio_08.jpg" alt="B&W photograph 8" loading="lazy"></div>
+</div>`
   },
   {
     title: "Miscellaneous Projects",
