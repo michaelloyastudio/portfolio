@@ -1,0 +1,1973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Michael Loya Studio</title>
+<link rel="icon" type="image/png" href="logo.png">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a0a0a;
+    --text: #f0ece4;
+    --text-muted: #8a8580;
+    --accent: #e8dcc8;
+    --sleeve-shadow: rgba(0,0,0,0.6);
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    padding: 3rem 4rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  .logo {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .logo img {
+    height: 36px;
+    width: auto;
+    object-fit: contain;
+  }
+
+  .logo-text {
+    font-family: 'Instrument Serif', serif;
+    font-size: 2.4rem;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+
+  .logo-text span {
+    font-style: italic;
+    color: var(--text-muted);
+  }
+
+  nav {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  nav a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    transition: color 0.3s;
+    cursor: pointer;
+  }
+
+  nav a:hover, nav a.active { color: var(--text); }
+
+  /* ── PAGE SECTIONS ── */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ── NOW PLAYING BAR ── */
+  .now-playing {
+    padding: 1.5rem 4rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.4s ease;
+    pointer-events: none;
+    height: 0;
+    padding: 0 4rem;
+    overflow: hidden;
+  }
+
+  .now-playing.active {
+    opacity: 1;
+    transform: translateY(0);
+    height: auto;
+    padding: 1.5rem 4rem;
+    pointer-events: all;
+  }
+
+  .now-playing .bars {
+    display: flex;
+    gap: 3px;
+    align-items: flex-end;
+    height: 16px;
+  }
+
+  .now-playing .bar {
+    width: 3px;
+    background: var(--accent);
+    border-radius: 1px;
+    animation: barPulse 0.8s ease-in-out infinite alternate;
+  }
+
+  .now-playing .bar:nth-child(1) { height: 60%; animation-delay: 0s; }
+  .now-playing .bar:nth-child(2) { height: 100%; animation-delay: 0.2s; }
+  .now-playing .bar:nth-child(3) { height: 40%; animation-delay: 0.4s; }
+  .now-playing .bar:nth-child(4) { height: 80%; animation-delay: 0.1s; }
+
+  @keyframes barPulse {
+    from { transform: scaleY(0.3); }
+    to { transform: scaleY(1); }
+  }
+
+  .now-playing .track-info {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+  }
+
+  .now-playing .track-info strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  /* ── INTRO ── */
+  .intro {
+    padding: 2.5rem 4rem 1.5rem;
+  }
+
+  .intro h2 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  .tagline {
+    font-size: 3.5rem;
+    font-weight: 300;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    margin-top: 0.3rem;
+    max-width: 700px;
+  }
+
+  .tagline em {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-weight: 400;
+  }
+
+  /* ── COVERFLOW GALLERY (all visible) ── */
+  .gallery-section {
+    padding: 3.5rem 0 1.5rem;
+  }
+
+  .gallery-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-muted);
+    margin-top: -2rem;
+    margin-bottom: 2rem;
+    padding: 0 4rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .gallery-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(255,255,255,0.08);
+  }
+
+  /* ── COVERFLOW GALLERY ── */
+  .gallery-viewport {
+    position: relative;
+    width: 100%;
+    height: 440px;
+    overflow: hidden;
+  }
+
+  .gallery-track {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+
+  .gallery-item {
+    position: absolute;
+    left: 50%;
+    top: 45%;
+    pointer-events: none;
+    will-change: transform, opacity;
+  }
+
+  .gallery-item.is-center {
+    cursor: pointer;
+    pointer-events: all;
+  }
+
+  .gallery-item .cover-wrap {
+    position: relative;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+  }
+
+  .gallery-item .cover-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    pointer-events: none;
+  }
+
+  /* Vinyl disc — visible only on center item */
+  .gallery-vinyl {
+    position: absolute;
+    top: 8%;
+    right: -20px;
+    width: 85%;
+    height: 85%;
+    border-radius: 50%;
+    background: radial-gradient(circle at center,
+      #333 0%, #1a1a1a 15%, #222 16%, #1a1a1a 28%,
+      #222 29%, #1a1a1a 42%, #222 43%, #1a1a1a 56%,
+      #222 57%, #1a1a1a 70%, #222 71%, #1a1a1a 84%,
+      #222 85%, #1a1a1a 100%
+    );
+    z-index: -1;
+    opacity: 0;
+    transform: translateX(0px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    pointer-events: none;
+  }
+
+  .gallery-vinyl::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30%;
+    height: 30%;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+      var(--bg) 20%, var(--accent) 21%, var(--accent) 24%, var(--bg) 25%
+    );
+  }
+
+  .gallery-item.is-center .gallery-vinyl {
+    opacity: 1;
+  }
+
+  @keyframes selectedPulse {
+    0%, 100% { box-shadow: 0 12px 50px rgba(0,0,0,0.6), 0 0 30px rgba(232,220,200,0.04); }
+    50% { box-shadow: 0 16px 60px rgba(0,0,0,0.7), 0 0 50px rgba(232,220,200,0.09); }
+  }
+
+  .gallery-info {
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .gallery-item.is-center .gallery-info { opacity: 1; transition: opacity 0.4s ease 0.2s; }
+
+  .gallery-info h3 { font-size: 0.85rem; font-weight: 500; }
+  .gallery-info .category {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-top: 0.2rem;
+  }
+
+  /* ── ARROWS ── */
+  .gallery-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 20;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: var(--text);
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    font-size: 1.8rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(8px);
+    line-height: 1;
+    padding-bottom: 2px;
+  }
+
+  .gallery-arrow:hover {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(255,255,255,0.25);
+    transform: translateY(-50%) scale(1.08);
+  }
+
+  .gallery-arrow--left { left: 2rem; }
+  .gallery-arrow--right { right: 2rem; }
+
+  /* ── EXPANDED PROJECT VIEW ── */
+  .project-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.92);
+    backdrop-filter: blur(20px);
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+    overflow-y: auto;
+  }
+
+  .project-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .project-content {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 4rem;
+    transform: translateY(30px);
+    transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .project-overlay.open .project-content {
+    transform: translateY(0);
+  }
+
+  .project-close {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(0,0,0,0.5);
+    color: var(--text);
+    font-size: 1.4rem;
+    cursor: pointer;
+    z-index: 101;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .project-overlay.open .project-close {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .project-close:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.3);
+  }
+
+  .project-header {
+    display: flex;
+    gap: 3rem;
+    margin-bottom: 3rem;
+    align-items: flex-start;
+  }
+
+  .project-vinyl-wrap {
+    position: relative;
+    flex-shrink: 0;
+    width: 320px;
+    height: 320px;
+  }
+
+  .project-cover {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    z-index: 2;
+  }
+
+  /* ── TURNTABLE ── */
+  .turntable {
+    position: relative;
+    flex-shrink: 0;
+    width: 320px;
+    height: 320px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .turntable-platter {
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+      #2a2a2a 0%, #1a1a1a 12%, #252525 13%, #1a1a1a 25%,
+      #222 26%, #1a1a1a 38%, #222 39%, #1a1a1a 52%,
+      #222 53%, #1a1a1a 66%, #222 67%, #1a1a1a 80%,
+      #222 81%, #1a1a1a 100%
+    );
+    box-shadow: 0 8px 40px rgba(0,0,0,0.6), inset 0 0 30px rgba(0,0,0,0.3);
+    animation: spin 3s linear infinite;
+    animation-play-state: paused;
+    position: relative;
+  }
+
+  .turntable.playing .turntable-platter {
+    animation-play-state: running;
+  }
+
+  .turntable-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 35%;
+    height: 35%;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  }
+
+  .turntable-label img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .turntable-label::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #111;
+    border: 2px solid #444;
+  }
+
+  .tonearm-wrap {
+    position: absolute;
+    top: -15px;
+    right: -30px;
+    width: 65%;
+    height: 65%;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  .tonearm-wrap svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .turntable {
+    opacity: 0;
+    transform: translateX(-80px);
+    transition: opacity 0.6s ease 0.2s, transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s;
+  }
+
+  .project-overlay.open .turntable {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .project-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 1rem;
+  }
+
+  .project-details .category {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+  }
+
+  .project-details h2 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 2.8rem;
+    font-weight: 400;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+  }
+
+  .project-details p {
+    color: var(--text-muted);
+    line-height: 1.7;
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .project-meta {
+    display: flex;
+    gap: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .project-meta div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .project-meta .label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+  }
+
+  .project-meta .value {
+    font-size: 0.85rem;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .project-body {
+    margin-top: 2rem;
+    color: var(--text-muted);
+    line-height: 1.8;
+    font-size: 0.95rem;
+    max-width: 750px;
+  }
+
+  .project-body p {
+    margin-bottom: 1.5rem;
+  }
+
+  .project-body h3 {
+    color: var(--text);
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.4rem;
+    font-weight: 400;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .view-full {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.75rem 2rem;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 100px;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transition: all 0.3s;
+  }
+
+  .view-full:hover {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.4);
+  }
+
+  /* ── ABOUT PAGE ── */
+  .about-content {
+    padding: 4rem;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .about-hero {
+    display: flex;
+    gap: 3.5rem;
+    align-items: flex-start;
+    margin-bottom: 3rem;
+  }
+
+  .about-portrait {
+    flex-shrink: 0;
+    width: 300px;
+    border-radius: 6px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    object-fit: cover;
+  }
+
+  .about-text {
+    flex: 1;
+    padding-top: 0.5rem;
+  }
+
+  .about-content h1 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 3rem;
+    font-weight: 400;
+    margin-bottom: 1.5rem;
+  }
+
+  .about-content h1 em {
+    font-style: italic;
+    color: var(--text-muted);
+  }
+
+  .about-bio {
+    color: var(--text-muted);
+    line-height: 1.8;
+    font-size: 1.05rem;
+    margin-bottom: 1.5rem;
+    max-width: 650px;
+  }
+
+  .experience-section {
+    margin-top: 3rem;
+  }
+
+  .experience-section h3 {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .experience-section h3::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(255,255,255,0.08);
+  }
+
+  .exp-item {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 2rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .exp-item .exp-role {
+    font-weight: 500;
+    font-size: 1rem;
+  }
+
+  .exp-item .exp-company {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+  }
+
+  .exp-item .exp-date {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-top: 0.25rem;
+  }
+
+  .exp-item .exp-desc {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+
+  /* ── CONTACT PAGE ── */
+  .contact-content {
+    padding: 4rem;
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .contact-content h1 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 3rem;
+    font-weight: 400;
+    margin-bottom: 1rem;
+  }
+
+  .contact-content p {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .contact-links {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  .contact-links a {
+    padding: 0.75rem 2rem;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 100px;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transition: all 0.3s;
+  }
+
+  .contact-links a:hover {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.4);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 1.5rem 4rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  footer .socials {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  footer a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transition: color 0.3s;
+  }
+
+  footer a:hover { color: var(--text); }
+
+  footer .copy {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  /* ── PROJECT INLINE IMAGES ── */
+  .project-img {
+    margin: 1.5rem 0;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .project-img:hover {
+    transform: scale(1.025);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+  }
+  .project-img img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 8px;
+  }
+  /* Square images (album covers, logos) */
+  .project-img.img-square {
+    max-width: 420px;
+  }
+  /* Portrait images (posters, tall graphics) */
+  .project-img.img-portrait {
+    max-width: 350px;
+  }
+  /* Small images (tiny screenshots, icons) */
+  .project-img.img-small {
+    max-width: 200px;
+  }
+  /* Landscape images — full width (default) */
+  .project-img.img-landscape {
+    max-width: 100%;
+  }
+  /* Grid for phone mockup screens */
+  .img-phone-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+  }
+  .img-phone-grid .project-img {
+    margin: 0;
+    max-width: 100%;
+  }
+  .img-phone-grid .project-img:hover {
+    transform: scale(1.04);
+  }
+  /* 2-up grid */
+  .img-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+  }
+  .img-grid-2 .project-img {
+    margin: 0;
+    max-width: 100%;
+  }
+  /* 4-up grid */
+  .img-grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+    margin: 1.5rem 0;
+  }
+  .img-grid-4 .project-img {
+    margin: 0;
+    max-width: 100%;
+  }
+  /* 3-up grid */
+  .img-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+  }
+  .img-grid-3 .project-img {
+    margin: 0;
+    max-width: 100%;
+  }
+  /* 5-up grid */
+  .img-grid-5 {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+  }
+  .img-grid-5 .project-img {
+    margin: 0;
+    max-width: 100%;
+  }
+  /* 4x2 grid */
+  .img-grid-4x2 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+  }
+  .img-grid-4x2 .project-img {
+    margin: 0;
+    max-width: 100%;
+  }
+  /* Tight grid - no gaps, masonry-like */
+  .img-grid-tight {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.4rem;
+    margin: 1.5rem 0;
+  }
+  .img-grid-tight .project-img {
+    margin: 0;
+    max-width: 100%;
+  }
+  .img-grid-tight .project-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  @media (max-width: 768px) {
+    .img-grid-tight { grid-template-columns: repeat(2, 1fr); }
+  }
+  /* Song player */
+  .song-player {
+    margin: 1.5rem 0;
+    padding: 1.5rem;
+    background: rgba(255,255,255,0.04);
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .song-player audio {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+  .song-player .song-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.2rem;
+    margin-bottom: 0.25rem;
+  }
+  .song-player .song-artist {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+  }
+  .lyrics-container {
+    margin: 1.5rem 0;
+    padding: 1.5rem;
+    background: rgba(255,255,255,0.03);
+    border-radius: 8px;
+    border-left: 3px solid var(--accent);
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+  .lyrics-container .verse-label {
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin: 1.2rem 0 0.4rem;
+  }
+  .lyrics-container .verse-label:first-child {
+    margin-top: 0;
+  }
+  .lyrics-container p {
+    margin: 0;
+    color: var(--text-muted);
+  }
+  .r1 { color: #ff6b6b; } /* red - ceiling/appealing/feeling/concealing */
+  .r2 { color: #4ecdc4; } /* teal - that/Jack/jack/IMAX/class/cast/Dak/back/at/flash/match/past */
+  .r3 { color: #ffe66d; } /* yellow - plain/terrain */
+  .r4 { color: #a29bfe; } /* purple - official/beneficial/Kittle/kibble/scribble */
+  .r5 { color: #fd79a8; } /* pink - hitmen/Whitman/lit man/ticking/spitting/mission/addition/edition */
+  .r6 { color: #55efc4; } /* mint - lines/wine/dine/align/times */
+  .r7 { color: #74b9ff; } /* blue - chance/man/dance */
+  .r8 { color: #fdcb6e; } /* gold - see/need/frequently/secrecy/indecently/easily/deity/me/recipe/breathe/fantasy/frantically */
+  .r9 { color: #e17055; } /* orange - tendon/senses/amendment/cemented/independent/investments/blessing/defendants */
+  .r10 { color: #81ecec; } /* cyan - disrespect it/disinfect it/jack shit/match it */
+  .r11 { color: #fab1a0; } /* salmon - you/views/lose */
+  .r12 { color: #b8e994; } /* lime - disgusting/discussion */
+  .r13 { color: #dfe6e9; } /* silver - static/holographic */
+  .r14 { color: #f8a5c2; } /* rose - gun/sum */
+  /* Match height row */
+  .img-match-height {
+    display: flex;
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+    align-items: center;
+  }
+  .img-match-height .project-img {
+    margin: 0;
+    flex: 0 1 auto;
+  }
+  .img-match-height .project-img img {
+    height: 300px;
+    width: auto;
+    object-fit: contain;
+  }
+  @media (max-width: 768px) {
+    .img-match-height { flex-direction: column; }
+    .img-match-height .project-img img { height: auto; width: 100%; }
+  }
+  .project-video {
+    margin: 1.5rem 0;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .project-video video {
+    width: 100%;
+    display: block;
+    border-radius: 8px;
+  }
+  .img-logos-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+  }
+  .img-logos-row .project-img {
+    margin: 0;
+    flex: 1;
+    max-width: 48%;
+  }
+  @media (max-width: 768px) {
+    .img-phone-grid { grid-template-columns: repeat(2, 1fr); }
+    .img-grid-4 { grid-template-columns: repeat(2, 1fr); }
+    .img-grid-3 { grid-template-columns: repeat(2, 1fr); }
+    .img-grid-5 { grid-template-columns: repeat(3, 1fr); }
+    .img-grid-4x2 { grid-template-columns: repeat(2, 1fr); }
+    .project-img.img-square { max-width: 100%; }
+    .project-img.img-portrait { max-width: 100%; }
+  }
+  @media (max-width: 480px) {
+    .img-grid-5 { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* ── LIGHTBOX ── */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+    background: rgba(0,0,0,0.92);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+    cursor: zoom-out;
+  }
+  .lightbox.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .lightbox img {
+    max-width: 92vw;
+    max-height: 92vh;
+    border-radius: 6px;
+    box-shadow: 0 12px 60px rgba(0,0,0,0.6);
+    transform: scale(0.92);
+    transition: transform 0.3s ease;
+  }
+  .lightbox.open img {
+    transform: scale(1);
+  }
+  .lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 28px;
+    color: #fff;
+    font-size: 28px;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+    background: none;
+    border: none;
+    font-family: inherit;
+  }
+  .lightbox-close:hover { opacity: 1; }
+
+  /* ── GALLERY ── */
+  .project-gallery {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .project-gallery img {
+    width: 100%;
+    border-radius: 4px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    transition: transform 0.3s ease;
+  }
+
+  .project-gallery img:hover {
+    transform: scale(1.02);
+  }
+
+  /* Now playing when inside overlay */
+  .project-content .now-playing {
+    height: auto;
+    padding: 1.5rem 0;
+    margin-bottom: 2rem;
+    opacity: 1;
+    transform: none;
+    pointer-events: all;
+    border-top: none;
+    overflow: visible;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .project-header { flex-direction: column; align-items: center; }
+    .project-vinyl-wrap { width: 260px; height: 260px; }
+    .turntable { width: 260px; height: 260px; }
+    .turntable-platter { width: 230px; height: 230px; }
+    .exp-item { grid-template-columns: 1fr; gap: 0.5rem; }
+    .gallery-viewport { height: 400px; }
+    .about-hero { flex-direction: column; align-items: center; gap: 2rem; }
+    .about-portrait { width: 240px; }
+  }
+
+  @media (max-width: 768px) {
+    header { padding: 2rem; }
+    .intro { padding: 3rem 2rem 2rem; }
+    .tagline { font-size: 2.2rem; }
+    .project-content { padding: 2rem; }
+    .project-details h2 { font-size: 2rem; }
+    .about-content { padding: 3rem 2rem; }
+    footer { padding: 2rem; flex-direction: column; gap: 1rem; }
+    .gallery-viewport { height: 360px; }
+    .gallery-label { padding: 0 2rem; }
+    .gallery-arrow { width: 40px; height: 40px; font-size: 1.4rem; }
+    .gallery-arrow--left { left: 0.75rem; }
+    .gallery-arrow--right { right: 0.75rem; }
+  }
+
+  @media (max-width: 480px) {
+    .tagline { font-size: 1.8rem; }
+    .logo { font-size: 1.8rem; }
+    nav { gap: 1rem; }
+    nav a { font-size: 0.75rem; }
+    .contact-links { flex-direction: column; }
+    .gallery-viewport { height: 300px; }
+    .project-gallery { grid-template-columns: 1fr; }
+    .turntable { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="#" onclick="showPage('collection')"><img src="logo.png" alt=""><span class="logo-text">Michael Loya <span>Studio</span></span></a>
+  <nav>
+    <a onclick="showPage('collection')" class="active" id="nav-collection">The Collection</a>
+    <a onclick="showPage('about')" id="nav-about">About</a>
+    <a onclick="showPage('contact')" id="nav-contact">Contact</a>
+  </nav>
+</header>
+
+<!-- COLLECTION PAGE -->
+<div class="page active" id="page-collection">
+  <section class="intro">
+    <div class="tagline">The redefinition of<br><em>clean composition.</em></div>
+  </section>
+
+  <section class="gallery-section">
+    <div class="gallery-label">The Collection — 9 Records</div>
+    <div class="gallery-viewport">
+      <button class="gallery-arrow gallery-arrow--left" id="arrowLeft">‹</button>
+      <div class="gallery-track" id="galleryTrack"></div>
+      <button class="gallery-arrow gallery-arrow--right" id="arrowRight">›</button>
+    </div>
+  </section>
+</div>
+
+<!-- ABOUT PAGE -->
+<div class="page" id="page-about">
+  <div class="about-content">
+    <div class="about-hero">
+      <img class="about-portrait" src="mike-portrait.jpg" alt="Michael Loya">
+      <div class="about-text">
+        <h1>About <em>me</em></h1>
+        <p class="about-bio">
+          I'm a designer who works at the intersection of music, technology, and visual storytelling. Currently studying at Syracuse University, I split my time between design direction for University Union, personal creative projects, and exploring how AI and emerging tech can push creative work forward.
+        </p>
+        <p class="about-bio">
+          My work ranges from brand identity and editorial design to AR experiences, UI/UX, and music production. I believe the best design comes from genuine curiosity and a willingness to experiment across mediums.
+        </p>
+      </div>
+    </div>
+
+    <div class="experience-section">
+      <h3>Experience</h3>
+
+      <div class="exp-item">
+        <div>
+          <div class="exp-role">Graphic Design & Video Intern</div>
+          <div class="exp-company">BODYARMOR Sports Nutrition</div>
+          <div class="exp-date">Jun — Aug 2025</div>
+        </div>
+        <div class="exp-desc">
+          Adapted POS and promotional designs across formats and retail environments. Produced original creative assets for product campaigns. Led capstone project exploring AI's role in marketing and creative production.
+        </div>
+      </div>
+
+      <div class="exp-item">
+        <div>
+          <div class="exp-role">Design Co-Director</div>
+          <div class="exp-company">University Union</div>
+          <div class="exp-date">Dec 2024 — Present</div>
+        </div>
+        <div class="exp-desc">
+          Lead design board producing visuals for events, social media, and marketing campaigns. Oversee visual direction for major campus events including concerts and festivals.
+        </div>
+      </div>
+
+      <div class="exp-item">
+        <div>
+          <div class="exp-role">Head of Design</div>
+          <div class="exp-company">20 Watts Magazine</div>
+          <div class="exp-date">Sep — Dec 2024</div>
+        </div>
+        <div class="exp-desc">
+          Designed graphics for events and promotional materials. Created onboarding tutorials and mentored design team through projects.
+        </div>
+      </div>
+
+      <div class="exp-item">
+        <div>
+          <div class="exp-role">Head of Design</div>
+          <div class="exp-company">Mixtape Magazine</div>
+          <div class="exp-date">Sep 2022 — Sep 2024</div>
+        </div>
+        <div class="exp-desc">
+          Led design for print and digital materials. Collaborated with editorial teams on visual concepts. Managed and coordinated design projects from conception to finish.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT PAGE -->
+<div class="page" id="page-contact">
+  <div class="contact-content">
+    <h1>Let's <em>connect</em></h1>
+    <p>Always open to new projects, collaborations, and conversations.</p>
+    <div class="contact-links">
+      <a href="mailto:michaelloyadesign@gmail.com">Email</a>
+      <a href="https://instagram.com/michaelloyastudio" target="_blank">Instagram</a>
+      <a href="https://www.linkedin.com/in/michael-loya/" target="_blank">LinkedIn</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="socials">
+    <a href="https://instagram.com/michaelloyastudio" target="_blank">Instagram</a>
+    <a href="https://www.linkedin.com/in/michael-loya/" target="_blank">LinkedIn</a>
+    <a href="mailto:michaelloyadesign@gmail.com">Email</a>
+  </div>
+  <div class="copy">&copy; 2026 Michael Loya</div>
+</footer>
+
+<!-- Project Overlay -->
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close">&times;</button>
+  <img src="" alt="Full size preview" id="lightboxImg">
+</div>
+
+<div class="project-overlay" id="overlay">
+  <button class="project-close" id="closeBtn">&times;</button>
+  <div class="project-content" id="projectContent"></div>
+</div>
+
+<script>
+const projects = [
+  {
+    title: "Sound & Vision",
+    overlayTitle: "Sound<br>& Vision",
+    category: "Cover Art / Motion / Music",
+    tools: "Illustrator, Photoshop, After Effects, Blender, AI",
+    year: "2023–Present",
+    cover: `img/DnDFinal.jpeg`,
+    images: [],
+    content: `<p>I collaborate with my brother, who produces music under our last name Loya (stylized as "loya"), bringing his music to life through cover art, motion graphics, and social content. I've also created pieces for other artists, tailoring visuals to fit their sound and aesthetic.</p>
+<h3><a href="https://open.spotify.com/artist/5gNQpoYEBE1jxjCgFkLWce?si=AsVRN9PsRu2rgS5POckwnQ" target="_blank" style="color:var(--accent);text-decoration:underline;">loya</a></h3>
+<p>The cover art is for loya's upcoming EP, <a href="https://open.spotify.com/album/6roxGKDYkVpcbcdqdpj6gG?si=mku1Dh4nR9OR_AJf92bb5Q" target="_blank" style="color:var(--accent);text-decoration:underline;"><em>Diamonds and Damage</em></a>, which he produced alongside his friend, Nicky. Loya had a clear vision for the design—a portrait of a woman surrounded by falling diamonds—and reached out to me to bring it to life. We started with a reference image to generate the portrait, then created multiple diamond variations. The assets were created by Adobe Firefly and then arranged, composed, and edited by me. After eight exports, we arrived at the final design.</p>
+<div class="img-grid-4">
+<div class="project-img"><img src="img/all/Screenshot_2025-03-21_at_6.45.47_PM.jpg" alt="Reference photo" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Firefly_20250319125548_(1).jpg" alt="Firefly generated asset" loading="lazy"></div>
+<div class="project-img"><img src="img/all/DnDv1.jpg" alt="Diamonds and Damage variation 1" loading="lazy"></div>
+<div class="project-img"><img src="img/all/DnDv2.jpg" alt="Diamonds and Damage variation 2" loading="lazy"></div>
+<div class="project-img"><img src="img/all/DnDv3.jpg" alt="Diamonds and Damage variation 3" loading="lazy"></div>
+<div class="project-img"><img src="img/all/DnDv4.jpg" alt="Diamonds and Damage variation 4" loading="lazy"></div>
+<div class="project-img"><img src="img/all/DnDv7.jpg" alt="Diamonds and Damage variation 7" loading="lazy"></div>
+<div class="project-img"><img src="img/all/DnDv8.jpg" alt="Diamonds and Damage variation 8" loading="lazy"></div>
+</div>
+<p>I've also produced short vertical videos for loya's Spotify, known as "Canvas" visuals — dynamic, looping videos using After Effects and Blender that add an extra layer of engagement to his tracks.</p>
+<div class="project-video"><video src="img/all/Canvases.mp4" autoplay loop muted playsinline></video></div>
+<p>As loya's brand continued to grow, I recognized the need for a distinct logo that would enhance recognizability and adaptability across different platforms. Since he's an avid collector of unique hats, it felt natural to base the design on one of his favorites. I landed on Amador, a blackletter font that balances elegance with edge, fitting seamlessly with loya's artistic identity.</p>
+<div class="project-img img-landscape"><img src="img/all/LoyaLOGOprocess.jpg" alt="loya logo design process" loading="lazy"></div>
+<div class="img-logos-row">
+<div class="project-img img-landscape"><img src="img/all/LoyaLOGO_solo.png" alt="loya logo final" loading="lazy"></div>
+<div class="project-img img-landscape"><img src="img/all/LoyaLOGO_outline.png" alt="loya logo outline" loading="lazy"></div>
+</div>
+<h3>Small Projects</h3>
+<p>I created a motion graphic and posters for <a href="https://open.spotify.com/artist/2848adRcxvgWNRcz1g1tQD?si=SYY1m9QBSYaGsj-x30nrzQ" target="_blank" style="color:var(--accent);text-decoration:underline;">Felly</a>, an independent artist from my hometown with 556k monthly Spotify listeners. Our paths crossed when I met him at a show, and he's had a huge impact on my journey. I focused on creating designs that captured the essence of his sound and aesthetic.</p>
+<div class="img-grid-3">
+<div class="project-img"><img src="img/all/Fel1.jpg" alt="Felly poster design 1" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Fel2.jpg" alt="Felly poster design 2" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Fel3.jpg" alt="Felly poster design 3" loading="lazy"></div>
+</div>
+<p>I pitched a cover art concept for the artist <a href="https://open.spotify.com/artist/4DSFmAOMwMqDVKIsPY0kqs?si=IuyZFZwoTCCsxNR4Py_JHA" target="_blank" style="color:var(--accent);text-decoration:underline;">Sweezy</a>. While ultimately rejected, I'm proud of the design and the creative process behind it. I also designed cover art for Chitt, who my brother and I met as a kid at our summer house. Now collaborating with loya, it was great to work on something for an artist with such a personal connection to us.</p>
+<div class="img-grid-2">
+<div class="project-img"><img src="img/all/ExoticSweezyv4.jpg" alt="Sweezy cover art concept" loading="lazy"></div>
+<div class="project-img"><img src="img/all/FeelYourLove.jpg" alt="Chitt cover art" loading="lazy"></div>
+</div>`
+  },
+  {
+    title: "BODYARMOR & Powerade",
+    category: "Internship / Branding / AI",
+    tools: "Photoshop, Illustrator, Premiere, After Effects, AI Tools",
+    year: "2025",
+    cover: `img/bapa.png`,
+    images: [],
+    content: `<p>Last summer I interned with BODYARMOR and Powerade in Queens, NY, designing POS ads, producing a Powerade fall football video ad, and creating an AI-generated BODYARMOR commercial as my capstone project. The internship pushed my design and technical skills while giving me hands-on experience at the intersection of brand storytelling and emerging technology.</p>
+<h3>Internship Work</h3>
+<p>Day-to-day work involved reformatting BODYARMOR and Powerade creative into POS ads (window clings, cooler clings, end caps). Beyond that, I produced an original video ad for Powerade's fall football campaign, combining brand photography with stock video into a dynamic piece of content.</p>
+<div class="project-video"><video src="img/all/PA_Fall_Football.mp4" controls playsinline preload="metadata"></video></div>
+<h3>Capstone Project</h3>
+<p>For my capstone, I explored AI in creative production. My initial concept featured Joe Burrow ("Joe Chill") for BODYARMOR Chill, but AI struggled with character consistency. I pivoted to product visuals and created a commercial generated almost entirely with AI.</p>
+<div class="img-match-height">
+<div class="project-img"><img src="img/all/textclarity1.jpg" alt="AI character consistency challenge - snow scene" loading="lazy"></div>
+<div class="project-img"><img src="img/all/textclarity2.jpg" alt="AI character consistency challenge - ice cave" loading="lazy"></div>
+</div>
+<p>I built a full AI workflow using Runway and Kling for imagery/video, Topaz Labs for upscaling, ElevenLabs for voiceover, and After Effects for the final edit. Prompt engineering was key to getting consistent, usable results.</p>
+<div class="project-video"><video src="img/all/kling.mp4" autoplay loop muted playsinline></video></div>
+<h3>Final Result</h3>
+<p>The final AI-generated commercial was presented to C-suite executives. At the time, my takeaway was that AI worked for quick-turn content like product shots and social ads, but wasn't ready for high-end campaign work. That's changing fast — these tools are progressing at an incredible pace, and I plan to stay ahead of the curve.</p>
+<div class="project-video"><video src="img/all/AIBACommercial.mp4" controls playsinline preload="metadata" poster="img/all/ba_frame_45s.jpg"></video></div>`
+  },
+  {
+    title: "AI Song",
+    category: "Music Production / AI / Design",
+    tools: "FL Studio, ElevenLabs, Illustrator, ChatGPT",
+    year: "2025",
+    cover: `img/LimitsCover.jpg`,
+    images: [],
+    content: `<p>I wrote a track over a Jack Harlow-type beat and used ElevenLabs to create an AI voice clone of Jack as a fake feature. I trained the model on his acapella vocals, designed the cover art with ChatGPT and Illustrator, and produced everything in FL Studio. When I posted it, a few friends genuinely thought the Jack verse was real.</p>
+<div class="img-grid-3">
+<div class="project-img"><img src="img/all/ChatGPT_Image_Sep_13,_2025,_04_19_47_PM.jpg" alt="AI cover concept 1" loading="lazy"></div>
+<div class="project-img"><img src="img/all/ChatGPT_Image_Sep_13,_2025,_04_20_16_PM.jpg" alt="AI cover concept 2" loading="lazy"></div>
+<div class="project-img"><img src="img/all/ChatGPT_Image_Sep_13,_2025,_04_20_11_PM.jpg" alt="AI cover concept 3" loading="lazy"></div>
+<div class="project-img"><img src="img/all/ChatGPT_Image_Sep_13,_2025,_04_20_23_PM.jpg" alt="AI cover concept 4" loading="lazy"></div>
+<div class="project-img"><img src="img/all/ChatGPT_Image_Sep_13,_2025,_04_20_12_PM.jpg" alt="AI cover concept 5" loading="lazy"></div>
+<div class="project-img"><img src="img/LimitsCover.jpg" alt="Limits final cover art" loading="lazy"></div>
+</div>
+<p>Cover concepts generated in ChatGPT, refined in Illustrator. The final cover is bottom-right.</p>
+<div class="project-img img-portrait"><img src="img/all/IMG_8448.jpg" alt="Fake DM with Jack Harlow" loading="lazy"></div>
+<p>I also mocked up a fake DM from Jack Harlow in Photoshop and posted it alongside the track. Tons of people reached out asking if it was real.</p>
+<div class="song-player">
+<div class="song-title">Limits (feat. Jack Harlow)</div>
+<div class="song-artist">Fucius · 203 Records</div>
+<audio controls preload="metadata" src="img/all/Limits.mp3"></audio>
+</div>
+<div class="lyrics-container">
+<div class="verse-label">Verse 1: Fucius</div>
+<p>Wondering if ima ever reach the fucking <span class="r1">ceiling</span><br>I don't fuck with <span class="r5">critics</span>, lemme tell you 'bout my <span class="r5">limits</span><br>Flexing on your former brethren just ain't <span class="r1">appealing</span><br>I'm <span class="r1">feeling</span>, the heat that I'm <span class="r1">concealing</span> is a <span class="r2">light jab</span><br>Controversy gonna follow when you <span class="r2">like that</span><br>Tryna tell me what the key is, you can <span class="r2">type that</span><br>If that's how ima make it <span class="r1">thrilling</span>, then I'm <span class="r2">Mike Jack</span><br>When I'm talking 'bout a plug, I mean the <span class="r2">mic jack</span><br>Punching in to bring the action like it's <span class="r2">IMAX</span><br>If they sleeping on the <span class="r3">sound</span>, then it's <span class="r2">night class</span><br>Try and break the stride, then I'll put you in a <span class="r2">nice cast</span><br>If I'm blowing up in Texas, then I'm <span class="r2">like Dak</span><br>Push me to the <span class="r3">ground</span> and I'm <span class="r2">right back</span><br>Never scared to <span class="r2">fight back</span><br>South Beach is where the <span class="r2">lights at</span><br>I'm going blind from the <span class="r2">bright flash</span><br>I cross the strip like a <span class="r2">live match</span><br>Watch me <span class="r2">fly past</span>, these up and comers are <span class="r3">plain</span><br>Scared to navigate the scene, but I know the <span class="r3">terrain</span><br>Getting dirty in the <span class="r3">game</span>, it's <span class="r4">official</span><br>Never <span class="r14">fold</span>, bring it home for the <span class="r14">gold</span> like I'm <span class="r4">Kittle</span><br>For my dogs, got the <span class="r4">kibble</span><br>I haven't been <span class="r6">writing</span>, I just <span class="r4">scribble</span><br>They yelling at me "Mike drop"—I don't ever tote a <span class="r13">gun</span><br>But the bump stock, is <span class="r4">beneficial</span> for the <span class="r5">hitmen</span><br>Catch me <span class="r6">writing</span> <span class="r6">lines</span>, I'm <span class="r6">live</span> when I'm in <span class="r5">Whitman</span><br>All about that <span class="r6">wine</span> and <span class="r6">dine</span>, I'm too <span class="r5">lit, man</span><br>I may not <span class="r6">align</span> with <span class="r6">times</span>, but who's <span class="r5">ticking</span><br><span class="r5">Tick, tick, tick, tick, tick</span><br>Pyromaniacs' craniums get elated when I'm <span class="r5">spitting</span><br>Gassing me up, I'm <span class="r1">filling</span> up for the <span class="r5">mission</span><br>Money's a plus, but not the <span class="r13">sum</span>—an <span class="r5">addition</span><br>(Admiration when I'm <span class="r12">static</span>)<br>You know my image <span class="r12">holographic</span>, limited <span class="r5">edition</span></p>
+<div class="verse-label">Verse 2: AI Jack Harlow</div>
+<p>This ain't my <span class="r7">last chance</span><br>I'm just doing this for Fucius, he a <span class="r7">mad man</span><br>He yelling "<span class="r7">Jack, man</span>, come and bring the <span class="r7">facts, man</span>"<br>Kentucky boy getting chicken, I'm a <span class="r7">fat man</span><br>Pick up the <span class="r9">girls</span> with the <span class="r9">curls</span>, I'm feeling <span class="r7">jacked, man</span><br>Came with the <span class="r9">pearls</span>, now your <span class="r9">girl</span> give me a <span class="r7">lap dance</span><br>Said she like surprises, I tell her come and <span class="r8">see</span><br>I'm Jack in the box, I'm popping out when she <span class="r8">need</span><br>And that's <span class="r8">frequently</span>, she loving the <span class="r8">secrecy</span><br>Frolic 'round the pad in her panties so <span class="r8">indecently</span><br>Give her love <span class="r8">peacefully</span>, I could bust <span class="r8">easily</span><br>Pussy so amazing got me thinking she a <span class="r8">deity</span><br>But I ain't ignorant, she got the <span class="r8">best of me</span><br>She just get what she wants and leave the <span class="r8">rest of me</span><br>I don't give a damn if the haters wanna <span class="r8">wrestle me</span><br>You can catch a ride in my wake, just leave the <span class="r8">rest to me</span><br>And fuck 'em if they <span class="r8">mess with me</span><br><span class="r8">Testing me</span>? That's a deadly <span class="r8">recipe</span><br>I chef the scene while you barely catching <span class="r8">breath to breathe</span><br>Tryna come and <span class="r8">flex on me</span>? Boy, that's just a <span class="r8">fantasy</span><br>I'm moving with a purpose while your crew just move <span class="r8">frantically</span><br>I been in the cut like a motherfucking <span class="r9">tendon</span><br>Grind so <span class="r10">relentless</span> I been losing all my <span class="r9">senses</span><br>Never need a gimmick, never needed no <span class="r9">amendment</span><br>Every bar has been <span class="r9">cemented</span>, every move is <span class="r9">independent</span><br>I return all my <span class="r9">investments</span>, every check has been a <span class="r9">blessing</span><br>I stand on business like <span class="r9">defendants</span><br>I make a <span class="r1">killing</span> when I write, so don't you ever <span class="r11">disrespect it</span><br>I'm the <span class="r1">illest</span> on the mic, so when I pass it, <span class="r11">disinfect it</span> (achoo)<br>I'm sick of the <span class="r6">bitching</span>, and bitch, I'm looking at <span class="r14">you</span><br>I'll hit what you're <span class="r6">pitching</span> and <span class="r6">switch it</span> back on <span class="r14">you</span><br>You claim you got a <span class="r6">vision</span> that can bring you to the <span class="r14">views</span><br>But you're stuck in the basement and pray to God that I <span class="r14">lose</span><br>You do <span class="r11">jack shit</span>, I do <span class="r11">Jack shit</span><br>Always on another level, you can't <span class="r11">match it</span><br>Talking 'bout the flows, then my breath is too <span class="r12">disgusting</span><br>If we talking 'bout the GOATs, then my name in the <span class="r12">discussion</span></p>
+</div>`
+  },
+  {
+    title: "Mobile UIs",
+    overlayTitle: "Mobile&nbsp;UIs",
+    category: "UI/UX Design",
+    tools: "Figma",
+    year: "2025",
+    cover: `img/iPhone_Mockup.png`,
+    images: [],
+    content: `<p>Two mobile UI projects: MyPinecone, a CRM app redesign focused on simplifying contact management, and Medobar, a beekeeping app concept for a Syracuse-based company.</p>
+<h3>MyPinecone</h3>
+<div class="project-img img-landscape"><img src="img/all/Screenshot_2025-09-14_at_11.50.38_PM.png" alt="MyPinecone research and competitor notes" loading="lazy"></div>
+<p>I analyzed the existing web version, studied competitors, and observed a user testing session. The sign-up flow was cluttered and confusing, so I redesigned it into fewer, clearer screens.</p>
+<div class="img-grid-5">
+<div class="project-img"><img src="img/all/Goal_Page.png" alt="Goal selection screen" loading="lazy"></div>
+<div class="project-img"><img src="img/all/First_Name_Page.png" alt="First Name sign-up screen" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Home_Page.png" alt="Redesigned home screen" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Last_Name_Page.png" alt="Last Name sign-up screen" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Interactions_Page.png" alt="Interactions page" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Phone_Page.png" alt="Phone number screen" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Verification_Page.png" alt="Verification screen" loading="lazy"></div>
+<div class="project-img"><img src="img/all/AI_Page.png" alt="AI features page" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Password_Page.png" alt="Password screen" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Account_Page.png" alt="Account page design" loading="lazy"></div>
+</div>
+<p>Interactive Figma prototype <a href="https://www.figma.com/proto/72II3Ud383V7CluTMG3R5H/Pinecone-Redesign?node-id=301-972&starting-point-node-id=301%3A972&t=8rXMJRjZIyKAgn02-1" target="_blank" style="color:var(--accent);text-decoration:underline;">here</a>.</p>
+<h3>Medobar</h3>
+<p>Medobar: a mobile UI concept for a Syracuse beekeeping company, targeting adults 40+ who are curious about beekeeping. The design needed to feel approachable and simple.</p>
+<div class="img-grid-4x2">
+<div class="project-img"><img src="img/all/splash.png" alt="Medobar splash screen" loading="lazy"></div>
+<div class="project-img"><img src="img/all/iPhone_13_&_14_-_1.png" alt="Medobar screen 1" loading="lazy"></div>
+<div class="project-img"><img src="img/all/iPhone_13_&_14_-_4.png" alt="Medobar screen 4" loading="lazy"></div>
+<div class="project-img"><img src="img/all/iPhone_13_&_14_-_5.png" alt="Medobar screen 5" loading="lazy"></div>
+<div class="project-img"><img src="img/all/iPhone_13_&_14_-_2.png" alt="Medobar screen 2" loading="lazy"></div>
+<div class="project-img"><img src="img/all/iPhone_13_&_14_-_3.png" alt="Medobar screen 3" loading="lazy"></div>
+<div class="project-img"><img src="img/all/iPhone_13_&_14_-_6.png" alt="Medobar screen 6" loading="lazy"></div>
+<div class="project-img"><img src="img/all/iPhone_13_&_14_-_7.png" alt="Medobar screen 7" loading="lazy"></div>
+</div>
+<p>The interface uses a hexagon-based layout inspired by honeycomb cells, with customizable modular sections.</p>
+<div class="project-img img-landscape"><img src="img/all/iPhone_14_Mockup_(6).png" alt="Medobar high-fidelity mockup" loading="lazy"></div>
+<p>I also designed a logo using shapes derived from the A, B, and O in the Medobar wordmark.</p>`
+  },
+  {
+    title: "University Union",
+    overlayTitle: "University<br>Union",
+    category: "Coming Soon",
+    tools: "",
+    year: "",
+    cover: `img/UU.png`,
+    images: [],
+    content: `<p>Coming soon.</p>`
+  },
+  {
+    title: "LYRC",
+    overlayTitle: "LYRC",
+    category: "Coming Soon",
+    tools: "",
+    year: "",
+    cover: `img/LYRC.png`,
+    images: [],
+    content: `<p>Coming soon.</p>`
+  },
+  {
+    title: "Album Covers",
+    category: "Graphic Design / Photography",
+    tools: "Photoshop, Illustrator, Photography",
+    year: "2024",
+    cover: `img/whitenoise.jpg`,
+    images: [],
+    content: `<p>A collection of album covers combining graphic design and photography — "Visual Harmonies: A Fusion of Lens and Design."</p>
+<div class="img-grid-3">
+<div class="project-img"><img src="img/all/Loya-Passion-Update-05.jpg" alt="Album cover - Passion update" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Loya-Passion-4.jpg" alt="Album cover - Passion series 4" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Loya-Passion-6.jpg" alt="Album cover - Passion series 6" loading="lazy"></div>
+<div class="project-img"><img src="img/all/scribbleboy.jpg" alt="Scribbleboy album cover" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Loya-Passion-1.jpg" alt="Album cover - Passion series 1" loading="lazy"></div>
+</div>
+<p>Each cover was shot and designed from scratch using Photoshop and Illustrator.</p>`
+  },
+  {
+    title: "Photography Portfolio",
+    category: "Photography",
+    tools: "Camera, Lightroom",
+    year: "2023",
+    cover: `img/Portfolio_01.jpg`,
+    images: [],
+    content: `<p>Black-and-white photographs from my early exploration of photography — experimenting with light, shadow, texture, and contrast.</p>
+<div class="img-grid-2">
+<div class="project-img"><img src="img/all/20231115_VIS201_Loya_Portfolio_03.jpg" alt="B&W photograph 3" loading="lazy"></div>
+<div class="project-img"><img src="img/all/20231012_VIS201_Loya_Portfolio_09.jpg" alt="B&W photograph 9" loading="lazy"></div>
+</div>
+<div class="img-grid-2">
+<div class="project-img"><img src="img/all/20231002_VIS201_Loya_Portfolio_07.jpg" alt="B&W photograph 7" loading="lazy"></div>
+<div class="project-img"><img src="img/all/20231026_VIS201_Loya_Portfolio_02.jpg" alt="B&W photograph 2" loading="lazy"></div>
+</div>
+<div class="img-grid-2">
+<div class="project-img"><img src="img/all/20231012_VIS201_Loya_Portfolio_05.jpg" alt="B&W photograph 5" loading="lazy"></div>
+<div class="project-img"><img src="img/all/20231102_VIS201_Loya_Portfolio_04.jpg" alt="B&W photograph 4" loading="lazy"></div>
+</div>
+
+<div class="img-grid-2">
+<div class="project-img"><img src="img/all/20231109_VIS201_Loya_Portfolio_06.jpg" alt="B&W photograph 6" loading="lazy"></div>
+<div class="project-img"><img src="img/all/20231108_VIS201_Loya_Portfolio_10.jpg" alt="B&W photograph 10" loading="lazy"></div>
+</div>
+<div class="project-img img-portrait"><img src="img/all/20231014_VIS201_Loya_Portfolio_08.jpg" alt="B&W photograph 8" loading="lazy"></div>`
+  },
+  {
+    title: "Miscellaneous Projects",
+    category: "Mixed / Passion Projects",
+    tools: "Various",
+    year: "2022–Present",
+    cover: `img/2023_Freshmen.jpg`,
+    images: [],
+    content: `<p>A mix of passion projects, school assignments, professional work, and collaborations. Not every concept made it to production, but each one shaped my process.</p>
+<div class="img-grid-tight">
+<div class="project-img"><img src="img/all/BlockParty.jpg" alt="Block Party poster" loading="lazy"></div>
+<div class="project-img"><img src="img/all/TalentShow.jpg" alt="Talent Show poster design" loading="lazy"></div>
+<div class="project-img"><img src="img/all/LUSTv2.jpg" alt="LUST experimental design" loading="lazy"></div>
+<div class="project-img"><img src="img/all/PA_Show_v4.jpg" alt="PA Show poster v4" loading="lazy"></div>
+<div class="project-img"><img src="img/all/2024VolleyballFinalFour.jpg" alt="2024 Volleyball Final Four design" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Screenshot_2024-12-05_at_7.15.19_PM.jpg" alt="Design project screenshot" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Cartoon1-01.jpg" alt="Cartoon illustration" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Screenshot_2024-12-05_at_7.20.02_PM.jpg" alt="Design project screenshot" loading="lazy"></div>
+<div class="project-img"><img src="img/all/2022_Swim.jpg" alt="2022 Swim design" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Screenshot_2024-12-05_at_8.22.22_PM.jpg" alt="Design project screenshot" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Screenshot_2025-01-29_at_3.07.56_PM.jpg" alt="Design project screenshot" loading="lazy"></div>
+<div class="project-img"><img src="img/all/2023_MM_Print.jpg" alt="2023 Mixtape Magazine print" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Screenshot_2024-12-05_at_8.15.10_PM.png" alt="Design project screenshot" loading="lazy"></div>
+<div class="project-img"><img src="img/all/logic.jpg" alt="Logic-inspired design" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Screenshot_2024-12-05_at_8.09.22_PM.jpg" alt="Design project screenshot" loading="lazy"></div>
+<div class="project-img"><img src="img/all/PlayIn.jpg" alt="Play-In tournament design" loading="lazy"></div>
+<div class="project-img"><img src="img/all/2023_Billboard.jpg" alt="2023 Billboard design" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Lebron.jpg" alt="LeBron illustration" loading="lazy"></div>
+</div>`
+  }
+];
+
+const galleryTrack = document.getElementById('galleryTrack');
+const overlay = document.getElementById('overlay');
+const closeBtn = document.getElementById('closeBtn');
+const projectContent = document.getElementById('projectContent');
+
+const N = projects.length;
+let currentCenter = 0;
+let isAnimating = false;
+const VISIBLE_HALF = 4;
+const ANIM_MS = 400;
+
+function getCoverSize() {
+  const vw = window.innerWidth;
+  if (vw <= 480) return 140;
+  if (vw <= 768) return 180;
+  if (vw <= 900) return 210;
+  if (vw <= 1200) return 250;
+  return 300;
+}
+
+const items = [];
+
+projects.forEach((project, i) => {
+  const item = document.createElement('div');
+  item.className = 'gallery-item';
+  item.innerHTML = `
+    <div class="cover-wrap">
+      <img src="${project.cover}" alt="${project.title}" loading="lazy" draggable="false">
+    </div>
+    <div class="gallery-vinyl"></div>
+    <div class="gallery-info">
+      <h3>${project.title}</h3>
+      <div class="category">${project.category}</div>
+    </div>
+  `;
+  item.addEventListener('click', () => {
+    if (i === currentCenter) openProject(i);
+  });
+  galleryTrack.appendChild(item);
+  items.push(item);
+});
+
+function wrapOffset(i, center, n) {
+  let d = i - center;
+  if (d > n / 2) d -= n;
+  if (d < -n / 2) d += n;
+  return d;
+}
+
+function calcState(i, center) {
+  const coverSz = getCoverSize();
+  const baseSpacing = Math.round(coverSz * 0.55);
+  const offset = wrapOffset(i, center, N);
+  const absOff = Math.abs(offset);
+  const scale = absOff === 0 ? 1.15 : Math.max(0.65, 1 - absOff * 0.08);
+  let opacity;
+  if (absOff > VISIBLE_HALF + 1) opacity = 0;
+  else if (absOff > VISIBLE_HALF) opacity = 0;
+  else if (absOff === VISIBLE_HALF) opacity = 0.4;
+  else opacity = 1;
+  let x = 0;
+  for (let j = 1; j <= absOff; j++) {
+    const stepSpacing = j === 1 ? baseSpacing * 1.4 : baseSpacing * (1 - (j - 2) * 0.12);
+    x += stepSpacing;
+  }
+  x *= Math.sign(offset);
+  return {
+    x,
+    scale,
+    rotateY: offset === 0 ? 0 : (offset < 0 ? 35 : -35),
+    brightness: absOff === 0 ? 1 : Math.max(0.3, 0.85 - absOff * 0.15),
+    opacity,
+    zIndex: absOff === 0 ? 50 : (N + 1 - absOff),
+    isCenter: offset === 0,
+    absOff,
+    shadowIntensity: absOff === 0 ? 1 : 0
+  };
+}
+
+function applyState(item, s) {
+  const coverSz = getCoverSize();
+  const itemCover = Math.round(coverSz * s.scale);
+
+  const coverEl = item.querySelector('.cover-wrap');
+  coverEl.style.width = itemCover + 'px';
+  coverEl.style.height = itemCover + 'px';
+
+  item.style.transform = `translate(-50%, -50%) translateX(${s.x}px) perspective(1200px) rotateY(${s.rotateY}deg) scale(${s.scale})`;
+  item.style.zIndex = s.zIndex;
+  item.style.opacity = s.opacity;
+  item.style.filter = `brightness(${s.brightness})`;
+  item.classList.toggle('is-center', s.isCenter);
+
+  const si = s.shadowIntensity || 0;
+  const baseBlur = 30, centerBlur = 55, centerSpread = 40;
+  const blur = baseBlur + (centerBlur - baseBlur) * si;
+  const yOff = 8 + 6 * si;
+  const alpha = 0.5 + 0.15 * si;
+  const glowAlpha = 0.06 * si;
+  coverEl.style.boxShadow = `0 ${yOff}px ${blur}px rgba(0,0,0,${alpha.toFixed(3)})` +
+    (si > 0.01 ? `, 0 0 ${centerSpread * si}px rgba(232,220,200,${glowAlpha.toFixed(3)})` : '');
+}
+
+let vinylAnim = null;
+function animateVinyl() {
+  items.forEach(item => {
+    const v = item.querySelector('.gallery-vinyl');
+    v.style.transform = 'translateX(0px)';
+    v.style.opacity = '0';
+  });
+  const centerVinyl = items[currentCenter].querySelector('.gallery-vinyl');
+  if (vinylAnim) cancelAnimationFrame(vinylAnim);
+  const dur = 600;
+  const t0 = performance.now();
+  centerVinyl.style.opacity = '1';
+  function tickVinyl(now) {
+    const p = Math.min((now - t0) / dur, 1);
+    const ease = p < 1 ? 1 - Math.pow(1 - p, 3) : 1;
+    centerVinyl.style.transform = `translateX(${ease * 55}px)`;
+    if (p < 1) vinylAnim = requestAnimationFrame(tickVinyl);
+    else vinylAnim = null;
+  }
+  vinylAnim = requestAnimationFrame(tickVinyl);
+}
+
+function layoutInstant() {
+  items.forEach((item, i) => applyState(item, calcState(i, currentCenter)));
+  const centerItem = items[currentCenter];
+  if (centerItem && centerItem.parentNode) {
+    centerItem.parentNode.appendChild(centerItem);
+  }
+  animateVinyl();
+}
+
+function animateTo(newCenter, duration) {
+  const oldCenter = currentCenter;
+  currentCenter = newCenter;
+
+  if (vinylAnim) { cancelAnimationFrame(vinylAnim); vinylAnim = null; }
+  const oldVinyl = items[oldCenter].querySelector('.gallery-vinyl');
+  const retractDur = 300;
+  const retractStart = performance.now();
+  const startX = parseFloat(oldVinyl.style.transform.replace(/[^0-9.-]/g,'')) || 55;
+  function retractTick(now) {
+    const p = Math.min((now - retractStart) / retractDur, 1);
+    const ease = p * p;
+    const x = startX * (1 - ease);
+    oldVinyl.style.transform = `translateX(${x}px)`;
+    if (p >= 1) oldVinyl.style.opacity = '0';
+    if (p < 1) requestAnimationFrame(retractTick);
+  }
+  requestAnimationFrame(retractTick);
+
+  const startStates = items.map((_, i) => calcState(i, oldCenter));
+  const endStates = items.map((_, i) => calcState(i, newCenter));
+
+  const wrappingItems = new Set();
+  items.forEach((item, i) => {
+    const oldOff = Math.abs(wrapOffset(i, oldCenter, N));
+    const newOff = Math.abs(wrapOffset(i, newCenter, N));
+    const oldSign = Math.sign(wrapOffset(i, oldCenter, N));
+    const newSign = Math.sign(wrapOffset(i, newCenter, N));
+    const isWrapping = oldSign !== 0 && newSign !== 0 && oldSign !== newSign;
+    if (oldOff > VISIBLE_HALF && newOff > VISIBLE_HALF) {
+      applyState(item, endStates[i]);
+      startStates[i] = endStates[i];
+    }
+    else if (isWrapping) {
+      wrappingItems.add(i);
+      startStates[i] = { ...startStates[i], opacity: startStates[i].opacity };
+    }
+  });
+
+  const startTime = performance.now();
+
+  function tick(now) {
+    const t = Math.min((now - startTime) / duration, 1);
+    const ease = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+
+    items.forEach((item, i) => {
+      const s = startStates[i];
+      const e = endStates[i];
+      if (wrappingItems.has(i)) {
+        const slideExtra = getCoverSize() * 0.6;
+        if (t < 0.5) {
+          const p = t / 0.5;
+          const slideEase = p * p;
+          const exitX = s.x + Math.sign(s.x) * slideExtra * slideEase;
+          const fadeOut = 1 - slideEase;
+          applyState(item, {
+            x: exitX,
+            scale: s.scale,
+            rotateY: s.rotateY,
+            brightness: s.brightness,
+            opacity: s.opacity * fadeOut,
+            zIndex: e.zIndex,
+            isCenter: false,
+            absOff: s.absOff,
+            shadowIntensity: (s.shadowIntensity || 0) * fadeOut
+          });
+        } else {
+          const p = (t - 0.5) / 0.5;
+          const slideEase = 1 - (1 - p) * (1 - p);
+          const entryX = e.x + Math.sign(e.x) * slideExtra * (1 - slideEase);
+          applyState(item, {
+            x: entryX,
+            scale: e.scale,
+            rotateY: e.rotateY,
+            brightness: e.brightness,
+            opacity: e.opacity * slideEase,
+            zIndex: e.zIndex,
+            isCenter: e.isCenter,
+            absOff: e.absOff,
+            shadowIntensity: (e.shadowIntensity || 0) * slideEase
+          });
+        }
+      } else {
+        applyState(item, {
+          x: s.x + (e.x - s.x) * ease,
+          scale: s.scale + (e.scale - s.scale) * ease,
+          rotateY: s.rotateY + (e.rotateY - s.rotateY) * ease,
+          brightness: s.brightness + (e.brightness - s.brightness) * ease,
+          opacity: s.opacity + (e.opacity - s.opacity) * ease,
+          zIndex: e.zIndex,
+          isCenter: e.isCenter,
+          absOff: e.absOff,
+          shadowIntensity: (s.shadowIntensity || 0) + ((e.shadowIntensity || 0) - (s.shadowIntensity || 0)) * ease
+        });
+      }
+    });
+
+    if (t < 1) {
+      requestAnimationFrame(tick);
+    } else {
+      isAnimating = false;
+      const centerItem = items[currentCenter];
+      if (centerItem && centerItem.parentNode) {
+        centerItem.parentNode.appendChild(centerItem);
+      }
+      animateVinyl();
+    }
+  }
+
+  requestAnimationFrame(tick);
+}
+
+function navigate(dir) {
+  if (isAnimating) return;
+  isAnimating = true;
+  const newCenter = ((currentCenter + dir) % N + N) % N;
+  animateTo(newCenter, ANIM_MS);
+}
+
+document.getElementById('arrowLeft').addEventListener('click', () => navigate(-1));
+document.getElementById('arrowRight').addEventListener('click', () => navigate(1));
+
+document.addEventListener('keydown', (e) => {
+  if (overlay.classList.contains('open')) return;
+  if (e.key === 'ArrowLeft') navigate(-1);
+  if (e.key === 'ArrowRight') navigate(1);
+});
+
+layoutInstant();
+window.addEventListener('resize', layoutInstant);
+
+function openProject(index) {
+  const p = projects[index];
+  const galleryHTML = p.images.map(src => `<img src="${src}" alt="${p.title}" loading="lazy">`).join('');
+
+  projectContent.innerHTML = `
+    <div class="now-playing active">
+      <div class="bars">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+      </div>
+      <div class="track-info">Now Playing — <strong>${p.title}</strong></div>
+    </div>
+    <div class="project-header">
+      <div class="project-vinyl-wrap">
+        <img class="project-cover" src="${p.cover}" alt="${p.title}">
+      </div>
+      <div class="turntable" id="turntable">
+        <div class="turntable-platter">
+          <div class="turntable-label">
+            <img src="${p.cover}" alt="${p.title}">
+          </div>
+        </div>
+        <div class="tonearm-wrap">
+          <svg viewBox="0 0 200 200">
+            <g class="arm-group" transform="rotate(15 170 30)">
+              <circle cx="170" cy="30" r="12" fill="#444" stroke="#666" stroke-width="1.5"/>
+              <circle cx="170" cy="30" r="6" fill="#555" stroke="#777" stroke-width="1"/>
+              <line x1="170" y1="30" x2="30" y2="30" stroke="#aaa" stroke-width="3.5" stroke-linecap="round"/>
+              <ellipse cx="185" cy="30" rx="8" ry="6" fill="#666" stroke="#555" stroke-width="1"/>
+              <line x1="30" y1="30" x2="18" y2="42" stroke="#999" stroke-width="3" stroke-linecap="round"/>
+              <rect x="13" y="40" width="10" height="8" rx="1.5" fill="#777"/>
+              <line x1="18" y1="48" x2="18" y2="54" stroke="#ddd" stroke-width="1.5" stroke-linecap="round"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+      <div class="project-details">
+        <div class="category">${p.category}</div>
+        <h2>${p.overlayTitle || p.title}</h2>
+        <div class="project-meta">
+          <div>
+            <span class="label">Tools</span>
+            <span class="value">${p.tools.split(', ').join('<br>')}</span>
+          </div>
+          <div>
+            <span class="label">Year</span>
+            <span class="value">${p.year}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="project-body">
+      ${p.content}
+    </div>
+    <div class="project-gallery">
+      ${galleryHTML}
+    </div>
+  `;
+
+  overlay.classList.add('open');
+  overlay.scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+
+  setTimeout(() => {
+    const tt = document.getElementById('turntable');
+    if (tt) {
+      tt.classList.add('playing');
+      const arm = tt.querySelector('.arm-group');
+      if (arm) {
+        const start = 15, end = 0, dur = 1400;
+        const t0 = performance.now();
+        function animArm(now) {
+          const p = Math.min((now - t0) / dur, 1);
+          const ease = p < 0.5 ? 2*p*p : -1+(4-2*p)*p;
+          const angle = start + (end - start) * ease;
+          arm.setAttribute('transform', `rotate(${angle} 170 30)`);
+          if (p < 1) requestAnimationFrame(animArm);
+        }
+        requestAnimationFrame(animArm);
+      }
+    }
+  }, 900);
+}
+
+closeBtn.addEventListener('click', closeProject);
+overlay.addEventListener('click', (e) => {
+  if (e.target === overlay) closeProject();
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && !lightbox.classList.contains('open')) closeProject();
+});
+
+function closeProject() {
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.getElementById('nav-' + page).classList.add('active');
+  window.scrollTo(0, 0);
+}
+/* ── LIGHTBOX ── */
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightboxImg');
+const lightboxClose = lightbox.querySelector('.lightbox-close');
+
+document.addEventListener('click', function(e) {
+  const imgEl = e.target.closest('.project-img');
+  if (!imgEl) return;
+  const img = imgEl.querySelector('img');
+  if (!img) return;
+  e.stopPropagation();
+  lightboxImg.src = img.src;
+  lightbox.classList.add('open');
+});
+
+lightbox.addEventListener('click', () => {
+  lightbox.classList.remove('open');
+});
+lightboxClose.addEventListener('click', (e) => {
+  e.stopPropagation();
+  lightbox.classList.remove('open');
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && lightbox.classList.contains('open')) {
+    lightbox.classList.remove('open');
+  }
+});
+
+
+
+copyOrderBtn.addEventListener('click', () => {
+  const imgs = document.querySelectorAll('.project-body .project-img img');
+  const list = Array.from(imgs).map(i => i.src.split('/').pop()).join('\\n');
+  navigator.clipboard.writeText(list).then(() => {
+    copyOrderBtn.textContent = '✅ Copied!';
+    setTimeout(() => copyOrderBtn.textContent = '📋 Copy Order', 1500);
+  });
+});
+
+function updateOrderOutput() {
+  const imgs = document.querySelectorAll('.project-body .project-img img');
+  const names = Array.from(imgs).map(i => i.src.split('/').pop());
+  orderOutput.innerHTML = '<strong>Current order:</strong><br>' + names.map((n,i) => (i+1)+'. '+n).join('<br>');
+}
+
+document.addEventListener('dragstart', (e) => {
+  if (!rearrangeMode) return;
+  const pi = e.target.closest('.project-img');
+  if (!pi) return;
+  dragEl = pi;
+  pi.style.opacity = '0.4';
+  e.dataTransfer.effectAllowed = 'move';
+});
+
+document.addEventListener('dragend', (e) => {
+  if (dragEl) {
+    dragEl.style.opacity = '';
+    dragEl = null;
+  }
+});
+
+document.addEventListener('dragover', (e) => {
+  if (!rearrangeMode || !dragEl) return;
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  const target = e.target.closest('.project-img');
+  if (target && target !== dragEl && target.parentNode === dragEl.parentNode) {
+    const rect = target.getBoundingClientRect();
+    const midX = rect.left + rect.width / 2;
+    const midY = rect.top + rect.height / 2;
+    // Determine if we should insert before or after
+    const after = (e.clientX > midX) || (e.clientY > midY && Math.abs(e.clientX - midX) < rect.width * 0.3);
+    if (after) {
+      target.parentNode.insertBefore(dragEl, target.nextSibling);
+    } else {
+      target.parentNode.insertBefore(dragEl, target);
+    }
+  }
+});
+
+document.addEventListener('drop', (e) => {
+  if (!rearrangeMode) return;
+  e.preventDefault();
+  if (dragEl) dragEl.style.opacity = '';
+  dragEl = null;
+  updateOrderOutput();
+});
+
+</script>
+
+</body>
+</html>
