@@ -1359,6 +1359,37 @@
     opacity: 0;
   }
 
+  .die-buttons {
+    position: absolute;
+    bottom: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.75rem;
+  }
+  .die-buttons button {
+    width: 42px;
+    height: 42px;
+    border-radius: 8px;
+    border: 1.5px solid #ccc;
+    background: transparent;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #888;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .die-buttons button:hover {
+    border-color: #222;
+    color: #222;
+    background: rgba(0,0,0,0.04);
+  }
+  .die-landing.rolling .die-buttons {
+    opacity: 0;
+    pointer-events: none;
+  }
+
   /* ── P2: FLOATING PORTFOLIO ── */
   .p2-wrap {
     display: none;
@@ -1405,8 +1436,8 @@
     gap: 2rem;
     justify-content: center;
     margin-top: 0.75rem;
+    pointer-events: auto;
   }
-
   .p2-nav a {
     font-family: 'Space Grotesk', sans-serif;
     font-size: 0.8rem;
@@ -1416,6 +1447,7 @@
     text-decoration: none;
     cursor: pointer;
     transition: color 0.3s;
+    pointer-events: auto;
   }
 
   .p2-nav a:hover {
@@ -1434,25 +1466,48 @@
     pointer-events: none;
     transition: opacity 0.5s ease 0.3s;
     z-index: 1;
+    overflow: hidden;
   }
   .p2-about.visible {
     opacity: 1;
     pointer-events: all;
   }
+  .p2-about-scroll {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
   .p2-about-content {
-    max-width: 750px;
+    max-width: 900px;
+    width: 100%;
     padding: 2rem 3rem;
   }
+  .p2-about-back {
+    display: inline-block;
+    margin-bottom: 2.5rem;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #999;
+    cursor: pointer;
+    transition: color 0.3s;
+    text-decoration: none;
+  }
+  .p2-about-back:hover { color: #222; }
+
   .p2-about-hero {
     display: flex;
-    gap: 3rem;
+    gap: 2.5rem;
     align-items: flex-start;
   }
   .p2-about-portrait {
     flex-shrink: 0;
-    width: 260px;
+    width: 220px;
     border-radius: 8px;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.08);
     object-fit: cover;
   }
   .p2-about-text {
@@ -1460,9 +1515,9 @@
   }
   .p2-about-text h1 {
     font-family: 'Instrument Serif', serif;
-    font-size: 3rem;
+    font-size: 2.4rem;
     font-weight: 400;
-    margin: 0 0 1rem;
+    margin: 0 0 0.6rem;
     color: #1a1a1a;
   }
   .p2-about-text h1 em {
@@ -1472,22 +1527,322 @@
   .p2-about-text p {
     font-family: 'Space Grotesk', sans-serif;
     color: #555;
-    line-height: 1.8;
-    font-size: 1.05rem;
-    margin-bottom: 1.25rem;
+    line-height: 1.65;
+    font-size: 0.92rem;
+    margin-bottom: 0.75rem;
   }
-  .p2-about-back {
-    display: inline-block;
-    margin-top: 2rem;
+  .p2-experience {
+    margin-top: 1.75rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #ddd;
+  }
+  .p2-experience h3 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: #1a1a1a;
+    margin: 0 0 1rem;
+  }
+  .p2-exp-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem 2.5rem;
+  }
+  .p2-exp-item {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #e8e4de;
+  }
+  .p2-exp-item:nth-last-child(-n+2) {
+    border-bottom: none;
+  }
+  .p2-exp-role {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #1a1a1a;
+    margin-bottom: 0.15rem;
+  }
+  .p2-exp-company {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.8rem;
+    color: #666;
+  }
+  .p2-exp-date {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.72rem;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.3rem;
+  }
+  .p2-exp-desc {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.82rem;
+    color: #666;
+    line-height: 1.55;
+    margin-top: 0.3rem;
+  }
+
+  .p2-contact {
+    position: absolute;
+    inset: 0;
+    background: #f5f2ed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease 0.3s;
+    z-index: 1;
+  }
+  .p2-contact.visible {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .p2-contact-content {
+    text-align: center;
+  }
+  .p2-contact-content h1 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 3rem;
+    font-weight: 400;
+    color: #1a1a1a;
+    margin-bottom: 1rem;
+  }
+  .p2-contact-content h1 em {
+    font-style: italic;
+    color: #999;
+  }
+  .p2-contact-content > p {
+    font-family: 'Space Grotesk', sans-serif;
+    color: #888;
+    font-size: 1.05rem;
+    margin-bottom: 2.5rem;
+  }
+  .p2-contact-links {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    margin-bottom: 2.5rem;
+  }
+  .p2-contact-links a {
     font-family: 'Space Grotesk', sans-serif;
     font-size: 0.85rem;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: #888;
-    cursor: pointer;
-    transition: color 0.3s;
+    letter-spacing: 0.12em;
+    color: #1a1a1a;
+    text-decoration: none;
+    padding: 0.75rem 1.5rem;
+    border: 1.5px solid #ccc;
+    border-radius: 6px;
+    transition: all 0.3s;
   }
-  .p2-about-back:hover { color: #222; }
+  .p2-contact-links a:hover {
+    border-color: #222;
+    background: rgba(0,0,0,0.04);
+  }
+
+  /* ── P2 PROJECT DETAIL (shared-element zoom-in) ── */
+  .p2-project {
+    position: absolute;
+    inset: 0;
+    background: #f5f2ed;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 2;
+    overflow: hidden;
+    transition: opacity 0.4s ease;
+  }
+  .p2-project.visible {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .p2-project-scroll {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .p2-project-content {
+    max-width: 900px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 2rem 3rem 4rem;
+  }
+  /* Hero image at top of project page */
+  .p2-project-hero {
+    width: 350px;
+    height: 350px;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .p2-project-hero.visible {
+    opacity: 1;
+  }
+  .p2-project-hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .p2-project-header {
+    margin-bottom: 2rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .p2-project-header.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .p2-project-header h1 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 2.8rem;
+    font-weight: 400;
+    color: #1a1a1a;
+    margin: 0 0 0.5rem;
+    line-height: 1.15;
+  }
+  .p2-project-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.5rem;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.82rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .p2-project-back-row {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+  .p2-project-back-row.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .p2-project-body {
+    font-family: 'Space Grotesk', sans-serif;
+    color: #555;
+    line-height: 1.7;
+    font-size: 0.92rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .p2-project-body.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .p2-project-body p {
+    margin-bottom: 1rem;
+  }
+  .p2-project-body h3 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: #1a1a1a;
+    margin: 2rem 0 0.75rem;
+  }
+  .p2-project-body a {
+    color: #1a1a1a !important;
+    text-decoration: underline;
+  }
+  .p2-project-body a:hover {
+    color: #555 !important;
+  }
+
+  /* Flying transition image (absolutely positioned in p2-wrap) */
+  .p2-fly-img {
+    position: absolute;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    z-index: 3;
+    pointer-events: none;
+    will-change: transform;
+    transform-origin: 0 0;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.15, 1),
+                border-radius 0.6s cubic-bezier(0.4, 0, 0.15, 1),
+                box-shadow 0.6s cubic-bezier(0.4, 0, 0.15, 1),
+                opacity 0.3s ease;
+  }
+  .p2-fly-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Fade-out class for scene children during project open */
+  .p2-scene-child-fade {
+    transition: opacity 0.45s ease, filter 0.45s ease !important;
+    opacity: 0 !important;
+    filter: blur(8px) !important;
+    pointer-events: none !important;
+  }
+
+  /* Image grids inside P2 project */
+  .p2-project .project-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 6px;
+  }
+  .p2-project .project-img {
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 0;
+  }
+  .p2-project .project-img-video video {
+    width: 100%;
+    border-radius: 6px;
+  }
+  .p2-project .project-video {
+    width: 100%;
+    border-radius: 6px;
+  }
+  /* Light-theme overrides for lyrics / song player */
+  .p2-project .verse-label {
+    color: #888;
+  }
+  .p2-project .lyrics-container {
+    background: rgba(0,0,0,0.03);
+    border: 1px solid #ddd;
+    color: #555;
+    border-radius: 8px;
+  }
+  .p2-project .song-player {
+    background: rgba(0,0,0,0.03);
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    color: #555;
+  }
+  .p2-project .song-player .sp-title {
+    color: #1a1a1a;
+  }
+  .p2-project .song-player .sp-artist {
+    color: #888;
+  }
+  /* Image grid spacing */
+  .p2-project .img-grid-2,
+  .p2-project .img-grid-3,
+  .p2-project .img-grid-4,
+  .p2-project .img-grid-5,
+  .p2-project .img-grid-4x2,
+  .p2-project .img-grid-tight,
+  .p2-project .img-compose,
+  .p2-project .img-logos-row {
+    margin-bottom: 1rem;
+  }
+  .p2-project .img-match-height img {
+    object-fit: cover;
+  }
 
   /* P2 scene zoom-out */
   .p2-scene {
@@ -1608,23 +1963,97 @@
     <span style="font-family:'Instrument Serif',serif;font-size:2.4rem;font-weight:400;letter-spacing:-0.02em;color:#222;">Michael Loya <span style="font-style:italic;color:#999;">Studio</span></span>
   </div>
   <canvas id="dieCanvas" style="cursor:pointer;"></canvas>
-  <!-- hint removed -->
+  <div class="die-buttons">
+    <button onclick="dieGoTo(1)">1</button>
+    <button onclick="dieGoTo(2)">2</button>
+    <button onclick="dieGoTo(3)">3</button>
+    <button onclick="dieGoTo(4)">4</button>
+    <button onclick="dieGoTo(5)">5</button>
+    <button onclick="dieGoTo(6)">6</button>
+  </div>
 </div>
 
 <!-- P2: FLOATING PORTFOLIO -->
 <div class="p2-wrap" id="p2Wrap">
   <!-- P2 About layer (behind the scene) -->
   <div class="p2-about" id="p2About">
-    <div class="p2-about-content">
-      <div class="p2-about-hero">
-        <img class="p2-about-portrait" src="mike-portrait.jpg" alt="Michael Loya">
-        <div class="p2-about-text">
-          <h1>About <em>me</em></h1>
-          <p>I'm a designer who works at the intersection of music, technology, and visual storytelling. Currently studying at Syracuse University, I split my time between design direction for University Union, personal creative projects, and working with AI and emerging tech — staying on top of new tools as they drop and always integrating them into my process.</p>
-          <p>My work ranges from brand identity and editorial design to AR experiences, UI/UX, and music production. I adapt quickly, experiment across mediums, and believe the best creative work comes from genuine curiosity.</p>
+    <div class="p2-about-scroll">
+      <div class="p2-about-content">
+        <a class="p2-about-back" onclick="p2CloseAbout()">← Back</a>
+        <div class="p2-about-hero">
+          <img class="p2-about-portrait" src="mike-portrait.jpg" alt="Michael Loya">
+          <div class="p2-about-text">
+            <h1>About <em>me</em></h1>
+            <p>I'm a designer who works at the intersection of music, technology, and visual storytelling. Currently studying at Syracuse University, I split my time between design direction for University Union, personal creative projects, and working with AI and emerging tech — staying on top of new tools as they drop and always integrating them into my process.</p>
+            <p>My work ranges from brand identity and editorial design to AR experiences, UI/UX, and music production. I adapt quickly, experiment across mediums, and believe the best creative work comes from genuine curiosity.</p>
+          </div>
+        </div>
+
+        <div class="p2-experience">
+          <h3>Experience</h3>
+          <div class="p2-exp-grid">
+            <div class="p2-exp-item">
+              <div class="p2-exp-role">Graphic Design & Video Intern</div>
+              <div class="p2-exp-company">BODYARMOR Sports Nutrition</div>
+              <div class="p2-exp-date">Jun — Aug 2025</div>
+              <div class="p2-exp-desc">Adapted POS and promotional designs across formats. Produced original creative assets for campaigns. Led AI capstone project.</div>
+            </div>
+            <div class="p2-exp-item">
+              <div class="p2-exp-role">Design Co-Director</div>
+              <div class="p2-exp-company">University Union</div>
+              <div class="p2-exp-date">Dec 2024 — Present</div>
+              <div class="p2-exp-desc">Lead design board for events, social media, and marketing. Oversee visual direction for major campus concerts and festivals.</div>
+            </div>
+            <div class="p2-exp-item">
+              <div class="p2-exp-role">Head of Design</div>
+              <div class="p2-exp-company">20 Watts Magazine</div>
+              <div class="p2-exp-date">Sep — Dec 2024</div>
+              <div class="p2-exp-desc">Designed event graphics and promotional materials. Created onboarding tutorials and mentored design team.</div>
+            </div>
+            <div class="p2-exp-item">
+              <div class="p2-exp-role">Head of Design</div>
+              <div class="p2-exp-company">Mixtape Magazine</div>
+              <div class="p2-exp-date">Sep 2022 — Sep 2024</div>
+              <div class="p2-exp-desc">Led design for print and digital materials. Collaborated with editorial on visual concepts from conception to finish.</div>
+            </div>
+          </div>
         </div>
       </div>
-      <a class="p2-about-back" onclick="p2CloseAbout()">← Back</a>
+    </div>
+  </div>
+  <!-- P2 Project detail layer -->
+  <div class="p2-project" id="p2Project">
+    <div class="p2-project-scroll">
+      <div class="p2-project-content">
+        <div class="p2-project-back-row" id="p2ProjectBackRow">
+          <a class="p2-about-back" onclick="p2CloseProject()">← Back</a>
+        </div>
+        <div class="p2-project-hero" id="p2ProjectHero">
+          <img id="p2ProjectHeroImg" src="" alt="">
+        </div>
+        <div class="p2-project-header" id="p2ProjectHeader">
+          <h1 id="p2ProjectTitle"></h1>
+          <div class="p2-project-meta">
+            <span id="p2ProjectCategory"></span>
+            <span id="p2ProjectTools"></span>
+            <span id="p2ProjectYear"></span>
+          </div>
+        </div>
+        <div class="p2-project-body" id="p2ProjectBody"></div>
+      </div>
+    </div>
+  </div>
+  <!-- P2 Contact layer (behind the scene) -->
+  <div class="p2-contact" id="p2Contact">
+    <div class="p2-contact-content">
+      <h1>Let's <em>connect</em></h1>
+      <p>Always open to new projects, collaborations, and conversations.</p>
+      <div class="p2-contact-links">
+        <a href="https://instagram.com/michaelloyastudio" target="_blank">Instagram</a>
+        <a href="https://www.linkedin.com/in/michael-loya/" target="_blank">LinkedIn</a>
+        <a href="mailto:michaelloyadesign@gmail.com">Email</a>
+      </div>
+      <a class="p2-about-back" onclick="p2CloseContact()">← Back</a>
     </div>
   </div>
   <!-- Floating scene (on top) -->
@@ -1632,9 +2061,8 @@
     <div class="p2-title">
       <img src="logo.svg" style="height:32px;width:auto;filter:brightness(0);margin-right:0.4rem;vertical-align:middle;">Michael Loya <span>Studio</span>
       <div class="p2-nav">
-        <a onclick="exitP2('collection')">The Collection</a>
         <a onclick="p2ShowAbout()">About</a>
-        <a onclick="exitP2('contact')">Contact</a>
+        <a onclick="p2ShowContact()">Contact</a>
       </div>
     </div>
   </div>
@@ -2364,7 +2792,15 @@ overlay.addEventListener('click', (e) => {
 });
 
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && !lightbox.classList.contains('open')) closeProject();
+  if (e.key === 'Escape') {
+    // P2 overlays first
+    if (_p2ProjectOpen) { p2CloseProject(); return; }
+    if (document.getElementById('p2About').classList.contains('visible')) { p2CloseAbout(); return; }
+    if (document.getElementById('p2Contact').classList.contains('visible')) { p2CloseContact(); return; }
+    if (document.getElementById('p2ComingSoon').classList.contains('active')) { document.getElementById('p2ComingSoon').classList.remove('active'); return; }
+    // P1 overlays
+    if (!lightbox.classList.contains('open')) closeProject();
+  }
 });
 
 function closeProject() {
@@ -2397,6 +2833,197 @@ function p2ShowAbout() {
 function p2CloseAbout() {
   document.getElementById('p2Scene').classList.remove('zoomed-out');
   document.getElementById('p2About').classList.remove('visible');
+}
+
+function p2ShowContact() {
+  document.getElementById('p2Scene').classList.add('zoomed-out');
+  document.getElementById('p2Contact').classList.add('visible');
+}
+
+function p2CloseContact() {
+  document.getElementById('p2Scene').classList.remove('zoomed-out');
+  document.getElementById('p2Contact').classList.remove('visible');
+}
+
+// ── P2 project shared-element transition state ──
+var _p2ProjectOpen = false;
+var _p2SourceEl = null;     // the clicked p2-item element
+var _p2FlyImg = null;       // the flying clone
+var _p2SourceRect = null;   // original bounding rect
+
+function p2ShowProject(index, el) {
+  const p = projects[index];
+  if (!p || _p2ProjectOpen) return;
+  _p2ProjectOpen = true;
+  _p2SourceEl = el;
+
+  const wrap = document.getElementById('p2Wrap');
+  const scene = document.getElementById('p2Scene');
+  const overlay = document.getElementById('p2Project');
+  const scrollEl = overlay.querySelector('.p2-project-scroll');
+
+  // Populate content (hidden initially)
+  document.getElementById('p2ProjectTitle').textContent = p.title;
+  document.getElementById('p2ProjectCategory').textContent = p.category;
+  document.getElementById('p2ProjectTools').textContent = p.tools;
+  document.getElementById('p2ProjectYear').textContent = p.year;
+  document.getElementById('p2ProjectBody').innerHTML = p.content;
+  document.getElementById('p2ProjectHeroImg').src = p.cover;
+  document.getElementById('p2ProjectHeroImg').alt = p.title;
+  scrollEl.scrollTop = 0;
+
+  // Reset content visibility
+  document.getElementById('p2ProjectHero').classList.remove('visible');
+  document.getElementById('p2ProjectHeader').classList.remove('visible');
+  document.getElementById('p2ProjectBody').classList.remove('visible');
+  document.getElementById('p2ProjectBackRow').classList.remove('visible');
+
+  // 1. Capture source rect
+  const wrapRect = wrap.getBoundingClientRect();
+  const srcRect = el.getBoundingClientRect();
+  _p2SourceRect = {
+    top: srcRect.top - wrapRect.top,
+    left: srcRect.left - wrapRect.left,
+    width: srcRect.width,
+    height: srcRect.height
+  };
+
+  // 2. Compute hero target (350x350 square)
+  const heroSize = 350;
+  const pad = 48;
+  const contentMaxW = 900;
+  const contentLeft = (wrap.clientWidth - Math.min(contentMaxW, wrap.clientWidth - pad * 2)) / 2;
+  const heroLeft = contentLeft + pad;
+  const heroTop = pad + 50;
+
+  // 3. Create flying image clone at source position
+  const fly = document.createElement('div');
+  fly.className = 'p2-fly-img';
+  fly.innerHTML = `<img src="${p.cover}" alt="${p.title}">`;
+  fly.style.top = _p2SourceRect.top + 'px';
+  fly.style.left = _p2SourceRect.left + 'px';
+  fly.style.width = _p2SourceRect.width + 'px';
+  fly.style.height = _p2SourceRect.height + 'px';
+  wrap.appendChild(fly);
+  _p2FlyImg = fly;
+
+  // 4. Hide original and fade others
+  el.style.opacity = '0';
+  el.style.pointerEvents = 'none';
+  Array.from(scene.children).forEach(child => {
+    if (child !== el) child.classList.add('p2-scene-child-fade');
+  });
+
+  // 5. Show overlay
+  overlay.classList.add('visible');
+
+  // 6. Animate with transform (GPU-accelerated)
+  const dx = heroLeft - _p2SourceRect.left;
+  const dy = heroTop - _p2SourceRect.top;
+  const sx = heroSize / _p2SourceRect.width;
+  const sy = heroSize / _p2SourceRect.height;
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      fly.style.transform = `translate3d(${dx}px, ${dy}px, 0) scale(${sx}, ${sy})`;
+      fly.style.borderRadius = '10px';
+      fly.style.boxShadow = '0 16px 60px rgba(0,0,0,0.10)';
+
+      // After flight, reveal content
+      setTimeout(() => {
+        document.getElementById('p2ProjectHero').classList.add('visible');
+        fly.style.opacity = '0';
+        setTimeout(() => {
+          document.getElementById('p2ProjectBackRow').classList.add('visible');
+        }, 50);
+        setTimeout(() => {
+          document.getElementById('p2ProjectHeader').classList.add('visible');
+        }, 120);
+        setTimeout(() => {
+          document.getElementById('p2ProjectBody').classList.add('visible');
+        }, 220);
+        setTimeout(() => {
+          if (_p2FlyImg && _p2FlyImg.parentNode) _p2FlyImg.parentNode.removeChild(_p2FlyImg);
+          _p2FlyImg = null;
+        }, 350);
+      }, 620);
+    });
+  });
+}
+
+function p2CloseProject() {
+  if (!_p2ProjectOpen) return;
+
+  const wrap = document.getElementById('p2Wrap');
+  const scene = document.getElementById('p2Scene');
+  const overlay = document.getElementById('p2Project');
+  const hero = document.getElementById('p2ProjectHero');
+  const heroImg = document.getElementById('p2ProjectHeroImg');
+
+  // 1. Fade out text content
+  document.getElementById('p2ProjectBackRow').classList.remove('visible');
+  document.getElementById('p2ProjectHeader').classList.remove('visible');
+  document.getElementById('p2ProjectBody').classList.remove('visible');
+  hero.classList.remove('visible');
+
+  // 2. Create fly at source position, transformed to hero position
+  const heroSize = 350;
+  const pad = 48;
+  const contentMaxW = 900;
+  const contentLeft = (wrap.clientWidth - Math.min(contentMaxW, wrap.clientWidth - pad * 2)) / 2;
+  const heroLeft = contentLeft + pad;
+  const heroTop = pad + 50;
+
+  const fly = document.createElement('div');
+  fly.className = 'p2-fly-img';
+  fly.innerHTML = `<img src="${heroImg.src}" alt="">`;
+
+  if (_p2SourceRect) {
+    const dx = heroLeft - _p2SourceRect.left;
+    const dy = heroTop - _p2SourceRect.top;
+    const sx = heroSize / _p2SourceRect.width;
+    const sy = heroSize / _p2SourceRect.height;
+    fly.style.top = _p2SourceRect.top + 'px';
+    fly.style.left = _p2SourceRect.left + 'px';
+    fly.style.width = _p2SourceRect.width + 'px';
+    fly.style.height = _p2SourceRect.height + 'px';
+    fly.style.transform = `translate3d(${dx}px, ${dy}px, 0) scale(${sx}, ${sy})`;
+  }
+  fly.style.borderRadius = '10px';
+  wrap.appendChild(fly);
+  _p2FlyImg = fly;
+
+  // 3. Hide overlay
+  overlay.classList.remove('visible');
+
+  // 4. Animate back to source (GPU-accelerated transform)
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      fly.style.transform = 'translate3d(0, 0, 0) scale(1)';
+      fly.style.borderRadius = '8px';
+      fly.style.boxShadow = '0 8px 30px rgba(0,0,0,0.12)';
+
+      // Fade scene children back in
+      Array.from(scene.children).forEach(child => {
+        child.classList.remove('p2-scene-child-fade');
+      });
+
+      setTimeout(() => {
+        fly.style.opacity = '0';
+        if (_p2SourceEl) {
+          _p2SourceEl.style.opacity = '';
+          _p2SourceEl.style.pointerEvents = '';
+        }
+        setTimeout(() => {
+          if (fly.parentNode) fly.parentNode.removeChild(fly);
+          _p2FlyImg = null;
+          _p2SourceEl = null;
+          _p2SourceRect = null;
+          _p2ProjectOpen = false;
+        }, 300);
+      }, 580);
+    });
+  });
 }
 /* ── LIGHTBOX ── */
 const lightbox = document.getElementById('lightbox');
@@ -2680,6 +3307,43 @@ function initSongPlayer() {
     document.querySelector('footer').style.display = '';
   };
 
+  window.dieGoTo = function(face) {
+    if (rolling) return;
+    if (face !== 1) {
+      document.querySelector('header').style.display = 'none';
+      document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+      document.querySelector('footer').style.display = 'none';
+    }
+    // Snap die to target face
+    const endRot = faceRotations[face];
+    dieMesh.rotation.x = endRot.x;
+    dieMesh.rotation.y = endRot.y;
+    curRX = endRot.x; curRY = endRot.y;
+    targetRX = endRot.x; targetRY = endRot.y;
+    rolling = true;
+
+    setTimeout(() => {
+      if (face !== 1) {
+        landing.classList.add('fade-white');
+        setTimeout(() => {
+          document.getElementById('p2Wrap').classList.add('active');
+          initP2();
+          setTimeout(() => {
+            landing.classList.add('hidden');
+            setTimeout(() => { landing.style.display = 'none'; }, 800);
+          }, 300);
+        }, 700);
+      } else {
+        document.querySelector('header').style.display = '';
+        document.querySelectorAll('.page').forEach(p => p.style.display = '');
+        document.querySelector('footer').style.display = '';
+        showPage('collection');
+        landing.classList.add('hidden');
+        setTimeout(() => { landing.style.display = 'none'; }, 800);
+      }
+    }, 400);
+  };
+
   function animate() {
     requestAnimationFrame(animate);
     if (!rolling) {
@@ -2787,7 +3451,7 @@ function initP2() {
     el.style.width = pos.s + 'px';
     el.innerHTML = `<img src="${p.cover}" alt="${p.title}">`;
     el.addEventListener('click', () => {
-      document.getElementById('p2ComingSoon').classList.add('active');
+      p2ShowProject(i, el);
     });
     el.addEventListener('mouseenter', () => { el.style.filter = 'blur(0px)'; });
     el.addEventListener('mouseleave', () => { el.style.filter = `blur(${el._baseBlur}px)`; });
@@ -2820,21 +3484,23 @@ function initP2() {
   const dieFloat = document.createElement('div');
   dieFloat.className = 'p2-die-float';
   dieFloat.innerHTML = '<div class="die-dot"></div><div class="die-dot"></div>';
-  dieFloat.style.cssText = 'position:absolute;width:50px;height:50px;background:#e8e4de;border-radius:6px;display:grid;grid-template-columns:1fr;padding:10px;cursor:pointer;z-index:20;';
+  dieFloat.style.cssText = 'position:absolute;width:50px;height:50px;background:#e8e4de;border-radius:6px;display:grid;grid-template-columns:1fr;padding:10px;cursor:pointer;z-index:20;filter:blur(1.5px);transition:filter 0.5s ease, box-shadow 0.3s;';
   dieFloat.querySelectorAll('.die-dot').forEach((d, i) => {
     d.style.cssText = 'width:10px;height:10px;background:#1a1a1a;border-radius:50%;position:static;';
     d.style.justifySelf = i === 0 ? 'end' : 'start';
     d.style.alignSelf = i === 0 ? 'start' : 'end';
   });
+  let dieHovered = false;
   dieFloat.addEventListener('click', () => showDieLanding());
-  dieFloat.addEventListener('mouseenter', () => { dieFloat.style.filter = 'blur(0px)'; });
-  dieFloat.addEventListener('mouseleave', () => { dieFloat.style.filter = 'blur(1.5px)'; });
+  dieFloat.addEventListener('mouseenter', () => { dieHovered = true; dieFloat.style.filter = 'blur(0px)'; dieFloat.style.boxShadow = '0 4px 16px rgba(0,0,0,0.08)'; });
+  dieFloat.addEventListener('mouseleave', () => { dieHovered = false; dieFloat.style.filter = 'blur(1.5px)'; dieFloat.style.boxShadow = ''; });
   scene.appendChild(dieFloat);
   const dieRestX = w * 0.88;
   const dieRestY = h * 0.25;
   const dieRestZ = -40;
 
   const titleEl = scene.querySelector('.p2-title');
+  titleEl.style.willChange = 'transform, opacity';
   titleEl.style.opacity = '0';
 
   const startTime = performance.now();
@@ -2846,16 +3512,14 @@ function initP2() {
   function tick(now) {
     const elapsed = now - startTime;
 
-    // Float in title + bob
+    // Float in title + bob (blended)
     const titleT = Math.min(Math.max((elapsed - 200) / 1200, 0), 1);
     const titleEase = easeOutQuint(titleT);
     titleEl.style.opacity = titleEase;
-    const titleBob = Math.sin(elapsed * 0.001 * 0.25) * 8;
-    if (titleT >= 1) {
-      titleEl.style.transform = `translate(-50%, calc(-50% + ${titleBob}px))`;
-    } else {
-      titleEl.style.transform = `translate(-50%, ${-50 + (1 - titleEase) * 20}%)`;
-    }
+    const titleBobBlend = Math.min(Math.max((titleT - 0.8) / 0.2, 0), 1); // fade bob in over last 20%
+    const titleBob = Math.round(Math.sin(elapsed * 0.0004) * 6 * titleBobBlend * 100) / 100;
+    const titleOffset = -50 + (1 - titleEase) * 20;
+    titleEl.style.transform = `translate3d(-50%, calc(${titleOffset}% + ${titleBob}px), 0)`;
 
     p2Items.forEach((item, i) => {
       const delay = i * stagger;
@@ -2868,21 +3532,20 @@ function initP2() {
       const bobY = Math.sin(elapsed * 0.001 * item.bobSpeed + item.bobPhase) * item.bobAmp * bobBlend;
 
       const startY = window.innerHeight + 200 + i * 50;
-      const curY = startY + (item.restY - startY) * ease + bobY;
-      item.el.style.transform = `translate(${item.restX}px, ${curY}px) scale(${item.scaleAmt})`;
+      const curY = Math.round((startY + (item.restY - startY) * ease + bobY) * 100) / 100;
+      item.el.style.transform = `translate3d(${item.restX}px, ${curY}px, 0) scale(${item.scaleAmt})`;
     });
 
     // Float the die
     const dieT = Math.min(Math.max((elapsed - projects.length * stagger) / floatDur, 0), 1);
     const dieEase = easeOutQuint(dieT);
-    const dieBob = Math.sin(elapsed * 0.001 * 0.35 + 1.5) * 10;
-    if (dieT < 1) {
-      const startDY = window.innerHeight + 300;
-      dieFloat.style.transform = `translate(${dieRestX}px, ${startDY + (dieRestY - startDY) * dieEase}px) scale(0.85)`;
-    } else {
-      dieFloat.style.transform = `translate(${dieRestX}px, ${dieRestY + dieBob}px) scale(0.85)`;
-    }
-    dieFloat.style.filter = `blur(1.5px)`;
+    const dieBobBlend = Math.min(Math.max((dieT - 0.8) / 0.2, 0), 1);
+    const dieBob = Math.round(Math.sin(elapsed * 0.0004 + 1.5) * 8 * dieBobBlend * 100) / 100;
+    const startDY = window.innerHeight + 300;
+    const dieBaseY = startDY + (dieRestY - startDY) * dieEase;
+    const dieCurY = Math.round((dieBaseY + dieBob) * 100) / 100;
+    dieFloat.style.transform = `translate3d(${dieRestX}px, ${dieCurY}px, 0) scale(0.85)`;
+    // filter handled by CSS transition, not per-frame
 
     requestAnimationFrame(tick);
   }
