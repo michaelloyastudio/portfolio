@@ -1330,28 +1330,11 @@ function p2ShowProject(index, el) {
 function p2CloseProject() {
   if (!_p2ProjectOpen) return;
 
-  const overlay = document.getElementById('p2Project');
-  const scene = document.getElementById('p2Scene');
+  // Identical to about/contact — just remove classes, let CSS handle it
+  document.getElementById('p2Scene').classList.remove('zoomed-out');
+  document.getElementById('p2Project').classList.remove('visible');
 
-  // Lock transforms in place so elements only fade (no drop)
-  ['p2ProjectHero','p2ProjectBackRow','p2ProjectHeader','p2ProjectBody'].forEach(id => {
-    const el = document.getElementById(id);
-    el.style.transform = 'translateY(0)';
-    el.style.transition = 'opacity 0.4s ease';
-    el.classList.remove('visible');
-  });
-  overlay.classList.remove('visible');
-  scene.classList.remove('zoomed-out');
-
-  // Reset state + clear inline overrides after transitions complete
-  setTimeout(() => {
-    ['p2ProjectHero','p2ProjectBackRow','p2ProjectHeader','p2ProjectBody'].forEach(id => {
-      const el = document.getElementById(id);
-      el.style.transform = '';
-      el.style.transition = '';
-    });
-    _p2ProjectOpen = false;
-  }, 900);
+  setTimeout(() => { _p2ProjectOpen = false; }, 900);
 }
 
 function p2WireProjectLightbox() {
