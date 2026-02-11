@@ -1304,8 +1304,8 @@ a, button, [onclick], .p5-project-card, .p5-nav-logo, .p5-nav-die,
   box-shadow: var(--shadow);
 }
 
-/* ── STAMPS (click to leave marks) ── */
-.p5-stamp-mark {
+/* (stamps removed) */
+.p5-stamp-mark-unused {
   position: fixed;
   pointer-events: none;
   z-index: 9990;
@@ -2282,25 +2282,6 @@ function p5ToggleSource() {
 }
 
 /* ── CLICK-TO-STAMP ── */
-const stampWords = ['RAW', 'BOLD', 'REAL', '★', '◆', 'YES', 'WOW', '!!', 'OK', '→'];
-let stampCount = 0;
-document.addEventListener('dblclick', (e) => {
-  if (e.target.closest('.p5-source-overlay') || e.target.closest('.p5-lightbox') || e.target.closest('a') || e.target.closest('button') || e.target.closest('.p5-project-card')) return;
-  stampCount++;
-  if (stampCount > 30) return; // limit stamps
-  const stamp = document.createElement('div');
-  stamp.className = 'p5-stamp-mark';
-  stamp.textContent = stampWords[Math.floor(Math.random() * stampWords.length)];
-  stamp.style.left = (e.clientX - 20) + 'px';
-  stamp.style.top = (e.clientY - 15) + 'px';
-  stamp.style.color = p5Colors[Math.floor(Math.random() * p5Colors.length)];
-  stamp.style.fontSize = (1 + Math.random() * 1.5) + 'rem';
-  stamp.style.transform = `rotate(${-15 + Math.random() * 30}deg)`;
-  document.body.appendChild(stamp);
-  setTimeout(() => stamp.style.opacity = '0.3', 2000);
-  setTimeout(() => stamp.remove(), 8000);
-});
-
 /* ── CLOCK ── */
 (function tickClock() {
   const el = document.getElementById('p5Clock');
