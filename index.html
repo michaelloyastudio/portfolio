@@ -126,10 +126,16 @@
     cursor: pointer;
     transition: all 0.2s ease;
   }
-  .die-buttons button:hover {
+  .die-buttons button:hover:not(.disabled) {
     border-color: #222;
     color: #222;
     background: rgba(0,0,0,0.04);
+  }
+  .die-buttons button.disabled {
+    color: #ddd;
+    border-color: #e8e8e8;
+    cursor: default;
+    pointer-events: none;
   }
   .die-landing.rolling .die-buttons {
     opacity: 0;
@@ -162,9 +168,9 @@
     <button onclick="dieGoTo(1)">1</button>
     <button onclick="dieGoTo(2)">2</button>
     <button onclick="dieGoTo(3)">3</button>
-    <button onclick="dieGoTo(4)">4</button>
-    <button onclick="dieGoTo(5)">5</button>
-    <button onclick="dieGoTo(6)">6</button>
+    <button class="disabled" disabled>4</button>
+    <button class="disabled" disabled>5</button>
+    <button class="disabled" disabled>6</button>
   </div>
 </div>
 
@@ -435,7 +441,7 @@ function doP5Transition(cb) {
     landing.classList.add('rolling');
     dieButtons.classList.remove('visible');
 
-    const targetFace = Math.floor(Math.random() * 6) + 1;
+    const targetFace = Math.floor(Math.random() * 3) + 1; /* only 1-3 (4-6 coming soon) */
     const endRot = faceRotations[targetFace];
     const spinsX = (Math.floor(Math.random() * 2) + 3) * Math.PI * 2;
     const spinsY = (Math.floor(Math.random() * 3) + 4) * Math.PI * 2;
