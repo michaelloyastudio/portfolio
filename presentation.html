@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brand Ecosystem — Michael Loya</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: #0a0a0a;
+    color: #f0ece4;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .slide {
+    width: 10in;
+    height: 7.5in;
+    margin: 0 auto;
+    padding: 0.8in 1in;
+    background: #0a0a0a;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    page-break-after: always;
+  }
+  .slide:last-child { page-break-after: auto; }
+
+  /* Subtle corner accent */
+  .slide::before {
+    content: '';
+    position: absolute;
+    top: 0.5in;
+    left: 0.5in;
+    width: 40px;
+    height: 40px;
+    border-top: 2px solid #e8dcc8;
+    border-left: 2px solid #e8dcc8;
+    opacity: 0.3;
+  }
+
+  .slide-number {
+    position: absolute;
+    bottom: 0.5in;
+    right: 0.6in;
+    font-size: 0.65rem;
+    color: #8a8580;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .slide-footer {
+    position: absolute;
+    bottom: 0.5in;
+    left: 0.6in;
+    font-size: 0.6rem;
+    color: #555;
+    letter-spacing: 0.08em;
+  }
+
+  /* Title slide */
+  .slide-title {
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+  }
+  .slide-title h1 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 3.2rem;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.3rem;
+  }
+  .slide-title h1 em {
+    font-style: italic;
+    color: #8a8580;
+  }
+  .slide-title .subtitle {
+    font-size: 0.85rem;
+    color: #8a8580;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+  }
+  .slide-title .course {
+    font-size: 0.7rem;
+    color: #555;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .slide-title .logo-mark {
+    margin-bottom: 1.5rem;
+  }
+  .slide-title .logo-mark img {
+    height: 36px;
+    filter: brightness(0) invert(0.94);
+  }
+
+  /* Section slides */
+  .section-label {
+    font-size: 0.65rem;
+    color: #e8dcc8;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+    opacity: 0.7;
+  }
+  h2 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 2.4rem;
+    font-weight: 400;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+  }
+  h2 em { font-style: italic; color: #8a8580; }
+
+  h3 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    margin-bottom: 0.6rem;
+    color: #e8dcc8;
+  }
+
+  p, li {
+    font-size: 0.88rem;
+    line-height: 1.7;
+    color: #bbb;
+    max-width: 7in;
+  }
+
+  .vision-statement {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.8rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #f0ece4;
+    max-width: 7in;
+    margin: 1rem 0;
+    border-left: 3px solid #e8dcc8;
+    padding-left: 1.2rem;
+  }
+
+  .vision-sub {
+    font-size: 0.82rem;
+    color: #8a8580;
+    margin-top: 1rem;
+    line-height: 1.6;
+  }
+
+  /* Two column layout */
+  .two-col {
+    display: flex;
+    gap: 1.5in;
+    align-items: flex-start;
+    margin-top: 0.5rem;
+  }
+  .two-col .col { flex: 1; }
+
+  /* Item list */
+  .item-list {
+    list-style: none;
+    margin-top: 0.5rem;
+  }
+  .item-list li {
+    padding: 0.4rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    font-size: 0.82rem;
+  }
+  .item-list li:last-child { border-bottom: none; }
+  .item-list .label {
+    font-size: 0.6rem;
+    color: #8a8580;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    display: block;
+    margin-bottom: 0.1rem;
+  }
+  .item-list .value {
+    color: #f0ece4;
+  }
+
+  /* Highlight box */
+  .highlight-box {
+    background: rgba(232,220,200,0.05);
+    border: 1px solid rgba(232,220,200,0.12);
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+    margin: 0.8rem 0;
+  }
+
+  /* Screenshot placeholder */
+  .screenshot {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+    color: #555;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .accent { color: #e8dcc8; }
+  .muted { color: #8a8580; }
+
+  /* Divider */
+  .divider {
+    width: 60px;
+    height: 2px;
+    background: #e8dcc8;
+    margin: 1rem 0;
+    opacity: 0.4;
+  }
+
+  /* Grid for stationery items */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 0.8rem;
+  }
+  .stat-item {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+  }
+  .stat-item h4 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: #f0ece4;
+    margin-bottom: 0.3rem;
+  }
+  .stat-item p {
+    font-size: 0.78rem;
+    color: #8a8580;
+    line-height: 1.5;
+  }
+
+  @media print {
+    body { background: #0a0a0a; }
+    .slide {
+      margin: 0;
+      page-break-after: always;
+      page-break-inside: avoid;
+    }
+  }
+
+  @page {
+    size: 10in 7.5in landscape;
+    margin: 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ SLIDE 1: TITLE ═══ -->
+<div class="slide slide-title">
+  <div style="display:flex;align-items:center;gap:0.4rem;justify-content:center;">
+    <img src="logo.svg" style="height:32px;filter:brightness(0) invert(0.93) sepia(0.08);" alt="ML">
+    <span style="font-family:'Instrument Serif',serif;font-size:3.2rem;font-weight:400;letter-spacing:-0.02em;">Michael Loya <em style="font-style:italic;color:#8a8580;">Studio</em></span>
+  </div>
+  <div class="subtitle" style="margin-top:0.5rem;">Brand Ecosystem</div>
+  <div class="course">VIS 487 Capstone — Spring 2026 — Syracuse University</div>
+</div>
+
+<!-- ═══ SLIDE 2: VISION STATEMENT ═══ -->
+<div class="slide">
+  <div class="section-label">01 — Vision Statement</div>
+  <h2>The <em>Vision</em></h2>
+  <div class="divider"></div>
+  <div class="vision-statement">
+    The Redefinition of Clean Composition.
+  </div>
+  <div class="vision-sub">
+    <strong class="accent">The who:</strong> A designer working at the intersection of music, technology, and visual storytelling.<br>
+    <strong class="accent">The what:</strong> Experiences that feel intentional, crafted, and forward-thinking. Design that adapts across mediums without losing its identity.<br>
+    <strong class="accent">The why:</strong> Every brand needs someone who can move between tools, technologies, and creative challenges on day one. I'm that person.
+  </div>
+  <div class="slide-footer">Michael Loya Studio</div>
+  <div class="slide-number">02</div>
+</div>
+
+<!-- ═══ SLIDE 3: LOGO ═══ -->
+<div class="slide">
+  <div class="section-label">02 — Logo</div>
+  <h2>The <em>Brand</em></h2>
+  <div class="divider"></div>
+  <div class="two-col">
+    <div class="col">
+      <p>The ML monogram is built from a continuous stroke, reflecting a process-driven, connected approach to design. It works across dark and light contexts and scales from favicon to print.</p>
+      <ul class="item-list" style="margin-top:1rem;">
+        <li><span class="label">Primary Mark</span><span class="value">ML Monogram (stroke)</span></li>
+        <li><span class="label">Wordmark</span><span class="value" style="font-family:'Instrument Serif',serif;font-size:1.1rem;">Michael Loya <em style="font-style:italic;color:#8a8580;">Studio</em></span></li>
+        <li><span class="label">Typefaces</span><span class="value">Instrument Serif + Space Grotesk</span></li>
+        <li><span class="label">Palette</span><span class="value"><span style="display:inline-block;width:12px;height:12px;background:#0a0a0a;border-radius:2px;border:1px solid #333;vertical-align:middle;margin-right:2px;"></span>#0a0a0a · <span style="display:inline-block;width:12px;height:12px;background:#f0ece4;border-radius:2px;vertical-align:middle;margin-right:2px;"></span>#f0ece4 · <span style="display:inline-block;width:12px;height:12px;background:#8a8580;border-radius:2px;vertical-align:middle;margin-right:2px;"></span>#8a8580 · <span style="display:inline-block;width:12px;height:12px;background:#ffd704;border-radius:2px;vertical-align:middle;margin-right:2px;"></span>#ffd704</span></li>
+      </ul>
+    </div>
+    <div class="col">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;">
+        <div style="background:#f0ece4;border-radius:8px;padding:1.2rem;display:flex;align-items:center;justify-content:center;aspect-ratio:1;">
+          <img src="logo.svg" style="height:50px;filter:brightness(0);" alt="ML mark on cream">
+        </div>
+        <div style="background:#151515;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:1.2rem;display:flex;align-items:center;justify-content:center;aspect-ratio:1;">
+          <img src="logo.svg" style="height:50px;filter:brightness(0) invert(0.93) sepia(0.08);" alt="ML mark on black">
+        </div>
+        <div style="background:#f0ece4;border-radius:8px;padding:1.2rem;display:flex;align-items:center;justify-content:center;aspect-ratio:1;">
+          <img src="cursor.svg" style="height:52px;" alt="ML wave on cream">
+        </div>
+        <div style="background:#ffd704;border-radius:8px;padding:1.2rem;display:flex;align-items:center;justify-content:center;aspect-ratio:1;">
+          <img src="cursor.svg" style="height:52px;" alt="ML wave on yellow">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">Michael Loya Studio</div>
+  <div class="slide-number">03</div>
+</div>
+
+<!-- ═══ SLIDE 4: PORTFOLIO SITE ═══ -->
+<div class="slide">
+  <div class="section-label">03 — Promotional Portfolio</div>
+  <h2>The <em>Portfolio</em></h2>
+  <div class="divider"></div>
+  <div class="two-col">
+    <div class="col">
+      <p>A custom-built portfolio at <span class="accent">michaelloya.studio</span> featuring a 3D die-based navigation system. Roll the die or pick a number to explore different visual treatments of the same work, each with its own personality.</p>
+      <ul class="item-list" style="margin-top:1rem;">
+        <li><span class="label">URL</span><span class="value">michaelloya.studio</span></li>
+        <li><span class="label">Email</span><span class="value">michaelloyadesign@gmail.com</span></li>
+        <li><span class="label">Built With</span><span class="value">HTML / CSS / JS / Three.js</span></li>
+        <li><span class="label">Variants</span><span class="value">3 live (Vinyl, Floating, Brutalist) + 3 coming</span></li>
+      </ul>
+    </div>
+    <div class="col">
+      <img src="img/die-screenshot.jpg" style="width:100%;border-radius:8px;border:1px solid rgba(255,255,255,0.08);" alt="Portfolio die landing page">
+    </div>
+  </div>
+  <div class="slide-footer">Michael Loya Studio</div>
+  <div class="slide-number">04</div>
+</div>
+
+<!-- ═══ SLIDE 5: LINKEDIN ═══ -->
+<div class="slide">
+  <div class="section-label">04 — LinkedIn</div>
+  <h2>The <em>Profile</em></h2>
+  <div class="divider"></div>
+  <div class="two-col">
+    <div class="col">
+      <p>Professional presence established at <span class="accent">linkedin.com/in/michael-loya</span>. Headline, summary, experience, and education aligned with the brand voice. Portfolio link and contact email integrated.</p>
+      <ul class="item-list" style="margin-top:1rem;">
+        <li><span class="label">Headline</span><span class="value">Designer · Music × Technology × Visual Storytelling</span></li>
+        <li><span class="label">Featured</span><span class="value">Portfolio link + key projects</span></li>
+        <li><span class="label">Experience</span><span class="value">BODYARMOR, UU, 20 Watts, Mixtape</span></li>
+      </ul>
+    </div>
+    <div class="col">
+      <img src="img/linkedin-profile.jpg" style="width:100%;border-radius:8px;border:1px solid rgba(255,255,255,0.08);" alt="LinkedIn profile">
+    </div>
+  </div>
+  <div class="slide-footer">Michael Loya Studio</div>
+  <div class="slide-number">05</div>
+</div>
+
+<!-- ═══ SLIDE 6: BUSINESS CARD ═══ -->
+<div class="slide">
+  <div class="section-label">05 — Stationery</div>
+  <h2>Business <em>Card</em></h2>
+  <div class="divider"></div>
+  <div class="two-col">
+    <div class="col">
+      <p>Professionally printed business card carrying the ML monogram, contact details, and portfolio URL. Designed to feel premium while staying minimal.</p>
+      <ul class="item-list" style="margin-top:1rem;">
+        <li><span class="label">Front</span><span class="value">ML monogram + name + title</span></li>
+        <li><span class="label">Back</span><span class="value">Contact info + michaelloya.studio</span></li>
+        <li><span class="label">Print</span><span class="value">Professionally printed</span></li>
+      </ul>
+    </div>
+    <div class="col">
+      <div class="screenshot">[BUSINESS CARD MOCKUP — INSERT HERE]</div>
+    </div>
+  </div>
+  <div class="slide-footer">Michael Loya Studio</div>
+  <div class="slide-number">06</div>
+</div>
+
+<!-- ═══ SLIDE 7: RÉSUMÉ ═══ -->
+<div class="slide">
+  <div class="section-label">06 — Stationery</div>
+  <h2>The <em>Résumé</em></h2>
+  <div class="divider"></div>
+  <div class="two-col">
+    <div class="col">
+      <p>Print-ready résumé designed as a branded HTML document. Clean layout with ML monogram, consistent typography, and the same color language as the portfolio. Available digitally and in print.</p>
+      <ul class="item-list" style="margin-top:1rem;">
+        <li><span class="label">Format</span><span class="value">HTML → PDF (print-ready)</span></li>
+        <li><span class="label">Highlights</span><span class="value">BODYARMOR, UU, Design + AI skills</span></li>
+        <li><span class="label">Delivery</span><span class="value">Printed + digital</span></li>
+      </ul>
+    </div>
+    <div class="col">
+      <img src="img/resume-screenshot.jpg" style="width:100%;border-radius:8px;border:1px solid rgba(255,255,255,0.08);" alt="Résumé">
+    </div>
+  </div>
+  <div class="slide-footer">Michael Loya Studio</div>
+  <div class="slide-number">07</div>
+</div>
+
+<!-- ═══ SLIDE 8: ENVELOPE / LABEL ═══ -->
+<div class="slide">
+  <div class="section-label">07 — Stationery</div>
+  <h2>Envelope & <em>Label</em></h2>
+  <div class="divider"></div>
+  <div class="two-col">
+    <div class="col">
+      <p>Branded envelope and mailing label for sending hard copies of the résumé, thank you notes, or leave-behinds. Carries the ML monogram and return address in the brand's type system.</p>
+    </div>
+    <div class="col">
+      <div class="screenshot">[ENVELOPE / LABEL MOCKUP — INSERT HERE]</div>
+    </div>
+  </div>
+  <div class="slide-footer">Michael Loya Studio</div>
+  <div class="slide-number">08</div>
+</div>
+
+<!-- ═══ SLIDE 9: THANK YOU NOTE ═══ -->
+<div class="slide">
+  <div class="section-label">08 — Stationery</div>
+  <h2>Thank You <em>Note</em></h2>
+  <div class="divider"></div>
+  <div class="two-col">
+    <div class="col">
+      <p>Post-interview thank you card. Branded with the ML monogram and printed on quality stock. A personal, tactile touchpoint that reinforces the brand after a conversation.</p>
+    </div>
+    <div class="col">
+      <div class="screenshot">[THANK YOU NOTE MOCKUP — INSERT HERE]</div>
+    </div>
+  </div>
+  <div class="slide-footer">Michael Loya Studio</div>
+  <div class="slide-number">09</div>
+</div>
+
+<!-- ═══ SLIDE 10: LEAVE BEHIND ═══ -->
+<div class="slide">
+  <div class="section-label">09 — Leave Behind</div>
+  <h2>The <em>Die</em></h2>
+  <div class="divider"></div>
+  <div class="two-col">
+    <div class="col">
+      <p>A physical die branded with the ML monogram, left behind after an interview. It connects directly to the portfolio experience — just like the site, each face leads somewhere different.</p>
+      <div class="highlight-box">
+        <p style="color:#e8dcc8;font-size:0.82rem;"><strong>"Roll the die"</strong> — the portfolio's central metaphor becomes a tangible object. A conversation piece that sticks.</p>
+      </div>
+    </div>
+    <div class="col">
+      <div class="screenshot">[DIE MOCKUP — INSERT HERE]</div>
+    </div>
+  </div>
+  <div class="slide-footer">Michael Loya Studio</div>
+  <div class="slide-number">10</div>
+</div>
+
+<!-- ═══ SLIDE 11: CLOSING ═══ -->
+<div class="slide slide-title">
+  <div class="logo-mark"><img src="logo.svg" alt="ML"></div>
+  <h1>Thank <em>You</em></h1>
+  <div class="subtitle" style="margin-bottom:1rem;">michaelloya.studio</div>
+  <div class="course">michaelloyadesign@gmail.com · linkedin.com/in/michael-loya</div>
+</div>
+
+</body>
+</html>

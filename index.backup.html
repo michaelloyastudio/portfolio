@@ -1,0 +1,3559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Michael Loya Studio</title>
+<link rel="icon" type="image/svg+xml" href="logo.svg">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a0a0a;
+    --text: #f0ece4;
+    --text-muted: #8a8580;
+    --accent: #e8dcc8;
+    --sleeve-shadow: rgba(0,0,0,0.6);
+  }
+
+  a, a *, button, button *, [onclick], [onclick] *,
+  .project-img, .project-img *,
+  .gallery-item, .gallery-item *,
+  .sp-play, .sp-play *, .sp-bar, .sp-bar *,
+  .lightbox, .lightbox-close,
+  .nav-links a, .nav-links a *,
+  [draggable="true"] {
+    cursor: url('cursor.svg') 18 15, pointer !important;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── HEADER ── */
+  header {
+    padding: 2rem 4rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .header-die {
+    width: 32px;
+    height: 32px;
+    background: var(--text);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .header-die .hd-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--bg);
+    border-radius: 50%;
+  }
+
+  .logo {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .logo img {
+    height: 26px;
+    width: auto;
+    object-fit: contain;
+    margin-right: 0.2rem;
+  }
+
+  .logo-text {
+    font-family: 'Instrument Serif', serif;
+    font-size: 2.4rem;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+
+  .logo-text span {
+    font-style: italic;
+    color: var(--text-muted);
+  }
+
+  nav {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  nav a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    transition: color 0.3s;
+    cursor: pointer;
+  }
+
+  nav a:hover, nav a.active { color: var(--text); }
+
+  /* ── PAGE SECTIONS ── */
+  .page { display: none; }
+  .page.active { display: flex; flex-direction: column; flex: 1; }
+
+  /* zoom-out transition removed from P1 */
+
+  /* ── NOW PLAYING BAR ── */
+  .now-playing {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    z-index: 102;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+  }
+
+  .now-playing.visible {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .np-turntable {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    flex-shrink: 0;
+  }
+
+  .np-turntable .turntable-platter {
+    width: 140px;
+    height: 140px;
+  }
+
+  .np-turntable .turntable-label {
+    width: 40%;
+    height: 40%;
+  }
+
+  .np-turntable .turntable-label img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+
+  .np-turntable .tonearm-wrap {
+    width: 65%;
+    height: 65%;
+    right: -60px;
+  }
+
+  .np-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .now-playing .bars {
+    display: flex;
+    gap: 3px;
+    align-items: flex-end;
+    height: 16px;
+  }
+
+  .now-playing .bar {
+    width: 3px;
+    background: var(--accent);
+    border-radius: 1px;
+    animation: barPulse 0.8s ease-in-out infinite alternate;
+  }
+
+  .now-playing .bar:nth-child(1) { height: 60%; animation-delay: 0s; }
+  .now-playing .bar:nth-child(2) { height: 100%; animation-delay: 0.2s; }
+  .now-playing .bar:nth-child(3) { height: 40%; animation-delay: 0.4s; }
+  .now-playing .bar:nth-child(4) { height: 80%; animation-delay: 0.1s; }
+
+  @keyframes barPulse {
+    from { transform: scaleY(0.3); }
+    to { transform: scaleY(1); }
+  }
+
+  .now-playing .track-info {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+  }
+
+  .now-playing .track-info strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  /* ── INTRO ── */
+  .intro {
+    padding: 2.5rem 4rem 1.5rem;
+  }
+
+  .intro h2 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  .tagline {
+    font-size: 3.5rem;
+    font-weight: 300;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    margin-top: 0.3rem;
+    max-width: 700px;
+  }
+
+  .tagline em {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-weight: 400;
+  }
+
+  /* ── COVERFLOW GALLERY (all visible) ── */
+  .gallery-section {
+    padding: 0 0 1.5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-bottom: 2.25rem;
+  }
+
+  .gallery-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-muted);
+    margin-top: -2rem;
+    margin-bottom: 2rem;
+    padding: 0 4rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .gallery-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(255,255,255,0.08);
+  }
+
+  /* ── COVERFLOW GALLERY ── */
+  .gallery-viewport {
+    position: relative;
+    width: 100%;
+    height: 440px;
+    overflow: hidden;
+  }
+
+  .gallery-track {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+
+  .gallery-item {
+    position: absolute;
+    left: 50%;
+    top: 45%;
+    pointer-events: none;
+    will-change: transform, opacity;
+  }
+
+  .gallery-item.is-center {
+    cursor: pointer;
+    pointer-events: all;
+  }
+
+  .gallery-item .cover-wrap {
+    position: relative;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+  }
+
+  .gallery-item .cover-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    pointer-events: none;
+  }
+
+  /* Vinyl disc — visible only on center item */
+  .gallery-vinyl {
+    position: absolute;
+    top: 8%;
+    right: -20px;
+    width: 85%;
+    height: 85%;
+    border-radius: 50%;
+    background: radial-gradient(circle at center,
+      #333 0%, #1a1a1a 15%, #222 16%, #1a1a1a 28%,
+      #222 29%, #1a1a1a 42%, #222 43%, #1a1a1a 56%,
+      #222 57%, #1a1a1a 70%, #222 71%, #1a1a1a 84%,
+      #222 85%, #1a1a1a 100%
+    );
+    z-index: -1;
+    opacity: 0;
+    transform: translateX(0px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    pointer-events: none;
+  }
+
+  .gallery-vinyl::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30%;
+    height: 30%;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+      var(--bg) 20%, var(--accent) 21%, var(--accent) 24%, var(--bg) 25%
+    );
+  }
+
+  .gallery-item.is-center .gallery-vinyl {
+    opacity: 1;
+  }
+
+  @keyframes selectedPulse {
+    0%, 100% { box-shadow: 0 12px 50px rgba(0,0,0,0.6), 0 0 30px rgba(232,220,200,0.04); }
+    50% { box-shadow: 0 16px 60px rgba(0,0,0,0.7), 0 0 50px rgba(232,220,200,0.09); }
+  }
+
+  .gallery-info {
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .gallery-item.is-center .gallery-info { opacity: 1; transition: opacity 0.4s ease 0.2s; }
+
+  .gallery-info h3 { font-size: 0.85rem; font-weight: 500; }
+  .gallery-info .category {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-top: 0.2rem;
+  }
+
+  /* ── ARROWS ── */
+  .gallery-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 20;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: var(--text);
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    font-size: 1.8rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(8px);
+    line-height: 1;
+    padding-bottom: 2px;
+  }
+
+  .gallery-arrow:hover {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(255,255,255,0.25);
+    transform: translateY(-50%) scale(1.08);
+  }
+
+  .gallery-arrow--left { left: 2rem; }
+  .gallery-arrow--right { right: 2rem; }
+
+  /* ── EXPANDED PROJECT VIEW ── */
+  .project-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.92);
+    backdrop-filter: blur(20px);
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+    overflow-y: auto;
+  }
+
+  .project-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .project-content {
+    max-width: 750px;
+    margin: 0 auto;
+    padding: 4rem;
+    transform: translateY(30px);
+    transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .project-overlay.open .project-content {
+    transform: translateY(0);
+  }
+
+  .project-close {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(0,0,0,0.5);
+    color: var(--text);
+    font-size: 1.4rem;
+    cursor: pointer;
+    z-index: 101;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .project-overlay.open .project-close {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .project-close:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.3);
+  }
+
+  .project-header {
+    display: flex;
+    gap: 2.5rem;
+    margin-bottom: 3rem;
+    align-items: flex-start;
+  }
+
+  .project-header-art {
+    flex-shrink: 0;
+  }
+
+  .project-vinyl-wrap {
+    position: relative;
+    flex-shrink: 0;
+    width: 320px;
+    height: 320px;
+  }
+
+  .project-cover {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    z-index: 2;
+  }
+
+  /* ── TURNTABLE ── */
+  .turntable {
+    position: relative;
+    flex-shrink: 0;
+    width: 320px;
+    height: 320px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .turntable-platter {
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+      #2a2a2a 0%, #1a1a1a 12%, #252525 13%, #1a1a1a 25%,
+      #222 26%, #1a1a1a 38%, #222 39%, #1a1a1a 52%,
+      #222 53%, #1a1a1a 66%, #222 67%, #1a1a1a 80%,
+      #222 81%, #1a1a1a 100%
+    );
+    box-shadow: 0 8px 40px rgba(0,0,0,0.6), inset 0 0 30px rgba(0,0,0,0.3);
+    animation: spin 3s linear infinite;
+    animation-play-state: paused;
+    position: relative;
+  }
+
+  .turntable.playing .turntable-platter,
+  .np-turntable.playing .turntable-platter {
+    animation-play-state: running;
+  }
+
+  .turntable-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 35%;
+    height: 35%;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  }
+
+  .turntable-label img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .turntable-label::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #111;
+    border: 2px solid #444;
+  }
+
+  .tonearm-wrap {
+    position: absolute;
+    top: -15px;
+    right: -130px;
+    width: 65%;
+    height: 65%;
+    z-index: 3;
+    pointer-events: none;
+    transform: scaleX(-1);
+  }
+
+  .tonearm-wrap svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .turntable {
+    opacity: 0;
+    transform: translateX(-80px);
+    transition: opacity 0.6s ease 0.2s, transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s;
+  }
+
+  .project-overlay.open .turntable {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .project-details {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding-top: 2rem;
+  }
+
+  .project-details .title-group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .project-details .category {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+    line-height: 1;
+  }
+
+  .project-details h2 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 2.8rem;
+    font-weight: 400;
+    line-height: 1.1;
+    white-space: nowrap;
+    margin: 0;
+  }
+
+  .project-details p {
+    color: var(--text-muted);
+    line-height: 1.7;
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .project-meta {
+    display: flex;
+    gap: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .project-meta div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .project-meta .label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+  }
+
+  .project-meta .value {
+    font-size: 0.85rem;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .project-body {
+    margin-top: 2rem;
+    margin-left: auto;
+    margin-right: auto;
+    color: var(--text-muted);
+    line-height: 1.8;
+    font-size: 0.95rem;
+    max-width: 750px;
+  }
+
+  .project-body p {
+    margin-bottom: 1.5rem;
+  }
+
+  .project-body h3 {
+    color: var(--text);
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.4rem;
+    font-weight: 400;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .view-full {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.75rem 2rem;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 100px;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transition: all 0.3s;
+  }
+
+  .view-full:hover {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.4);
+  }
+
+  /* ── ABOUT PAGE ── */
+  .about-content {
+    padding: 4rem;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .about-hero {
+    display: flex;
+    gap: 3.5rem;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+  }
+
+  .about-portrait {
+    flex-shrink: 0;
+    width: 300px;
+    border-radius: 6px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    object-fit: cover;
+  }
+
+  .about-text {
+    flex: 1;
+    padding-top: 0;
+  }
+
+  .about-content h1 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 3rem;
+    font-weight: 400;
+    margin-top: -0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .about-content h1 em {
+    font-style: italic;
+    color: var(--text-muted);
+  }
+
+  .about-bio {
+    color: var(--text-muted);
+    line-height: 1.8;
+    font-size: 1.05rem;
+    margin-bottom: 1.5rem;
+    max-width: 650px;
+  }
+
+  .experience-section {
+    margin-top: 3.5rem;
+  }
+
+  .experience-section h3 {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .experience-section h3::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(255,255,255,0.08);
+  }
+
+  .exp-item {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 2rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .exp-item .exp-role {
+    font-weight: 500;
+    font-size: 1rem;
+  }
+
+  .exp-item .exp-company {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+  }
+
+  .exp-item .exp-date {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-top: 0.25rem;
+  }
+
+  .exp-item .exp-desc {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+
+  /* ── CONTACT PAGE ── */
+  .contact-content {
+    padding: 4rem;
+    padding-bottom: 8rem;
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .contact-content h1 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 3rem;
+    font-weight: 400;
+    margin-bottom: 1rem;
+  }
+
+  .contact-content p {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .contact-links {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  .contact-links a {
+    padding: 0.75rem 2rem;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 100px;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transition: all 0.3s;
+  }
+
+  .contact-links a:hover {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.4);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 1.5rem 4rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  footer .socials {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  footer a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transition: color 0.3s;
+  }
+
+  footer a:hover { color: var(--text); }
+
+  footer .copy {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  /* ── PROJECT INLINE IMAGES ── */
+  .project-img {
+    margin: 1.5rem 0;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .project-img:hover {
+    transform: scale(1.025);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+  }
+  .project-img img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 8px;
+  }
+  /* Square images (album covers, logos) */
+  .project-img.img-square {
+    max-width: 420px;
+  }
+  /* Portrait images (posters, tall graphics) */
+  .project-img.img-portrait {
+    max-width: 350px;
+  }
+  /* Small images (tiny screenshots, icons) */
+  .project-img.img-small {
+    max-width: 200px;
+  }
+  /* Landscape images — full width (default) */
+  .project-img.img-landscape {
+    max-width: 100%;
+  }
+  /* Grid for phone mockup screens */
+  .img-phone-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+  }
+  .img-phone-grid .project-img {
+    margin: 0;
+    max-width: 100%;
+  }
+  .img-phone-grid .project-img:hover {
+    transform: scale(1.04);
+  }
+  /* 2-up grid */
+  .img-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+  }
+  .img-grid-2 .project-img {
+    margin: 0;
+    max-width: 100%;
+  }
+  /* 4-up grid */
+  .img-grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+    margin: 1.5rem 0;
+  }
+  .img-grid-4 .project-img {
+    margin: 0;
+    max-width: 100%;
+  }
+  /* 3-up grid */
+  .img-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+  }
+  .img-grid-3 .project-img {
+    margin: 0;
+    max-width: 100%;
+  }
+  /* 5-up grid */
+  .img-grid-5 {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+  }
+  .img-grid-5 .project-img {
+    margin: 0;
+    max-width: 100%;
+  }
+  /* 4x2 grid */
+  .img-grid-4x2 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+  }
+  .img-grid-4x2 .project-img {
+    margin: 0;
+    max-width: 100%;
+  }
+  /* Composed masonry - normal gaps, no crop */
+  .img-compose {
+    columns: 2;
+    column-gap: 0.75rem;
+    margin: 1.5rem 0;
+  }
+  .img-compose .project-img {
+    margin: 0 0 0.75rem 0;
+    max-width: 100%;
+    break-inside: avoid;
+  }
+  .img-compose .project-img img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    display: block;
+  }
+  /* Tight grid - no gaps, masonry-like */
+  .img-grid-tight {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.4rem;
+    margin: 1.5rem 0;
+  }
+  .img-grid-tight .project-img {
+    margin: 0;
+    max-width: 100%;
+  }
+  .img-grid-tight .project-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  @media (max-width: 768px) {
+    .img-grid-tight { grid-template-columns: repeat(2, 1fr); }
+  }
+  /* Song player */
+  .song-player {
+    margin: 1.5rem 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .song-player audio { display: none; }
+  .sp-play {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 1.5px solid var(--accent);
+    background: transparent;
+    color: var(--accent);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.2s, color 0.2s;
+  }
+  .sp-play:hover { background: var(--accent); color: var(--bg); }
+  .sp-play svg { width: 16px; height: 16px; fill: currentColor; }
+  .sp-meta { flex-shrink: 0; min-width: 0; }
+  .song-player .song-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.1rem;
+    line-height: 1.2;
+  }
+  .song-player .song-artist {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    letter-spacing: 0.03em;
+  }
+  .sp-track {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-width: 0;
+  }
+  .sp-bar {
+    flex: 1;
+    height: 2px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 1px;
+    position: relative;
+    cursor: pointer;
+  }
+  .sp-progress {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 1px;
+    width: 0%;
+    position: relative;
+    transition: width 0.1s linear;
+  }
+  .sp-progress::after {
+    content: '';
+    position: absolute;
+    right: -4px; top: -3px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .sp-bar:hover .sp-progress::after { opacity: 1; }
+  .sp-time {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+    min-width: 32px;
+  }
+  .lyrics-container {
+    margin: 1.5rem 0;
+    padding: 1.5rem;
+    background: rgba(255,255,255,0.03);
+    border-radius: 8px;
+    border-left: 3px solid var(--accent);
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+  .lyrics-container .verse-label {
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin: 1.2rem 0 0.4rem;
+  }
+  .lyrics-container .verse-label:first-child {
+    margin-top: 0;
+  }
+  .lyrics-container p {
+    margin: 0;
+    color: var(--text-muted);
+  }
+  .r1 { color: #ff6b6b; } /* red - ceiling/appealing/feeling/concealing */
+  .r2 { color: #4ecdc4; } /* teal - that/Jack/jack/IMAX/class/cast/Dak/back/at/flash/match/past */
+  .r3 { color: #ffe66d; } /* yellow - plain/terrain */
+  .r4 { color: #a29bfe; } /* purple - official/beneficial/Kittle/kibble/scribble */
+  .r5 { color: #fd79a8; } /* pink - hitmen/Whitman/lit man/ticking/spitting/mission/addition/edition */
+  .r6 { color: #55efc4; } /* mint - lines/wine/dine/align/times */
+  .r7 { color: #74b9ff; } /* blue - chance/man/dance */
+  .r8 { color: #fdcb6e; } /* gold - see/need/frequently/secrecy/indecently/easily/deity/me/recipe/breathe/fantasy/frantically */
+  .r9 { color: #e17055; } /* orange - tendon/senses/amendment/cemented/independent/investments/blessing/defendants */
+  .r10 { color: #81ecec; } /* cyan - disrespect it/disinfect it/jack shit/match it */
+  .r11 { color: #fab1a0; } /* salmon - you/views/lose */
+  .r12 { color: #b8e994; } /* lime - disgusting/discussion */
+  .r13 { color: #dfe6e9; } /* silver - static/holographic */
+  .r14 { color: #f8a5c2; } /* rose - gun/sum */
+  /* Match height row */
+  .img-match-height {
+    display: flex;
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+    align-items: center;
+  }
+  .img-match-height .project-img {
+    margin: 0;
+    flex: 0 1 auto;
+  }
+  .img-match-height .project-img img {
+    height: 300px;
+    width: auto;
+    object-fit: contain;
+  }
+  @media (max-width: 768px) {
+    .img-match-height { flex-direction: column; }
+    .img-match-height .project-img img { height: auto; width: 100%; }
+  }
+  .project-video {
+    margin: 1.5rem 0;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .project-video video {
+    width: 100%;
+    display: block;
+    border-radius: 8px;
+  }
+  .img-logos-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+  }
+  .img-logos-row .project-img {
+    margin: 0;
+    flex: 1;
+    max-width: 48%;
+  }
+  @media (max-width: 768px) {
+    .img-phone-grid { grid-template-columns: repeat(2, 1fr); }
+    .img-grid-4 { grid-template-columns: repeat(2, 1fr); }
+    .img-grid-3 { grid-template-columns: repeat(2, 1fr); }
+    .img-grid-5 { grid-template-columns: repeat(3, 1fr); }
+    .img-grid-4x2 { grid-template-columns: repeat(2, 1fr); }
+    .project-img.img-square { max-width: 100%; }
+    .project-img.img-portrait { max-width: 100%; }
+  }
+  @media (max-width: 480px) {
+    .img-grid-5 { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* ── LIGHTBOX ── */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+    background: rgba(0,0,0,0.92);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+    cursor: zoom-out;
+  }
+  .lightbox.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .lightbox img {
+    max-width: 92vw;
+    max-height: 92vh;
+    border-radius: 6px;
+    box-shadow: 0 12px 60px rgba(0,0,0,0.6);
+    transform: scale(0.92);
+    transition: transform 0.3s ease;
+  }
+  .lightbox.open img {
+    transform: scale(1);
+  }
+  .lightbox video {
+    max-width: 92vw;
+    max-height: 92vh;
+    border-radius: 6px;
+    box-shadow: 0 12px 60px rgba(0,0,0,0.6);
+    transform: scale(0.92);
+    transition: transform 0.3s ease;
+  }
+  .lightbox.open video {
+    transform: scale(1);
+  }
+  .lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 28px;
+    color: #fff;
+    font-size: 28px;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+    background: none;
+    border: none;
+    font-family: inherit;
+  }
+  .lightbox-close:hover { opacity: 1; }
+
+  /* ── GALLERY ── */
+  .project-gallery {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .project-gallery img {
+    width: 100%;
+    border-radius: 4px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    transition: transform 0.3s ease;
+  }
+
+  .project-gallery img:hover {
+    transform: scale(1.02);
+  }
+
+  /* Now playing when inside overlay */
+  .project-content .now-playing {
+    height: auto;
+    padding: 1.5rem 0;
+    margin-bottom: 2rem;
+    opacity: 1;
+    transform: none;
+    pointer-events: all;
+    border-top: none;
+    overflow: visible;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .project-header { flex-direction: column; align-items: center; }
+    .project-vinyl-wrap { width: 260px; height: 260px; }
+    .turntable { width: 260px; height: 260px; }
+    .turntable-platter { width: 230px; height: 230px; }
+    .exp-item { grid-template-columns: 1fr; gap: 0.5rem; }
+    .gallery-viewport { height: 400px; }
+    .about-hero { flex-direction: column; align-items: center; gap: 2rem; }
+    .about-portrait { width: 240px; }
+  }
+
+  @media (max-width: 768px) {
+    header { padding: 2rem; }
+    .intro { padding: 3rem 2rem 2rem; }
+    .tagline { font-size: 2.2rem; }
+    .project-content { padding: 2rem; }
+    .project-details h2 { font-size: 2rem; }
+    .about-content { padding: 3rem 2rem; }
+    footer { padding: 2rem; flex-direction: column; gap: 1rem; }
+    .gallery-viewport { height: 360px; }
+    .gallery-label { padding: 0 2rem; }
+    .gallery-arrow { width: 40px; height: 40px; font-size: 1.4rem; }
+    .gallery-arrow--left { left: 0.75rem; }
+    .gallery-arrow--right { right: 0.75rem; }
+  }
+
+  @media (max-width: 480px) {
+    .tagline { font-size: 1.8rem; }
+    .logo { font-size: 1.8rem; }
+    nav { gap: 1rem; }
+    nav a { font-size: 0.75rem; }
+    .contact-links { flex-direction: column; }
+    .gallery-viewport { height: 300px; }
+    .project-gallery { grid-template-columns: 1fr; }
+    .turntable { display: none; }
+  }
+  /* ── DIE LANDING PAGE ── */
+  .die-landing {
+    position: fixed;
+    inset: 0;
+    background: #fff;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.8s ease, background 0.6s ease;
+    cursor: default;
+  }
+
+  .die-landing.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .die-landing.fade-white {
+    background: #f5f2ed;
+  }
+
+  .die-landing.fade-white > * {
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+
+  #dieCanvas {
+    cursor: pointer;
+  }
+
+  .die-hint {
+    margin-top: 2rem;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.85rem;
+    color: #999;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .die-landing.rolling .die-hint {
+    opacity: 0;
+  }
+
+  .die-buttons {
+    position: absolute;
+    bottom: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.75rem;
+  }
+  .die-buttons button {
+    width: 42px;
+    height: 42px;
+    border-radius: 8px;
+    border: 1.5px solid #ccc;
+    background: transparent;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #888;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .die-buttons button:hover {
+    border-color: #222;
+    color: #222;
+    background: rgba(0,0,0,0.04);
+  }
+  .die-landing.rolling .die-buttons {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* ── P2: FLOATING PORTFOLIO ── */
+  .p2-wrap {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: #f5f2ed;
+    z-index: 500;
+    overflow: hidden;
+    perspective: 1200px;
+  }
+
+  .p2-wrap.active {
+    display: block;
+  }
+
+  .p2-scene {
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+
+  .p2-title {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) translateZ(0);
+    font-family: 'Instrument Serif', serif;
+    font-size: 4rem;
+    font-weight: 400;
+    color: #1a1a1a;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 10;
+    text-align: center;
+  }
+
+  .p2-title span {
+    font-style: italic;
+    color: #999;
+  }
+
+  .p2-nav {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    margin-top: 0.75rem;
+    pointer-events: auto;
+  }
+  .p2-nav a {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #888;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.3s;
+    pointer-events: auto;
+  }
+
+  .p2-nav a:hover {
+    color: #222;
+  }
+
+  /* ── P2 ABOUT (zoom-out reveal) ── */
+  .p2-about {
+    position: absolute;
+    inset: 0;
+    background: #f5f2ed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease 0.3s;
+    z-index: 1;
+    overflow: hidden;
+  }
+  .p2-about.visible {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .p2-about-scroll {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .p2-about-content {
+    max-width: 900px;
+    width: 100%;
+    padding: 2rem 3rem;
+  }
+  .p2-about-back {
+    display: inline-block;
+    margin-bottom: 2.5rem;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #999;
+    cursor: pointer;
+    transition: color 0.3s;
+    text-decoration: none;
+  }
+  .p2-about-back:hover { color: #222; }
+
+  .p2-about-hero {
+    display: flex;
+    gap: 2.5rem;
+    align-items: flex-start;
+  }
+  .p2-about-portrait {
+    flex-shrink: 0;
+    width: 220px;
+    border-radius: 8px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+    object-fit: cover;
+  }
+  .p2-about-text {
+    flex: 1;
+  }
+  .p2-about-text h1 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 2.4rem;
+    font-weight: 400;
+    margin: 0 0 0.6rem;
+    color: #1a1a1a;
+  }
+  .p2-about-text h1 em {
+    font-style: italic;
+    color: #999;
+  }
+  .p2-about-text p {
+    font-family: 'Space Grotesk', sans-serif;
+    color: #555;
+    line-height: 1.65;
+    font-size: 0.92rem;
+    margin-bottom: 0.75rem;
+  }
+  .p2-experience {
+    margin-top: 1.75rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #ddd;
+  }
+  .p2-experience h3 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: #1a1a1a;
+    margin: 0 0 1rem;
+  }
+  .p2-exp-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem 2.5rem;
+  }
+  .p2-exp-item {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #e8e4de;
+  }
+  .p2-exp-item:nth-last-child(-n+2) {
+    border-bottom: none;
+  }
+  .p2-exp-role {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #1a1a1a;
+    margin-bottom: 0.15rem;
+  }
+  .p2-exp-company {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.8rem;
+    color: #666;
+  }
+  .p2-exp-date {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.72rem;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.3rem;
+  }
+  .p2-exp-desc {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.82rem;
+    color: #666;
+    line-height: 1.55;
+    margin-top: 0.3rem;
+  }
+
+  .p2-contact {
+    position: absolute;
+    inset: 0;
+    background: #f5f2ed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease 0.3s;
+    z-index: 1;
+  }
+  .p2-contact.visible {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .p2-contact-content {
+    text-align: center;
+  }
+  .p2-contact-content h1 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 3rem;
+    font-weight: 400;
+    color: #1a1a1a;
+    margin-bottom: 1rem;
+  }
+  .p2-contact-content h1 em {
+    font-style: italic;
+    color: #999;
+  }
+  .p2-contact-content > p {
+    font-family: 'Space Grotesk', sans-serif;
+    color: #888;
+    font-size: 1.05rem;
+    margin-bottom: 2.5rem;
+  }
+  .p2-contact-links {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    margin-bottom: 2.5rem;
+  }
+  .p2-contact-links a {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #1a1a1a;
+    text-decoration: none;
+    padding: 0.75rem 1.5rem;
+    border: 1.5px solid #ccc;
+    border-radius: 6px;
+    transition: all 0.3s;
+  }
+  .p2-contact-links a:hover {
+    border-color: #222;
+    background: rgba(0,0,0,0.04);
+  }
+
+  /* ── P2 PROJECT DETAIL (shared-element zoom-in) ── */
+  .p2-project {
+    position: absolute;
+    inset: 0;
+    background: #f5f2ed;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 2;
+    overflow: hidden;
+    transition: opacity 0.4s ease;
+  }
+  .p2-project.visible {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .p2-project-scroll {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .p2-project-content {
+    max-width: 900px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 2rem 3rem 4rem;
+  }
+  /* Hero image at top of project page */
+  .p2-project-hero {
+    width: 350px;
+    height: 350px;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .p2-project-hero.visible {
+    opacity: 1;
+  }
+  .p2-project-hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .p2-project-header {
+    margin-bottom: 2rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .p2-project-header.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .p2-project-header h1 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 2.8rem;
+    font-weight: 400;
+    color: #1a1a1a;
+    margin: 0 0 0.5rem;
+    line-height: 1.15;
+  }
+  .p2-project-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.5rem;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.82rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .p2-project-back-row {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+  .p2-project-back-row.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .p2-project-body {
+    font-family: 'Space Grotesk', sans-serif;
+    color: #555;
+    line-height: 1.7;
+    font-size: 0.92rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .p2-project-body.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .p2-project-body p {
+    margin-bottom: 1rem;
+  }
+  .p2-project-body h3 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: #1a1a1a;
+    margin: 2rem 0 0.75rem;
+  }
+  .p2-project-body a {
+    color: #1a1a1a !important;
+    text-decoration: underline;
+  }
+  .p2-project-body a:hover {
+    color: #555 !important;
+  }
+
+  /* Flying transition image (absolutely positioned in p2-wrap) */
+  .p2-fly-img {
+    position: absolute;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    z-index: 3;
+    pointer-events: none;
+    will-change: transform;
+    transform-origin: 0 0;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.15, 1),
+                border-radius 0.6s cubic-bezier(0.4, 0, 0.15, 1),
+                box-shadow 0.6s cubic-bezier(0.4, 0, 0.15, 1),
+                opacity 0.3s ease;
+  }
+  .p2-fly-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Fade-out class for scene children during project open */
+  .p2-scene-child-fade {
+    transition: opacity 0.45s ease, filter 0.45s ease !important;
+    opacity: 0 !important;
+    filter: blur(8px) !important;
+    pointer-events: none !important;
+  }
+
+  /* Image grids inside P2 project */
+  .p2-project .project-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 6px;
+  }
+  .p2-project .project-img {
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 0;
+  }
+  .p2-project .project-img-video video {
+    width: 100%;
+    border-radius: 6px;
+  }
+  .p2-project .project-video {
+    width: 100%;
+    border-radius: 6px;
+  }
+  /* Light-theme overrides for lyrics / song player */
+  .p2-project .verse-label {
+    color: #888;
+  }
+  .p2-project .lyrics-container {
+    background: rgba(0,0,0,0.03);
+    border: 1px solid #ddd;
+    color: #555;
+    border-radius: 8px;
+  }
+  .p2-project .song-player {
+    background: rgba(0,0,0,0.03);
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    color: #555;
+  }
+  .p2-project .song-player .sp-title {
+    color: #1a1a1a;
+  }
+  .p2-project .song-player .sp-artist {
+    color: #888;
+  }
+  /* Image grid spacing */
+  .p2-project .img-grid-2,
+  .p2-project .img-grid-3,
+  .p2-project .img-grid-4,
+  .p2-project .img-grid-5,
+  .p2-project .img-grid-4x2,
+  .p2-project .img-grid-tight,
+  .p2-project .img-compose,
+  .p2-project .img-logos-row {
+    margin-bottom: 1rem;
+  }
+  .p2-project .img-match-height img {
+    object-fit: cover;
+  }
+
+  /* P2 scene zoom-out */
+  .p2-scene {
+    transition: transform 0.85s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                filter 0.85s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                opacity 0.85s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transform-origin: center center;
+  }
+  .p2-scene.zoomed-out {
+    transform: scale(0.6);
+    filter: blur(16px);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .p2-item {
+    position: absolute;
+    width: 180px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    cursor: pointer;
+    transition: filter 0.5s ease, box-shadow 0.3s;
+  }
+
+  .p2-item:hover {
+    filter: blur(0px) !important;
+    box-shadow: 0 12px 50px rgba(0,0,0,0.2);
+  }
+
+  .p2-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .p2-item .p2-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0.5rem;
+    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text);
+  }
+
+  /* p2-back removed */
+
+  .p2-coming-soon {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(8px);
+    z-index: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1.5rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .p2-coming-soon.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .p2-coming-soon h2 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 3rem;
+    font-weight: 400;
+    color: #fff;
+  }
+
+  .p2-coming-soon button {
+    background: none;
+    border: 1px solid rgba(255,255,255,0.3);
+    color: #fff;
+    padding: 0.6rem 1.5rem;
+    border-radius: 6px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+
+  .p2-die-float {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background: #e8e4de;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .p2-die-float .die-dot {
+    width: 10px;
+    height: 10px;
+    background: #1a1a1a;
+    border-radius: 50%;
+    position: static;
+  }
+</style>
+</head>
+<body>
+
+<!-- DIE LANDING -->
+<div class="die-landing" id="dieLanding">
+  <div style="position:absolute;top:3rem;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:0.3rem;">
+    <img src="logo.svg" style="height:26px;width:auto;filter:brightness(0);" alt="">
+    <span style="font-family:'Instrument Serif',serif;font-size:2.4rem;font-weight:400;letter-spacing:-0.02em;color:#222;">Michael Loya <span style="font-style:italic;color:#999;">Studio</span></span>
+  </div>
+  <canvas id="dieCanvas" style="cursor:pointer;"></canvas>
+  <div class="die-buttons">
+    <button onclick="dieGoTo(1)">1</button>
+    <button onclick="dieGoTo(2)">2</button>
+    <button onclick="dieGoTo(3)">3</button>
+    <button onclick="dieGoTo(4)">4</button>
+    <button onclick="dieGoTo(5)">5</button>
+    <button onclick="dieGoTo(6)">6</button>
+  </div>
+</div>
+
+<!-- P2: FLOATING PORTFOLIO -->
+<div class="p2-wrap" id="p2Wrap">
+  <!-- P2 About layer (behind the scene) -->
+  <div class="p2-about" id="p2About">
+    <div class="p2-about-scroll">
+      <div class="p2-about-content">
+        <a class="p2-about-back" onclick="p2CloseAbout()">← Back</a>
+        <div class="p2-about-hero">
+          <img class="p2-about-portrait" src="mike-portrait.jpg" alt="Michael Loya">
+          <div class="p2-about-text">
+            <h1>About <em>me</em></h1>
+            <p>I'm a designer who works at the intersection of music, technology, and visual storytelling. Currently studying at Syracuse University, I split my time between design direction for University Union, personal creative projects, and working with AI and emerging tech — staying on top of new tools as they drop and always integrating them into my process.</p>
+            <p>My work ranges from brand identity and editorial design to AR experiences, UI/UX, and music production. I adapt quickly, experiment across mediums, and believe the best creative work comes from genuine curiosity.</p>
+          </div>
+        </div>
+
+        <div class="p2-experience">
+          <h3>Experience</h3>
+          <div class="p2-exp-grid">
+            <div class="p2-exp-item">
+              <div class="p2-exp-role">Graphic Design & Video Intern</div>
+              <div class="p2-exp-company">BODYARMOR Sports Nutrition</div>
+              <div class="p2-exp-date">Jun — Aug 2025</div>
+              <div class="p2-exp-desc">Adapted POS and promotional designs across formats. Produced original creative assets for campaigns. Led AI capstone project.</div>
+            </div>
+            <div class="p2-exp-item">
+              <div class="p2-exp-role">Design Co-Director</div>
+              <div class="p2-exp-company">University Union</div>
+              <div class="p2-exp-date">Dec 2024 — Present</div>
+              <div class="p2-exp-desc">Lead design board for events, social media, and marketing. Oversee visual direction for major campus concerts and festivals.</div>
+            </div>
+            <div class="p2-exp-item">
+              <div class="p2-exp-role">Head of Design</div>
+              <div class="p2-exp-company">20 Watts Magazine</div>
+              <div class="p2-exp-date">Sep — Dec 2024</div>
+              <div class="p2-exp-desc">Designed event graphics and promotional materials. Created onboarding tutorials and mentored design team.</div>
+            </div>
+            <div class="p2-exp-item">
+              <div class="p2-exp-role">Head of Design</div>
+              <div class="p2-exp-company">Mixtape Magazine</div>
+              <div class="p2-exp-date">Sep 2022 — Sep 2024</div>
+              <div class="p2-exp-desc">Led design for print and digital materials. Collaborated with editorial on visual concepts from conception to finish.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- P2 Project detail layer -->
+  <div class="p2-project" id="p2Project">
+    <div class="p2-project-scroll">
+      <div class="p2-project-content">
+        <div class="p2-project-back-row" id="p2ProjectBackRow">
+          <a class="p2-about-back" onclick="p2CloseProject()">← Back</a>
+        </div>
+        <div class="p2-project-hero" id="p2ProjectHero">
+          <img id="p2ProjectHeroImg" src="" alt="">
+        </div>
+        <div class="p2-project-header" id="p2ProjectHeader">
+          <h1 id="p2ProjectTitle"></h1>
+          <div class="p2-project-meta">
+            <span id="p2ProjectCategory"></span>
+            <span id="p2ProjectTools"></span>
+            <span id="p2ProjectYear"></span>
+          </div>
+        </div>
+        <div class="p2-project-body" id="p2ProjectBody"></div>
+      </div>
+    </div>
+  </div>
+  <!-- P2 Contact layer (behind the scene) -->
+  <div class="p2-contact" id="p2Contact">
+    <div class="p2-contact-content">
+      <h1>Let's <em>connect</em></h1>
+      <p>Always open to new projects, collaborations, and conversations.</p>
+      <div class="p2-contact-links">
+        <a href="https://instagram.com/michaelloyastudio" target="_blank">Instagram</a>
+        <a href="https://www.linkedin.com/in/michael-loya/" target="_blank">LinkedIn</a>
+        <a href="mailto:michaelloyadesign@gmail.com">Email</a>
+      </div>
+      <a class="p2-about-back" onclick="p2CloseContact()">← Back</a>
+    </div>
+  </div>
+  <!-- Floating scene (on top) -->
+  <div class="p2-scene" id="p2Scene">
+    <div class="p2-title">
+      <img src="logo.svg" style="height:32px;width:auto;filter:brightness(0);margin-right:0.4rem;vertical-align:middle;">Michael Loya <span>Studio</span>
+      <div class="p2-nav">
+        <a onclick="p2ShowAbout()">About</a>
+        <a onclick="p2ShowContact()">Contact</a>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- p2-back removed, die is clickable -->
+<div class="p2-coming-soon" id="p2ComingSoon">
+  <h2>Coming Soon</h2>
+  <button onclick="document.getElementById('p2ComingSoon').classList.remove('active')">Close</button>
+</div>
+
+<header>
+  <a class="logo" href="#" onclick="showPage('collection')"><img src="logo.svg" alt=""><span class="logo-text">Michael Loya <span>Studio</span></span></a>
+  <div class="header-die" onclick="showDieLanding()"><div class="hd-dot"></div></div>
+  <nav>
+    <a onclick="showPage('collection')" class="active" id="nav-collection">The Collection</a>
+    <a onclick="showPage('about')" id="nav-about">About</a>
+    <a onclick="showPage('contact')" id="nav-contact">Contact</a>
+  </nav>
+</header>
+
+<!-- COLLECTION PAGE -->
+<div class="page active" id="page-collection">
+  <section class="intro">
+    <div class="tagline">The redefinition of<br><em>clean composition.</em></div>
+  </section>
+
+  <section class="gallery-section">
+    <div class="gallery-label">The Collection — 9 Records</div>
+    <div class="gallery-viewport">
+      <button class="gallery-arrow gallery-arrow--left" id="arrowLeft">‹</button>
+      <div class="gallery-track" id="galleryTrack"></div>
+      <button class="gallery-arrow gallery-arrow--right" id="arrowRight">›</button>
+    </div>
+  </section>
+</div>
+
+<!-- ABOUT PAGE -->
+<div class="page" id="page-about">
+  <div class="about-content">
+    <div class="about-hero">
+      <img class="about-portrait" src="mike-portrait.jpg" alt="Michael Loya">
+      <div class="about-text">
+        <h1>About <em>me</em></h1>
+        <p class="about-bio">
+          I'm a designer who works at the intersection of music, technology, and visual storytelling. Currently studying at Syracuse University, I split my time between design direction for University Union, personal creative projects, and working with AI and emerging tech — staying on top of new tools as they drop and always integrating them into my process.
+        </p>
+        <p class="about-bio">
+          My work ranges from brand identity and editorial design to AR experiences, UI/UX, and music production. I adapt quickly, experiment across mediums, and believe the best creative work comes from genuine curiosity.
+        </p>
+      </div>
+    </div>
+
+    <div class="experience-section">
+      <h3>Experience</h3>
+
+      <div class="exp-item">
+        <div>
+          <div class="exp-role">Graphic Design & Video Intern</div>
+          <div class="exp-company">BODYARMOR Sports Nutrition</div>
+          <div class="exp-date">Jun — Aug 2025</div>
+        </div>
+        <div class="exp-desc">
+          Adapted POS and promotional designs across formats and retail environments. Produced original creative assets for product campaigns. Led capstone project exploring AI's role in marketing and creative production.
+        </div>
+      </div>
+
+      <div class="exp-item">
+        <div>
+          <div class="exp-role">Design Co-Director</div>
+          <div class="exp-company">University Union</div>
+          <div class="exp-date">Dec 2024 — Present</div>
+        </div>
+        <div class="exp-desc">
+          Lead design board producing visuals for events, social media, and marketing campaigns. Oversee visual direction for major campus events including concerts and festivals.
+        </div>
+      </div>
+
+      <div class="exp-item">
+        <div>
+          <div class="exp-role">Head of Design</div>
+          <div class="exp-company">20 Watts Magazine</div>
+          <div class="exp-date">Sep — Dec 2024</div>
+        </div>
+        <div class="exp-desc">
+          Designed graphics for events and promotional materials. Created onboarding tutorials and mentored design team through projects.
+        </div>
+      </div>
+
+      <div class="exp-item">
+        <div>
+          <div class="exp-role">Head of Design</div>
+          <div class="exp-company">Mixtape Magazine</div>
+          <div class="exp-date">Sep 2022 — Sep 2024</div>
+        </div>
+        <div class="exp-desc">
+          Led design for print and digital materials. Collaborated with editorial teams on visual concepts. Managed and coordinated design projects from conception to finish.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT PAGE -->
+<div class="page" id="page-contact">
+  <div class="contact-content">
+    <h1>Let's <em>connect</em></h1>
+    <p>Always open to new projects, collaborations, and conversations.</p>
+    <div class="contact-links">
+      <a href="https://instagram.com/michaelloyastudio" target="_blank">Instagram</a>
+      <a href="https://www.linkedin.com/in/michael-loya/" target="_blank">LinkedIn</a>
+      <a href="mailto:michaelloyadesign@gmail.com">Email</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="socials">
+    <a href="https://instagram.com/michaelloyastudio" target="_blank">Instagram</a>
+    <a href="https://www.linkedin.com/in/michael-loya/" target="_blank">LinkedIn</a>
+    <a href="mailto:michaelloyadesign@gmail.com">Email</a>
+  </div>
+  <div class="copy">&copy; 2026 Michael Loya</div>
+</footer>
+
+<!-- Project Overlay -->
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close">&times;</button>
+  <img src="" alt="Full size preview" id="lightboxImg">
+  <video src="" id="lightboxVideo" playsinline muted style="display:none;max-width:92vw;max-height:92vh;border-radius:6px;box-shadow:0 12px 60px rgba(0,0,0,0.6);"></video>
+</div>
+
+<div class="project-overlay" id="overlay">
+  <button class="project-close" id="closeBtn">&times;</button>
+  <div class="project-content" id="projectContent"></div>
+</div>
+
+<script>
+const projects = [
+  {
+    title: "Sound & Vision",
+    overlayTitle: "Sound<br>& Vision",
+    category: "Cover Art / Motion / Music",
+    tools: "Illustrator, Photoshop, After Effects, Blender, AI",
+    year: "2023–Present",
+    cover: `img/DnDFinal.jpeg`,
+    images: [],
+    content: `<p>I collaborate with my brother, who produces music under our last name Loya (stylized as "loya"), bringing his music to life through cover art, motion graphics, and social content. I've also created pieces for other artists, tailoring visuals to fit their sound and aesthetic.</p>
+<h3><a href="https://open.spotify.com/artist/5gNQpoYEBE1jxjCgFkLWce?si=AsVRN9PsRu2rgS5POckwnQ" target="_blank" style="color:var(--accent);text-decoration:underline;">loya</a></h3>
+<p>The cover art is for loya's upcoming EP, <a href="https://open.spotify.com/album/6roxGKDYkVpcbcdqdpj6gG?si=mku1Dh4nR9OR_AJf92bb5Q" target="_blank" style="color:var(--accent);text-decoration:underline;"><em>Diamonds and Damage</em></a>, which he produced alongside his friend, Nicky. Loya had a clear vision for the design—a portrait of a woman surrounded by falling diamonds—and reached out to me to bring it to life. We started with a reference image to generate the portrait, then created multiple diamond variations. The assets were created by Adobe Firefly and then arranged, composed, and edited by me. After eight exports, we arrived at the final design.</p>
+<div class="img-grid-4">
+<div class="project-img"><img src="img/all/Screenshot_2025-03-21_at_6.45.47_PM.jpg" alt="Reference photo" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Firefly_20250319125548_(1).jpg" alt="Firefly generated asset" loading="lazy"></div>
+<div class="project-img"><img src="img/all/DnDv1.jpg" alt="Diamonds and Damage variation 1" loading="lazy"></div>
+<div class="project-img"><img src="img/all/DnDv2.jpg" alt="Diamonds and Damage variation 2" loading="lazy"></div>
+<div class="project-img"><img src="img/all/DnDv3.jpg" alt="Diamonds and Damage variation 3" loading="lazy"></div>
+<div class="project-img"><img src="img/all/DnDv4.jpg" alt="Diamonds and Damage variation 4" loading="lazy"></div>
+<div class="project-img"><img src="img/all/DnDv7.jpg" alt="Diamonds and Damage variation 7" loading="lazy"></div>
+<div class="project-img"><img src="img/all/DnDv8.jpg" alt="Diamonds and Damage variation 8" loading="lazy"></div>
+</div>
+<p>I've also produced short vertical videos for loya's Spotify, known as "Canvas" visuals — dynamic, looping videos using After Effects and Blender that add an extra layer of engagement to his tracks.</p>
+<div class="project-img project-img-video" data-video-src="img/all/Canvases.mp4"><video src="img/all/Canvases.mp4" autoplay loop muted playsinline style="width:100%;"></video></div>
+<p>As loya's brand continued to grow, I recognized the need for a distinct logo that would enhance recognizability and adaptability across different platforms. Since he's an avid collector of unique hats, it felt natural to base the design on one of his favorites. I landed on Amador, a blackletter font that balances elegance with edge, fitting seamlessly with loya's artistic identity.</p>
+<div class="project-img img-landscape"><img src="img/all/LoyaLOGOprocess.jpg" alt="loya logo design process" loading="lazy"></div>
+<div class="img-logos-row">
+<div class="project-img img-landscape"><img src="img/all/LoyaLOGO_solo.png" alt="loya logo final" loading="lazy"></div>
+<div class="project-img img-landscape"><img src="img/all/LoyaLOGO_outline.png" alt="loya logo outline" loading="lazy"></div>
+</div>
+<h3>Small Projects</h3>
+<p>I created a motion graphic and posters for <a href="https://open.spotify.com/artist/2848adRcxvgWNRcz1g1tQD?si=SYY1m9QBSYaGsj-x30nrzQ" target="_blank" style="color:var(--accent);text-decoration:underline;">Felly</a>, an independent artist from my hometown with 556k monthly Spotify listeners. Our paths crossed when I met him at a show, and he's had a huge impact on my journey. I focused on creating designs that captured the essence of his sound and aesthetic.</p>
+<div class="img-grid-3">
+<div class="project-img"><img src="img/all/Fel1.jpg" alt="Felly poster design 1" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Fel2.jpg" alt="Felly poster design 2" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Fel3.jpg" alt="Felly poster design 3" loading="lazy"></div>
+</div>
+<div class="project-img project-img-video" data-video-src="img/all/FellyRender.mp4"><video src="img/all/FellyRender.mp4" autoplay loop muted playsinline style="width:100%;"></video></div>
+<p>I pitched a cover art concept for the artist <a href="https://open.spotify.com/artist/4DSFmAOMwMqDVKIsPY0kqs?si=IuyZFZwoTCCsxNR4Py_JHA" target="_blank" style="color:var(--accent);text-decoration:underline;">Sweezy</a>. While ultimately rejected, I'm proud of the design and the creative process behind it. I also designed cover art for Chitt, who my brother and I met as a kid at our summer house. Now collaborating with loya, it was great to work on something for an artist with such a personal connection to us.</p>
+<div class="img-grid-2">
+<div class="project-img"><img src="img/all/ExoticSweezyv4.jpg" alt="Sweezy cover art concept" loading="lazy"></div>
+<div class="project-img"><img src="img/all/FeelYourLove.jpg" alt="Chitt cover art" loading="lazy"></div>
+</div>`
+  },
+  {
+    title: "BODYARMOR & Powerade",
+    overlayTitle: "BODYARMOR<br>& Powerade",
+    category: "Internship / Branding / AI",
+    tools: "Photoshop, Illustrator, Premiere, After Effects, AI Tools",
+    year: "2025",
+    cover: `img/bapa.png`,
+    images: [],
+    content: `<p>Last summer I interned with BODYARMOR and Powerade in Queens, NY, designing POS ads, producing a Powerade fall football video ad, and creating an AI-generated BODYARMOR commercial as my capstone project. The internship pushed my design and technical skills while giving me hands-on experience at the intersection of brand storytelling and emerging technology.</p>
+<h3>Internship Work</h3>
+<p>Day-to-day work involved reformatting BODYARMOR and Powerade creative into POS ads (window clings, cooler clings, end caps). Beyond that, I produced an original video ad for Powerade's fall football campaign, combining brand photography with stock video into a dynamic piece of content.</p>
+<div class="project-img project-img-video" data-video-src="img/all/PA_Fall_Football.mp4"><video src="img/all/PA_Fall_Football.mp4" autoplay loop muted playsinline style="width:100%;"></video></div>
+<h3>Capstone Project</h3>
+<p>For my capstone, I explored AI in creative production. My initial concept featured Joe Burrow ("Joe Chill") for BODYARMOR Chill, but AI struggled with character consistency. I pivoted to product visuals and created a commercial generated almost entirely with AI.</p>
+<div class="img-match-height">
+<div class="project-img"><img src="img/all/textclarity1.jpg" alt="AI character consistency challenge - snow scene" loading="lazy"></div>
+<div class="project-img"><img src="img/all/textclarity2.jpg" alt="AI character consistency challenge - ice cave" loading="lazy" style="object-fit:cover;width:100%;object-position:40% center;"></div>
+</div>
+<p>I built a full AI workflow using Runway and Kling for imagery/video, Topaz Labs for upscaling, ElevenLabs for voiceover, and After Effects for the final edit. Prompt engineering was key to getting consistent, usable results.</p>
+<div class="project-img project-img-video" data-video-src="img/all/kling.mp4"><video src="img/all/kling.mp4" autoplay loop muted playsinline style="width:100%;"></video></div>
+<h3>Final Result</h3>
+<p>The final AI-generated commercial was presented to C-suite executives. At the time, my takeaway was that AI worked for quick-turn content like product shots and social ads, but wasn't ready for high-end campaign work. That's changing fast — these tools are progressing at an incredible pace, and I plan to stay ahead of the curve.</p>
+<div class="project-video"><video src="img/all/AIBACommercial.mp4" controls playsinline preload="metadata" poster="img/all/ba_frame_45s.jpg"></video></div>`
+  },
+  {
+    title: "AI Song",
+    category: "Music Production / AI / Design",
+    tools: "FL Studio, ElevenLabs, Illustrator, ChatGPT",
+    year: "2025",
+    cover: `img/LimitsCover.jpg`,
+    images: [],
+    content: `<p>I wrote a track over a Jack Harlow-type beat and used ElevenLabs to create an AI voice clone of Jack as a fake feature. I trained the model on his acapella vocals, designed the cover art with ChatGPT and Illustrator, and produced everything in FL Studio. When I posted it, a few friends genuinely thought the Jack verse was real.</p>
+<p>Cover concepts generated in ChatGPT, refined in Illustrator. The final cover is bottom-right.</p>
+<div class="img-grid-3">
+<div class="project-img"><img src="img/all/ChatGPT_Image_Sep_13,_2025,_04_19_47_PM.jpg" alt="AI cover concept 1" loading="lazy"></div>
+<div class="project-img"><img src="img/all/ChatGPT_Image_Sep_13,_2025,_04_20_16_PM.jpg" alt="AI cover concept 2" loading="lazy"></div>
+<div class="project-img"><img src="img/all/ChatGPT_Image_Sep_13,_2025,_04_20_11_PM.jpg" alt="AI cover concept 3" loading="lazy"></div>
+<div class="project-img"><img src="img/all/ChatGPT_Image_Sep_13,_2025,_04_20_23_PM.jpg" alt="AI cover concept 4" loading="lazy"></div>
+<div class="project-img"><img src="img/all/ChatGPT_Image_Sep_13,_2025,_04_20_12_PM.jpg" alt="AI cover concept 5" loading="lazy"></div>
+<div class="project-img"><img src="img/LimitsCover.jpg" alt="Limits final cover art" loading="lazy"></div>
+</div>
+<p>I also mocked up a fake DM from Jack Harlow in Photoshop and posted it alongside the track. Tons of people reached out asking if it was real.</p>
+<div class="project-img img-landscape"><img src="img/all/HarlowDM_Mockup.jpg" alt="Fake DM with Jack Harlow phone mockup" loading="lazy"></div>
+<p>The full track below features two verses: mine and an AI-generated Jack Harlow verse built from his isolated vocals. Lyrics are color-coded by rhyme scheme.</p>
+<p style="font-size:0.85em;opacity:0.6;">⚠️ Explicit language</p>
+<div class="song-player" id="songPlayer">
+<button class="sp-play" id="spPlay"><svg viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21" id="spIcon"/></svg></button>
+<div class="sp-meta">
+<div class="song-title">Limits (feat. Jack Harlow)</div>
+<div class="song-artist">Fucius · 203 Records</div>
+</div>
+<div class="sp-track">
+<span class="sp-time" id="spCur">0:00</span>
+<div class="sp-bar" id="spBar"><div class="sp-progress" id="spProg"></div></div>
+<span class="sp-time" id="spDur">--:--</span>
+</div>
+<audio preload="metadata" src="img/all/Limits.mp3" id="spAudio"></audio>
+</div>
+<div class="lyrics-container">
+<div class="verse-label">Verse 1: Fucius</div>
+<p>Wondering if ima ever reach the fucking <span class="r1">ceiling</span><br>I don't fuck with <span class="r5">critics</span>, lemme tell you 'bout my <span class="r5">limits</span><br>Flexing on your former brethren just ain't <span class="r1">appealing</span><br>I'm <span class="r1">feeling</span>, the heat that I'm <span class="r1">concealing</span> is a <span class="r2">light jab</span><br>Controversy gonna follow when you <span class="r2">like that</span><br>Tryna tell me what the key is, you can <span class="r2">type that</span><br>If that's how ima make it <span class="r1">thrilling</span>, then I'm <span class="r2">Mike Jack</span><br>When I'm talking 'bout a plug, I mean the <span class="r2">mic jack</span><br>Punching in to bring the <span class="r2">action</span> like it's <span class="r2">IMAX</span><br>If they sleeping on the <span class="r3">sound</span>, then it's <span class="r2">night class</span><br><span class="r2">Try</span> and break the <span class="r2">stride</span>, then I'll put you in a <span class="r2">nice cast</span><br>If I'm blowing up in Texas, then I'm <span class="r2">like Dak</span><br>Push me to the <span class="r3">ground</span> and I'm <span class="r2">right back</span><br>Never scared to <span class="r2">fight back</span><br>South Beach is where the <span class="r2">lights at</span><br>I'm going <span class="r2">blind</span> from the <span class="r2">bright flash</span><br>I cross the strip <span class="r2">like</span> a <span class="r2">live match</span><br>Watch me <span class="r2">fly past</span>, these up and comers are <span class="r3">plain</span><br>Scared to navigate the scene, but I know the <span class="r3">terrain</span><br>Getting dirty in the <span class="r3">game</span>, it's <span class="r4">official</span><br>Never <span class="r14">fold</span>, bring it <span class="r14">home</span> for the <span class="r14">gold</span> like I'm <span class="r4">Kittle</span><br>For my dogs, got the <span class="r4">kibble</span><br>I haven't been <span class="r6">writing</span>, I just <span class="r4">scribble</span><br>They yelling at me "Mike drop"—I don't ever tote a <span class="r13">gun</span><br>But the <span class="r13">bump</span> stock, is <span class="r4">beneficial</span> for the <span class="r5">hitmen</span><br>Catch me <span class="r6">writing</span> <span class="r6">lines</span>, I'm <span class="r6">live</span> when I'm in <span class="r5">Whitman</span><br>All about that <span class="r6">wine</span> and <span class="r6">dine</span>, I'm too <span class="r5">lit, man</span><br>I may not <span class="r6">align</span> with <span class="r6">times</span>, but who's <span class="r5">ticking</span><br><span class="r5">Tick, tick, tick, tick, tick</span><br>Pyromaniacs' craniums get elated when I'm <span class="r5">spitting</span><br>Gassing me up, I'm <span class="r1">filling</span> up for the <span class="r5">mission</span><br>Money's a <span class="r13">plus</span>, but not the <span class="r13">sum</span>—an <span class="r5">addition</span><br>(Admiration when I'm <span class="r12">static</span>)<br>You know my image <span class="r12">holographic</span>, <span class="r5">limited</span> <span class="r5">edition</span></p>
+<div class="verse-label">Verse 2: AI Jack Harlow</div>
+<p>This ain't my <span class="r7">last chance</span><br>I'm just doing this for Fucius, he a <span class="r7">mad man</span><br>He yelling "<span class="r7">Jack, man</span>, come and bring the <span class="r7">facts, man</span>"<br>Kentucky boy getting chicken, I'm a <span class="r7">fat man</span><br>Pick up the <span class="r9">girls</span> with the <span class="r9">curls</span>, I'm feeling <span class="r7">jacked, man</span><br>Came with the <span class="r9">pearls</span>, now your <span class="r9">girl</span> give me a <span class="r7">lap dance</span><br>Said she like surprises, I tell her come and <span class="r8">see</span><br>I'm Jack in the box, I'm popping out when she <span class="r8">need</span><br>And that's <span class="r8">frequently</span>, she loving the <span class="r8">secrecy</span><br>Frolic 'round the pad in her panties so <span class="r8">indecently</span><br>Give her love <span class="r8">peacefully</span>, I could bust <span class="r8">easily</span><br>Pussy so amazing got me thinking she a <span class="r8">deity</span><br>But I ain't ignorant, she got the <span class="r8">best of me</span><br>She just get what she wants and leave the <span class="r8">rest of me</span><br>I don't give a damn if the haters wanna <span class="r8">wrestle me</span><br>You can catch a ride in my wake, just leave the <span class="r8">rest to me</span><br>And fuck 'em if they <span class="r8">mess with me</span><br><span class="r8">Testing me</span>? That's a deadly <span class="r8">recipe</span><br>I chef the scene while you barely catching <span class="r8">breath to breathe</span><br>Tryna come and <span class="r8">flex on me</span>? Boy, that's just a <span class="r8">fantasy</span><br>I'm moving with a purpose while your crew just move <span class="r8">frantically</span><br>I been in the cut like a motherfucking <span class="r9">tendon</span><br>Grind so <span class="r10">relentless</span> I been losing all my <span class="r9">senses</span><br>Never need a gimmick, never needed no <span class="r9">amendment</span><br>Every bar has been <span class="r9">cemented</span>, every move is <span class="r9">independent</span><br>I return all my <span class="r9">investments</span>, every check has been a <span class="r9">blessing</span><br>I stand on business like <span class="r9">defendants</span><br>I make a <span class="r1">killing</span> when I <span class="r11">write</span>, so don't you ever <span class="r11">disrespect it</span><br>I'm the <span class="r1">illest</span> on the <span class="r11">mic</span>, so when I <span class="r11">pass it</span>, <span class="r11">disinfect it</span> (achoo)<br>I'm <span class="r6">sick</span> of the <span class="r6">bitching</span>, and <span class="r6">bitch</span>, I'm looking at <span class="r14">you</span><br>I'll <span class="r6">hit</span> what you're <span class="r6">pitching</span> and <span class="r6">switch it</span> back on <span class="r14">you</span><br>You claim you got a <span class="r6">vision</span> that can bring you to the <span class="r14">views</span><br>But you're stuck in the basement and pray to God that I <span class="r14">lose</span><br>You do <span class="r11">jack shit</span>, I do <span class="r11">Jack shit</span><br>Always on another level, you can't <span class="r11">match it</span><br>Talking 'bout the flows, then my breath is too <span class="r12">disgusting</span><br>If we talking 'bout the GOATs, then my name in the <span class="r12">discussion</span></p>
+</div>`
+  },
+  {
+    title: "Mobile UIs",
+    overlayTitle: "Mobile&nbsp;UIs",
+    category: "UI/UX Design",
+    tools: "Figma",
+    year: "2025",
+    cover: `img/iPhone_Mockup.png`,
+    images: [],
+    content: `<p>Two mobile UI projects: MyPinecone, a CRM app redesign focused on simplifying contact management, and Medobar, a beekeeping app concept for a Syracuse-based company.</p>
+<h3>MyPinecone</h3>
+<p>I analyzed the existing web version, studied competitors, and observed a user testing session. The sign-up flow was cluttered and confusing, so I redesigned it into fewer, clearer screens.</p>
+<div class="img-grid-5">
+<div class="project-img"><img src="img/all/Goal_Page.png" alt="Goal selection screen" loading="lazy"></div>
+<div class="project-img"><img src="img/all/First_Name_Page.png" alt="First Name sign-up screen" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Last_Name_Page.png" alt="Last Name sign-up screen" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Phone_Page.png" alt="Phone number screen" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Verification_Page.png" alt="Verification screen" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Password_Page.png" alt="Password screen" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Home_Page.png" alt="Redesigned home screen" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Interactions_Page.png" alt="Interactions page" loading="lazy"></div>
+<div class="project-img"><img src="img/all/AI_Page.png" alt="AI features page" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Account_Page.png" alt="Account page design" loading="lazy"></div>
+</div>
+<p>Interactive Figma prototype <a href="https://www.figma.com/proto/72II3Ud383V7CluTMG3R5H/Pinecone-Redesign?node-id=301-972&starting-point-node-id=301%3A972&t=8rXMJRjZIyKAgn02-1" target="_blank" style="color:var(--accent);text-decoration:underline;">here</a>.</p>
+<h3>Medobar</h3>
+<p>Medobar: a mobile UI concept for a Syracuse beekeeping company, targeting adults 40+ who are curious about beekeeping. The design needed to feel approachable and simple — the interface uses a hexagon-based layout inspired by honeycomb cells, with customizable modular sections. I also designed a logo using shapes derived from the A, B, and O in the Medobar wordmark.</p>
+<div class="img-grid-4x2">
+<div class="project-img"><img src="img/all/splash.png" alt="Medobar splash screen" loading="lazy"></div>
+<div class="project-img"><img src="img/all/iPhone_13_&_14_-_1.png" alt="Medobar screen 1" loading="lazy"></div>
+<div class="project-img"><img src="img/all/iPhone_13_&_14_-_4.png" alt="Medobar screen 4" loading="lazy"></div>
+<div class="project-img"><img src="img/all/iPhone_13_&_14_-_5.png" alt="Medobar screen 5" loading="lazy"></div>
+<div class="project-img"><img src="img/all/iPhone_13_&_14_-_2.png" alt="Medobar screen 2" loading="lazy"></div>
+<div class="project-img"><img src="img/all/iPhone_13_&_14_-_3.png" alt="Medobar screen 3" loading="lazy"></div>
+<div class="project-img"><img src="img/all/iPhone_13_&_14_-_6.png" alt="Medobar screen 6" loading="lazy"></div>
+<div class="project-img"><img src="img/all/iPhone_13_&_14_-_7.png" alt="Medobar screen 7" loading="lazy"></div>
+</div>
+<div class="project-img img-landscape"><img src="img/all/iPhone_14_Mockup_(6).png" alt="Medobar high-fidelity mockup" loading="lazy"></div>`
+  },
+  {
+    title: "University Union",
+    overlayTitle: "University<br>Union",
+    category: "Coming Soon",
+    tools: "",
+    year: "",
+    cover: `img/UU.png`,
+    images: [],
+    content: `<p>Coming soon.</p>`
+  },
+  {
+    title: "LYRC",
+    overlayTitle: "LYRC",
+    category: "Coming Soon",
+    tools: "",
+    year: "",
+    cover: `img/LYRC.png`,
+    images: [],
+    content: `<p>Coming soon.</p>`
+  },
+  {
+    title: "Album Covers",
+    category: "Graphic Design / Photography",
+    tools: "Photoshop, Illustrator, Photography",
+    year: "2024",
+    cover: `img/whitenoise.jpg`,
+    images: [],
+    content: `<p>A collection of album covers combining graphic design and photography — "Visual Harmonies: A Fusion of Lens and Design." Each cover was shot and designed from scratch using Photoshop and Illustrator.</p>
+<div class="img-grid-3">
+<div class="project-img"><img src="img/all/Loya-Passion-Update-05.jpg" alt="Album cover - Passion update" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Loya-Passion-4.jpg" alt="Album cover - Passion series 4" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Loya-Passion-6.jpg" alt="Album cover - Passion series 6" loading="lazy"></div>
+</div>
+<div class="img-grid-2 img-grid-match-above">
+<div class="project-img"><img src="img/all/scribbleboy.jpg" alt="Scribbleboy album cover" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Loya-Passion-1.jpg" alt="Album cover - Passion series 1" loading="lazy"></div>
+</div>`
+  },
+  {
+    title: "Photography Portfolio",
+    overlayTitle: "Photography<br>Portfolio",
+    category: "Photography",
+    tools: "Camera, Lightroom",
+    year: "2023",
+    cover: `img/Portfolio_01.jpg`,
+    images: [],
+    content: `<p>Black-and-white photographs from my early exploration of photography — experimenting with light, shadow, texture, and contrast.</p>
+<div class="img-compose">
+<div class="project-img"><img src="img/all/20231115_VIS201_Loya_Portfolio_03.jpg" alt="B&W photograph 3" loading="lazy"></div>
+<div class="project-img"><img src="img/all/20231012_VIS201_Loya_Portfolio_09.jpg" alt="B&W photograph 9" loading="lazy"></div>
+<div class="project-img"><img src="img/all/20231002_VIS201_Loya_Portfolio_07.jpg" alt="B&W photograph 7" loading="lazy"></div>
+<div class="project-img"><img src="img/all/20231026_VIS201_Loya_Portfolio_02.jpg" alt="B&W photograph 2" loading="lazy"></div>
+<div class="project-img"><img src="img/all/20231012_VIS201_Loya_Portfolio_05.jpg" alt="B&W photograph 5" loading="lazy"></div>
+<div class="project-img"><img src="img/all/20231102_VIS201_Loya_Portfolio_04.jpg" alt="B&W photograph 4" loading="lazy"></div>
+<div class="project-img"><img src="img/all/20231109_VIS201_Loya_Portfolio_06.jpg" alt="B&W photograph 6" loading="lazy"></div>
+<div class="project-img"><img src="img/all/20231108_VIS201_Loya_Portfolio_10.jpg" alt="B&W photograph 10" loading="lazy"></div>
+<div class="project-img"><img src="img/all/20231014_VIS201_Loya_Portfolio_08.jpg" alt="B&W photograph 8" loading="lazy"></div>
+</div>`
+  },
+  {
+    title: "Miscellaneous Projects",
+    overlayTitle: "Miscellaneous<br>Projects",
+    category: "Mixed / Passion Projects",
+    tools: "Various",
+    year: "2022–Present",
+    cover: `img/2023_Freshmen.jpg`,
+    images: [],
+    content: `<p>A mix of passion projects, school assignments, professional work, and collaborations. Not every concept made it to production, but each one shaped my process.</p>
+<div class="img-grid-tight">
+<div class="project-img"><img src="img/all/BlockParty.jpg" alt="Block Party poster" loading="lazy"></div>
+<div class="project-img"><img src="img/all/TalentShow.jpg" alt="Talent Show poster design" loading="lazy"></div>
+<div class="project-img"><img src="img/all/LUSTv2.jpg" alt="LUST experimental design" loading="lazy"></div>
+<div class="project-img"><img src="img/all/PA_Show_v4.jpg" alt="PA Show poster v4" loading="lazy"></div>
+<div class="project-img project-img-video" data-video-src="img/all/WebStoryFinal.mp4"><video src="img/all/WebStoryFinal.mp4" autoplay loop muted playsinline style="width:100%;height:100%;object-fit:cover;"></video></div>
+<div class="project-img"><img src="img/all/Screenshot_2025-01-29_at_3.07.56_PM.jpg" alt="Design project screenshot" loading="lazy"></div>
+<div class="project-img project-img-video" data-video-src="img/all/MLAnim2.mp4" style="grid-column:1/-1;"><video src="img/all/MLAnim2.mp4" autoplay loop muted playsinline style="width:100%;height:auto;object-fit:contain;"></video></div>
+<div class="project-img"><img src="img/all/2024VolleyballFinalFour.jpg" alt="2024 Volleyball Final Four design" loading="lazy"></div>
+<div class="project-img"><img src="img/all/logic.jpg" alt="Logic-inspired design" loading="lazy"></div>
+<div class="project-img"><img src="img/all/2023_MM_Print.jpg" alt="2023 Mixtape Magazine print" loading="lazy" style="object-position:4% center;"></div>
+<div class="project-img"><img src="img/all/Screenshot_2024-12-05_at_8.09.22_PM.jpg" alt="Design project screenshot" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Screenshot_2024-12-05_at_8.15.10_PM.png" alt="Design project screenshot" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Cartoon1-01.jpg" alt="Cartoon illustration" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Screenshot_2024-12-05_at_7.20.02_PM.jpg" alt="Design project screenshot" loading="lazy"></div>
+<div class="project-img"><img src="img/all/2022_Swim.jpg" alt="2022 Swim design" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Screenshot_2024-12-05_at_8.22.22_PM.jpg" alt="Design project screenshot" loading="lazy"></div>
+<div class="project-img"><img src="img/all/2023_Billboard.jpg" alt="2023 Billboard design" loading="lazy"></div>
+<div class="project-img"><img src="img/all/PlayIn.jpg" alt="Play-In tournament design" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Screenshot_2024-12-05_at_7.15.19_PM.jpg" alt="Design project screenshot" loading="lazy"></div>
+</div>`
+  }
+];
+
+const galleryTrack = document.getElementById('galleryTrack');
+const overlay = document.getElementById('overlay');
+const closeBtn = document.getElementById('closeBtn');
+const projectContent = document.getElementById('projectContent');
+
+const N = projects.length;
+let currentCenter = 0;
+let isAnimating = false;
+const VISIBLE_HALF = 4;
+const ANIM_MS = 400;
+
+function getCoverSize() {
+  const vw = window.innerWidth;
+  if (vw <= 480) return 140;
+  if (vw <= 768) return 180;
+  if (vw <= 900) return 210;
+  if (vw <= 1200) return 250;
+  return 300;
+}
+
+const items = [];
+
+projects.forEach((project, i) => {
+  const item = document.createElement('div');
+  item.className = 'gallery-item';
+  item.innerHTML = `
+    <div class="cover-wrap">
+      <img src="${project.cover}" alt="${project.title}" loading="lazy" draggable="false">
+    </div>
+    <div class="gallery-vinyl"></div>
+    <div class="gallery-info">
+      <h3>${project.title}</h3>
+      <div class="category">${project.category}</div>
+    </div>
+  `;
+  item.addEventListener('click', () => {
+    if (i === currentCenter) openProject(i);
+  });
+  galleryTrack.appendChild(item);
+  items.push(item);
+});
+
+function wrapOffset(i, center, n) {
+  let d = i - center;
+  if (d > n / 2) d -= n;
+  if (d < -n / 2) d += n;
+  return d;
+}
+
+function calcState(i, center) {
+  const coverSz = getCoverSize();
+  const baseSpacing = Math.round(coverSz * 0.55);
+  const offset = wrapOffset(i, center, N);
+  const absOff = Math.abs(offset);
+  const scale = absOff === 0 ? 1.15 : Math.max(0.65, 1 - absOff * 0.08);
+  let opacity;
+  if (absOff > VISIBLE_HALF + 1) opacity = 0;
+  else if (absOff > VISIBLE_HALF) opacity = 0;
+  else if (absOff === VISIBLE_HALF) opacity = 0.4;
+  else opacity = 1;
+  let x = 0;
+  for (let j = 1; j <= absOff; j++) {
+    const stepSpacing = j === 1 ? baseSpacing * 1.4 : baseSpacing * (1 - (j - 2) * 0.12);
+    x += stepSpacing;
+  }
+  x *= Math.sign(offset);
+  return {
+    x,
+    scale,
+    rotateY: offset === 0 ? 0 : (offset < 0 ? 35 : -35),
+    brightness: absOff === 0 ? 1 : Math.max(0.3, 0.85 - absOff * 0.15),
+    opacity,
+    zIndex: absOff === 0 ? 50 : (N + 1 - absOff),
+    isCenter: offset === 0,
+    absOff,
+    shadowIntensity: absOff === 0 ? 1 : 0
+  };
+}
+
+function applyState(item, s) {
+  const coverSz = getCoverSize();
+  const itemCover = Math.round(coverSz * s.scale);
+
+  const coverEl = item.querySelector('.cover-wrap');
+  coverEl.style.width = itemCover + 'px';
+  coverEl.style.height = itemCover + 'px';
+
+  item.style.transform = `translate(-50%, -50%) translateX(${s.x}px) perspective(1200px) rotateY(${s.rotateY}deg) scale(${s.scale})`;
+  item.style.zIndex = s.zIndex;
+  item.style.opacity = s.opacity;
+  item.style.filter = `brightness(${s.brightness})`;
+  item.classList.toggle('is-center', s.isCenter);
+
+  const si = s.shadowIntensity || 0;
+  const baseBlur = 30, centerBlur = 55, centerSpread = 40;
+  const blur = baseBlur + (centerBlur - baseBlur) * si;
+  const yOff = 8 + 6 * si;
+  const alpha = 0.5 + 0.15 * si;
+  const glowAlpha = 0.06 * si;
+  coverEl.style.boxShadow = `0 ${yOff}px ${blur}px rgba(0,0,0,${alpha.toFixed(3)})` +
+    (si > 0.01 ? `, 0 0 ${centerSpread * si}px rgba(232,220,200,${glowAlpha.toFixed(3)})` : '');
+}
+
+let vinylAnim = null;
+function animateVinyl() {
+  items.forEach(item => {
+    const v = item.querySelector('.gallery-vinyl');
+    v.style.transform = 'translateX(0px)';
+    v.style.opacity = '0';
+  });
+  const centerVinyl = items[currentCenter].querySelector('.gallery-vinyl');
+  if (vinylAnim) cancelAnimationFrame(vinylAnim);
+  const dur = 600;
+  const t0 = performance.now();
+  centerVinyl.style.opacity = '1';
+  function tickVinyl(now) {
+    const p = Math.min((now - t0) / dur, 1);
+    const ease = p < 1 ? 1 - Math.pow(1 - p, 3) : 1;
+    centerVinyl.style.transform = `translateX(${ease * 55}px)`;
+    if (p < 1) vinylAnim = requestAnimationFrame(tickVinyl);
+    else vinylAnim = null;
+  }
+  vinylAnim = requestAnimationFrame(tickVinyl);
+}
+
+function layoutInstant() {
+  items.forEach((item, i) => applyState(item, calcState(i, currentCenter)));
+  const centerItem = items[currentCenter];
+  if (centerItem && centerItem.parentNode) {
+    centerItem.parentNode.appendChild(centerItem);
+  }
+  animateVinyl();
+}
+
+function animateTo(newCenter, duration) {
+  const oldCenter = currentCenter;
+  currentCenter = newCenter;
+
+  if (vinylAnim) { cancelAnimationFrame(vinylAnim); vinylAnim = null; }
+  const oldVinyl = items[oldCenter].querySelector('.gallery-vinyl');
+  const retractDur = 300;
+  const retractStart = performance.now();
+  const startX = parseFloat(oldVinyl.style.transform.replace(/[^0-9.-]/g,'')) || 55;
+  function retractTick(now) {
+    const p = Math.min((now - retractStart) / retractDur, 1);
+    const ease = p * p;
+    const x = startX * (1 - ease);
+    oldVinyl.style.transform = `translateX(${x}px)`;
+    if (p >= 1) oldVinyl.style.opacity = '0';
+    if (p < 1) requestAnimationFrame(retractTick);
+  }
+  requestAnimationFrame(retractTick);
+
+  const startStates = items.map((_, i) => calcState(i, oldCenter));
+  const endStates = items.map((_, i) => calcState(i, newCenter));
+
+  const wrappingItems = new Set();
+  items.forEach((item, i) => {
+    const oldOff = Math.abs(wrapOffset(i, oldCenter, N));
+    const newOff = Math.abs(wrapOffset(i, newCenter, N));
+    const oldSign = Math.sign(wrapOffset(i, oldCenter, N));
+    const newSign = Math.sign(wrapOffset(i, newCenter, N));
+    const isWrapping = oldSign !== 0 && newSign !== 0 && oldSign !== newSign;
+    if (oldOff > VISIBLE_HALF && newOff > VISIBLE_HALF) {
+      applyState(item, endStates[i]);
+      startStates[i] = endStates[i];
+    }
+    else if (isWrapping) {
+      wrappingItems.add(i);
+      startStates[i] = { ...startStates[i], opacity: startStates[i].opacity };
+    }
+  });
+
+  const startTime = performance.now();
+
+  function tick(now) {
+    const t = Math.min((now - startTime) / duration, 1);
+    const ease = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+
+    items.forEach((item, i) => {
+      const s = startStates[i];
+      const e = endStates[i];
+      if (wrappingItems.has(i)) {
+        const slideExtra = getCoverSize() * 0.6;
+        if (t < 0.5) {
+          const p = t / 0.5;
+          const slideEase = p * p;
+          const exitX = s.x + Math.sign(s.x) * slideExtra * slideEase;
+          const fadeOut = 1 - slideEase;
+          applyState(item, {
+            x: exitX,
+            scale: s.scale,
+            rotateY: s.rotateY,
+            brightness: s.brightness,
+            opacity: s.opacity * fadeOut,
+            zIndex: e.zIndex,
+            isCenter: false,
+            absOff: s.absOff,
+            shadowIntensity: (s.shadowIntensity || 0) * fadeOut
+          });
+        } else {
+          const p = (t - 0.5) / 0.5;
+          const slideEase = 1 - (1 - p) * (1 - p);
+          const entryX = e.x + Math.sign(e.x) * slideExtra * (1 - slideEase);
+          applyState(item, {
+            x: entryX,
+            scale: e.scale,
+            rotateY: e.rotateY,
+            brightness: e.brightness,
+            opacity: e.opacity * slideEase,
+            zIndex: e.zIndex,
+            isCenter: e.isCenter,
+            absOff: e.absOff,
+            shadowIntensity: (e.shadowIntensity || 0) * slideEase
+          });
+        }
+      } else {
+        applyState(item, {
+          x: s.x + (e.x - s.x) * ease,
+          scale: s.scale + (e.scale - s.scale) * ease,
+          rotateY: s.rotateY + (e.rotateY - s.rotateY) * ease,
+          brightness: s.brightness + (e.brightness - s.brightness) * ease,
+          opacity: s.opacity + (e.opacity - s.opacity) * ease,
+          zIndex: e.zIndex,
+          isCenter: e.isCenter,
+          absOff: e.absOff,
+          shadowIntensity: (s.shadowIntensity || 0) + ((e.shadowIntensity || 0) - (s.shadowIntensity || 0)) * ease
+        });
+      }
+    });
+
+    if (t < 1) {
+      requestAnimationFrame(tick);
+    } else {
+      isAnimating = false;
+      const centerItem = items[currentCenter];
+      if (centerItem && centerItem.parentNode) {
+        centerItem.parentNode.appendChild(centerItem);
+      }
+      animateVinyl();
+    }
+  }
+
+  requestAnimationFrame(tick);
+}
+
+function navigate(dir) {
+  if (isAnimating) return;
+  isAnimating = true;
+  const newCenter = ((currentCenter + dir) % N + N) % N;
+  animateTo(newCenter, ANIM_MS);
+}
+
+document.getElementById('arrowLeft').addEventListener('click', () => navigate(-1));
+document.getElementById('arrowRight').addEventListener('click', () => navigate(1));
+
+document.addEventListener('keydown', (e) => {
+  if (overlay.classList.contains('open')) return;
+  if (e.key === 'ArrowLeft') navigate(-1);
+  if (e.key === 'ArrowRight') navigate(1);
+});
+
+layoutInstant();
+window.addEventListener('resize', layoutInstant);
+
+function openProject(index) {
+  const p = projects[index];
+  const galleryHTML = p.images.map(src => `<img src="${src}" alt="${p.title}" loading="lazy">`).join('');
+
+  projectContent.innerHTML = `
+    <div class="project-header">
+      <div class="project-header-art">
+      <div class="turntable" id="turntable">
+        <div class="turntable-platter">
+          <div class="turntable-label">
+            <img src="${p.cover}" alt="${p.title}">
+          </div>
+        </div>
+        <div class="tonearm-wrap">
+          <svg viewBox="0 0 200 200">
+            <g class="arm-group" transform="rotate(-75 170 30)">
+              <circle cx="170" cy="30" r="12" fill="#444" stroke="#666" stroke-width="1.5"/>
+              <circle cx="170" cy="30" r="6" fill="#555" stroke="#777" stroke-width="1"/>
+              <line x1="170" y1="30" x2="30" y2="30" stroke="#aaa" stroke-width="3.5" stroke-linecap="round"/>
+              <ellipse cx="185" cy="30" rx="8" ry="6" fill="#666" stroke="#555" stroke-width="1"/>
+              <line x1="30" y1="30" x2="18" y2="42" stroke="#999" stroke-width="3" stroke-linecap="round"/>
+              <rect x="13" y="40" width="10" height="8" rx="1.5" fill="#777"/>
+              <line x1="18" y1="48" x2="18" y2="54" stroke="#ddd" stroke-width="1.5" stroke-linecap="round"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+      </div>
+      <div class="project-details">
+        <div class="title-group">
+          <div class="category">${p.category}</div>
+          <h2>${p.overlayTitle || p.title}</h2>
+        </div>
+        <div class="project-meta">
+          <div>
+            <span class="label">Tools</span>
+            <span class="value">${p.tools.split(', ').join('<br>')}</span>
+          </div>
+          <div>
+            <span class="label">Year</span>
+            <span class="value">${p.year}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="project-body">
+      ${p.content}
+    </div>
+    <div class="project-gallery">
+      ${galleryHTML}
+    </div>
+  `;
+
+  overlay.classList.add('open');
+  overlay.scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+  initSongPlayer();
+
+  /* now-playing removed */
+
+  setTimeout(() => {
+    const tt = document.getElementById('turntable');
+    if (tt) {
+      tt.classList.add('playing');
+      const arm = tt.querySelector('.arm-group');
+      if (arm) {
+        const start = -75, end = -90, dur = 1400;
+        const t0 = performance.now();
+        function animArm(now) {
+          const p = Math.min((now - t0) / dur, 1);
+          const ease = p < 0.5 ? 2*p*p : -1+(4-2*p)*p;
+          const angle = start + (end - start) * ease;
+          arm.setAttribute('transform', `rotate(${angle} 170 30)`);
+          if (p < 1) requestAnimationFrame(animArm);
+        }
+        requestAnimationFrame(animArm);
+      }
+    }
+  }, 900);
+}
+
+closeBtn.addEventListener('click', closeProject);
+overlay.addEventListener('click', (e) => {
+  if (e.target === overlay) closeProject();
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    // P2 overlays first
+    if (_p2ProjectOpen) { p2CloseProject(); return; }
+    if (document.getElementById('p2About').classList.contains('visible')) { p2CloseAbout(); return; }
+    if (document.getElementById('p2Contact').classList.contains('visible')) { p2CloseContact(); return; }
+    if (document.getElementById('p2ComingSoon').classList.contains('active')) { document.getElementById('p2ComingSoon').classList.remove('active'); return; }
+    // P1 overlays
+    if (!lightbox.classList.contains('open')) closeProject();
+  }
+});
+
+function closeProject() {
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.getElementById('nav-' + page).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function exitP2(page) {
+  document.getElementById('p2Wrap').classList.remove('active');
+  document.getElementById('dieLanding').style.display = 'none';
+  document.querySelector('header').style.display = '';
+  document.querySelectorAll('.page').forEach(p => { p.style.display = ''; });
+  document.querySelector('footer').style.display = '';
+  showPage(page);
+}
+
+function p2ShowAbout() {
+  document.getElementById('p2Scene').classList.add('zoomed-out');
+  document.getElementById('p2About').classList.add('visible');
+}
+
+function p2CloseAbout() {
+  document.getElementById('p2Scene').classList.remove('zoomed-out');
+  document.getElementById('p2About').classList.remove('visible');
+}
+
+function p2ShowContact() {
+  document.getElementById('p2Scene').classList.add('zoomed-out');
+  document.getElementById('p2Contact').classList.add('visible');
+}
+
+function p2CloseContact() {
+  document.getElementById('p2Scene').classList.remove('zoomed-out');
+  document.getElementById('p2Contact').classList.remove('visible');
+}
+
+// ── P2 project shared-element transition state ──
+var _p2ProjectOpen = false;
+var _p2SourceEl = null;     // the clicked p2-item element
+var _p2FlyImg = null;       // the flying clone
+var _p2SourceRect = null;   // original bounding rect
+
+function p2ShowProject(index, el) {
+  const p = projects[index];
+  if (!p || _p2ProjectOpen) return;
+  _p2ProjectOpen = true;
+  _p2SourceEl = el;
+
+  const wrap = document.getElementById('p2Wrap');
+  const scene = document.getElementById('p2Scene');
+  const overlay = document.getElementById('p2Project');
+  const scrollEl = overlay.querySelector('.p2-project-scroll');
+
+  // Populate content (hidden initially)
+  document.getElementById('p2ProjectTitle').textContent = p.title;
+  document.getElementById('p2ProjectCategory').textContent = p.category;
+  document.getElementById('p2ProjectTools').textContent = p.tools;
+  document.getElementById('p2ProjectYear').textContent = p.year;
+  document.getElementById('p2ProjectBody').innerHTML = p.content;
+  document.getElementById('p2ProjectHeroImg').src = p.cover;
+  document.getElementById('p2ProjectHeroImg').alt = p.title;
+  scrollEl.scrollTop = 0;
+
+  // Reset content visibility
+  document.getElementById('p2ProjectHero').classList.remove('visible');
+  document.getElementById('p2ProjectHeader').classList.remove('visible');
+  document.getElementById('p2ProjectBody').classList.remove('visible');
+  document.getElementById('p2ProjectBackRow').classList.remove('visible');
+
+  // 1. Capture source rect
+  const wrapRect = wrap.getBoundingClientRect();
+  const srcRect = el.getBoundingClientRect();
+  _p2SourceRect = {
+    top: srcRect.top - wrapRect.top,
+    left: srcRect.left - wrapRect.left,
+    width: srcRect.width,
+    height: srcRect.height
+  };
+
+  // 2. Compute hero target (350x350 square)
+  const heroSize = 350;
+  const pad = 48;
+  const contentMaxW = 900;
+  const contentLeft = (wrap.clientWidth - Math.min(contentMaxW, wrap.clientWidth - pad * 2)) / 2;
+  const heroLeft = contentLeft + pad;
+  const heroTop = pad + 50;
+
+  // 3. Create flying image clone at source position
+  const fly = document.createElement('div');
+  fly.className = 'p2-fly-img';
+  fly.innerHTML = `<img src="${p.cover}" alt="${p.title}">`;
+  fly.style.top = _p2SourceRect.top + 'px';
+  fly.style.left = _p2SourceRect.left + 'px';
+  fly.style.width = _p2SourceRect.width + 'px';
+  fly.style.height = _p2SourceRect.height + 'px';
+  wrap.appendChild(fly);
+  _p2FlyImg = fly;
+
+  // 4. Hide original and fade others
+  el.style.opacity = '0';
+  el.style.pointerEvents = 'none';
+  Array.from(scene.children).forEach(child => {
+    if (child !== el) child.classList.add('p2-scene-child-fade');
+  });
+
+  // 5. Show overlay
+  overlay.classList.add('visible');
+
+  // 6. Animate with transform (GPU-accelerated)
+  const dx = heroLeft - _p2SourceRect.left;
+  const dy = heroTop - _p2SourceRect.top;
+  const sx = heroSize / _p2SourceRect.width;
+  const sy = heroSize / _p2SourceRect.height;
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      fly.style.transform = `translate3d(${dx}px, ${dy}px, 0) scale(${sx}, ${sy})`;
+      fly.style.borderRadius = '10px';
+      fly.style.boxShadow = '0 16px 60px rgba(0,0,0,0.10)';
+
+      // After flight, reveal content
+      setTimeout(() => {
+        document.getElementById('p2ProjectHero').classList.add('visible');
+        fly.style.opacity = '0';
+        setTimeout(() => {
+          document.getElementById('p2ProjectBackRow').classList.add('visible');
+        }, 50);
+        setTimeout(() => {
+          document.getElementById('p2ProjectHeader').classList.add('visible');
+        }, 120);
+        setTimeout(() => {
+          document.getElementById('p2ProjectBody').classList.add('visible');
+        }, 220);
+        setTimeout(() => {
+          if (_p2FlyImg && _p2FlyImg.parentNode) _p2FlyImg.parentNode.removeChild(_p2FlyImg);
+          _p2FlyImg = null;
+        }, 350);
+      }, 620);
+    });
+  });
+}
+
+function p2CloseProject() {
+  if (!_p2ProjectOpen) return;
+
+  const wrap = document.getElementById('p2Wrap');
+  const scene = document.getElementById('p2Scene');
+  const overlay = document.getElementById('p2Project');
+  const hero = document.getElementById('p2ProjectHero');
+  const heroImg = document.getElementById('p2ProjectHeroImg');
+
+  // 1. Fade out text content
+  document.getElementById('p2ProjectBackRow').classList.remove('visible');
+  document.getElementById('p2ProjectHeader').classList.remove('visible');
+  document.getElementById('p2ProjectBody').classList.remove('visible');
+  hero.classList.remove('visible');
+
+  // 2. Create fly at source position, transformed to hero position
+  const heroSize = 350;
+  const pad = 48;
+  const contentMaxW = 900;
+  const contentLeft = (wrap.clientWidth - Math.min(contentMaxW, wrap.clientWidth - pad * 2)) / 2;
+  const heroLeft = contentLeft + pad;
+  const heroTop = pad + 50;
+
+  const fly = document.createElement('div');
+  fly.className = 'p2-fly-img';
+  fly.innerHTML = `<img src="${heroImg.src}" alt="">`;
+
+  if (_p2SourceRect) {
+    const dx = heroLeft - _p2SourceRect.left;
+    const dy = heroTop - _p2SourceRect.top;
+    const sx = heroSize / _p2SourceRect.width;
+    const sy = heroSize / _p2SourceRect.height;
+    fly.style.top = _p2SourceRect.top + 'px';
+    fly.style.left = _p2SourceRect.left + 'px';
+    fly.style.width = _p2SourceRect.width + 'px';
+    fly.style.height = _p2SourceRect.height + 'px';
+    fly.style.transform = `translate3d(${dx}px, ${dy}px, 0) scale(${sx}, ${sy})`;
+  }
+  fly.style.borderRadius = '10px';
+  wrap.appendChild(fly);
+  _p2FlyImg = fly;
+
+  // 3. Hide overlay
+  overlay.classList.remove('visible');
+
+  // 4. Animate back to source (GPU-accelerated transform)
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      fly.style.transform = 'translate3d(0, 0, 0) scale(1)';
+      fly.style.borderRadius = '8px';
+      fly.style.boxShadow = '0 8px 30px rgba(0,0,0,0.12)';
+
+      // Fade scene children back in
+      Array.from(scene.children).forEach(child => {
+        child.classList.remove('p2-scene-child-fade');
+      });
+
+      setTimeout(() => {
+        fly.style.opacity = '0';
+        if (_p2SourceEl) {
+          _p2SourceEl.style.opacity = '';
+          _p2SourceEl.style.pointerEvents = '';
+        }
+        setTimeout(() => {
+          if (fly.parentNode) fly.parentNode.removeChild(fly);
+          _p2FlyImg = null;
+          _p2SourceEl = null;
+          _p2SourceRect = null;
+          _p2ProjectOpen = false;
+        }, 300);
+      }, 580);
+    });
+  });
+}
+/* ── LIGHTBOX ── */
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightboxImg');
+const lightboxClose = lightbox.querySelector('.lightbox-close');
+const lightboxVideo = document.getElementById('lightboxVideo');
+
+let lbItems = [];
+let lbIndex = 0;
+
+function showLightboxItem(idx) {
+  lbIndex = idx;
+  const item = lbItems[idx];
+  if (!item) return;
+
+  const vid = item.querySelector('video');
+  const img = item.querySelector('img');
+
+  // Hide both first to prevent flash
+  lightboxImg.style.display = 'none';
+  lightboxVideo.style.display = 'none';
+  lightboxVideo.pause();
+
+  if (vid && item.classList.contains('project-img-video')) {
+    lightboxVideo.src = vid.src;
+    lightboxVideo.currentTime = vid.currentTime;
+    lightboxVideo.muted = true;
+    lightboxVideo.loop = true;
+    lightboxVideo.play();
+    lightboxVideo.style.display = 'block';
+  } else if (img) {
+    lightboxImg.src = img.src;
+    lightboxImg.style.display = 'block';
+  }
+  lightbox.classList.add('open');
+}
+
+document.addEventListener('click', function(e) {
+  const imgEl = e.target.closest('.project-img');
+  if (!imgEl) return;
+  e.stopPropagation();
+
+  // Collect ALL project-img items across the entire project overlay (header + body)
+  const projectOverlay = imgEl.closest('.project-overlay') || imgEl.closest('.project-body');
+  if (projectOverlay) {
+    lbItems = Array.from(projectOverlay.querySelectorAll('.project-img'));
+  } else {
+    lbItems = [imgEl];
+  }
+  lbIndex = lbItems.indexOf(imgEl);
+  if (lbIndex === -1) { lbItems = [imgEl]; lbIndex = 0; }
+
+  showLightboxItem(lbIndex);
+});
+
+function closeLightbox() {
+  // Scroll before fade starts
+  if (lbItems[lbIndex]) {
+    lbItems[lbIndex].scrollIntoView({ behavior: 'instant', block: 'center' });
+  }
+  lightbox.classList.remove('open');
+  // Clean up after fade-out transition
+  setTimeout(() => {
+    lightboxVideo.pause();
+    lightboxVideo.style.display = 'none';
+    lightboxVideo.removeAttribute('src');
+    lightboxImg.style.display = 'none';
+    lightboxImg.removeAttribute('src');
+  }, 300);
+  lbItems = [];
+  lbIndex = 0;
+}
+
+lightbox.addEventListener('click', (e) => {
+  if (e.target === lightbox || e.target === lightboxImg || e.target === lightboxVideo) closeLightbox();
+});
+lightboxClose.addEventListener('click', (e) => {
+  e.stopPropagation();
+  closeLightbox();
+});
+document.addEventListener('keydown', (e) => {
+  if (!lightbox.classList.contains('open')) return;
+  if (e.key === 'Escape') { closeLightbox(); return; }
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+    e.preventDefault();
+    if (lbItems.length > 1) {
+      if (lbIndex === lbItems.length - 1) showLightboxItem(0);
+      else showLightboxItem(lbIndex + 1);
+    }
+  }
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+    e.preventDefault();
+    if (lbItems.length > 1) {
+      if (lbIndex === 0) showLightboxItem(lbItems.length - 1);
+      else showLightboxItem(lbIndex - 1);
+    }
+  }
+});
+
+
+
+/* ── CUSTOM AUDIO PLAYER ── */
+function initSongPlayer() {
+  const audio = document.getElementById('spAudio');
+  const playBtn = document.getElementById('spPlay');
+  const prog = document.getElementById('spProg');
+  const bar = document.getElementById('spBar');
+  const curEl = document.getElementById('spCur');
+  const durEl = document.getElementById('spDur');
+  if (!audio || audio._spInit) return;
+  audio._spInit = true;
+  const fmt = s => { const m=Math.floor(s/60); return m+':'+(Math.floor(s%60)+'').padStart(2,'0'); };
+  audio.addEventListener('loadedmetadata', () => { durEl.textContent = fmt(audio.duration); });
+  if (audio.duration) durEl.textContent = fmt(audio.duration);
+  audio.addEventListener('timeupdate', () => {
+    if (!audio.duration) return;
+    prog.style.width = (audio.currentTime/audio.duration*100)+'%';
+    curEl.textContent = fmt(audio.currentTime);
+  });
+  audio.addEventListener('ended', () => { playBtn.innerHTML = '<svg viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21" fill="currentColor"/></svg>'; });
+  playBtn.addEventListener('click', () => {
+    if (audio.paused) {
+      audio.play();
+      playBtn.innerHTML = '<svg viewBox="0 0 24 24"><rect x="5" y="3" width="4" height="18" fill="currentColor"/><rect x="15" y="3" width="4" height="18" fill="currentColor"/></svg>';
+    } else {
+      audio.pause();
+      playBtn.innerHTML = '<svg viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21" fill="currentColor"/></svg>';
+    }
+  });
+  bar.addEventListener('click', e => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!audio.duration) return;
+    const r = bar.getBoundingClientRect();
+    const pct = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
+    audio.currentTime = pct * audio.duration;
+  });
+  prog.addEventListener('click', e => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!audio.duration) return;
+    const r = bar.getBoundingClientRect();
+    const pct = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
+    audio.currentTime = pct * audio.duration;
+  });
+}
+
+/* rearrange feature removed */
+
+/* ── DIE LANDING (Three.js) ── */
+(function() {
+  const landing = document.getElementById('dieLanding');
+  const canvas = document.getElementById('dieCanvas');
+  let rolling = false;
+
+  // Three.js setup
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(300, 300);
+  renderer.setClearColor(0x000000, 0);
+
+  const scene3d = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
+  camera.position.z = 5;
+
+  scene3d.add(new THREE.AmbientLight(0xffffff, 0.5));
+  const dirLight = new THREE.DirectionalLight(0xffffff, 0.55);
+  dirLight.position.set(2, 3, 5);
+  scene3d.add(dirLight);
+
+  // Face textures
+  function makeFaceTex(dots) {
+    const c = document.createElement('canvas');
+    c.width = 256; c.height = 256;
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = '#f0f0f0';
+    ctx.fillRect(0, 0, 256, 256);
+    ctx.fillStyle = '#222';
+    dots.forEach(([x, y]) => {
+      ctx.beginPath();
+      ctx.arc(x * 256, y * 256, 16, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    const tex = new THREE.CanvasTexture(c);
+    tex.needsUpdate = true;
+    return tex;
+  }
+
+  const faceDots = {
+    1: [[0.5, 0.5]],
+    2: [[0.65, 0.35], [0.35, 0.65]],
+    3: [[0.65, 0.3], [0.5, 0.5], [0.35, 0.7]],
+    4: [[0.37, 0.35], [0.63, 0.35], [0.37, 0.65], [0.63, 0.65]],
+    5: [[0.35, 0.35], [0.65, 0.35], [0.5, 0.5], [0.35, 0.65], [0.65, 0.65]],
+    6: [[0.38, 0.3], [0.62, 0.3], [0.38, 0.5], [0.62, 0.5], [0.38, 0.7], [0.62, 0.7]]
+  };
+
+  const faceOrder = [4, 3, 1, 6, 2, 5];
+  const materials = faceOrder.map(n => new THREE.MeshStandardMaterial({
+    map: makeFaceTex(faceDots[n]), roughness: 0.4, metalness: 0.0
+  }));
+
+  // Rounded box — superellipsoid approach (flat faces, rounded edges)
+  const boxGeo = new THREE.BoxGeometry(1.8, 1.8, 1.8, 12, 12, 12);
+  const pos = boxGeo.attributes.position;
+  const halfSize = 0.9;
+  const radius = 0.45;
+  const v = new THREE.Vector3();
+  for (let i = 0; i < pos.count; i++) {
+    v.set(pos.getX(i), pos.getY(i), pos.getZ(i));
+    // Clamp inner box, then push out corners/edges
+    const ax = Math.abs(v.x), ay = Math.abs(v.y), az = Math.abs(v.z);
+    const inner = halfSize - radius;
+    // Find the clamped point on the inner box
+    const cx = Math.min(ax, inner);
+    const cy = Math.min(ay, inner);
+    const cz = Math.min(az, inner);
+    // Offset from inner box
+    const dx = ax - cx;
+    const dy = ay - cy;
+    const dz = az - cz;
+    const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+    if (dist > 0.001) {
+      // Push to radius distance from inner box surface
+      const scale = radius / dist;
+      v.x = Math.sign(v.x) * (cx + dx * scale);
+      v.y = Math.sign(v.y) * (cy + dy * scale);
+      v.z = Math.sign(v.z) * (cz + dz * scale);
+    }
+    pos.setXYZ(i, v.x, v.y, v.z);
+  }
+  // Smooth normals: normal = direction from inner box point to vertex
+  const normals = boxGeo.attributes.normal;
+  const inner2 = halfSize - radius;
+  const n = new THREE.Vector3();
+  for (let i = 0; i < pos.count; i++) {
+    v.set(pos.getX(i), pos.getY(i), pos.getZ(i));
+    const cx2 = Math.sign(v.x) * Math.min(Math.abs(v.x), inner2);
+    const cy2 = Math.sign(v.y) * Math.min(Math.abs(v.y), inner2);
+    const cz2 = Math.sign(v.z) * Math.min(Math.abs(v.z), inner2);
+    n.set(v.x - cx2, v.y - cy2, v.z - cz2);
+    if (n.length() > 0.001) n.normalize();
+    else n.set(v.x, v.y, v.z).normalize();
+    normals.setXYZ(i, n.x, n.y, n.z);
+  }
+  normals.needsUpdate = true;
+
+  const dieMesh = new THREE.Mesh(boxGeo, materials);
+  scene3d.add(dieMesh);
+
+  // Face rotations
+  const faceRotations = {
+    1: { x: Math.PI / 2, y: 0 },
+    2: { x: 0, y: 0 },
+    3: { x: 0, y: Math.PI / 2 },
+    4: { x: 0, y: -Math.PI / 2 },
+    5: { x: 0, y: Math.PI },
+    6: { x: -Math.PI / 2, y: 0 }
+  };
+
+  // Mouse follow
+  let targetRX = 0.4, targetRY = 0.5;
+  let curRX = 0.4, curRY = 0.5;
+
+  landing.addEventListener('mousemove', (e) => {
+    if (rolling) return;
+    const cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+    targetRX = 0.4 + ((e.clientY - cy) / cy) * -0.5;
+    targetRY = 0.5 + ((e.clientX - cx) / cx) * 0.5;
+  });
+
+  window.showDieLanding = function() {
+    rolling = false;
+    landing.classList.remove('hidden', 'fade-white', 'rolling');
+    landing.style.display = '';
+    curRX = 0.4; curRY = 0.5;
+    targetRX = 0.4; targetRY = 0.5;
+    document.getElementById('p2Wrap').classList.remove('active');
+    document.querySelector('header').style.display = '';
+    document.querySelectorAll('.page').forEach(p => p.style.display = '');
+    document.querySelector('footer').style.display = '';
+  };
+
+  window.dieGoTo = function(face) {
+    if (rolling) return;
+    if (face !== 1) {
+      document.querySelector('header').style.display = 'none';
+      document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+      document.querySelector('footer').style.display = 'none';
+    }
+    // Snap die to target face
+    const endRot = faceRotations[face];
+    dieMesh.rotation.x = endRot.x;
+    dieMesh.rotation.y = endRot.y;
+    curRX = endRot.x; curRY = endRot.y;
+    targetRX = endRot.x; targetRY = endRot.y;
+    rolling = true;
+
+    setTimeout(() => {
+      if (face !== 1) {
+        landing.classList.add('fade-white');
+        setTimeout(() => {
+          document.getElementById('p2Wrap').classList.add('active');
+          initP2();
+          setTimeout(() => {
+            landing.classList.add('hidden');
+            setTimeout(() => { landing.style.display = 'none'; }, 800);
+          }, 300);
+        }, 700);
+      } else {
+        document.querySelector('header').style.display = '';
+        document.querySelectorAll('.page').forEach(p => p.style.display = '');
+        document.querySelector('footer').style.display = '';
+        showPage('collection');
+        landing.classList.add('hidden');
+        setTimeout(() => { landing.style.display = 'none'; }, 800);
+      }
+    }, 400);
+  };
+
+  function animate() {
+    requestAnimationFrame(animate);
+    if (!rolling) {
+      curRX += (targetRX - curRX) * 0.08;
+      curRY += (targetRY - curRY) * 0.08;
+      dieMesh.rotation.x = curRX;
+      dieMesh.rotation.y = curRY;
+    }
+    renderer.render(scene3d, camera);
+  }
+  animate();
+
+  canvas.addEventListener('click', () => {
+    if (rolling) return;
+    rolling = true;
+    landing.classList.add('rolling');
+
+    const targetFace = Math.floor(Math.random() * 6) + 1;
+    // Pre-hide P1 if going to P2 (all faces except 1)
+    if (targetFace !== 1) {
+      document.querySelector('header').style.display = 'none';
+      document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+      document.querySelector('footer').style.display = 'none';
+    }
+    const endRot = faceRotations[targetFace];
+    const spinsX = (Math.floor(Math.random() * 2) + 3) * Math.PI * 2;
+    const spinsY = (Math.floor(Math.random() * 3) + 4) * Math.PI * 2;
+    const finalX = endRot.x + spinsX;
+    const finalY = endRot.y + spinsY;
+    const startRX = curRX, startRY = curRY;
+
+    const duration = 3000;
+    const start = performance.now();
+
+    function easeOutQuart(t) { return 1 - Math.pow(1 - t, 4); }
+
+    function tick(now) {
+      const t = Math.min((now - start) / duration, 1);
+      const ease = easeOutQuart(t);
+      dieMesh.rotation.x = startRX + (finalX - startRX) * ease;
+      dieMesh.rotation.y = startRY + (finalY - startRY) * ease;
+
+      if (t < 1) {
+        requestAnimationFrame(tick);
+      } else {
+        // Landed — pause then transition to the right portfolio
+        setTimeout(() => {
+          if (targetFace !== 1) {
+            // Fade die elements, transition bg to cream
+            landing.classList.add('fade-white');
+            // Wait for die to fade, then show P2 underneath and fade landing away
+            setTimeout(() => {
+              document.getElementById('p2Wrap').classList.add('active');
+              initP2();
+              // Now fade out the cream landing to reveal P2
+              setTimeout(() => {
+                landing.classList.add('hidden');
+                setTimeout(() => { landing.style.display = 'none'; }, 800);
+              }, 300);
+            }, 700);
+          } else {
+            // Face 1 → P1: show header/pages/footer, then fade landing
+            document.querySelector('header').style.display = '';
+            document.querySelectorAll('.page').forEach(p => p.style.display = '');
+            document.querySelector('footer').style.display = '';
+            showPage('collection');
+            landing.classList.add('hidden');
+            setTimeout(() => { landing.style.display = 'none'; }, 800);
+          }
+        }, 600);
+      }
+    }
+
+    requestAnimationFrame(tick);
+  });
+})();
+
+/* ── P2: FLOATING PORTFOLIO ── */
+let p2Initialized = false;
+function initP2() {
+  if (p2Initialized) return;
+  p2Initialized = true;
+
+  const scene = document.getElementById('p2Scene');
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+
+  const p2Items = [];
+  const positions = [
+    { x: 0.12, y: 0.18, z: -80,  s: 200 },
+    { x: 0.78, y: 0.15, z: -120, s: 170 },
+    { x: 0.08, y: 0.65, z: -50,  s: 190 },
+    { x: 0.82, y: 0.60, z: -100, s: 160 },
+    { x: 0.30, y: 0.78, z: -30,  s: 180 },
+    { x: 0.65, y: 0.80, z: -90,  s: 175 },
+    { x: 0.20, y: 0.40, z: -60,  s: 155 },
+    { x: 0.72, y: 0.38, z: -110, s: 165 },
+    { x: 0.50, y: 0.12, z: -70,  s: 185 },
+  ];
+
+  projects.forEach((p, i) => {
+    const pos = positions[i] || { x: Math.random() * 0.6 + 0.2, y: Math.random() * 0.6 + 0.2, z: -Math.random() * 100, s: 160 };
+    const el = document.createElement('div');
+    el.className = 'p2-item';
+    el.style.width = pos.s + 'px';
+    el.innerHTML = `<img src="${p.cover}" alt="${p.title}">`;
+    el.addEventListener('click', () => {
+      p2ShowProject(i, el);
+    });
+    el.addEventListener('mouseenter', () => { el.style.filter = 'blur(0px)'; });
+    el.addEventListener('mouseleave', () => { el.style.filter = `blur(${el._baseBlur}px)`; });
+    scene.appendChild(el);
+
+    const restX = pos.x * w - pos.s / 2;
+    const restY = pos.y * h - pos.s / 2;
+    const restZ = pos.z;
+
+    // Depth simulation with scale and blur
+    const maxZ = 0, minZ = -150;
+    const zRange = maxZ - minZ;
+    const zNorm = (pos.z - minZ) / zRange; // 0 = far, 1 = close
+    const blurAmt = (1 - zNorm) * 4;
+    const scaleAmt = 0.7 + zNorm * 0.3; // far = smaller
+    el.style.filter = `blur(${blurAmt}px)`;
+    el.style.zIndex = Math.round(zNorm * 10);
+    el._baseBlur = blurAmt;
+    el._scale = scaleAmt;
+
+    p2Items.push({
+      el, restX, restY, scaleAmt,
+      bobPhase: Math.random() * Math.PI * 2,
+      bobSpeed: 0.3 + Math.random() * 0.3,
+      bobAmp: 6 + Math.random() * 10,
+    });
+  });
+
+  // Add floating die (clickable - returns to die screen)
+  const dieFloat = document.createElement('div');
+  dieFloat.className = 'p2-die-float';
+  dieFloat.innerHTML = '<div class="die-dot"></div><div class="die-dot"></div>';
+  dieFloat.style.cssText = 'position:absolute;width:50px;height:50px;background:#e8e4de;border-radius:6px;display:grid;grid-template-columns:1fr;padding:10px;cursor:pointer;z-index:20;filter:blur(1.5px);transition:filter 0.5s ease, box-shadow 0.3s;';
+  dieFloat.querySelectorAll('.die-dot').forEach((d, i) => {
+    d.style.cssText = 'width:10px;height:10px;background:#1a1a1a;border-radius:50%;position:static;';
+    d.style.justifySelf = i === 0 ? 'end' : 'start';
+    d.style.alignSelf = i === 0 ? 'start' : 'end';
+  });
+  let dieHovered = false;
+  dieFloat.addEventListener('click', () => showDieLanding());
+  dieFloat.addEventListener('mouseenter', () => { dieHovered = true; dieFloat.style.filter = 'blur(0px)'; dieFloat.style.boxShadow = '0 4px 16px rgba(0,0,0,0.08)'; });
+  dieFloat.addEventListener('mouseleave', () => { dieHovered = false; dieFloat.style.filter = 'blur(1.5px)'; dieFloat.style.boxShadow = ''; });
+  scene.appendChild(dieFloat);
+  const dieRestX = w * 0.88;
+  const dieRestY = h * 0.25;
+  const dieRestZ = -40;
+
+  const titleEl = scene.querySelector('.p2-title');
+  titleEl.style.willChange = 'transform, opacity';
+  titleEl.style.opacity = '0';
+
+  const startTime = performance.now();
+  const stagger = 150;
+  const floatDur = 2000;
+
+  function easeOutQuint(t) { return 1 - Math.pow(1 - t, 5); }
+
+  function tick(now) {
+    const elapsed = now - startTime;
+
+    // Float in title + bob (blended)
+    const titleT = Math.min(Math.max((elapsed - 200) / 1200, 0), 1);
+    const titleEase = easeOutQuint(titleT);
+    titleEl.style.opacity = titleEase;
+    const titleBobBlend = Math.min(Math.max((titleT - 0.8) / 0.2, 0), 1); // fade bob in over last 20%
+    const titleBob = Math.round(Math.sin(elapsed * 0.0004) * 6 * titleBobBlend * 100) / 100;
+    const titleOffset = -50 + (1 - titleEase) * 20;
+    titleEl.style.transform = `translate3d(-50%, calc(${titleOffset}% + ${titleBob}px), 0)`;
+
+    p2Items.forEach((item, i) => {
+      const delay = i * stagger;
+      const rawT = Math.max((elapsed - delay) / floatDur, 0);
+      const t = Math.min(rawT, 1);
+      const ease = easeOutQuint(t);
+
+      // Bob fades in slowly after landing
+      const bobBlend = Math.min(Math.max(rawT - 1, 0), 1);
+      const bobY = Math.sin(elapsed * 0.001 * item.bobSpeed + item.bobPhase) * item.bobAmp * bobBlend;
+
+      const startY = window.innerHeight + 200 + i * 50;
+      const curY = Math.round((startY + (item.restY - startY) * ease + bobY) * 100) / 100;
+      item.el.style.transform = `translate3d(${item.restX}px, ${curY}px, 0) scale(${item.scaleAmt})`;
+    });
+
+    // Float the die
+    const dieT = Math.min(Math.max((elapsed - projects.length * stagger) / floatDur, 0), 1);
+    const dieEase = easeOutQuint(dieT);
+    const dieBobBlend = Math.min(Math.max((dieT - 0.8) / 0.2, 0), 1);
+    const dieBob = Math.round(Math.sin(elapsed * 0.0004 + 1.5) * 8 * dieBobBlend * 100) / 100;
+    const startDY = window.innerHeight + 300;
+    const dieBaseY = startDY + (dieRestY - startDY) * dieEase;
+    const dieCurY = Math.round((dieBaseY + dieBob) * 100) / 100;
+    dieFloat.style.transform = `translate3d(${dieRestX}px, ${dieCurY}px, 0) scale(0.85)`;
+    // filter handled by CSS transition, not per-frame
+
+    requestAnimationFrame(tick);
+  }
+
+  requestAnimationFrame(tick);
+}
+
+</script>
+
+</body>
+</html>
