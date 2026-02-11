@@ -15,6 +15,7 @@
     --text: #f0ece4;
     --text-muted: #8a8580;
     --accent: #e8dcc8;
+    --yellow: #ffd704;
     --sleeve-shadow: rgba(0,0,0,0.6);
   }
 
@@ -82,7 +83,7 @@
   .header-die .hd-dot {
     width: 8px;
     height: 8px;
-    background: var(--bg);
+    background: var(--yellow);
     border-radius: 50%;
   }
 
@@ -130,7 +131,9 @@
     cursor: pointer;
   }
 
-  nav a:hover, nav a.active { color: var(--text); }
+  .page a:not(nav a):hover { color: var(--yellow) !important; }
+  nav a:hover { color: var(--text); }
+  nav a.active { color: var(--text); border-bottom: 2px solid var(--yellow); padding-bottom: 2px; }
 
   /* ── PAGE SECTIONS ── */
   .page { display: none; }
@@ -311,6 +314,7 @@
   .gallery-item.is-center {
     cursor: pointer;
     pointer-events: all;
+    filter: drop-shadow(0 0 12px rgba(255, 215, 4, 0.15));
   }
 
   .gallery-item .cover-wrap {
@@ -1020,7 +1024,7 @@
     flex-shrink: 0;
     transition: background 0.2s, color 0.2s;
   }
-  .sp-play:hover { background: var(--accent); color: var(--bg); }
+  .sp-play:hover { background: var(--yellow); color: var(--bg); }
   .sp-play svg { width: 16px; height: 16px; fill: currentColor; }
   .sp-meta { flex-shrink: 0; min-width: 0; }
   .song-player .song-title {
@@ -1050,7 +1054,7 @@
   }
   .sp-progress {
     height: 100%;
-    background: var(--accent);
+    background: var(--yellow);
     border-radius: 1px;
     width: 0%;
     position: relative;
@@ -1062,7 +1066,7 @@
     right: -4px; top: -3px;
     width: 8px; height: 8px;
     border-radius: 50%;
-    background: var(--accent);
+    background: var(--yellow);
     opacity: 0;
     transition: opacity 0.2s;
   }
