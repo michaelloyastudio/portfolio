@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Michael Loya Studio</title>
+<link rel="icon" type="image/svg+xml" href="logo.svg">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Space+Grotesk:wght@300;400;500&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #1a1a18;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Permanent Marker', cursive;
+    color: #e8dcc0;
+    overflow: hidden;
+  }
+  .container {
+    text-align: center;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeIn 0.8s ease forwards 0.2s;
+  }
+  h1 {
+    font-size: 4rem;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  p {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.9rem;
+    color: #8a7e6a;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 2.5rem;
+  }
+  .die-back {
+    width: 56px;
+    height: 56px;
+    background: rgba(232,220,192,0.1);
+    border-radius: 10px;
+    border: 2px solid #8a7e6a;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    text-decoration: none;
+  }
+  .die-back:hover {
+    transform: scale(1.08) rotate(2deg);
+    border-color: #e8dcc0;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+  }
+  .die-dot {
+    width: 10px;
+    height: 10px;
+    background: #e8dcc0;
+    border-radius: 50%;
+  }
+  .die-dots {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 4px;
+  }
+  .die-dots .center { grid-column: 2; }
+  .exiting * {
+    opacity: 0 !important;
+    transition: opacity 0.4s ease !important;
+  }
+  @keyframes fadeIn {
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body style="background:#1a1a18">
+  <div class="container">
+    <h1>Coming Soon</h1>
+    <p>Portfolio 5</p>
+    <a class="die-back" href="index.html?from=5" onclick="return exitPage(event)" title="Back to Die">
+      <div class="die-dots">
+        <div class="die-dot"></div>
+        <div></div>
+        <div class="die-dot"></div>
+        <div></div>
+        <div class="die-dot center"></div>
+        <div></div>
+        <div class="die-dot"></div>
+        <div></div>
+        <div class="die-dot"></div>
+      </div>
+    </a>
+  </div>
+  <script>
+    function exitPage(e) {
+      e.preventDefault();
+      document.body.classList.add('exiting');
+      setTimeout(() => { window.location.href = 'index.html?from=5'; }, 450);
+      return false;
+    }
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') exitPage(e);
+    });
+  </script>
+</body>
+</html>
