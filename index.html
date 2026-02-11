@@ -254,6 +254,7 @@ function doP5Transition(cb) {
             landing.querySelectorAll('span, img').forEach(el => {
               el.style.transition = 'color 0.6s ease, filter 0.6s ease';
               if (el.tagName === 'IMG') el.style.filter = 'brightness(0)';
+              else if (el.style.fontStyle === 'italic') el.style.color = '#8a8580';
               else if (el.style.color === 'rgb(255, 255, 255)') el.style.color = '';
             });
           }, 100);
@@ -263,8 +264,9 @@ function doP5Transition(cb) {
           landing.style.background = '';
           landing.querySelectorAll('span, img').forEach(el => {
             el.style.transition = '';
-            el.style.color = '';
             if (el.tagName === 'IMG') el.style.filter = 'brightness(0)';
+            else if (el.style.fontStyle === 'italic') el.style.color = '#8a8580';
+            else el.style.color = '';
           });
         }, 1200);
       });
