@@ -651,7 +651,8 @@
     transform: translateY(15px);
     transition: opacity 0.4s ease, transform 0.4s ease;
   }
-  .p2-project-hero.visible { opacity: 1; transform: translateY(0); }
+  .p2-project-hero.visible { opacity: 1; transform: translateY(0); cursor: pointer; }
+  .p2-project-hero.visible:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.15); }
   .p2-project-hero img {
     width: 100%;
     height: 100%;
@@ -1386,25 +1387,48 @@ function showLightboxItem(idx) {
 
 /* Single delegated click handler for all project images */
 document.addEventListener('click', function(e) {
-  /* Ignore clicks when lightbox is open */
   if (lightbox.classList.contains('open')) return;
+  if (!_p2ProjectOpen) return;
 
+  /* Check if click is on the hero image */
+  const hero = document.getElementById('p2ProjectHero');
+  if (hero && hero.contains(e.target)) {
+    e.preventDefault();
+    e.stopPropagation();
+    const heroImg = document.getElementById('p2ProjectHeroImg');
+    if (!heroImg) return;
+    /* Build lightbox list: hero first, then all body images */
+    const body = document.getElementById('p2ProjectBody');
+    const bodyItems = body ? Array.from(body.querySelectorAll('.project-img')) : [];
+    lbItems = [hero].concat(bodyItems);
+    lbIndex = 0;
+    /* Show hero in lightbox */
+    lightboxImg.style.display = 'none';
+    lightboxVideo.style.display = 'none';
+    lightboxVideo.pause();
+    lightboxImg.src = heroImg.src;
+    lightboxImg.style.display = 'block';
+    lightbox.classList.add('open');
+    return;
+  }
+
+  /* Check if click is on a project-img inside the body */
   const imgEl = e.target.closest('.project-img');
   if (!imgEl) return;
-
-  /* Only handle clicks inside an open project */
   const body = document.getElementById('p2ProjectBody');
   if (!body || !body.contains(imgEl)) return;
 
   e.preventDefault();
   e.stopPropagation();
 
-  lbItems = Array.from(body.querySelectorAll('.project-img'));
+  const bodyItems = Array.from(body.querySelectorAll('.project-img'));
+  lbItems = [hero].concat(bodyItems);
   lbIndex = lbItems.indexOf(imgEl);
+  if (lbIndex === -1) { lbItems = bodyItems; lbIndex = bodyItems.indexOf(imgEl); }
   if (lbIndex === -1) { lbItems = [imgEl]; lbIndex = 0; }
 
   showLightboxItem(lbIndex);
-}, true); /* useCapture — fires FIRST, before any other handlers */
+}, true);
 
 function closeLightbox() {
   if (lbItems[lbIndex]) {
