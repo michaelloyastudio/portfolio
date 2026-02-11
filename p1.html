@@ -63,8 +63,8 @@
   /* ── HEADER ── */
   header {
     padding: 2rem 4rem 2rem;
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
   }
 
@@ -116,6 +116,7 @@
   nav {
     display: flex;
     gap: 2rem;
+    justify-self: end;
     align-items: center;
   }
 
