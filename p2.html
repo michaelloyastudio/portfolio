@@ -1004,14 +1004,14 @@
     <h2>Coming Soon</h2>
     <button onclick="document.getElementById('p2ComingSoon').classList.remove('active')">Close</button>
   </div>
-
-  <!-- Lightbox -->
-  <div class="lightbox" id="lightbox">
-    <button class="lightbox-close">&times;</button>
-    <img src="" alt="Full size preview" id="lightboxImg">
-    <video src="" id="lightboxVideo" playsinline muted style="display:none;max-width:92vw;max-height:92vh;border-radius:6px;box-shadow:0 12px 60px rgba(0,0,0,0.6);"></video>
-  </div>
 </div><!-- end p2-wrap -->
+
+<!-- Lightbox (OUTSIDE p2-wrap — perspective breaks position:fixed inside) -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close">&times;</button>
+  <img src="" alt="Full size preview" id="lightboxImg">
+  <video src="" id="lightboxVideo" playsinline muted style="display:none;max-width:92vw;max-height:92vh;border-radius:6px;box-shadow:0 12px 60px rgba(0,0,0,0.6);"></video>
+</div>
 
 <script>
 const projects = [
@@ -1346,19 +1346,9 @@ function p2CloseProject() {
 }
 
 function p2WireProjectLightbox() {
-  const body = document.getElementById('p2ProjectBody');
-  if (!body) return;
-  const items = body.querySelectorAll('.project-img');
-  items.forEach((item, idx) => {
-    item.style.cursor = 'pointer';
-    item.addEventListener('click', function(e) {
-      e.stopPropagation();
-      lbItems = Array.from(body.querySelectorAll('.project-img'));
-      lbIndex = idx;
-      showLightboxItem(idx);
-    });
-  });
+  // No-op: lightbox is handled by delegation below
 }
+
 /* ── LIGHTBOX ── */
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightboxImg');
@@ -1394,22 +1384,27 @@ function showLightboxItem(idx) {
   lightbox.classList.add('open');
 }
 
+/* Single delegated click handler for all project images */
 document.addEventListener('click', function(e) {
+  /* Ignore clicks when lightbox is open */
+  if (lightbox.classList.contains('open')) return;
+
   const imgEl = e.target.closest('.project-img');
   if (!imgEl) return;
+
+  /* Only handle clicks inside an open project */
+  const body = document.getElementById('p2ProjectBody');
+  if (!body || !body.contains(imgEl)) return;
+
+  e.preventDefault();
   e.stopPropagation();
 
-  const projectOverlay = imgEl.closest('.p2-project-body') || imgEl.closest('.p2-project');
-  if (projectOverlay) {
-    lbItems = Array.from(projectOverlay.querySelectorAll('.project-img'));
-  } else {
-    lbItems = [imgEl];
-  }
+  lbItems = Array.from(body.querySelectorAll('.project-img'));
   lbIndex = lbItems.indexOf(imgEl);
   if (lbIndex === -1) { lbItems = [imgEl]; lbIndex = 0; }
 
   showLightboxItem(lbIndex);
-});
+}, true); /* useCapture — fires FIRST, before any other handlers */
 
 function closeLightbox() {
   if (lbItems[lbIndex]) {
