@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Michael Loya Studio</title>
+<link rel="icon" type="image/svg+xml" href="logo.svg">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #fff;
+    font-family: 'Space Grotesk', sans-serif;
+    overflow: hidden;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── DIE LANDING PAGE ── */
+  .die-landing {
+    position: fixed;
+    inset: 0;
+    background: #fff;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.8s ease, background 0.6s ease;
+    cursor: default;
+  }
+
+  .die-landing.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .die-landing.fade-white {
+    background: #f5f2ed;
+  }
+
+  .die-landing.fade-dark {
+    background: #0a0a0a;
+  }
+
+  .die-landing.fade-dark > * {
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+
+  .die-landing.fade-white > * {
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+
+  /* P5 brutalist transition */
+  .p5-transition-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+    display: flex;
+    pointer-events: none;
+  }
+  .p5-transition-overlay .panel {
+    flex: 1;
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 0.35s cubic-bezier(0.7, 0, 0.3, 1);
+  }
+  .p5-transition-overlay .panel:nth-child(1) { background: #FF5733; transition-delay: 0s; }
+  .p5-transition-overlay .panel:nth-child(2) { background: #C3FF00; transition-delay: 0.06s; }
+  .p5-transition-overlay .panel:nth-child(3) { background: #5733FF; transition-delay: 0.03s; }
+  .p5-transition-overlay .panel:nth-child(4) { background: #FFD700; transition-delay: 0.09s; }
+  .p5-transition-overlay .panel:nth-child(5) { background: #00D4FF; transition-delay: 0.05s; }
+  .p5-transition-overlay.active .panel {
+    transform: scaleY(1);
+  }
+  /* (from-p5 arrival handled via inline JS styles) */
+
+  #dieCanvas {
+    cursor: pointer;
+  }
+
+  .die-hint {
+    margin-top: 2rem;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.85rem;
+    color: #999;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .die-landing.rolling .die-hint {
+    opacity: 0;
+  }
+
+  .die-buttons {
+    position: absolute;
+    bottom: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.75rem;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+  }
+  .die-buttons.visible {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+  .die-buttons button {
+    width: 42px;
+    height: 42px;
+    border-radius: 8px;
+    border: 1.5px solid #ccc;
+    background: transparent;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #888;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .die-buttons button:hover:not(.disabled) {
+    border-color: #222;
+    color: #222;
+    background: rgba(0,0,0,0.04);
+  }
+  .die-buttons button.disabled {
+    color: #ddd;
+    border-color: #e8e8e8;
+    cursor: default;
+    pointer-events: none;
+  }
+  .die-landing.rolling .die-buttons {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* Arrival transitions */
+  .die-landing.arriving {
+    transition: background 0.8s ease;
+  }
+  .die-landing.arriving > * {
+    opacity: 0;
+    transition: opacity 0.6s ease 0.3s;
+  }
+  .die-landing.arrived > * {
+    opacity: 1;
+  }
+</style>
+</head>
+<body>
+
+<!-- DIE LANDING -->
+<div class="die-landing" id="dieLanding">
+  <div style="position:absolute;top:3rem;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:0.3rem;">
+    <img src="logo.svg" style="height:26px;width:auto;filter:brightness(0);" alt="">
+    <span style="font-family:'Instrument Serif',serif;font-size:2.4rem;font-weight:400;letter-spacing:-0.02em;color:#222;">Michael Loya <span id="studioText" style="font-style:italic;color:#999;">Studio</span></span>
+  </div>
+  <canvas id="dieCanvas" style="cursor:pointer;"></canvas>
+  <div class="die-buttons" style="opacity:0;pointer-events:none">
+    <button onclick="dieGoTo(1)">1</button>
+    <button onclick="dieGoTo(2)">2</button>
+    <button onclick="dieGoTo(3)">3</button>
+    <button class="disabled" disabled>4</button>
+    <button class="disabled" disabled>5</button>
+    <button class="disabled" disabled>6</button>
+  </div>
+</div>
+
+<div class="p5-transition-overlay" id="p5TransOverlay">
+  <div class="panel"></div><div class="panel"></div><div class="panel"></div><div class="panel"></div><div class="panel"></div>
+</div>
+
+<script>
+/* ── P5 TRANSITION HELPER ── */
+function doP5Transition(cb) {
+  const overlay = document.getElementById('p5TransOverlay');
+  overlay.classList.add('active');
+  setTimeout(cb, 500);
+}
+
+/* ── ARRIVAL TRANSITION ── */
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const from = params.get('from');
+  if (!from) return;
+  history.replaceState(null, '', window.location.pathname);
+
+  const landing = document.getElementById('dieLanding');
+
+  // P3 (Brutalist): reverse the color panels
+  if (from === '3') {
+    const overlay = document.getElementById('p5TransOverlay');
+    const panels = overlay.querySelectorAll('.panel');
+    const delays = [0.05, 0.12, 0.08, 0.15, 0.10];
+    // Immediately cover screen — no transition, origin top
+    panels.forEach(p => {
+      p.style.transition = 'none';
+      p.style.transformOrigin = 'top';
+      p.style.transform = 'scaleY(1)';
+    });
+    landing.classList.add('arriving');
+    // After a frame, animate panels collapsing from top
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        panels.forEach((p, i) => {
+          p.style.transition = `transform 0.4s cubic-bezier(0.7, 0, 0.3, 1) ${delays[i] || 0}s`;
+          p.style.transform = 'scaleY(0)';
+        });
+        landing.classList.add('arrived');
+        setTimeout(() => {
+          landing.classList.remove('arriving', 'arrived');
+          // Reset panels to default state
+          panels.forEach(p => {
+            p.style.transition = '';
+            p.style.transformOrigin = '';
+            p.style.transform = '';
+          });
+        }, 1000);
+      });
+    });
+    return;
+  }
+
+  // All other portfolios: background color fade
+  const arrivalBgs = {
+    '1': '#0a0a0a', '2': '#f5f2ed', '4': '#d4a574',
+    '5': '#1a1a1a', '6': '#0a0a0a'
+  };
+  const bg = arrivalBgs[from];
+  if (bg) {
+    landing.style.background = bg;
+    landing.classList.add('arriving');
+    const isDark = ['1','5','6'].includes(from);
+    var studioEl = document.getElementById('studioText');
+    if (isDark) {
+      landing.querySelectorAll('span, img').forEach(el => {
+        if (el.id === 'studioText') { el.style.color = '#fff'; return; }
+        if (el.tagName === 'IMG') el.style.filter = 'brightness(1)';
+        else el.style.color = '#fff';
+      });
+    }
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        landing.style.background = '#fff';
+        landing.classList.add('arrived');
+        if (isDark) {
+          setTimeout(() => {
+            studioEl.style.transition = 'color 0.6s ease';
+            studioEl.style.color = '#999';
+            landing.querySelectorAll('span, img').forEach(el => {
+              if (el.id === 'studioText') return;
+              el.style.transition = 'color 0.6s ease, filter 0.6s ease';
+              if (el.tagName === 'IMG') el.style.filter = 'brightness(0)';
+              else el.style.color = '';
+            });
+          }, 100);
+        }
+        setTimeout(() => {
+          landing.classList.remove('arriving', 'arrived');
+          landing.style.background = '';
+          landing.querySelectorAll('span, img').forEach(el => {
+            if (el.id === 'studioText') return;
+            el.style.transition = '';
+            if (el.tagName === 'IMG') el.style.filter = 'brightness(0)';
+            else el.style.color = '';
+          });
+          studioEl.style.transition = '';
+          studioEl.style.color = '#999';
+        }, 1200);
+      });
+    });
+  }
+})();
+
+/* ── DIE LANDING (Three.js) ── */
+(function() {
+  const landing = document.getElementById('dieLanding');
+  const canvas = document.getElementById('dieCanvas');
+  let rolling = false;
+
+  // Three.js setup
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(300, 300);
+  renderer.setClearColor(0x000000, 0);
+
+  const scene3d = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
+  camera.position.z = 5;
+
+  scene3d.add(new THREE.AmbientLight(0xffffff, 0.5));
+  const dirLight = new THREE.DirectionalLight(0xffffff, 0.55);
+  dirLight.position.set(2, 3, 5);
+  scene3d.add(dirLight);
+
+  // Face textures
+  function makeFaceTex(dots) {
+    const c = document.createElement('canvas');
+    c.width = 256; c.height = 256;
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = '#f0f0f0';
+    ctx.fillRect(0, 0, 256, 256);
+    ctx.fillStyle = '#222';
+    dots.forEach(([x, y]) => {
+      ctx.beginPath();
+      ctx.arc(x * 256, y * 256, 16, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    const tex = new THREE.CanvasTexture(c);
+    tex.needsUpdate = true;
+    return tex;
+  }
+
+  const faceDots = {
+    1: [[0.5, 0.5]],
+    2: [[0.65, 0.35], [0.35, 0.65]],
+    3: [[0.65, 0.3], [0.5, 0.5], [0.35, 0.7]],
+    4: [[0.37, 0.35], [0.63, 0.35], [0.37, 0.65], [0.63, 0.65]],
+    5: [[0.35, 0.35], [0.65, 0.35], [0.5, 0.5], [0.35, 0.65], [0.65, 0.65]],
+    6: [[0.38, 0.3], [0.62, 0.3], [0.38, 0.5], [0.62, 0.5], [0.38, 0.7], [0.62, 0.7]]
+  };
+
+  const faceOrder = [4, 3, 1, 6, 2, 5];
+  const materials = faceOrder.map(n => new THREE.MeshStandardMaterial({
+    map: makeFaceTex(faceDots[n]), roughness: 0.4, metalness: 0.0
+  }));
+
+  // Rounded box
+  const boxGeo = new THREE.BoxGeometry(1.8, 1.8, 1.8, 12, 12, 12);
+  const pos = boxGeo.attributes.position;
+  const halfSize = 0.9;
+  const radius = 0.45;
+  const v = new THREE.Vector3();
+  for (let i = 0; i < pos.count; i++) {
+    v.set(pos.getX(i), pos.getY(i), pos.getZ(i));
+    const ax = Math.abs(v.x), ay = Math.abs(v.y), az = Math.abs(v.z);
+    const inner = halfSize - radius;
+    const cx = Math.min(ax, inner);
+    const cy = Math.min(ay, inner);
+    const cz = Math.min(az, inner);
+    const dx = ax - cx;
+    const dy = ay - cy;
+    const dz = az - cz;
+    const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+    if (dist > 0.001) {
+      const scale = radius / dist;
+      v.x = Math.sign(v.x) * (cx + dx * scale);
+      v.y = Math.sign(v.y) * (cy + dy * scale);
+      v.z = Math.sign(v.z) * (cz + dz * scale);
+    }
+    pos.setXYZ(i, v.x, v.y, v.z);
+  }
+  const normals = boxGeo.attributes.normal;
+  const inner2 = halfSize - radius;
+  const n = new THREE.Vector3();
+  for (let i = 0; i < pos.count; i++) {
+    v.set(pos.getX(i), pos.getY(i), pos.getZ(i));
+    const cx2 = Math.sign(v.x) * Math.min(Math.abs(v.x), inner2);
+    const cy2 = Math.sign(v.y) * Math.min(Math.abs(v.y), inner2);
+    const cz2 = Math.sign(v.z) * Math.min(Math.abs(v.z), inner2);
+    n.set(v.x - cx2, v.y - cy2, v.z - cz2);
+    if (n.length() > 0.001) n.normalize();
+    else n.set(v.x, v.y, v.z).normalize();
+    normals.setXYZ(i, n.x, n.y, n.z);
+  }
+  normals.needsUpdate = true;
+
+  const dieMesh = new THREE.Mesh(boxGeo, materials);
+  scene3d.add(dieMesh);
+
+  // Face rotations
+  const faceRotations = {
+    1: { x: Math.PI / 2, y: 0 },
+    2: { x: 0, y: 0 },
+    3: { x: 0, y: Math.PI / 2 },
+    4: { x: 0, y: -Math.PI / 2 },
+    5: { x: 0, y: Math.PI },
+    6: { x: -Math.PI / 2, y: 0 }
+  };
+
+  // Mouse follow
+  let targetRX = 0.4, targetRY = 0.5;
+  let curRX = 0.4, curRY = 0.5;
+
+  const dieButtons = document.querySelector('.die-buttons');
+  landing.addEventListener('mousemove', (e) => {
+    if (rolling) return;
+    const cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+    targetRX = 0.4 + ((e.clientY - cy) / cy) * -0.5;
+    targetRY = 0.5 + ((e.clientX - cx) / cx) * 0.5;
+    // Show buttons when cursor is in bottom 20% of screen
+    if (e.clientY > window.innerHeight * 0.8) {
+      dieButtons.classList.add('visible');
+    } else {
+      dieButtons.classList.remove('visible');
+    }
+  });
+  landing.addEventListener('mouseleave', () => {
+    dieButtons.classList.remove('visible');
+  });
+
+  window.dieGoTo = function(face) {
+    if (rolling) return;
+    // Snap die to target face
+    const endRot = faceRotations[face];
+    dieMesh.rotation.x = endRot.x;
+    dieMesh.rotation.y = endRot.y;
+    curRX = endRot.x; curRY = endRot.y;
+    targetRX = endRot.x; targetRY = endRot.y;
+    rolling = true;
+    dieButtons.classList.remove('visible');
+
+    setTimeout(() => {
+      if (face === 3) {
+        doP5Transition(() => { window.location.href = 'p3.html'; });
+      } else if (face === 1) {
+        landing.classList.add('fade-dark');
+        setTimeout(() => { window.location.href = 'p1.html'; }, 700);
+      } else {
+        landing.classList.add('fade-white');
+        setTimeout(() => { window.location.href = 'p' + face + '.html'; }, 700);
+      }
+    }, 400);
+  };
+
+  function animate() {
+    requestAnimationFrame(animate);
+    if (!rolling) {
+      curRX += (targetRX - curRX) * 0.08;
+      curRY += (targetRY - curRY) * 0.08;
+      dieMesh.rotation.x = curRX;
+      dieMesh.rotation.y = curRY;
+    }
+    renderer.render(scene3d, camera);
+  }
+  animate();
+
+  canvas.addEventListener('click', () => {
+    if (rolling) return;
+    rolling = true;
+    landing.classList.add('rolling');
+    dieButtons.classList.remove('visible');
+
+    const targetFace = Math.floor(Math.random() * 3) + 1; /* only 1-3 (4-6 coming soon) */
+    const endRot = faceRotations[targetFace];
+    const spinsX = (Math.floor(Math.random() * 2) + 3) * Math.PI * 2;
+    const spinsY = (Math.floor(Math.random() * 3) + 4) * Math.PI * 2;
+    const finalX = endRot.x + spinsX;
+    const finalY = endRot.y + spinsY;
+    const startRX = curRX, startRY = curRY;
+
+    const duration = 3000;
+    const start = performance.now();
+
+    function easeOutQuart(t) { return 1 - Math.pow(1 - t, 4); }
+
+    function tick(now) {
+      const t = Math.min((now - start) / duration, 1);
+      const ease = easeOutQuart(t);
+      dieMesh.rotation.x = startRX + (finalX - startRX) * ease;
+      dieMesh.rotation.y = startRY + (finalY - startRY) * ease;
+
+      if (t < 1) {
+        requestAnimationFrame(tick);
+      } else {
+        setTimeout(() => {
+          if (targetFace === 3) {
+            doP5Transition(() => { window.location.href = 'p3.html'; });
+          } else if (targetFace === 1) {
+            landing.classList.add('fade-dark');
+            setTimeout(() => { window.location.href = 'p1.html'; }, 700);
+          } else {
+            landing.classList.add('fade-white');
+            setTimeout(() => { window.location.href = 'p' + targetFace + '.html'; }, 700);
+          }
+        }, 600);
+      }
+    }
+
+    requestAnimationFrame(tick);
+  });
+})();
+</script>
+
+</body>
+</html>

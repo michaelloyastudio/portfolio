@@ -10,11 +10,15 @@
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
+  /* Hide scrollbar */
+  ::-webkit-scrollbar { display: none; }
+  * { scrollbar-width: none; }
+
   :root {
     --bg: #0a0a0a;
-    --text: #f0ece4;
+    --text: #E8E0D4;
     --text-muted: #8a8580;
-    --accent: #e8dcc8;
+    --accent: #ff8e3d;
     --sleeve-shadow: rgba(0,0,0,0.6);
   }
 
@@ -30,13 +34,12 @@
   .p2-nav a, .p2-about-back, .p2-contact-links a,
   .p2-project .project-img, .p2-project .project-img img,
   .p2-project-hero, .p2-project-hero img,
-  .p2-die-float,
   a, button, [onclick] {
-    cursor: url('cursor.svg') 18 15, pointer !important;
+    cursor: url('crosshair.svg') 13 13, pointer !important;
   }
 
   body {
-    background: #f5f2ed;
+    background: #E8E0D4;
     color: #1a1a1a;
     font-family: 'Space Grotesk', sans-serif;
     overflow: hidden;
@@ -44,7 +47,7 @@
     padding: 0;
     width: 100vw;
     height: 100vh;
-    cursor: url('crosshair.svg') 12 12, crosshair;
+    cursor: url('cursor.svg') 16 13, default;
   }
 
   /* ── PROJECT INLINE IMAGES ── */
@@ -53,11 +56,13 @@
     border-radius: 8px;
     overflow: hidden;
     cursor: pointer;
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    box-shadow: 0 0 0 rgba(0,0,0,0);
+    transform: translateY(0);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
   .project-img:hover {
-    transform: scale(1.025);
-    box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+    transform: translateY(-6px);
+    box-shadow: 0 12px 35px rgba(0,0,0,0.2);
   }
   .project-img img {
     width: 100%;
@@ -318,6 +323,8 @@
   .project-img-video video {
     width: 100%;
     border-radius: 8px;
+    display: block;
+    vertical-align: bottom;
   }
 
   @media (max-width: 768px) {
@@ -387,11 +394,13 @@
   }
   .lightbox-close:hover { opacity: 1; }
 
+  /* (dark mode removed) */
+
   /* ── P2: FLOATING PORTFOLIO ── */
   .p2-wrap {
     position: fixed;
     inset: 0;
-    background: #f5f2ed;
+    background: #E8E0D4;
     z-index: 500;
     overflow: hidden;
     perspective: 1200px;
@@ -420,7 +429,7 @@
 
   .p2-title span {
     font-style: italic;
-    color: #999;
+    color: #8a8580;
   }
 
   .p2-nav {
@@ -435,19 +444,19 @@
     font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: #888;
+    color: #8a8580;
     text-decoration: none;
     cursor: pointer;
     transition: color 0.3s;
     pointer-events: auto;
   }
-  .p2-nav a:hover { color: #222; }
+  .p2-nav a:hover { color: #ff8e3d; }
 
   /* ── P2 ABOUT (zoom-out reveal) ── */
   .p2-about {
     position: absolute;
     inset: 0;
-    background: #f5f2ed;
+    background: #E8E0D4;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -477,12 +486,12 @@
     font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: #999;
+    color: #8a8580;
     cursor: pointer;
     transition: color 0.3s;
     text-decoration: none;
   }
-  .p2-about-back:hover { color: #222; }
+  .p2-about-back:hover { color: #ff8e3d; }
 
   .p2-about-hero {
     display: flex;
@@ -504,10 +513,10 @@
     margin: 0 0 0.6rem;
     color: #1a1a1a;
   }
-  .p2-about-text h1 em { font-style: italic; color: #999; }
+  .p2-about-text h1 em { font-style: italic; color: #8a8580; }
   .p2-about-text p {
     font-family: 'Space Grotesk', sans-serif;
-    color: #555;
+    color: #3d2b1f;
     line-height: 1.65;
     font-size: 0.92rem;
     margin-bottom: 0.75rem;
@@ -515,7 +524,7 @@
   .p2-experience {
     margin-top: 1.75rem;
     padding-top: 1.5rem;
-    border-top: 1px solid #ddd;
+    border-top: 1px solid #c9c1b6;
   }
   .p2-experience h3 {
     font-family: 'Instrument Serif', serif;
@@ -531,7 +540,7 @@
   }
   .p2-exp-item {
     padding: 0.75rem 0;
-    border-bottom: 1px solid #e8e4de;
+    border-bottom: 1px solid #d4cdc3;
   }
   .p2-exp-item:nth-last-child(-n+2) { border-bottom: none; }
   .p2-exp-role {
@@ -544,12 +553,12 @@
   .p2-exp-company {
     font-family: 'Space Grotesk', sans-serif;
     font-size: 0.8rem;
-    color: #666;
+    color: #3d2b1f;
   }
   .p2-exp-date {
     font-family: 'Space Grotesk', sans-serif;
     font-size: 0.72rem;
-    color: #999;
+    color: #8a8580;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     margin-bottom: 0.3rem;
@@ -557,7 +566,7 @@
   .p2-exp-desc {
     font-family: 'Space Grotesk', sans-serif;
     font-size: 0.82rem;
-    color: #666;
+    color: #3d2b1f;
     line-height: 1.55;
     margin-top: 0.3rem;
   }
@@ -566,7 +575,7 @@
   .p2-contact {
     position: absolute;
     inset: 0;
-    background: #f5f2ed;
+    background: #E8E0D4;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -584,10 +593,10 @@
     color: #1a1a1a;
     margin-bottom: 1rem;
   }
-  .p2-contact-content h1 em { font-style: italic; color: #999; }
+  .p2-contact-content h1 em { font-style: italic; color: #8a8580; }
   .p2-contact-content > p {
     font-family: 'Space Grotesk', sans-serif;
-    color: #888;
+    color: #8a8580;
     font-size: 1.05rem;
     margin-bottom: 2.5rem;
   }
@@ -605,12 +614,13 @@
     color: #1a1a1a;
     text-decoration: none;
     padding: 0.75rem 1.5rem;
-    border: 1.5px solid #ccc;
+    border: 1.5px solid #b8b0a5;
     border-radius: 6px;
     transition: all 0.3s;
   }
   .p2-contact-links a:hover {
-    border-color: #222;
+    border-color: #ff8e3d;
+    color: #ff8e3d;
     background: rgba(0,0,0,0.04);
   }
 
@@ -618,10 +628,10 @@
   .p2-project {
     position: absolute;
     inset: 0;
-    background: #f5f2ed;
+    background: #E8E0D4;
     opacity: 0;
     pointer-events: none;
-    z-index: 2;
+    z-index: 50;
     overflow: hidden;
     transition: opacity 0.5s ease 0.3s;
   }
@@ -652,10 +662,14 @@
     overflow: hidden;
     opacity: 0;
     transform: translateY(15px);
-    transition: opacity 0.4s ease, transform 0.4s ease;
+    box-shadow: 0 0 0 rgba(0,0,0,0);
+    transition: opacity 0.4s ease, transform 0.4s ease, box-shadow 0.3s ease;
   }
   .p2-project-hero.visible { opacity: 1; transform: translateY(0); cursor: pointer; }
-  .p2-project-hero.visible:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.15); }
+  .p2-project-hero.visible:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 35px rgba(0,0,0,0.2);
+  }
   .p2-project-hero img {
     width: 100%;
     height: 100%;
@@ -690,7 +704,7 @@
     gap: 0.5rem;
     font-family: 'Space Grotesk', sans-serif;
     font-size: 0.82rem;
-    color: #888;
+    color: #8a8580;
     text-transform: uppercase;
     letter-spacing: 0.06em;
   }
@@ -700,7 +714,7 @@
   .p2-project-meta .p2-meta-label {
     font-size: 0.65rem;
     letter-spacing: 0.12em;
-    color: #bbb;
+    color: #8a8580;
     margin-bottom: -0.15rem;
   }
   .p2-project-back-row {
@@ -714,7 +728,7 @@
   }
   .p2-project-body {
     font-family: 'Space Grotesk', sans-serif;
-    color: #555;
+    color: #3d2b1f;
     line-height: 1.7;
     font-size: 0.92rem;
     opacity: 0;
@@ -733,8 +747,8 @@
     color: #1a1a1a;
     margin: 2rem 0 0.75rem;
   }
-  .p2-project-body a { color: #1a1a1a !important; text-decoration: underline; }
-  .p2-project-body a:hover { color: #555 !important; }
+  .p2-project-body a { color: #3d2b1f !important; text-decoration: underline; }
+  .p2-project-body a:hover { color: #ff8e3d !important; }
 
   /* (fly-img and scene-child-fade removed — projects now use zoomed-out like about/contact) */
 
@@ -750,41 +764,38 @@
     border-radius: 6px;
     overflow: hidden;
     cursor: pointer;
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
   }
   .p2-project .img-compose .project-img {
     margin-bottom: 0.75rem;
     display: inline-block;
     width: 100%;
   }
-  .p2-project .project-img:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-  }
   .p2-project .project-img-video video {
     width: 100%;
     border-radius: 6px;
+    display: block;
+    vertical-align: bottom;
   }
   .p2-project .project-video {
     width: 100%;
     border-radius: 6px;
   }
   /* Light-theme overrides for lyrics / song player */
-  .p2-project .verse-label { color: #888; }
+  .p2-project .verse-label { color: #8a8580; }
   .p2-project .lyrics-container {
     background: rgba(0,0,0,0.03);
-    border: 1px solid #ddd;
-    color: #555;
+    border: 1px solid #c9c1b6;
+    color: #3d2b1f;
     border-radius: 8px;
   }
   .p2-project .song-player {
     background: rgba(0,0,0,0.03);
-    border: 1px solid #ddd;
+    border: 1px solid #c9c1b6;
     border-radius: 8px;
-    color: #555;
+    color: #3d2b1f;
   }
   .p2-project .song-player .sp-title { color: #1a1a1a; }
-  .p2-project .song-player .sp-artist { color: #888; }
+  .p2-project .song-player .sp-artist { color: #8a8580; }
   /* Image grid spacing */
   .p2-project .img-grid-2,
   .p2-project .img-grid-3,
@@ -816,10 +827,10 @@
     position: absolute;
     width: 180px;
     border-radius: 8px;
-    overflow: hidden;
+    overflow: visible;
     box-shadow: 0 8px 30px rgba(0,0,0,0.12);
     cursor: pointer;
-    transition: filter 0.5s ease, box-shadow 0.3s, height 0.4s ease;
+    transition: filter 0.5s ease, box-shadow 0.3s;
   }
   .p2-item:hover {
     filter: blur(0px) !important;
@@ -830,13 +841,15 @@
     height: 100%;
     object-fit: cover;
     display: block;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+  }
+  .p2-item:hover img {
+    transform: scale(1.1);
   }
   .p2-item.p2-item-square {
     height: var(--p2-item-size, 180px);
     aspect-ratio: auto;
-  }
-  .p2-item.p2-item-square:hover {
-    height: var(--p2-item-natural, auto);
   }
   .p2-item .p2-label {
     position: absolute;
@@ -884,26 +897,10 @@
     cursor: pointer;
   }
 
-  .p2-die-float {
-    position: absolute;
-    width: 50px;
-    height: 50px;
-    background: #e8e4de;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .p2-die-float .die-dot {
-    width: 10px;
-    height: 10px;
-    background: #1a1a1a;
-    border-radius: 50%;
-    position: static;
-  }
+  /* die removed — P2 is now the main landing */
 </style>
 </head>
-<body style="background:#f5f2ed">
+<body style="background:#E8E0D4">
 
 <!-- P2: FLOATING PORTFOLIO -->
 <div class="p2-wrap" id="p2Wrap">
@@ -1027,9 +1024,9 @@ const projects = [
     year: "2023–Present",
     cover: `img/DnDFinal.jpeg`,
     images: [],
-    content: `<p>I collaborate with my brother, who produces music under our last name Loya (stylized as "loya"), bringing his music to life through cover art, motion graphics, and social content. I've also created pieces for other artists, tailoring visuals to fit their sound and aesthetic.</p>
-<h3><a href="https://open.spotify.com/artist/5gNQpoYEBE1jxjCgFkLWce?si=AsVRN9PsRu2rgS5POckwnQ" target="_blank" style="color:var(--accent);text-decoration:underline;">loya</a></h3>
-<p>The cover art is for loya's upcoming EP, <a href="https://open.spotify.com/album/6roxGKDYkVpcbcdqdpj6gG?si=mku1Dh4nR9OR_AJf92bb5Q" target="_blank" style="color:var(--accent);text-decoration:underline;"><em>Diamonds and Damage</em></a>, which he produced alongside his friend, Nicky. Loya had a clear vision for the design—a portrait of a woman surrounded by falling diamonds—and reached out to me to bring it to life. We started with a reference image to generate the portrait, then created multiple diamond variations. The assets were created by Adobe Firefly and then arranged, composed, and edited by me. After eight exports, we arrived at the final design.</p>
+    content: `<p>I collaborate with my brother, who produces music under our last name Loya (stylized as "<a href="https://open.spotify.com/artist/5gNQpoYEBE1jxjCgFkLWce?si=AsVRN9PsRu2rgS5POckwnQ" target="_blank">loya</a>"), bringing his music to life through cover art, motion graphics, and social content. I've also created pieces for other artists, tailoring visuals to fit their sound and aesthetic.</p>
+<h3>loya</h3>
+<p>The cover art is for loya's upcoming EP, <a href="https://open.spotify.com/album/6roxGKDYkVpcbcdqdpj6gG?si=mku1Dh4nR9OR_AJf92bb5Q" target="_blank"><em>Diamonds and Damage</em></a>, which he produced alongside his friend, Nicky. Loya had a clear vision for the design—a portrait of a woman surrounded by falling diamonds—and reached out to me to bring it to life. We started with a reference image to generate the portrait, then created multiple diamond variations. The assets were created by Adobe Firefly and then arranged, composed, and edited by me. After eight exports, we arrived at the final design.</p>
 <div class="img-grid-4">
 <div class="project-img"><img src="img/all/Screenshot_2025-03-21_at_6.45.47_PM.jpg" alt="Reference photo" loading="lazy"></div>
 <div class="project-img"><img src="img/all/Firefly_20250319125548_(1).jpg" alt="Firefly generated asset" loading="lazy"></div>
@@ -1049,14 +1046,14 @@ const projects = [
 <div class="project-img img-landscape"><img src="img/all/LoyaLOGO_outline.png" alt="loya logo outline" loading="lazy"></div>
 </div>
 <h3>Small Projects</h3>
-<p>I created a motion graphic and posters for <a href="https://open.spotify.com/artist/2848adRcxvgWNRcz1g1tQD?si=SYY1m9QBSYaGsj-x30nrzQ" target="_blank" style="color:var(--accent);text-decoration:underline;">Felly</a>, an independent artist from my hometown with 556k monthly Spotify listeners. Our paths crossed when I met him at a show, and he's had a huge impact on my journey. I focused on creating designs that captured the essence of his sound and aesthetic.</p>
+<p>I created a motion graphic and posters for <a href="https://open.spotify.com/artist/2848adRcxvgWNRcz1g1tQD?si=SYY1m9QBSYaGsj-x30nrzQ" target="_blank">Felly</a>, an independent artist from my hometown with 556k monthly Spotify listeners. Our paths crossed when I met him at a show, and he's had a huge impact on my journey. I focused on creating designs that captured the essence of his sound and aesthetic.</p>
 <div class="img-grid-3">
 <div class="project-img"><img src="img/all/Fel1.jpg" alt="Felly poster design 1" loading="lazy"></div>
 <div class="project-img"><img src="img/all/Fel2.jpg" alt="Felly poster design 2" loading="lazy"></div>
 <div class="project-img"><img src="img/all/Fel3.jpg" alt="Felly poster design 3" loading="lazy"></div>
 </div>
 <div class="project-img project-img-video" data-video-src="img/all/FellyRender.mp4"><video src="img/all/FellyRender.mp4" autoplay loop muted playsinline style="width:100%;"></video></div>
-<p>I pitched a cover art concept for the artist <a href="https://open.spotify.com/artist/4DSFmAOMwMqDVKIsPY0kqs?si=IuyZFZwoTCCsxNR4Py_JHA" target="_blank" style="color:var(--accent);text-decoration:underline;">Sweezy</a>. While ultimately rejected, I'm proud of the design and the creative process behind it. I also designed cover art for Chitt, who my brother and I met as a kid at our summer house. Now collaborating with loya, it was great to work on something for an artist with such a personal connection to us.</p>
+<p>I pitched a cover art concept for the artist <a href="https://open.spotify.com/artist/4DSFmAOMwMqDVKIsPY0kqs?si=IuyZFZwoTCCsxNR4Py_JHA" target="_blank">Sweezy</a>. While ultimately rejected, I'm proud of the design and the creative process behind it. I also designed cover art for Chitt, who my brother and I met as a kid at our summer house. Now collaborating with loya, it was great to work on something for an artist with such a personal connection to us.</p>
 <div class="img-grid-2">
 <div class="project-img"><img src="img/all/ExoticSweezyv4.jpg" alt="Sweezy cover art concept" loading="lazy"></div>
 <div class="project-img"><img src="img/all/FeelYourLove.jpg" alt="Chitt cover art" loading="lazy"></div>
@@ -1150,7 +1147,7 @@ const projects = [
 <div class="project-img"><img src="img/all/AI_Page.png" alt="AI features page" loading="lazy"></div>
 <div class="project-img"><img src="img/all/Account_Page.png" alt="Account page design" loading="lazy"></div>
 </div>
-<p>Interactive Figma prototype <a href="https://www.figma.com/proto/72II3Ud383V7CluTMG3R5H/Pinecone-Redesign?node-id=301-972&starting-point-node-id=301%3A972&t=8rXMJRjZIyKAgn02-1" target="_blank" style="color:var(--accent);text-decoration:underline;">here</a>.</p>
+<p>Interactive Figma prototype <a href="https://www.figma.com/proto/72II3Ud383V7CluTMG3R5H/Pinecone-Redesign?node-id=301-972&starting-point-node-id=301%3A972&t=8rXMJRjZIyKAgn02-1" target="_blank">here</a>.</p>
 <h3>Medobar</h3>
 <p>Medobar: a mobile UI concept for a Syracuse beekeeping company, targeting adults 40+ who are curious about beekeeping. The design needed to feel approachable and simple — the interface uses a hexagon-based layout inspired by honeycomb cells, with customizable modular sections. I also designed a logo using shapes derived from the A, B, and O in the Medobar wordmark.</p>
 <div class="img-grid-4x2">
@@ -1259,11 +1256,8 @@ const projects = [
 
 /* ── P2 FUNCTIONS ── */
 
-function exitP2() {
-  window.p2Exit();
-}
-
 function p2ShowAbout() {
+  _p2ProjectFloatingBack = false;
   document.getElementById('p2Scene').classList.add('zoomed-out');
   document.getElementById('p2About').classList.add('visible');
 }
@@ -1274,6 +1268,7 @@ function p2CloseAbout() {
 }
 
 function p2ShowContact() {
+  _p2ProjectFloatingBack = false;
   document.getElementById('p2Scene').classList.add('zoomed-out');
   document.getElementById('p2Contact').classList.add('visible');
 }
@@ -1287,16 +1282,21 @@ function p2CloseContact() {
 var _p2ProjectOpen = false;
 
 /* Wire lightbox clicks for images/videos inside the project body */
+// Project open/close with fall/float animations
+var _p2ProjectFalling = false;
+var _p2ProjectFallStart = 0;
+var _p2ProjectFloatingBack = false;
+var _p2ProjectFloatStart = 0;
+var _p2PendingProject = null;
+
 function p2ShowProject(index, el) {
   const p = projects[index];
-  if (!p || _p2ProjectOpen) return;
-  _p2ProjectOpen = true;
+  if (!p || _p2ProjectOpen || _p2ProjectFalling) return;
+  _p2ProjectFloatingBack = false;
 
+  // Populate content immediately (hidden)
   const overlay = document.getElementById('p2Project');
-  const scene = document.getElementById('p2Scene');
   const scrollEl = overlay.querySelector('.p2-project-scroll');
-
-  // Populate content
   document.getElementById('p2ProjectTitle').textContent = p.title;
   document.getElementById('p2ProjectCategory').textContent = p.category;
   document.getElementById('p2ProjectTools').textContent = p.tools;
@@ -1306,37 +1306,55 @@ function p2ShowProject(index, el) {
   document.getElementById('p2ProjectHeroImg').alt = p.title;
   scrollEl.scrollTop = 0;
 
-  // Reset visibility for stagger
+  // Reset visibility
   document.getElementById('p2ProjectHero').classList.remove('visible');
   document.getElementById('p2ProjectHeader').classList.remove('visible');
   document.getElementById('p2ProjectBody').classList.remove('visible');
   document.getElementById('p2ProjectBackRow').classList.remove('visible');
 
-  // Zoom out scene (same as about/contact)
-  scene.classList.add('zoomed-out');
+  // Start fall-down animation
+  _p2ProjectFalling = true;
+  _p2ProjectFallStart = performance.now();
 
-  // Show project overlay
-  overlay.classList.add('visible');
+  // Snapshot current positions
+  if (window.p2Items) {
+    window.p2Items.forEach(item => {
+      const m = item.el.style.transform.match(/translate3d\(([^,]+)px,\s*([^,]+)px/);
+      item._projFallFromY = m ? parseFloat(m[2]) : item.restY;
+    });
+  }
 
-  // Stagger in elements
-  setTimeout(() => { document.getElementById('p2ProjectHero').classList.add('visible'); }, 80);
-  setTimeout(() => { document.getElementById('p2ProjectBackRow').classList.add('visible'); }, 150);
-  setTimeout(() => { document.getElementById('p2ProjectHeader').classList.add('visible'); }, 220);
+  // After fall completes, show overlay
   setTimeout(() => {
-    document.getElementById('p2ProjectBody').classList.add('visible');
-    initSongPlayer();
-    p2WireProjectLightbox();
-  }, 320);
+    _p2ProjectFalling = false;
+    _p2ProjectOpen = true;
+    overlay.classList.add('visible');
+
+    // Stagger in elements
+    setTimeout(() => { document.getElementById('p2ProjectHero').classList.add('visible'); }, 80);
+    setTimeout(() => { document.getElementById('p2ProjectBackRow').classList.add('visible'); }, 150);
+    setTimeout(() => { document.getElementById('p2ProjectHeader').classList.add('visible'); }, 220);
+    setTimeout(() => {
+      document.getElementById('p2ProjectBody').classList.add('visible');
+      initSongPlayer();
+      p2WireProjectLightbox();
+    }, 320);
+  }, 700);
 }
 
 function p2CloseProject() {
   if (!_p2ProjectOpen) return;
 
-  // Identical to about/contact — just remove classes, let CSS handle it
-  document.getElementById('p2Scene').classList.remove('zoomed-out');
+  // Hide overlay
   document.getElementById('p2Project').classList.remove('visible');
 
-  setTimeout(() => { _p2ProjectOpen = false; }, 900);
+  // After overlay fades, replay the exact load-in animation
+  setTimeout(() => {
+    _p2ProjectOpen = false;
+    _p2ProjectFloatingBack = false;
+    // Reset startTime so the normal float-in replays from scratch
+    window._p2ResetStart = performance.now();
+  }, 500);
 }
 
 function p2WireProjectLightbox() {
@@ -1457,8 +1475,6 @@ document.addEventListener('keydown', (e) => {
     if (document.getElementById('p2About').classList.contains('visible')) { p2CloseAbout(); return; }
     if (document.getElementById('p2Contact').classList.contains('visible')) { p2CloseContact(); return; }
     if (document.getElementById('p2ComingSoon').classList.contains('active')) { document.getElementById('p2ComingSoon').classList.remove('active'); return; }
-    // Top level — fall out to die landing
-    window.p2Exit();
   }
 });
 
@@ -1540,7 +1556,7 @@ let p2Initialized = false;
   window.p2Items = window.p2Items || [];
   const p2Items = window.p2Items;
   const positions = [
-    { x: 0.12, y: 0.18, z: -80,  s: 200 },
+    { x: 0.50, y: 0.16, z: -70,  s: 185 },
     { x: 0.78, y: 0.15, z: -120, s: 170 },
     { x: 0.08, y: 0.65, z: -50,  s: 190 },
     { x: 0.82, y: 0.60, z: -100, s: 160 },
@@ -1548,7 +1564,7 @@ let p2Initialized = false;
     { x: 0.65, y: 0.80, z: -90,  s: 175 },
     { x: 0.20, y: 0.40, z: -60,  s: 155 },
     { x: 0.72, y: 0.38, z: -110, s: 165 },
-    { x: 0.50, y: 0.12, z: -70,  s: 185 },
+    { x: 0.12, y: 0.18, z: -80,  s: 200 },
   ];
 
   projects.forEach((p, i) => {
@@ -1598,23 +1614,7 @@ let p2Initialized = false;
     });
   });
 
-  // Add floating die (clickable - returns to die landing)
-  const dieFloat = document.createElement('div');
-  dieFloat.className = 'p2-die-float';
-  dieFloat.innerHTML = '<div class="die-dot"></div><div class="die-dot"></div>';
-  dieFloat.style.cssText = 'position:absolute;width:50px;height:50px;background:#e8e4de;border-radius:6px;display:grid;grid-template-columns:1fr;padding:10px;cursor:pointer;z-index:20;filter:blur(1.5px);transition:filter 0.5s ease, box-shadow 0.3s;';
-  dieFloat.querySelectorAll('.die-dot').forEach((d, i) => {
-    d.style.cssText = 'width:10px;height:10px;background:#1a1a1a;border-radius:50%;position:static;';
-    d.style.justifySelf = i === 0 ? 'end' : 'start';
-    d.style.alignSelf = i === 0 ? 'start' : 'end';
-  });
-  let dieHovered = false;
-  dieFloat.addEventListener('click', () => { window.p2Exit(); });
-  dieFloat.addEventListener('mouseenter', () => { dieHovered = true; dieFloat.style.filter = 'blur(0px)'; dieFloat.style.boxShadow = '0 4px 16px rgba(0,0,0,0.08)'; });
-  dieFloat.addEventListener('mouseleave', () => { dieHovered = false; dieFloat.style.filter = 'blur(1.5px)'; dieFloat.style.boxShadow = ''; });
-  scene.appendChild(dieFloat);
-  const dieRestX = w * 0.88;
-  const dieRestY = h * 0.25;
+  // die removed — P2 is the main page
 
   const titleEl = scene.querySelector('.p2-title');
   titleEl.style.willChange = 'transform, opacity';
@@ -1624,60 +1624,56 @@ let p2Initialized = false;
   const stagger = 150;
   const floatDur = 2000;
 
-  // Fall-out state
+  // Custom stagger order (swapped 0↔8 so S&V comes in late, Misc comes in early)
+  const staggerOrder = [8, 1, 2, 3, 4, 5, 6, 7, 0];
+
+  // Fall-out state (kept for project transitions)
   let p2Falling = false;
   let p2FallStart = 0;
-
-  window.p2Exit = function() {
-    if (p2Falling) return;
-    p2Falling = true;
-    p2FallStart = performance.now();
-    // Snapshot current positions mid-bob
-    p2Items.forEach(item => {
-      const m = item.el.style.transform.match(/translate3d\(([^,]+)px,\s*([^,]+)px/);
-      item._fallFromY = m ? parseFloat(m[2]) : item.restY;
-    });
-    const dm = dieFloat.style.transform.match(/translate3d\(([^,]+)px,\s*([^,]+)px/);
-    window._dieFallFromY = dm ? parseFloat(dm[2]) : dieRestY;
-    setTimeout(() => { window.location.href = 'index.html?from=2'; }, 800);
-  };
 
   function easeOutQuint(t) { return 1 - Math.pow(1 - t, 5); }
   function easeInQuad(t) { return t * t; }
 
   function tick(now) {
-    const elapsed = now - startTime;
+    // Use reset time if set (replay load-in after closing a project)
+    const effectiveStart = window._p2ResetStart || startTime;
+    const elapsed = now - effectiveStart;
 
-    // ── FALLING OUT ──
-    if (p2Falling) {
-      const fallElapsed = now - p2FallStart;
+    // ── PROJECT FALL DOWN (opening a project) ──
+    if (_p2ProjectFalling) {
+      const fallElapsed = now - _p2ProjectFallStart;
       const fallT = Math.min(fallElapsed / 700, 1);
-      const fallEase = easeInQuad(fallT); // accelerate like gravity
+      const fallEase = easeInQuad(fallT);
 
-      // Title just fades (no movement)
       titleEl.style.opacity = Math.max(1 - fallT * 5, 0);
 
-      // Items fall from wherever they were
       p2Items.forEach((item, i) => {
-        const fromY = item._fallFromY || item.restY;
-        const targetY = window.innerHeight + 200 + i * 50;
+        const si = staggerOrder[i] !== undefined ? staggerOrder[i] : i;
+        const fromY = item._projFallFromY || item.restY;
+        const targetY = window.innerHeight + 200 + si * 50;
         const curY = fromY + (targetY - fromY) * fallEase;
         item.el.style.transform = `translate3d(${item.restX}px, ${curY}px, 0) scale(${item.scaleAmt})`;
       });
 
-      // Die float falls from wherever it was
-      const dieFromY = window._dieFallFromY || dieRestY;
-      const dieTargetY = window.innerHeight + 300;
-      const dieCurY = dieFromY + (dieTargetY - dieFromY) * fallEase;
-      dieFloat.style.transform = `translate3d(${dieRestX}px, ${dieCurY}px, 0) scale(0.85)`;
+      requestAnimationFrame(tick);
+      return;
+    }
 
+    // ── HOLD OFF-SCREEN WHILE PROJECT IS OPEN ──
+    if (_p2ProjectOpen) {
+      // Keep everything parked below screen
+      p2Items.forEach((item, i) => {
+        const si = staggerOrder[i] !== undefined ? staggerOrder[i] : i;
+        item.el.style.transform = `translate3d(${item.restX}px, ${window.innerHeight + 200 + si * 50}px, 0) scale(${item.scaleAmt})`;
+      });
+      titleEl.style.opacity = 0;
       requestAnimationFrame(tick);
       return;
     }
 
     // ── NORMAL FLOAT-IN + BOB ──
     // Float in title + bob
-    const titleT = Math.min(Math.max((elapsed - 200) / 1200, 0), 1);
+    const titleT = Math.min(Math.max((elapsed - 600) / 2000, 0), 1);
     const titleEase = easeOutQuint(titleT);
     titleEl.style.opacity = titleEase;
     const titleBobBlend = Math.min(Math.max((titleT - 0.8) / 0.2, 0), 1);
@@ -1686,7 +1682,8 @@ let p2Initialized = false;
     titleEl.style.transform = `translate3d(-50%, calc(${titleOffset}% + ${titleBob}px), 0)`;
 
     p2Items.forEach((item, i) => {
-      const delay = i * stagger;
+      const si = staggerOrder[i] !== undefined ? staggerOrder[i] : i;
+      const delay = si * stagger;
       const rawT = Math.max((elapsed - delay) / floatDur, 0);
       const t = Math.min(rawT, 1);
       const ease = easeOutQuint(t);
@@ -1694,20 +1691,10 @@ let p2Initialized = false;
       const bobBlend = Math.min(Math.max(rawT - 1, 0), 1);
       const bobY = item._frozen ? 0 : Math.sin(elapsed * 0.001 * item.bobSpeed + item.bobPhase) * item.bobAmp * bobBlend;
 
-      const startY = window.innerHeight + 200 + i * 50;
+      const startY = window.innerHeight + 200 + si * 50;
       const curY = Math.round((startY + (item.restY - startY) * ease + bobY) * 100) / 100;
       item.el.style.transform = `translate3d(${item.restX}px, ${curY}px, 0) scale(${item.scaleAmt})`;
     });
-
-    // Float the die
-    const dieT = Math.min(Math.max((elapsed - projects.length * stagger) / floatDur, 0), 1);
-    const dieEase = easeOutQuint(dieT);
-    const dieBobBlend = Math.min(Math.max((dieT - 0.8) / 0.2, 0), 1);
-    const dieBob = Math.round(Math.sin(elapsed * 0.0004 + 1.5) * 8 * dieBobBlend * 100) / 100;
-    const startDY = window.innerHeight + 300;
-    const dieBaseY = startDY + (dieRestY - startDY) * dieEase;
-    const dieCurY = Math.round((dieBaseY + dieBob) * 100) / 100;
-    dieFloat.style.transform = `translate3d(${dieRestX}px, ${dieCurY}px, 0) scale(0.85)`;
 
     requestAnimationFrame(tick);
   }
@@ -1716,6 +1703,5 @@ let p2Initialized = false;
 })();
 
 </script>
-
 </body>
 </html>
