@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0a0a0a">
+<title>Michael Loya Studio</title>
+<link rel="icon" type="image/svg+xml" href="logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --parchment: #E8E0D4;
+    --accent: #ff8e3d;
+    --espresso: #3d2b1f;
+    --warm-gray: #8a8580;
+    --black: #0a0a0a;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    background: var(--bg);
+    color: var(--parchment);
+    font-family: 'Space Grotesk', sans-serif;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    position: fixed;
+    touch-action: pan-y;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* ── BOOT SCREEN ── */
+  .boot-screen {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+  }
+  .boot-screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .boot-logo {
+    height: 60px;
+    opacity: 0;
+    transform: scale(0.8);
+    animation: bootLogoIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+    filter: brightness(0) saturate(100%) invert(89%) sepia(6%) saturate(268%) hue-rotate(14deg) brightness(97%) contrast(92%);
+  }
+
+  @keyframes bootLogoIn {
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .boot-name {
+    font-family: 'Instrument Serif', serif;
+    font-size: 2.2rem;
+    color: var(--parchment);
+    margin-top: 0.75rem;
+    opacity: 0;
+    animation: bootTextIn 0.8s ease 1.4s forwards;
+  }
+  .boot-name em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  @keyframes bootTextIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── APP CONTAINER ── */
+  .app {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+  .app.visible {
+    opacity: 1;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: calc(var(--safe-top) + 16px) 20px 12px;
+    flex-shrink: 0;
+  }
+
+  .header-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--warm-gray);
+  }
+
+  .header-battery {
+    width: 22px;
+    height: 11px;
+    border: 1.5px solid var(--warm-gray);
+    border-radius: 3px;
+    position: relative;
+  }
+  .header-battery::after {
+    content: '';
+    position: absolute;
+    right: -5px;
+    top: 2px;
+    width: 3px;
+    height: 5px;
+    background: var(--warm-gray);
+    border-radius: 0 2px 2px 0;
+  }
+  .header-battery-fill {
+    position: absolute;
+    left: 2px; top: 2px; bottom: 2px;
+    width: 70%;
+    background: #6bda6b;
+    border-radius: 1px;
+  }
+
+  /* ── VIEWS ── */
+  .view {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease, transform 0.35s ease;
+  }
+  .view.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  /* ── MENU VIEW ── */
+  .menu-view .header { background: transparent; }
+
+  .menu-list {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0 16px 20px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .menu-list::-webkit-scrollbar { display: none; }
+
+  .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    margin-bottom: 6px;
+    border-radius: 12px;
+    background: rgba(232, 224, 212, 0.04);
+    transition: background 0.2s, transform 0.15s;
+    cursor: pointer;
+  }
+  .menu-item:active {
+    background: var(--accent);
+    transform: scale(0.98);
+  }
+  .menu-item:active .menu-item-title,
+  .menu-item:active .menu-item-category {
+    color: var(--bg);
+  }
+
+  .menu-item-thumb {
+    width: 52px;
+    height: 52px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  }
+
+  .menu-item-info { flex: 1; min-width: 0; }
+
+  .menu-item-title {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--parchment);
+    margin-bottom: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .menu-item-category {
+    font-size: 0.75rem;
+    color: var(--warm-gray);
+  }
+
+  .menu-item-arrow {
+    color: var(--warm-gray);
+    font-size: 1.2rem;
+    opacity: 0.5;
+  }
+
+  /* ── DETAIL VIEW (Now Playing Style) ── */
+  .detail-view {
+    transform: translateX(100%);
+  }
+  .detail-view.active {
+    transform: translateX(0);
+  }
+
+  .detail-header {
+    display: flex;
+    align-items: center;
+    padding: calc(var(--safe-top) + 14px) 20px 10px;
+    flex-shrink: 0;
+  }
+
+  .detail-back {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: var(--accent);
+    background: none;
+    border: none;
+    padding: 8px 12px 8px 0;
+    cursor: pointer;
+    font-family: 'Space Grotesk', sans-serif;
+  }
+  .detail-back svg {
+    width: 20px;
+    height: 20px;
+    fill: var(--accent);
+  }
+
+  .detail-nav-label {
+    flex: 1;
+    text-align: center;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--warm-gray);
+  }
+
+  .detail-nav-arrows {
+    display: flex;
+    gap: 4px;
+  }
+  .detail-nav-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(232, 224, 212, 0.08);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .detail-nav-btn:active {
+    background: var(--accent);
+  }
+  .detail-nav-btn:active svg { fill: var(--bg); }
+  .detail-nav-btn svg {
+    width: 18px;
+    height: 18px;
+    fill: var(--parchment);
+  }
+
+  .detail-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .detail-cover {
+    width: min(80vw, 320px);
+    height: min(80vw, 320px);
+    border-radius: 16px;
+    object-fit: cover;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+    transition: transform 0.4s ease, opacity 0.3s ease;
+  }
+  .detail-cover.swiping-left { transform: translateX(-30px) scale(0.95); opacity: 0.7; }
+  .detail-cover.swiping-right { transform: translateX(30px) scale(0.95); opacity: 0.7; }
+
+  .detail-info {
+    width: 100%;
+    max-width: 320px;
+    margin-top: 28px;
+    text-align: center;
+  }
+
+  .detail-track-num {
+    font-size: 0.72rem;
+    color: var(--warm-gray);
+    margin-bottom: 10px;
+  }
+
+  .detail-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.8rem;
+    color: var(--parchment);
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+
+  .detail-category {
+    font-size: 0.85rem;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+
+  .detail-tools {
+    font-size: 0.78rem;
+    color: var(--warm-gray);
+  }
+
+  /* Progress bar (decorative) */
+  .detail-progress {
+    width: 100%;
+    max-width: 320px;
+    margin-top: 24px;
+  }
+  .detail-bar {
+    width: 100%;
+    height: 4px;
+    background: rgba(232, 224, 212, 0.15);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .detail-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    width: 33%;
+    border-radius: 2px;
+    transition: width 0.8s ease;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    padding: 12px 20px calc(var(--safe-bottom) + 16px);
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .footer-text {
+    font-size: 0.68rem;
+    color: var(--warm-gray);
+    letter-spacing: 0.03em;
+  }
+  .footer-link {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  /* ── ANIMATIONS ── */
+  .menu-item {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  .menu-item.loaded {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.4s ease, transform 0.4s ease, background 0.2s;
+  }
+
+  /* ── SWIPE HINT ── */
+  .swipe-hint {
+    position: absolute;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.65rem;
+    color: var(--warm-gray);
+    opacity: 0;
+    animation: swipeHintFade 3s ease 1s forwards;
+    pointer-events: none;
+  }
+  @keyframes swipeHintFade {
+    0% { opacity: 0; }
+    20% { opacity: 0.6; }
+    80% { opacity: 0.6; }
+    100% { opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Boot Screen -->
+<div class="boot-screen" id="bootScreen">
+  <img src="logo.svg" class="boot-logo" alt="ML">
+  <div class="boot-name"><em>m</em>Pod</div>
+</div>
+
+<!-- App -->
+<div class="app" id="app">
+
+  <!-- Menu View -->
+  <div class="view menu-view active" id="menuView">
+    <div class="header">
+      <span class="header-title">Michael Loya Studio</span>
+      <div class="header-battery">
+        <div class="header-battery-fill"></div>
+      </div>
+    </div>
+    <div class="menu-list" id="menuList"></div>
+    <div class="footer">
+      <span class="footer-text">What I'm listening to · Last updated Feb 22 · <a href="interactive/mpod.html" class="footer-link">mPod ♫</a></span>
+    </div>
+  </div>
+
+  <!-- Detail View -->
+  <div class="view detail-view" id="detailView">
+    <div class="detail-header">
+      <button class="detail-back" id="detailBack">
+        <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+        Menu
+      </button>
+      <span class="detail-nav-label" id="detailNavLabel">1 of 8</span>
+      <div class="detail-nav-arrows">
+        <button class="detail-nav-btn" id="btnPrev">
+          <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+        </button>
+        <button class="detail-nav-btn" id="btnNext">
+          <svg viewBox="0 0 24 24"><path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="detail-content" id="detailContent">
+      <img class="detail-cover" id="detailCover" src="" alt="">
+      <div class="detail-info">
+        <div class="detail-track-num" id="detailTrackNum">1 of 8</div>
+        <div class="detail-title" id="detailTitle">Project Title</div>
+        <div class="detail-category" id="detailCategory">Category</div>
+        <div class="detail-tools" id="detailTools">Tools & Tags</div>
+      </div>
+      <div class="detail-progress">
+        <div class="detail-bar"><div class="detail-bar-fill" id="detailBarFill"></div></div>
+      </div>
+      <div class="swipe-hint">← Swipe to browse →</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── PROJECTS DATA ──
+const projects = [
+  {
+    title: 'Sound & Vision',
+    cover: 'img/DnDFinal.jpeg',
+    category: 'Cover Art / Motion / Music',
+    tools: 'Cinema 4D · After Effects · Illustrator',
+    link: null
+  },
+  {
+    title: 'BODYARMOR & Powerade',
+    cover: 'img/bapa.png',
+    category: 'Internship / Branding / AI',
+    tools: 'Figma · Midjourney · Photoshop',
+    link: null
+  },
+  {
+    title: 'AI Song',
+    cover: 'img/LimitsCover.jpg',
+    category: 'Music Production / AI / Design',
+    tools: 'Logic Pro · Suno · Photoshop',
+    link: null
+  },
+  {
+    title: 'Mobile UIs',
+    cover: 'img/iPhone_Mockup.png',
+    category: 'UI/UX Design',
+    tools: 'Figma · Sketch · Prototyping',
+    link: null
+  },
+  {
+    title: 'Album Covers',
+    cover: 'img/whitenoise.jpg',
+    category: 'Graphic Design / Photography',
+    tools: 'Photoshop · Lightroom · Illustrator',
+    link: null
+  },
+  {
+    title: 'Photography Portfolio',
+    cover: 'img/Portfolio_01.jpg',
+    category: 'Photography',
+    tools: 'Canon · Lightroom · Natural Light',
+    link: null
+  },
+  {
+    title: 'Miscellaneous Projects',
+    cover: 'img/2023_Freshmen.jpg',
+    category: 'Mixed Media',
+    tools: 'Various Tools & Mediums',
+    link: null
+  },
+  {
+    title: 'mPod ♫',
+    cover: 'img/all/Vacations_DaveBrubeck_cover.jpg',
+    category: 'Interactive / Music',
+    tools: 'HTML · CSS · JavaScript',
+    link: 'interactive/mpod.html'
+  }
+];
+
+// ── STATE ──
+let currentProjectIndex = 0;
+let touchStartX = 0;
+let touchCurrentX = 0;
+let isSwiping = false;
+
+// ── DOM REFS ──
+const bootScreen = document.getElementById('bootScreen');
+const app = document.getElementById('app');
+const menuView = document.getElementById('menuView');
+const detailView = document.getElementById('detailView');
+const menuList = document.getElementById('menuList');
+const detailCover = document.getElementById('detailCover');
+const detailTitle = document.getElementById('detailTitle');
+const detailCategory = document.getElementById('detailCategory');
+const detailTools = document.getElementById('detailTools');
+const detailTrackNum = document.getElementById('detailTrackNum');
+const detailNavLabel = document.getElementById('detailNavLabel');
+const detailBarFill = document.getElementById('detailBarFill');
+const detailContent = document.getElementById('detailContent');
+
+// ── RENDER MENU ──
+function renderMenu() {
+  menuList.innerHTML = '';
+  projects.forEach((project, i) => {
+    const el = document.createElement('div');
+    el.className = 'menu-item';
+    el.innerHTML = `
+      <img class="menu-item-thumb" src="${project.cover}" alt="" loading="lazy">
+      <div class="menu-item-info">
+        <div class="menu-item-title">${project.title}</div>
+        <div class="menu-item-category">${project.category}</div>
+      </div>
+      <span class="menu-item-arrow">›</span>
+    `;
+    el.addEventListener('click', () => openProject(i));
+    menuList.appendChild(el);
+  });
+}
+
+// ── ANIMATE MENU ITEMS IN ──
+function animateMenuIn() {
+  const items = document.querySelectorAll('.menu-item');
+  items.forEach((item, i) => {
+    setTimeout(() => item.classList.add('loaded'), i * 80);
+  });
+}
+
+// ── SHOW PROJECT DETAIL ──
+function openProject(index) {
+  // If this project has a link, navigate to it
+  if (projects[index].link) {
+    window.location.href = projects[index].link;
+    return;
+  }
+  
+  currentProjectIndex = index;
+  renderDetail();
+  menuView.classList.remove('active');
+  detailView.classList.add('active');
+}
+
+function renderDetail() {
+  const project = projects[currentProjectIndex];
+  detailCover.src = project.cover;
+  detailTitle.textContent = project.title;
+  detailCategory.textContent = project.category;
+  detailTools.textContent = project.tools;
+  
+  const num = `${currentProjectIndex + 1} of ${projects.length}`;
+  detailTrackNum.textContent = num;
+  detailNavLabel.textContent = num;
+  
+  // Progress bar
+  const progress = ((currentProjectIndex + 1) / projects.length) * 100;
+  detailBarFill.style.width = progress + '%';
+}
+
+// ── NAVIGATION ──
+function goBack() {
+  detailView.classList.remove('active');
+  menuView.classList.add('active');
+}
+
+function nextProject() {
+  // Skip projects with links
+  let next = (currentProjectIndex + 1) % projects.length;
+  while (projects[next].link && next !== currentProjectIndex) {
+    next = (next + 1) % projects.length;
+  }
+  currentProjectIndex = next;
+  renderDetail();
+}
+
+function prevProject() {
+  // Skip projects with links
+  let prev = (currentProjectIndex - 1 + projects.length) % projects.length;
+  while (projects[prev].link && prev !== currentProjectIndex) {
+    prev = (prev - 1 + projects.length) % projects.length;
+  }
+  currentProjectIndex = prev;
+  renderDetail();
+}
+
+// ── SWIPE HANDLING ──
+detailContent.addEventListener('touchstart', (e) => {
+  touchStartX = e.touches[0].clientX;
+  touchCurrentX = touchStartX;
+  isSwiping = true;
+}, { passive: true });
+
+detailContent.addEventListener('touchmove', (e) => {
+  if (!isSwiping) return;
+  touchCurrentX = e.touches[0].clientX;
+  const diff = touchCurrentX - touchStartX;
+  
+  if (Math.abs(diff) > 30) {
+    detailCover.classList.remove('swiping-left', 'swiping-right');
+    if (diff > 0) {
+      detailCover.classList.add('swiping-right');
+    } else {
+      detailCover.classList.add('swiping-left');
+    }
+  }
+}, { passive: true });
+
+detailContent.addEventListener('touchend', () => {
+  if (!isSwiping) return;
+  isSwiping = false;
+  
+  const diff = touchCurrentX - touchStartX;
+  detailCover.classList.remove('swiping-left', 'swiping-right');
+  
+  if (diff > 80) {
+    prevProject();
+  } else if (diff < -80) {
+    nextProject();
+  }
+}, { passive: true });
+
+// ── BUTTON HANDLERS ──
+document.getElementById('detailBack').addEventListener('click', goBack);
+document.getElementById('btnPrev').addEventListener('click', prevProject);
+document.getElementById('btnNext').addEventListener('click', nextProject);
+
+// ── KEYBOARD SUPPORT ──
+document.addEventListener('keydown', (e) => {
+  if (!detailView.classList.contains('active')) return;
+  
+  if (e.code === 'Escape' || e.code === 'Backspace') {
+    e.preventDefault();
+    goBack();
+  }
+  if (e.code === 'ArrowLeft') prevProject();
+  if (e.code === 'ArrowRight') nextProject();
+});
+
+// ── BOOT SEQUENCE ──
+renderMenu();
+
+setTimeout(() => {
+  bootScreen.classList.add('hidden');
+  app.classList.add('visible');
+  animateMenuIn();
+}, 3000);
+</script>
+</body>
+</html>
