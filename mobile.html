@@ -48,7 +48,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 1rem 2.5rem;
+    padding: 0.5rem 1.25rem 0.25rem;
     z-index: 100;
   }
 
@@ -64,7 +64,7 @@
   }
 
   .header-logo {
-    height: 32px;
+    height: 36px;
     transition: opacity 0.2s ease;
   }
 
@@ -78,12 +78,12 @@
     flex-direction: column;
     align-items: center;
     width: 100%;
-    max-width: 340px;
+    max-width: 90vw;
   }
 
   .ipod {
     width: 100%;
-    max-width: 340px;
+    max-width: 90vw;
     max-height: 72svh;
     aspect-ratio: 320 / 520;
     background: var(--ipod-color);
@@ -883,36 +883,7 @@
   }
 
   /* ── RESPONSIVE / MOBILE ── */
-  @media (max-width: 480px) {
-    body {
-      padding: 0;
-      justify-content: flex-start;
-    }
-    .header {
-      padding: 0.5rem 1.25rem 0.25rem;
-    }
-    .header-logo {
-      height: 36px;
-    }
-    .ipod-container {
-      max-width: 90vw;
-    }
-    .ipod {
-      border-radius: 24px;
-    }
-    .color-picker {
-      margin-top: 0.5rem;
-    }
-    .color-swatch {
-      width: 20px;
-      height: 20px;
-    }
-    .footer {
-      position: relative;
-      margin-top: 1rem;
-      padding: 0.5rem;
-    }
-  }
+  /* Mobile overrides merged into base (this is a mobile-only page) */
 
   @media (max-height: 700px) {
     body {
