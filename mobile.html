@@ -23,27 +23,21 @@
     overflow: hidden;
     position: fixed;
     width: 100%;
-    height: 100svh;
-    height: 100vh; /* fallback */
+    height: 100%;
     touch-action: none;
-  }
-
-  @supports (height: 100svh) {
-    html, body { height: 100svh; }
   }
 
   body {
     background: var(--bg);
     color: var(--text);
     font-family: 'Space Grotesk', sans-serif;
-    height: 100svh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
     cursor: url('cursor.svg') 16 8, default;
     overflow-x: hidden;
-    padding: 1rem;
+    padding: 0;
   }
 
   a, button, .wheel, .wheel-center, .wheel-btn, .ipod { cursor: url('crosshair.svg') 8 10, pointer !important; }
@@ -891,8 +885,7 @@
   /* ── RESPONSIVE / MOBILE ── */
   @media (max-width: 480px) {
     body {
-      padding: 0.5rem;
-      padding-top: 0;
+      padding: 0;
       justify-content: flex-start;
     }
     .header {
