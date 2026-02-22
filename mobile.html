@@ -2,67 +2,543 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#0a0a0a">
-<title>Michael Loya Studio</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Portfolio — Michael Loya Studio</title>
 <link rel="icon" type="image/svg+xml" href="logo.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #0a0a0a;
-    --parchment: #E8E0D4;
+    --text: #E8E0D4;
+    --text-muted: #8a8580;
     --accent: #ff8e3d;
-    --espresso: #3d2b1f;
-    --warm-gray: #8a8580;
-    --black: #0a0a0a;
-    --safe-top: env(safe-area-inset-top, 0px);
-    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --ipod-color: #E8E0D4;
+    --ipod-shadow: rgba(0,0,0,0.3);
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  html, body {
+  body {
     background: var(--bg);
-    color: var(--parchment);
+    color: var(--text);
     font-family: 'Space Grotesk', sans-serif;
-    height: 100%;
-    width: 100%;
-    overflow: hidden;
-    position: fixed;
-    touch-action: pan-y;
-    -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    user-select: none;
-  }
-
-  /* ── BOOT SCREEN ── */
-  .boot-screen {
-    position: fixed;
-    inset: 0;
-    background: var(--bg);
+    min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
-    opacity: 1;
-    transition: opacity 0.5s ease;
+    cursor: url('cursor.svg') 16 8, default;
+    overflow-x: hidden;
+    padding: 1rem;
   }
-  .boot-screen.hidden {
+
+  a, button, .wheel, .wheel-center, .wheel-btn, .ipod { cursor: url('crosshair.svg') 8 10, pointer !important; }
+
+  /* ── HEADER ── */
+  .header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem 2.5rem;
+    z-index: 100;
+  }
+
+  .header-logo-link {
+    display: block;
     opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+  .header-logo-link.loaded {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .header-logo {
+    height: 32px;
+    transition: opacity 0.2s ease;
+  }
+
+  .header-logo-link .logo-hover { position: absolute; top: 0; left: 0; opacity: 0; }
+  .header-logo-link:hover .logo-default { opacity: 0; }
+  .header-logo-link:hover .logo-hover { opacity: 1; }
+
+  /* ── iPOD BODY ── */
+  .ipod-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .ipod {
+    width: 100%;
+    max-width: 320px;
+    aspect-ratio: 320 / 540;
+    background: var(--ipod-color);
+    border-radius: 28px;
+    padding: 5.5% 5% 6.5%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow:
+      0 2px 0 rgba(255,255,255,0.3) inset,
+      0 -2px 4px rgba(0,0,0,0.1) inset,
+      0 20px 60px var(--ipod-shadow),
+      0 4px 12px rgba(0,0,0,0.2);
+    position: relative;
+    transition: background 0.4s ease, box-shadow 0.4s ease;
+    user-select: none;
+  }
+
+  /* Subtle sheen */
+  .ipod::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    border-radius: 28px 28px 0 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 100%);
     pointer-events: none;
   }
 
+  /* ── SCREEN ── */
+  .screen {
+    width: 100%;
+    aspect-ratio: 280 / 210;
+    background: #1a1e23;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.1) inset,
+      0 2px 8px rgba(0,0,0,0.4);
+  }
+
+  /* Screen views */
+  .screen-view {
+    position: absolute;
+    inset: 0;
+    padding: 3.5% 6% 5%;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+  .screen-view.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  /* ── MENU VIEW ── */
+  .screen-header {
+    font-size: clamp(0.55rem, 2.5vw, 0.72rem);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #8a8580;
+    margin-bottom: 3%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .screen-header .battery,
+  .screen-battery .battery {
+    width: 18px;
+    height: 9px;
+    border: 1px solid #8a8580;
+    border-radius: 2px;
+    position: relative;
+    display: inline-block;
+  }
+  .screen-header .battery::after,
+  .screen-battery .battery::after {
+    content: '';
+    position: absolute;
+    right: -4px;
+    top: 2px;
+    width: 2px;
+    height: 4px;
+    background: #8a8580;
+    border-radius: 0 1px 1px 0;
+  }
+  .screen-header .battery-fill,
+  .screen-battery .battery-fill {
+    position: absolute;
+    left: 1px; top: 1px; bottom: 1px;
+    width: 70%;
+    background: #6bda6b;
+    border-radius: 1px;
+  }
+
+  .screen-battery {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    padding: 5% 6% 0;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    z-index: 10;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    height: 14px;
+  }
+  .screen-battery.visible {
+    opacity: 1;
+  }
+
+  .menu-list {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+  }
+  .menu-list::-webkit-scrollbar { display: none; }
+
+  .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 6%;
+    padding: 3% 4%;
+    border-radius: 4px;
+    font-size: clamp(0.65rem, 2.8vw, 0.82rem);
+    color: #c8c0b8;
+    transition: background 0.15s, color 0.15s;
+  }
+  .menu-item { cursor: pointer; }
+  .menu-item.selected {
+    background: var(--accent);
+    color: #0a0a0a;
+  }
+  .menu-item-thumb {
+    width: 26px;
+    height: 26px;
+    border-radius: 3px;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+  .menu-item-info { flex: 1; min-width: 0; }
+  .menu-item-title {
+    font-size: clamp(0.65rem, 2.8vw, 0.82rem);
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .menu-item-artist {
+    font-size: clamp(0.5rem, 2.2vw, 0.65rem);
+    opacity: 0.6;
+  }
+
+  /* ── PROJECT DETAIL VIEW ── */
+  .np-view {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    height: 100%;
+  }
+
+  .np-view .screen-header {
+    color: var(--accent);
+    text-align: left;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .np-track-num {
+    font-size: clamp(0.6rem, 2.5vw, 0.75rem);
+    color: #8a8580;
+    margin-top: 3%;
+    margin-bottom: 4%;
+  }
+
+  .np-content {
+    display: flex;
+    gap: 5%;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .np-cover {
+    width: 42%;
+    aspect-ratio: 1;
+    border-radius: 4px;
+    object-fit: cover;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    flex-shrink: 0;
+  }
+
+  .np-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+    flex: 1;
+    height: 100%;
+  }
+
+  .np-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(0.75rem, 3.2vw, 0.95rem);
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.3;
+    margin-bottom: 1px;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .np-artist {
+    font-size: clamp(0.6rem, 2.5vw, 0.75rem);
+    color: #8a8580;
+    margin-bottom: 4%;
+  }
+
+  .np-album {
+    font-size: clamp(0.48rem, 2vw, 0.58rem);
+    color: #6a6560;
+    margin-bottom: 3%;
+    line-height: 1.4;
+  }
+
+  .np-progress {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: auto;
+    margin-bottom: 2%;
+  }
+
+  .np-bar-wrap {
+    width: 100%;
+    padding: 4% 0;
+    position: relative;
+  }
+  .np-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(232,224,212,0.15);
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .np-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    width: 0%;
+    border-radius: 3px;
+    transition: width 0.3s ease;
+    position: relative;
+    z-index: 2;
+  }
+
+  .np-times {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .np-time {
+    font-size: clamp(0.58rem, 2.4vw, 0.72rem);
+    color: #8a8580;
+  }
+
+  /* ── CLICK WHEEL ── */
+  .wheel-wrap {
+    margin-top: auto;
+    margin-bottom: auto;
+    position: relative;
+    width: 68%;
+    aspect-ratio: 1;
+  }
+
+  .wheel {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #d4ccc0, #bfb7ab);
+    position: relative;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.2) inset,
+      0 -1px 3px rgba(0,0,0,0.15) inset,
+      0 4px 12px rgba(0,0,0,0.1);
+    transition: background 0.4s ease;
+  }
+
+  /* Wheel quadrant buttons */
+  .wheel-btn {
+    position: absolute;
+    background: none;
+    border: none;
+    color: #5a534c;
+    font-size: clamp(0.45rem, 2vw, 0.6rem);
+    font-family: 'Space Grotesk', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 600;
+    transition: color 0.2s;
+    padding: 4%;
+  }
+  .wheel-btn:hover { color: #1a1a1a; }
+  .wheel.locked, .wheel.locked * { pointer-events: none !important; }
+  .wheel-btn:active { color: var(--accent); }
+
+  .wheel-btn.top { top: 4%; left: 50%; transform: translateX(-50%); }
+  .wheel-btn.bottom { bottom: 4%; left: 50%; transform: translateX(-50%); }
+  .wheel-btn.left { left: 3%; top: 50%; transform: translateY(-50%); }
+  .wheel-btn.right { right: 3%; top: 50%; transform: translateY(-50%); }
+
+  /* Wheel button icons */
+  .wheel-btn svg {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+  }
+
+  /* Center button */
+  .wheel-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 34%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #e8e0d4, #d4ccc0);
+    border: none;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.3) inset,
+      0 2px 6px rgba(0,0,0,0.15);
+    transition: transform 0.15s, background 0.4s ease;
+  }
+  .wheel-center:hover { transform: translate(-50%, -50%) scale(1.04); }
+  .wheel-center:active { transform: translate(-50%, -50%) scale(0.96); }
+
+  /* ── COLOR PICKER ── */
+  .color-picker {
+    display: flex;
+    gap: 10px;
+    margin-top: 1.5rem;
+    align-items: center;
+  }
+
+  .color-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-muted);
+    margin-right: 0.25rem;
+  }
+
+  .color-swatch {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  .color-swatch:hover { transform: scale(1.15); }
+  .color-swatch.active {
+    border-color: var(--accent);
+    box-shadow: 0 0 12px rgba(255,142,61,0.4);
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1rem;
+    text-align: center;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+  }
+  .footer span { color: var(--accent); }
+
+  /* ── LOAD-IN ANIMATION ── */
+  .ipod {
+    opacity: 0;
+    transform: translateY(80px) scale(0.92);
+    animation: ipodSlideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+  }
+
+  @keyframes ipodSlideIn {
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .header {
+    opacity: 0;
+    animation: fadeSlideDown 0.6s ease 0s forwards;
+  }
+
+  .color-picker {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeSlideUp 0.6s ease 4.5s forwards;
+  }
+
+  .footer {
+    opacity: 0;
+    animation: fadeSlideUp 0.6s ease 4.7s forwards;
+  }
+
+  @keyframes fadeSlideDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Boot screen */
+  .boot-screen {
+    position: absolute;
+    inset: 0;
+    background: #1a1e23;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    border-radius: 8px;
+    opacity: 0;
+    animation: bootFadeIn 0.3s ease 0.6s forwards;
+  }
+
+  @keyframes bootFadeIn {
+    to { opacity: 1; }
+  }
+
   .boot-logo {
-    height: 60px;
+    height: 40px;
+    filter: none;
     opacity: 0;
     transform: scale(0.8);
-    animation: bootLogoIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
-    filter: brightness(0) saturate(100%) invert(89%) sepia(6%) saturate(268%) hue-rotate(14deg) brightness(97%) contrast(92%);
+    animation: bootLogoIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.9s forwards;
   }
 
   @keyframes bootLogoIn {
@@ -71,630 +547,492 @@
 
   .boot-name {
     font-family: 'Instrument Serif', serif;
-    font-size: 2.2rem;
-    color: var(--parchment);
-    margin-top: 0.75rem;
+    font-size: 1.8rem;
+    color: var(--text);
+    margin-top: 0.5rem;
     opacity: 0;
-    animation: bootTextIn 0.8s ease 1.4s forwards;
+    animation: bootTextIn 0.8s ease 1.8s forwards;
   }
+
   .boot-name em {
     font-style: italic;
     color: var(--accent);
   }
 
   @keyframes bootTextIn {
-    from { opacity: 0; transform: translateY(8px); }
+    from { opacity: 0; transform: translateY(6px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
-  /* ── APP CONTAINER ── */
-  .app {
-    position: fixed;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    opacity: 0;
-    transition: opacity 0.5s ease;
-  }
-  .app.visible {
-    opacity: 1;
-  }
-
-  /* ── HEADER ── */
-  .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: calc(var(--safe-top) + 16px) 20px 12px;
-    flex-shrink: 0;
-  }
-
-  .header-title {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    color: var(--warm-gray);
-  }
-
-  .header-battery {
-    width: 22px;
-    height: 11px;
-    border: 1.5px solid var(--warm-gray);
-    border-radius: 3px;
-    position: relative;
-  }
-  .header-battery::after {
-    content: '';
-    position: absolute;
-    right: -5px;
-    top: 2px;
-    width: 3px;
-    height: 5px;
-    background: var(--warm-gray);
-    border-radius: 0 2px 2px 0;
-  }
-  .header-battery-fill {
-    position: absolute;
-    left: 2px; top: 2px; bottom: 2px;
-    width: 70%;
-    background: #6bda6b;
-    border-radius: 1px;
-  }
-
-  /* ── VIEWS ── */
-  .view {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.35s ease, transform 0.35s ease;
-  }
-  .view.active {
-    opacity: 1;
-    pointer-events: all;
-  }
-
-  /* ── MENU VIEW ── */
-  .menu-view .header { background: transparent; }
-
-  .menu-list {
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding: 0 16px 20px;
-    -webkit-overflow-scrolling: touch;
-  }
-  .menu-list::-webkit-scrollbar { display: none; }
-
-  .menu-item {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 14px 16px;
-    margin-bottom: 6px;
-    border-radius: 12px;
-    background: rgba(232, 224, 212, 0.04);
-    transition: background 0.2s, transform 0.15s;
-    cursor: pointer;
-  }
-  .menu-item:active {
-    background: var(--accent);
-    transform: scale(0.98);
-  }
-  .menu-item:active .menu-item-title,
-  .menu-item:active .menu-item-category {
-    color: var(--bg);
-  }
-
-  .menu-item-thumb {
-    width: 52px;
-    height: 52px;
-    border-radius: 8px;
-    object-fit: cover;
-    flex-shrink: 0;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
-  }
-
-  .menu-item-info { flex: 1; min-width: 0; }
-
-  .menu-item-title {
-    font-size: 1rem;
-    font-weight: 500;
-    color: var(--parchment);
-    margin-bottom: 3px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .menu-item-category {
-    font-size: 0.75rem;
-    color: var(--warm-gray);
-  }
-
-  .menu-item-arrow {
-    color: var(--warm-gray);
-    font-size: 1.2rem;
-    opacity: 0.5;
-  }
-
-  /* ── DETAIL VIEW (Now Playing Style) ── */
-  .detail-view {
-    transform: translateX(100%);
-  }
-  .detail-view.active {
-    transform: translateX(0);
-  }
-
-  .detail-header {
-    display: flex;
-    align-items: center;
-    padding: calc(var(--safe-top) + 14px) 20px 10px;
-    flex-shrink: 0;
-  }
-
-  .detail-back {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.85rem;
-    color: var(--accent);
-    background: none;
-    border: none;
-    padding: 8px 12px 8px 0;
-    cursor: pointer;
-    font-family: 'Space Grotesk', sans-serif;
-  }
-  .detail-back svg {
-    width: 20px;
-    height: 20px;
-    fill: var(--accent);
-  }
-
-  .detail-nav-label {
-    flex: 1;
-    text-align: center;
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    color: var(--warm-gray);
-  }
-
-  .detail-nav-arrows {
-    display: flex;
-    gap: 4px;
-  }
-  .detail-nav-btn {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: rgba(232, 224, 212, 0.08);
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  .detail-nav-btn:active {
-    background: var(--accent);
-  }
-  .detail-nav-btn:active svg { fill: var(--bg); }
-  .detail-nav-btn svg {
-    width: 18px;
-    height: 18px;
-    fill: var(--parchment);
-  }
-
-  .detail-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .detail-cover {
-    width: min(80vw, 320px);
-    height: min(80vw, 320px);
-    border-radius: 16px;
-    object-fit: cover;
-    box-shadow: 0 8px 40px rgba(0,0,0,0.6);
-    transition: transform 0.4s ease, opacity 0.3s ease;
-  }
-  .detail-cover.swiping-left { transform: translateX(-30px) scale(0.95); opacity: 0.7; }
-  .detail-cover.swiping-right { transform: translateX(30px) scale(0.95); opacity: 0.7; }
-
-  .detail-info {
-    width: 100%;
-    max-width: 320px;
-    margin-top: 28px;
-    text-align: center;
-  }
-
-  .detail-track-num {
-    font-size: 0.72rem;
-    color: var(--warm-gray);
-    margin-bottom: 10px;
-  }
-
-  .detail-title {
-    font-family: 'Instrument Serif', serif;
-    font-size: 1.8rem;
-    color: var(--parchment);
-    margin-bottom: 8px;
-    line-height: 1.2;
-  }
-
-  .detail-category {
-    font-size: 0.85rem;
-    color: var(--accent);
-    margin-bottom: 6px;
-  }
-
-  .detail-tools {
-    font-size: 0.78rem;
-    color: var(--warm-gray);
-  }
-
-  /* Progress bar (decorative) */
-  .detail-progress {
-    width: 100%;
-    max-width: 320px;
-    margin-top: 24px;
-  }
-  .detail-bar {
-    width: 100%;
-    height: 4px;
-    background: rgba(232, 224, 212, 0.15);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-  .detail-bar-fill {
-    height: 100%;
-    background: var(--accent);
-    width: 33%;
-    border-radius: 2px;
-    transition: width 0.8s ease;
-  }
-
-  /* ── FOOTER ── */
-  .footer {
-    padding: 12px 20px calc(var(--safe-bottom) + 16px);
-    text-align: center;
-    flex-shrink: 0;
-  }
-  .footer-text {
-    font-size: 0.68rem;
-    color: var(--warm-gray);
-    letter-spacing: 0.03em;
-  }
-  .footer-link {
-    color: var(--accent);
-    text-decoration: none;
-  }
-
-  /* ── ANIMATIONS ── */
+  /* Menu item cascade */
   .menu-item {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(8px);
+    transition: background 0.15s, color 0.15s, opacity 0.4s ease, transform 0.4s ease;
   }
   .menu-item.loaded {
     opacity: 1;
     transform: translateY(0);
-    transition: opacity 0.4s ease, transform 0.4s ease, background 0.2s;
   }
 
-  /* ── SWIPE HINT ── */
-  .swipe-hint {
-    position: absolute;
-    bottom: 100px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 0.65rem;
-    color: var(--warm-gray);
-    opacity: 0;
-    animation: swipeHintFade 3s ease 1s forwards;
-    pointer-events: none;
+  /* ── RESPONSIVE / MOBILE ── */
+  @media (max-width: 480px) {
+    body {
+      padding: 0.5rem;
+      justify-content: flex-start;
+      padding-top: 4rem;
+    }
+    .header {
+      padding: 1rem 1.25rem;
+    }
+    .header-logo {
+      height: 24px;
+    }
+    .ipod-container {
+      max-width: 90vw;
+    }
+    .ipod {
+      border-radius: 24px;
+    }
+    .color-picker {
+      margin-top: 1rem;
+    }
+    .color-swatch {
+      width: 20px;
+      height: 20px;
+    }
+    .footer {
+      position: relative;
+      margin-top: 1rem;
+      padding: 0.5rem;
+    }
   }
-  @keyframes swipeHintFade {
-    0% { opacity: 0; }
-    20% { opacity: 0.6; }
-    80% { opacity: 0.6; }
-    100% { opacity: 0; }
+
+  @media (max-height: 700px) {
+    body {
+      justify-content: flex-start;
+      padding-top: 3.5rem;
+    }
+    .ipod-container {
+      max-width: min(320px, 85vw);
+    }
+    .footer {
+      position: relative;
+      margin-top: 0.5rem;
+    }
   }
 </style>
 </head>
 <body>
 
-<!-- Boot Screen -->
-<div class="boot-screen" id="bootScreen">
-  <img src="logo.svg" class="boot-logo" alt="ML">
-  <div class="boot-name"><em>m</em>Pod</div>
+<div class="header">
+  <a href="index.html" class="header-logo-link">
+    <img src="interactive/logo-gray.svg" class="header-logo logo-default" alt="ML">
+    <img src="interactive/logo-orange.svg" class="header-logo logo-hover" alt="ML">
+  </a>
 </div>
 
-<!-- App -->
-<div class="app" id="app">
+<!-- iPod Container -->
+<div class="ipod-container">
+  <div class="ipod" id="ipod">
 
-  <!-- Menu View -->
-  <div class="view menu-view active" id="menuView">
-    <div class="header">
-      <span class="header-title">Michael Loya Studio</span>
-      <div class="header-battery">
-        <div class="header-battery-fill"></div>
+    <!-- Screen -->
+    <div class="screen">
+      <!-- Boot Screen -->
+      <div class="boot-screen" id="bootScreen">
+        <img src="interactive/logo-parchment.svg" class="boot-logo" alt="ML">
+        <div class="boot-name"><em>m</em>Pod</div>
+      </div>
+
+      <!-- Persistent header battery -->
+      <div class="screen-battery">
+        <div class="battery"><div class="battery-fill"></div></div>
+      </div>
+
+      <!-- Menu View -->
+      <div class="screen-view" id="menuView">
+        <div class="screen-header">
+          <span>Michael Loya Studio</span>
+        </div>
+        <div class="menu-list" id="menuList"></div>
+      </div>
+
+      <!-- Project Detail View -->
+      <div class="screen-view" id="npView">
+        <div class="np-view">
+          <div class="screen-header">
+            <span>Project Details</span>
+          </div>
+          <div class="np-track-num" id="npTrackNum">1 of 8</div>
+          <div class="np-content">
+            <img class="np-cover" id="npCover" src="" alt="">
+            <div class="np-info">
+              <div class="np-title" id="npTitle">—</div>
+              <div class="np-artist" id="npArtist">—</div>
+              <div class="np-album" id="npAlbum">—</div>
+            </div>
+          </div>
+          <div class="np-progress">
+            <div class="np-bar-wrap"><div class="np-bar"><div class="np-bar-fill" id="npBarFill"></div></div></div>
+            <div class="np-times">
+              <span class="np-time" id="npTimeCur"></span>
+              <span class="np-time" id="npTimeDur"></span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="menu-list" id="menuList"></div>
-    <div class="footer">
-      <span class="footer-text">What I'm listening to · Last updated Feb 22 · <a href="interactive/mpod.html" class="footer-link">mPod ♫</a></span>
+
+    <!-- Click Wheel -->
+    <div class="wheel-wrap">
+      <div class="wheel locked" id="wheel">
+        <button class="wheel-btn top" id="btnMenu">MENU</button>
+        <button class="wheel-btn right" id="btnFwd">
+          <svg viewBox="0 0 24 24"><path d="M16 18h2V6h-2zM6 18l8.5-6L6 6z"/></svg>
+        </button>
+        <button class="wheel-btn bottom" id="btnPlayPause">
+          <svg viewBox="0 0 32 24" width="20" height="14"><polygon points="2,3 12,12 2,21" fill="currentColor"/><rect x="16" y="3" width="3.5" height="18" fill="currentColor"/><rect x="23" y="3" width="3.5" height="18" fill="currentColor"/></svg>
+        </button>
+        <button class="wheel-btn left" id="btnRew">
+          <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+        </button>
+        <button class="wheel-center" id="btnSelect"></button>
+      </div>
     </div>
   </div>
 
-  <!-- Detail View -->
-  <div class="view detail-view" id="detailView">
-    <div class="detail-header">
-      <button class="detail-back" id="detailBack">
-        <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
-        Menu
-      </button>
-      <span class="detail-nav-label" id="detailNavLabel">1 of 8</span>
-      <div class="detail-nav-arrows">
-        <button class="detail-nav-btn" id="btnPrev">
-          <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
-        </button>
-        <button class="detail-nav-btn" id="btnNext">
-          <svg viewBox="0 0 24 24"><path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg>
-        </button>
-      </div>
-    </div>
-    <div class="detail-content" id="detailContent">
-      <img class="detail-cover" id="detailCover" src="" alt="">
-      <div class="detail-info">
-        <div class="detail-track-num" id="detailTrackNum">1 of 8</div>
-        <div class="detail-title" id="detailTitle">Project Title</div>
-        <div class="detail-category" id="detailCategory">Category</div>
-        <div class="detail-tools" id="detailTools">Tools & Tags</div>
-      </div>
-      <div class="detail-progress">
-        <div class="detail-bar"><div class="detail-bar-fill" id="detailBarFill"></div></div>
-      </div>
-      <div class="swipe-hint">← Swipe to browse →</div>
-    </div>
+  <!-- Color Picker -->
+  <div class="color-picker" id="colorPicker">
+    <span class="color-label">Color</span>
   </div>
-
 </div>
+
+<div class="footer">What I'm listening to · Last updated Feb 22</div>
 
 <script>
-// ── PROJECTS DATA ──
+// ── PORTFOLIO PROJECTS ──
 const projects = [
-  {
-    title: 'Sound & Vision',
+  { 
+    title: 'Sound & Vision', 
+    category: 'Cover Art / Motion / Music', 
+    year: '2024',
     cover: 'img/DnDFinal.jpeg',
-    category: 'Cover Art / Motion / Music',
-    tools: 'Cinema 4D · After Effects · Illustrator',
-    link: null
+    tools: 'After Effects, Photoshop, Logic Pro'
   },
-  {
-    title: 'BODYARMOR & Powerade',
+  { 
+    title: 'BODYARMOR & Powerade', 
+    category: 'Internship / Branding / AI', 
+    year: '2024',
     cover: 'img/bapa.png',
-    category: 'Internship / Branding / AI',
-    tools: 'Figma · Midjourney · Photoshop',
-    link: null
+    tools: 'Figma, Midjourney, Illustrator'
   },
-  {
-    title: 'AI Song',
+  { 
+    title: 'AI Song', 
+    category: 'Music Production / AI / Design', 
+    year: '2025',
     cover: 'img/LimitsCover.jpg',
-    category: 'Music Production / AI / Design',
-    tools: 'Logic Pro · Suno · Photoshop',
-    link: null
+    tools: 'Suno, Logic Pro, Photoshop'
   },
-  {
-    title: 'Mobile UIs',
+  { 
+    title: 'Mobile UIs', 
+    category: 'UI/UX Design', 
+    year: '2025',
     cover: 'img/iPhone_Mockup.png',
-    category: 'UI/UX Design',
-    tools: 'Figma · Sketch · Prototyping',
-    link: null
+    tools: 'Figma, Framer, Swift'
   },
-  {
-    title: 'Album Covers',
+  { 
+    title: 'Album Covers', 
+    category: 'Graphic Design / Photography', 
+    year: '2024',
     cover: 'img/whitenoise.jpg',
-    category: 'Graphic Design / Photography',
-    tools: 'Photoshop · Lightroom · Illustrator',
-    link: null
+    tools: 'Photoshop, Lightroom, Camera'
   },
-  {
-    title: 'Photography Portfolio',
+  { 
+    title: 'Photography Portfolio', 
+    category: 'Photography', 
+    year: '2024',
     cover: 'img/Portfolio_01.jpg',
-    category: 'Photography',
-    tools: 'Canon · Lightroom · Natural Light',
-    link: null
+    tools: 'Lightroom, Capture One'
   },
-  {
-    title: 'Miscellaneous Projects',
+  { 
+    title: 'Miscellaneous', 
+    category: 'Mixed Media', 
+    year: '2023',
     cover: 'img/2023_Freshmen.jpg',
-    category: 'Mixed Media',
-    tools: 'Various Tools & Mediums',
-    link: null
+    tools: 'Various'
   },
-  {
-    title: 'mPod ♫',
-    cover: 'img/all/Vacations_DaveBrubeck_cover.jpg',
-    category: 'Interactive / Music',
-    tools: 'HTML · CSS · JavaScript',
+  { 
+    title: 'mPod ♫', 
+    category: 'Interactive / Music', 
+    year: '2025',
+    cover: 'interactive/logo-parchment.svg',
+    tools: 'HTML, CSS, JavaScript',
     link: 'interactive/mpod.html'
-  }
+  },
+];
+
+// ── iPOD COLORS ──
+const colors = [
+  { name: 'Parchment', body: '#E8E0D4', wheel: 'linear-gradient(145deg, #d4ccc0, #bfb7ab)', center: 'linear-gradient(145deg, #e8e0d4, #d4ccc0)' },
+  { name: 'Space Black', body: '#2c2c2e', wheel: 'linear-gradient(145deg, #222224, #1a1a1c)', center: 'linear-gradient(145deg, #2c2c2e, #222224)' },
+  { name: 'Sunset', body: '#ff8e3d', wheel: 'linear-gradient(145deg, #e07830, #c86828)', center: 'linear-gradient(145deg, #ff8e3d, #e07830)' },
+  { name: 'Product Red', body: '#c42b3a', wheel: 'linear-gradient(145deg, #b0252f, #8e1e26)', center: 'linear-gradient(145deg, #c42b3a, #b0252f)' },
+  { name: 'Sky Blue', body: '#7eb8d8', wheel: 'linear-gradient(145deg, #6ea8c8, #5a94b4)', center: 'linear-gradient(145deg, #7eb8d8, #6ea8c8)' },
+  { name: 'Mint', body: '#a8d8c0', wheel: 'linear-gradient(145deg, #98c8b0, #84b49c)', center: 'linear-gradient(145deg, #a8d8c0, #98c8b0)' },
 ];
 
 // ── STATE ──
-let currentProjectIndex = 0;
-let touchStartX = 0;
-let touchCurrentX = 0;
-let isSwiping = false;
+let currentIndex = 0;
+let selectedIndex = 0;
+let currentView = 'menu'; // 'menu' | 'detail'
 
-// ── DOM REFS ──
-const bootScreen = document.getElementById('bootScreen');
-const app = document.getElementById('app');
+const ipod = document.getElementById('ipod');
+const wheel = document.getElementById('wheel');
 const menuView = document.getElementById('menuView');
-const detailView = document.getElementById('detailView');
-const menuList = document.getElementById('menuList');
-const detailCover = document.getElementById('detailCover');
-const detailTitle = document.getElementById('detailTitle');
-const detailCategory = document.getElementById('detailCategory');
-const detailTools = document.getElementById('detailTools');
-const detailTrackNum = document.getElementById('detailTrackNum');
-const detailNavLabel = document.getElementById('detailNavLabel');
-const detailBarFill = document.getElementById('detailBarFill');
-const detailContent = document.getElementById('detailContent');
+const npView = document.getElementById('npView');
 
 // ── RENDER MENU ──
 function renderMenu() {
-  menuList.innerHTML = '';
-  projects.forEach((project, i) => {
-    const el = document.createElement('div');
-    el.className = 'menu-item';
-    el.innerHTML = `
-      <img class="menu-item-thumb" src="${project.cover}" alt="" loading="lazy">
-      <div class="menu-item-info">
-        <div class="menu-item-title">${project.title}</div>
-        <div class="menu-item-category">${project.category}</div>
-      </div>
-      <span class="menu-item-arrow">›</span>
-    `;
-    el.addEventListener('click', () => openProject(i));
-    menuList.appendChild(el);
-  });
+  const list = document.getElementById('menuList');
+  // Only rebuild DOM if items don't exist yet
+  if (list.children.length !== projects.length) {
+    list.innerHTML = '';
+    projects.forEach((project, i) => {
+      const el = document.createElement('div');
+      el.className = 'menu-item';
+      el.innerHTML = `
+        <img class="menu-item-thumb" src="${project.cover}" alt="" onerror="this.style.background='#333'">
+        <div class="menu-item-info">
+          <div class="menu-item-title">${project.title}</div>
+          <div class="menu-item-artist">${project.category} — ${project.year}</div>
+        </div>
+      `;
+      el.addEventListener('click', () => {
+        selectedIndex = i;
+        updateMenuSelection();
+      });
+      list.appendChild(el);
+    });
+  }
+  updateMenuSelection();
 }
 
-// ── ANIMATE MENU ITEMS IN ──
-function animateMenuIn() {
+function updateMenuSelection() {
   const items = document.querySelectorAll('.menu-item');
   items.forEach((item, i) => {
-    setTimeout(() => item.classList.add('loaded'), i * 80);
+    item.classList.toggle('selected', i === selectedIndex);
   });
+  const selected = document.querySelector('.menu-item.selected');
+  if (selected) selected.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
 }
 
-// ── SHOW PROJECT DETAIL ──
-function openProject(index) {
-  // If this project has a link, navigate to it
-  if (projects[index].link) {
-    window.location.href = projects[index].link;
-    return;
-  }
+// ── RENDER PROJECT DETAIL ──
+function renderProjectDetail() {
+  const project = projects[currentIndex];
+  document.getElementById('npCover').src = project.cover;
+  document.getElementById('npTitle').textContent = project.title;
+  document.getElementById('npArtist').textContent = project.category;
+  document.getElementById('npAlbum').textContent = project.tools;
+  document.getElementById('npTrackNum').textContent = `${currentIndex + 1} of ${projects.length}`;
   
-  currentProjectIndex = index;
-  renderDetail();
-  menuView.classList.remove('active');
-  detailView.classList.add('active');
+  // Update progress bar
+  const pct = ((currentIndex + 1) / projects.length) * 100;
+  document.getElementById('npBarFill').style.width = pct + '%';
+  
+  // Update position indicators
+  document.getElementById('npTimeCur').textContent = project.year;
+  document.getElementById('npTimeDur').textContent = `Project ${currentIndex + 1}`;
 }
 
-function renderDetail() {
-  const project = projects[currentProjectIndex];
-  detailCover.src = project.cover;
-  detailTitle.textContent = project.title;
-  detailCategory.textContent = project.category;
-  detailTools.textContent = project.tools;
-  
-  const num = `${currentProjectIndex + 1} of ${projects.length}`;
-  detailTrackNum.textContent = num;
-  detailNavLabel.textContent = num;
-  
-  // Progress bar
-  const progress = ((currentProjectIndex + 1) / projects.length) * 100;
-  detailBarFill.style.width = progress + '%';
+// ── SWITCH VIEW ──
+function showView(view) {
+  currentView = view;
+  menuView.classList.toggle('active', view === 'menu');
+  npView.classList.toggle('active', view === 'detail');
 }
 
 // ── NAVIGATION ──
-function goBack() {
-  detailView.classList.remove('active');
-  menuView.classList.add('active');
+function selectProject(index) {
+  const project = projects[index];
+  
+  // If it's the mPod link, navigate to it
+  if (project.link) {
+    window.location.href = project.link;
+    return;
+  }
+  
+  currentIndex = index;
+  renderProjectDetail();
+  showView('detail');
 }
 
 function nextProject() {
-  // Skip projects with links
-  let next = (currentProjectIndex + 1) % projects.length;
-  while (projects[next].link && next !== currentProjectIndex) {
-    next = (next + 1) % projects.length;
+  currentIndex = (currentIndex + 1) % projects.length;
+  selectedIndex = currentIndex;
+  
+  const project = projects[currentIndex];
+  if (project.link) {
+    // Skip to next non-link project
+    nextProject();
+    return;
   }
-  currentProjectIndex = next;
-  renderDetail();
+  
+  renderProjectDetail();
+  renderMenu();
+  document.querySelectorAll('.menu-item').forEach(item => item.classList.add('loaded'));
 }
 
 function prevProject() {
-  // Skip projects with links
-  let prev = (currentProjectIndex - 1 + projects.length) % projects.length;
-  while (projects[prev].link && prev !== currentProjectIndex) {
-    prev = (prev - 1 + projects.length) % projects.length;
+  currentIndex = (currentIndex - 1 + projects.length) % projects.length;
+  selectedIndex = currentIndex;
+  
+  const project = projects[currentIndex];
+  if (project.link) {
+    // Skip to prev non-link project
+    prevProject();
+    return;
   }
-  currentProjectIndex = prev;
-  renderDetail();
+  
+  renderProjectDetail();
+  renderMenu();
+  document.querySelectorAll('.menu-item').forEach(item => item.classList.add('loaded'));
 }
 
-// ── SWIPE HANDLING ──
-detailContent.addEventListener('touchstart', (e) => {
-  touchStartX = e.touches[0].clientX;
-  touchCurrentX = touchStartX;
-  isSwiping = true;
-}, { passive: true });
-
-detailContent.addEventListener('touchmove', (e) => {
-  if (!isSwiping) return;
-  touchCurrentX = e.touches[0].clientX;
-  const diff = touchCurrentX - touchStartX;
-  
-  if (Math.abs(diff) > 30) {
-    detailCover.classList.remove('swiping-left', 'swiping-right');
-    if (diff > 0) {
-      detailCover.classList.add('swiping-right');
-    } else {
-      detailCover.classList.add('swiping-left');
-    }
+// ── WHEEL CONTROLS ──
+document.getElementById('btnMenu').addEventListener('click', () => {
+  if (currentView === 'detail') {
+    showView('menu');
+    renderMenu();
+    document.querySelectorAll('.menu-item').forEach(item => item.classList.add('loaded'));
   }
-}, { passive: true });
+});
 
-detailContent.addEventListener('touchend', () => {
-  if (!isSwiping) return;
-  isSwiping = false;
-  
-  const diff = touchCurrentX - touchStartX;
-  detailCover.classList.remove('swiping-left', 'swiping-right');
-  
-  if (diff > 80) {
-    prevProject();
-  } else if (diff < -80) {
+document.getElementById('btnSelect').addEventListener('click', () => {
+  if (currentView === 'menu') {
+    selectProject(selectedIndex);
+  }
+});
+
+document.getElementById('btnPlayPause').addEventListener('click', () => {
+  // Navigate to mPod
+  window.location.href = 'interactive/mpod.html';
+});
+
+document.getElementById('btnFwd').addEventListener('click', () => {
+  if (currentView === 'detail') {
     nextProject();
   }
+});
+
+document.getElementById('btnRew').addEventListener('click', () => {
+  if (currentView === 'detail') {
+    prevProject();
+  }
+});
+
+// Scroll wheel for menu navigation
+wheel.addEventListener('wheel', (e) => {
+  if (currentView !== 'menu') return;
+  e.preventDefault();
+  if (e.deltaY > 0) {
+    selectedIndex = Math.min(selectedIndex + 1, projects.length - 1);
+  } else {
+    selectedIndex = Math.max(selectedIndex - 1, 0);
+  }
+  renderMenu();
+  document.querySelectorAll('.menu-item').forEach(item => item.classList.add('loaded'));
+}, { passive: false });
+
+// Touch/swipe support for wheel
+let touchStartY = 0;
+wheel.addEventListener('touchstart', (e) => {
+  touchStartY = e.touches[0].clientY;
 }, { passive: true });
 
-// ── BUTTON HANDLERS ──
-document.getElementById('detailBack').addEventListener('click', goBack);
-document.getElementById('btnPrev').addEventListener('click', prevProject);
-document.getElementById('btnNext').addEventListener('click', nextProject);
-
-// ── KEYBOARD SUPPORT ──
-document.addEventListener('keydown', (e) => {
-  if (!detailView.classList.contains('active')) return;
-  
-  if (e.code === 'Escape' || e.code === 'Backspace') {
-    e.preventDefault();
-    goBack();
+wheel.addEventListener('touchmove', (e) => {
+  if (currentView !== 'menu') return;
+  const deltaY = touchStartY - e.touches[0].clientY;
+  if (Math.abs(deltaY) > 30) {
+    if (deltaY > 0) {
+      selectedIndex = Math.min(selectedIndex + 1, projects.length - 1);
+    } else {
+      selectedIndex = Math.max(selectedIndex - 1, 0);
+    }
+    renderMenu();
+    document.querySelectorAll('.menu-item').forEach(item => item.classList.add('loaded'));
+    touchStartY = e.touches[0].clientY;
   }
-  if (e.code === 'ArrowLeft') prevProject();
-  if (e.code === 'ArrowRight') nextProject();
+}, { passive: true });
+
+// Keyboard
+document.addEventListener('keydown', (e) => {
+  if (e.code === 'ArrowRight' && currentView === 'detail') nextProject();
+  if (e.code === 'ArrowLeft' && currentView === 'detail') prevProject();
+  if (e.code === 'ArrowDown' && currentView === 'menu') {
+    selectedIndex = Math.min(selectedIndex + 1, projects.length - 1);
+    renderMenu();
+    document.querySelectorAll('.menu-item').forEach(item => item.classList.add('loaded'));
+  }
+  if (e.code === 'ArrowUp' && currentView === 'menu') {
+    selectedIndex = Math.max(selectedIndex - 1, 0);
+    renderMenu();
+    document.querySelectorAll('.menu-item').forEach(item => item.classList.add('loaded'));
+  }
+  if (e.code === 'Enter') {
+    if (currentView === 'menu') selectProject(selectedIndex);
+  }
+  if (e.code === 'Escape' || e.code === 'Backspace') {
+    if (currentView === 'detail') { 
+      showView('menu'); 
+      renderMenu(); 
+      document.querySelectorAll('.menu-item').forEach(item => item.classList.add('loaded'));
+    }
+  }
+});
+
+// ── COLOR PICKER ──
+const picker = document.getElementById('colorPicker');
+colors.forEach((c, i) => {
+  const swatch = document.createElement('div');
+  swatch.className = 'color-swatch' + (i === 0 ? ' active' : '');
+  swatch.style.background = c.body;
+  swatch.title = c.name;
+  swatch.addEventListener('click', () => {
+    document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+    swatch.classList.add('active');
+    ipod.style.background = c.body;
+    wheel.style.background = c.wheel;
+    document.querySelector('.wheel-center').style.background = c.center;
+
+    // Adjust text color for dark iPods
+    const isDark = c.name === 'Space Black' || c.name === 'Product Red';
+    document.querySelectorAll('.wheel-btn').forEach(b => {
+      b.style.color = isDark ? 'rgba(255,255,255,0.5)' : '#5a534c';
+    });
+  });
+  picker.appendChild(swatch);
 });
 
 // ── BOOT SEQUENCE ──
 renderMenu();
 
 setTimeout(() => {
-  bootScreen.classList.add('hidden');
-  app.classList.add('visible');
-  animateMenuIn();
-}, 3000);
+  const boot = document.getElementById('bootScreen');
+  boot.style.transition = 'opacity 0.4s ease';
+  boot.style.opacity = '0';
+  setTimeout(() => {
+    boot.style.display = 'none';
+    menuView.classList.add('active');
+    document.querySelector('.screen-battery').classList.add('visible');
+    document.querySelector('.header-logo-link').classList.add('loaded');
+    wheel.classList.remove('locked');
+    // Cascade menu items in
+    const items = document.querySelectorAll('.menu-item');
+    items.forEach((item, i) => {
+      setTimeout(() => item.classList.add('loaded'), i * 120);
+    });
+  }, 400);
+}, 4000);
 </script>
 </body>
 </html>
