@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>mPod — Michael Loya Studio</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --text: #E8E0D4;
+    --text-muted: #8a8580;
+    --accent: #ff8e3d;
+    --ipod-color: #E8E0D4;
+    --ipod-shadow: rgba(0,0,0,0.3);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: url('../cursor.svg') 16 8, default;
+    overflow-x: hidden;
+  }
+
+  a, button, .wheel, .wheel-center, .wheel-btn, .ipod { cursor: url('../crosshair.svg') 8 10, pointer !important; }
+
+  /* ── HEADER ── */
+  .header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 3rem 2.5rem;
+    z-index: 100;
+  }
+
+  /* header simplified - logo only */
+
+  .header-logo-link {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    display: block;
+    opacity: 0;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+  .header-logo-link.loaded {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .header-logo {
+    height: 32px;
+    transition: opacity 0.2s ease;
+  }
+
+  .header-logo-link .logo-hover { position: absolute; top: 0; left: 0; opacity: 0; }
+  .header-logo-link:hover .logo-default { opacity: 0; }
+  .header-logo-link:hover .logo-hover { opacity: 1; }
+
+  .header-back {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.3s;
+    display: inline-block;
+  }
+  .header-back:hover { color: var(--accent); }
+  .header-back span {
+    display: inline-block;
+  }
+  .header-back:hover span .wave-char {
+    animation: waveReverse 0.4s ease forwards;
+    animation-delay: calc(var(--i) * 0.03s);
+  }
+  @keyframes waveReverse {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+    100% { transform: translateY(0); }
+  }
+
+  /* ── iPOD BODY ── */
+  .ipod {
+    width: 320px;
+    height: 540px;
+    background: var(--ipod-color);
+    border-radius: 28px;
+    padding: 20px 18px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow:
+      0 2px 0 rgba(255,255,255,0.3) inset,
+      0 -2px 4px rgba(0,0,0,0.1) inset,
+      0 20px 60px var(--ipod-shadow),
+      0 4px 12px rgba(0,0,0,0.2);
+    position: relative;
+    transition: background 0.4s ease, box-shadow 0.4s ease;
+    user-select: none;
+  }
+
+  /* Subtle sheen */
+  .ipod::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    border-radius: 28px 28px 0 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 100%);
+    pointer-events: none;
+  }
+
+  /* ── SCREEN ── */
+  .screen {
+    width: 100%;
+    height: 210px;
+    background: #1a1e23;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    position: relative;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.1) inset,
+      0 2px 8px rgba(0,0,0,0.4);
+  }
+
+  /* Screen views */
+  .screen-view {
+    position: absolute;
+    inset: 0;
+    padding: 7px 16px 10px;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+  .screen-view.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  /* ── MENU VIEW ── */
+  .screen-header {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #8a8580;
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .screen-header .battery,
+  .screen-battery .battery {
+    width: 18px;
+    height: 9px;
+    border: 1px solid #8a8580;
+    border-radius: 2px;
+    position: relative;
+    display: inline-block;
+  }
+  .screen-header .battery::after,
+  .screen-battery .battery::after {
+    content: '';
+    position: absolute;
+    right: -4px;
+    top: 2px;
+    width: 2px;
+    height: 4px;
+    background: #8a8580;
+    border-radius: 0 1px 1px 0;
+  }
+  .screen-header .battery-fill,
+  .screen-battery .battery-fill {
+    position: absolute;
+    left: 1px; top: 1px; bottom: 1px;
+    width: 70%;
+    background: #6bda6b;
+    border-radius: 1px;
+  }
+
+  .screen-battery {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    padding: 10.5px 16px 0;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    z-index: 10;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    height: 14px;
+  }
+  .screen-battery.visible {
+    opacity: 1;
+  }
+
+  .menu-list {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+  }
+  .menu-list::-webkit-scrollbar { display: none; }
+
+  /* removed */
+
+  .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 8px;
+    border-radius: 4px;
+    font-size: 0.82rem;
+    color: #c8c0b8;
+    transition: background 0.15s, color 0.15s;
+  }
+  .menu-item { cursor: pointer; }
+  .menu-item.selected {
+    background: var(--accent);
+    color: #0a0a0a;
+  }
+  .menu-item-thumb {
+    width: 26px;
+    height: 26px;
+    border-radius: 3px;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+  .menu-item-info { flex: 1; min-width: 0; }
+  .menu-item-title {
+    font-size: 0.82rem;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .menu-item-artist {
+    font-size: 0.65rem;
+    opacity: 0.6;
+  }
+
+  /* ── STREAMING LINKS ── */
+  /* ── NOW PLAYING VIEW ── */
+  .np-view {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    height: 100%;
+  }
+
+  .np-view .screen-header {
+    color: var(--accent);
+    text-align: left;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .np-track-num {
+    font-size: 0.75rem;
+    color: #8a8580;
+    margin-top: 6px;
+    margin-bottom: 8px;
+  }
+
+  .np-content {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .np-cover {
+    width: 90px;
+    height: 90px;
+    border-radius: 4px;
+    object-fit: cover;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    flex-shrink: 0;
+  }
+
+  .np-eq { display: none !important; }
+
+  .np-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+    flex: 1;
+    height: 90px;
+  }
+
+  .np-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.3;
+    margin-bottom: 1px;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .np-artist {
+    font-size: 0.75rem;
+    color: #8a8580;
+    margin-bottom: 8px;
+  }
+
+  .np-album {
+    font-size: 0.58rem;
+    color: #6a6560;
+    margin-bottom: 6px;
+  }
+
+  .np-streaming {
+    display: flex;
+    gap: 8px;
+  }
+  .np-streaming a {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.45;
+    transition: opacity 0.2s;
+  }
+  .np-streaming a:hover { opacity: 1; }
+  .np-streaming svg {
+    width: 15px;
+    height: 15px;
+    fill: #c8c0b8;
+  }
+
+  .np-progress {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: 10px;
+    margin-bottom: 4px;
+  }
+
+  .np-bar-wrap {
+    width: 100%;
+    padding: 8px 0;
+    cursor: url('../crosshair.svg') 8 10, pointer;
+    position: relative;
+  }
+  .np-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(232,224,212,0.15);
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .np-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    width: 0%;
+    border-radius: 3px;
+    transition: width 0.2s linear;
+    position: relative;
+    z-index: 2;
+  }
+
+  .np-bar-hover {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: rgba(255, 142, 61, 0.35);
+    border-radius: 3px;
+    width: 0%;
+    z-index: 1;
+    transition: width 0.1s ease;
+  }
+
+  .np-times {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .np-time {
+    font-size: 0.72rem;
+    color: #8a8580;
+  }
+
+  /* ── EQ BARS ── */
+  .np-eq {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 10px;
+    margin-bottom: 4px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .np-eq.playing { opacity: 1; }
+  .np-eq span {
+    width: 2px;
+    background: var(--accent);
+    border-radius: 1px;
+    animation: eqBounce 0.8s ease-in-out infinite alternate;
+  }
+  .np-eq span:nth-child(1) { height: 4px; animation-delay: 0s; }
+  .np-eq span:nth-child(2) { height: 8px; animation-delay: 0.2s; }
+  .np-eq span:nth-child(3) { height: 3px; animation-delay: 0.4s; }
+  .np-eq span:nth-child(4) { height: 6px; animation-delay: 0.1s; }
+
+  @keyframes eqBounce {
+    0% { transform: scaleY(0.3); }
+    100% { transform: scaleY(1); }
+  }
+
+  /* ── CLICK WHEEL ── */
+  .wheel-wrap {
+    margin-top: auto;
+    margin-bottom: auto;
+    transform: translateY(10px);
+    position: relative;
+    width: 220px;
+    height: 220px;
+  }
+
+  .wheel {
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #d4ccc0, #bfb7ab);
+    position: relative;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.2) inset,
+      0 -1px 3px rgba(0,0,0,0.15) inset,
+      0 4px 12px rgba(0,0,0,0.1);
+    transition: background 0.4s ease;
+  }
+
+  /* Wheel quadrant buttons */
+  .wheel-btn {
+    position: absolute;
+    background: none;
+    border: none;
+    color: #5a534c;
+    font-size: 0.6rem;
+    font-family: 'Space Grotesk', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 600;
+    transition: color 0.2s;
+    padding: 8px;
+  }
+  .wheel-btn:hover { color: #1a1a1a; }
+  .wheel.locked, .wheel.locked * { pointer-events: none !important; }
+  .wheel-btn:active { color: var(--accent); }
+
+  .wheel-btn.top { top: 10px; left: 50%; transform: translateX(-50%); }
+  .wheel-btn.bottom { bottom: 10px; left: 50%; transform: translateX(-50%); }
+  .wheel-btn.left { left: 8px; top: 50%; transform: translateY(-50%); }
+  .wheel-btn.right { right: 8px; top: 50%; transform: translateY(-50%); }
+
+  /* Wheel button icons */
+  .wheel-btn svg {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+  }
+
+  /* Center button */
+  .wheel-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 76px;
+    height: 76px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #e8e0d4, #d4ccc0);
+    border: none;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.3) inset,
+      0 2px 6px rgba(0,0,0,0.15);
+    transition: transform 0.15s, background 0.4s ease;
+  }
+  .wheel-center:hover { transform: translate(-50%, -50%) scale(1.04); }
+  .wheel-center:active { transform: translate(-50%, -50%) scale(0.96); }
+
+  /* ── COLOR PICKER ── */
+  .color-picker {
+    display: flex;
+    gap: 10px;
+    margin-top: 2rem;
+    align-items: center;
+  }
+
+  .color-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-muted);
+    margin-right: 0.25rem;
+  }
+
+  .color-swatch {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  .color-swatch:hover { transform: scale(1.15); }
+  .color-swatch.active {
+    border-color: var(--accent);
+    box-shadow: 0 0 12px rgba(255,142,61,0.4);
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1rem;
+    text-align: center;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+  }
+  .footer span { color: var(--accent); }
+
+  /* ── LOAD-IN ANIMATION ── */
+  .ipod {
+    opacity: 0;
+    transform: translateY(80px) scale(0.92);
+    animation: ipodSlideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+  }
+
+  @keyframes ipodSlideIn {
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .header {
+    opacity: 0;
+    animation: fadeSlideDown 0.6s ease 0s forwards;
+  }
+
+  .color-picker {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeSlideUp 0.6s ease 4.5s forwards;
+  }
+
+  .footer {
+    opacity: 0;
+    animation: fadeSlideUp 0.6s ease 4.7s forwards;
+  }
+
+  @keyframes fadeSlideDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Boot screen */
+  .boot-screen {
+    position: absolute;
+    inset: 0;
+    background: #1a1e23;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    border-radius: 8px;
+    opacity: 0;
+    animation: bootFadeIn 0.3s ease 0.6s forwards;
+  }
+
+  @keyframes bootFadeIn {
+    to { opacity: 1; }
+  }
+
+  .boot-logo {
+    height: 40px;
+    filter: none;
+    opacity: 0;
+    transform: scale(0.8);
+    animation: bootLogoIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.9s forwards;
+  }
+
+  @keyframes bootLogoIn {
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .boot-name {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.8rem;
+    color: var(--text);
+    margin-top: 0.5rem;
+    opacity: 0;
+    animation: bootTextIn 0.8s ease 1.8s forwards;
+  }
+
+  .boot-name em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  @keyframes bootTextIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Menu item cascade */
+  .menu-item {
+    opacity: 0;
+    transform: translateY(8px);
+    transition: background 0.15s, color 0.15s, opacity 0.4s ease, transform 0.4s ease;
+  }
+  .menu-item.loaded {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 480px) {
+    .ipod {
+      width: 240px;
+      height: 400px;
+      border-radius: 24px;
+      padding: 16px 14px 20px;
+    }
+    .screen { height: 150px; }
+    .wheel-wrap, .wheel { width: 160px; height: 160px; }
+    .wheel-center { width: 56px; height: 56px; }
+    .header { padding: 1rem 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <a href="../index.html" class="header-logo-link">
+    <img src="logo-gray.svg" class="header-logo logo-default" alt="ML">
+    <img src="logo-orange.svg" class="header-logo logo-hover" alt="ML">
+  </a>
+</div>
+
+<!-- iPod -->
+<div class="ipod" id="ipod">
+
+  <!-- Screen -->
+  <div class="screen">
+    <!-- Boot Screen -->
+    <div class="boot-screen" id="bootScreen">
+      <img src="logo-parchment.svg" class="boot-logo" alt="ML">
+      <div class="boot-name"><em>m</em>Pod</div>
+    </div>
+
+    <!-- Persistent header battery -->
+    <div class="screen-battery">
+      <div class="battery"><div class="battery-fill"></div></div>
+    </div>
+
+    <!-- Menu View -->
+    <div class="screen-view" id="menuView">
+      <div class="screen-header">
+        <span>mPod</span>
+      </div>
+      <div class="menu-list" id="menuList"></div>
+    </div>
+
+    <!-- Now Playing View -->
+    <div class="screen-view" id="npView">
+      <div class="np-view">
+        <div class="screen-header">
+          <span>Now Playing</span>
+        </div>
+        <div class="np-track-num" id="npTrackNum">1 of 10</div>
+        <div class="np-content">
+          <img class="np-cover" id="npCover" src="" alt="">
+          <div class="np-info">
+            <div class="np-title" id="npTitle">—</div>
+            <div class="np-artist" id="npArtist">—</div>
+            <div class="np-streaming" id="npStreaming">
+          <a id="linkSpotify2" target="_blank" rel="noopener" title="Spotify">
+            <svg viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+          </a>
+          <a id="linkAppleMusic2" target="_blank" rel="noopener" title="Apple Music">
+            <svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="M6.5 0C2.91 0 0 2.91 0 6.5v11C0 21.09 2.91 24 6.5 24h11c3.59 0 6.5-2.91 6.5-6.5v-11C24 2.91 21.09 0 17.5 0h-11zm10.14 5.07c-.2-.08-.42-.1-.63-.07l-6.4 1.03A1 1 0 009 7.02v7.46a2.5 2.5 0 10 1 2V10.1l5.4-.87v4.75a2.5 2.5 0 10 1 2V6.02a1 1 0 00-.76-.95z"/></svg>
+          </a>
+          <a id="linkYouTube2" target="_blank" rel="noopener" title="YouTube">
+            <svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+          </a>
+            </div>
+          </div>
+        </div>
+        <div class="np-progress">
+          <div class="np-bar-wrap" id="npBarWrap"><div class="np-bar"><div class="np-bar-hover" id="npBarHover"></div><div class="np-bar-fill" id="npBarFill"></div></div></div>
+          <div class="np-times">
+            <span class="np-time" id="npTimeCur">0:00</span>
+            <span class="np-time" id="npTimeDur">--:--</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Click Wheel -->
+  <div class="wheel-wrap">
+    <div class="wheel locked" id="wheel">
+      <button class="wheel-btn top" id="btnMenu">MENU</button>
+      <button class="wheel-btn right" id="btnFwd">
+        <svg viewBox="0 0 24 24"><path d="M16 18h2V6h-2zM6 18l8.5-6L6 6z"/></svg>
+      </button>
+      <button class="wheel-btn bottom" id="btnPlayPause">
+        <svg viewBox="0 0 32 24" width="20" height="14"><polygon points="2,3 12,12 2,21" fill="currentColor"/><rect x="16" y="3" width="3.5" height="18" fill="currentColor"/><rect x="23" y="3" width="3.5" height="18" fill="currentColor"/></svg>
+      </button>
+      <button class="wheel-btn left" id="btnRew">
+        <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+      </button>
+      <button class="wheel-center" id="btnSelect"></button>
+    </div>
+  </div>
+</div>
+
+<!-- Color Picker -->
+<div class="color-picker" id="colorPicker">
+  <span class="color-label">Color</span>
+</div>
+
+<div class="footer">What I'm listening to · Last updated Feb 22</div>
+
+<audio id="audio" preload="metadata"></audio>
+
+<script>
+// ── PLAYLIST ──
+const playlist = [
+  { title: 'Dave Brubeck', artist: 'Vacations', src: '../img/all/Vacations_DaveBrubeck.mp3', cover: '../img/all/Vacations_DaveBrubeck_cover.jpg' },
+  { title: 'Dræm Girl', artist: 'No Vacation', src: '../img/all/NoVacation_DreamGirl.mp3', cover: '../img/all/NoVacation_DreamGirl_cover.jpg' },
+  { title: 'Close to You', artist: 'Dayglow', src: '../img/all/Dayglow_CloseToYou.mp3', cover: '../img/all/Dayglow_CloseToYou_cover.jpg' },
+  { title: 'Dead Ringers', artist: 'Surf Curse', src: '../img/all/SurfCurse_DeadRingers.mp3', cover: '../img/all/SurfCurse_DeadRingers_cover.jpg' },
+  { title: 'Kim', artist: 'Joy Again', src: '../img/all/JoyAgain_Kim.mp3', cover: '../img/all/JoyAgain_Kim_cover.jpg' },
+  { title: 'openingup', artist: 'Gunnr', src: '../img/all/Gunnr_OpeningUp.mp3', cover: '../img/all/Gunnr_OpeningUp_cover.jpg' },
+  { title: 'jelly', artist: 'loya', src: '../img/all/Loya_Jelly.mp3', cover: '../img/all/Loya_Jelly_cover.jpg' },
+  { title: 'Under Your Spell', artist: 'Snow Strippers', src: '../img/all/SnowStrippers_UnderYourSpell.mp3', cover: '../img/all/SnowStrippers_UnderYourSpell_cover.jpg' },
+  { title: 'Not Allowed', artist: 'TV Girl', src: '../img/all/TVGirl_NotAllowed.mp3', cover: '../img/all/TVGirl_NotAllowed_cover.jpg' },
+  { title: 'Hello Miss Johnson', artist: 'Jack Harlow', src: '../img/all/JackHarlow_HelloMissJohnson.mp3', cover: '../img/all/JackHarlow_HelloMissJohnson_cover.jpg' },
+];
+
+// ── iPOD COLORS ──
+const colors = [
+  { name: 'Parchment', body: '#E8E0D4', wheel: 'linear-gradient(145deg, #d4ccc0, #bfb7ab)', center: 'linear-gradient(145deg, #e8e0d4, #d4ccc0)' },
+  { name: 'Space Black', body: '#2c2c2e', wheel: 'linear-gradient(145deg, #222224, #1a1a1c)', center: 'linear-gradient(145deg, #2c2c2e, #222224)' },
+  { name: 'Sunset', body: '#ff8e3d', wheel: 'linear-gradient(145deg, #e07830, #c86828)', center: 'linear-gradient(145deg, #ff8e3d, #e07830)' },
+  { name: 'Product Red', body: '#c42b3a', wheel: 'linear-gradient(145deg, #b0252f, #8e1e26)', center: 'linear-gradient(145deg, #c42b3a, #b0252f)' },
+  { name: 'Sky Blue', body: '#7eb8d8', wheel: 'linear-gradient(145deg, #6ea8c8, #5a94b4)', center: 'linear-gradient(145deg, #7eb8d8, #6ea8c8)' },
+  { name: 'Mint', body: '#a8d8c0', wheel: 'linear-gradient(145deg, #98c8b0, #84b49c)', center: 'linear-gradient(145deg, #a8d8c0, #98c8b0)' },
+];
+
+// ── STATE ──
+let currentIndex = 0;
+let selectedIndex = 0;
+let isPlaying = false;
+let currentView = 'menu'; // 'menu' | 'nowplaying'
+
+const audio = document.getElementById('audio');
+const ipod = document.getElementById('ipod');
+const wheel = document.getElementById('wheel');
+const menuView = document.getElementById('menuView');
+const npView = document.getElementById('npView');
+
+// ── RENDER MENU ──
+function renderMenu() {
+  const list = document.getElementById('menuList');
+  // Only rebuild DOM if items don't exist yet
+  if (list.children.length !== playlist.length) {
+    list.innerHTML = '';
+    playlist.forEach((track, i) => {
+      const el = document.createElement('div');
+      el.className = 'menu-item';
+      el.innerHTML = `
+        <img class="menu-item-thumb" src="${track.cover}" alt="">
+        <div class="menu-item-info">
+          <div class="menu-item-title">${track.title}</div>
+          <div class="menu-item-artist">${track.artist}</div>
+        </div>
+      `;
+      el.addEventListener('click', () => {
+        selectedIndex = i;
+        updateMenuSelection();
+      });
+      list.appendChild(el);
+    });
+  }
+  updateMenuSelection();
+}
+
+function updateMenuSelection() {
+  const items = document.querySelectorAll('.menu-item');
+  items.forEach((item, i) => {
+    item.classList.toggle('selected', i === selectedIndex);
+  });
+  const selected = document.querySelector('.menu-item.selected');
+  if (selected) selected.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+}
+
+// ── RENDER NOW PLAYING ──
+function renderNowPlaying() {
+  const track = playlist[currentIndex];
+  document.getElementById('npCover').src = track.cover;
+  document.getElementById('npTitle').textContent = track.title;
+  document.getElementById('npArtist').textContent = track.artist;
+  document.getElementById('npTrackNum').textContent = `${currentIndex + 1} of ${playlist.length}`;
+  updateStreamingLinks(track.title, track.artist);
+}
+
+// ── SWITCH VIEW ──
+function showView(view) {
+  currentView = view;
+  menuView.classList.toggle('active', view === 'menu');
+  npView.classList.toggle('active', view === 'nowplaying');
+}
+
+function updateStreamingLinks(title, artist) {
+  const q = encodeURIComponent(`${title} ${artist}`);
+  const sp = document.getElementById('linkSpotify2');
+  const am = document.getElementById('linkAppleMusic2');
+  const yt = document.getElementById('linkYouTube2');
+  if (sp) sp.href = `https://open.spotify.com/search/${q}`;
+  if (am) am.href = `https://music.apple.com/us/search?term=${q}`;
+  if (yt) yt.href = `https://www.youtube.com/results?search_query=${q}`;
+}
+
+// ── PLAY / PAUSE ──
+function togglePlay() {
+  if (isPlaying) {
+    audio.pause();
+    isPlaying = false;
+    document.getElementById('npEq').classList.remove('playing');
+  } else {
+    if (!audio.src || audio.src === '') {
+      loadAndPlay(currentIndex);
+      return;
+    }
+    audio.play();
+    isPlaying = true;
+    document.getElementById('npEq').classList.add('playing');
+  }
+}
+
+function loadAndPlay(index) {
+  currentIndex = index;
+  const track = playlist[index];
+  audio.src = track.src;
+  renderNowPlaying();
+  showView('nowplaying');
+  audio.play().then(() => {
+    isPlaying = true;
+    document.getElementById('npEq').classList.add('playing');
+  });
+}
+
+function nextTrack() {
+  currentIndex = (currentIndex + 1) % playlist.length;
+  selectedIndex = currentIndex;
+  loadAndPlay(currentIndex);
+  renderMenu();
+}
+
+function prevTrack() {
+  if (audio.currentTime > 3) { audio.currentTime = 0; return; }
+  currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
+  selectedIndex = currentIndex;
+  loadAndPlay(currentIndex);
+  renderMenu();
+}
+
+// ── TIME ──
+function fmt(s) {
+  if (isNaN(s)) return '--:--';
+  const m = Math.floor(s / 60);
+  const sec = Math.floor(s % 60);
+  return m + ':' + (sec < 10 ? '0' : '') + sec;
+}
+
+audio.addEventListener('timeupdate', () => {
+  if (!audio.duration) return;
+  const pct = (audio.currentTime / audio.duration) * 100;
+  document.getElementById('npBarFill').style.width = pct + '%';
+  document.getElementById('npTimeCur').textContent = fmt(audio.currentTime);
+});
+
+audio.addEventListener('loadedmetadata', () => {
+  document.getElementById('npTimeDur').textContent = fmt(audio.duration);
+});
+
+audio.addEventListener('ended', nextTrack);
+
+// ── SEEK ON PROGRESS BAR CLICK ──
+const barWrap = document.getElementById('npBarWrap');
+const barHover = document.getElementById('npBarHover');
+
+barWrap.addEventListener('mousemove', (e) => {
+  const bar = barWrap.querySelector('.np-bar');
+  const rect = bar.getBoundingClientRect();
+  const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+  barHover.style.width = (pct * 100) + '%';
+});
+
+barWrap.addEventListener('mouseleave', () => {
+  barHover.style.width = '0%';
+});
+
+barWrap.addEventListener('click', (e) => {
+  if (!audio.duration) return;
+  const bar = barWrap.querySelector('.np-bar');
+  const rect = bar.getBoundingClientRect();
+  const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+  audio.currentTime = pct * audio.duration;
+});
+
+// ── WHEEL CONTROLS ──
+document.getElementById('btnMenu').addEventListener('click', () => {
+  if (currentView === 'nowplaying') {
+    showView('menu');
+    renderMenu();
+    // Immediately show items (no cascade after boot)
+    document.querySelectorAll('.menu-item').forEach(item => item.classList.add('loaded'));
+  }
+});
+
+document.getElementById('btnSelect').addEventListener('click', () => {
+  if (currentView === 'menu') {
+    if (selectedIndex === currentIndex && isPlaying) {
+      // Same song already playing — just go back to now playing screen
+      showView('nowplaying');
+    } else {
+      loadAndPlay(selectedIndex);
+    }
+  } else {
+    togglePlay();
+  }
+});
+
+document.getElementById('btnPlayPause').addEventListener('click', togglePlay);
+document.getElementById('btnFwd').addEventListener('click', nextTrack);
+document.getElementById('btnRew').addEventListener('click', prevTrack);
+
+// Scroll wheel for menu navigation
+wheel.addEventListener('wheel', (e) => {
+  if (currentView !== 'menu') return;
+  e.preventDefault();
+  if (e.deltaY > 0) {
+    selectedIndex = Math.min(selectedIndex + 1, playlist.length - 1);
+  } else {
+    selectedIndex = Math.max(selectedIndex - 1, 0);
+  }
+  renderMenu();
+  document.querySelectorAll('.menu-item').forEach(item => item.classList.add('loaded'));
+}, { passive: false });
+
+// Keyboard
+document.addEventListener('keydown', (e) => {
+  if (e.code === 'Space') { e.preventDefault(); togglePlay(); }
+  if (e.code === 'ArrowRight') nextTrack();
+  if (e.code === 'ArrowLeft') prevTrack();
+  if (e.code === 'ArrowDown' && currentView === 'menu') {
+    selectedIndex = Math.min(selectedIndex + 1, playlist.length - 1);
+    renderMenu();
+  }
+  if (e.code === 'ArrowUp' && currentView === 'menu') {
+    selectedIndex = Math.max(selectedIndex - 1, 0);
+    renderMenu();
+  }
+  if (e.code === 'Enter') {
+    if (currentView === 'menu') loadAndPlay(selectedIndex);
+    else togglePlay();
+  }
+  if (e.code === 'Escape' || e.code === 'Backspace') {
+    if (currentView === 'nowplaying') { showView('menu'); renderMenu(); }
+  }
+});
+
+// ── COLOR PICKER ──
+const picker = document.getElementById('colorPicker');
+colors.forEach((c, i) => {
+  const swatch = document.createElement('div');
+  swatch.className = 'color-swatch' + (i === 0 ? ' active' : '');
+  swatch.style.background = c.body;
+  swatch.title = c.name;
+  swatch.addEventListener('click', () => {
+    document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+    swatch.classList.add('active');
+    ipod.style.background = c.body;
+    wheel.style.background = c.wheel;
+    document.querySelector('.wheel-center').style.background = c.center;
+
+    // Adjust text color for dark iPods
+    const isDark = c.name === 'Space Black' || c.name === 'Product Red';
+    document.querySelectorAll('.wheel-btn').forEach(b => {
+      b.style.color = isDark ? 'rgba(255,255,255,0.5)' : '#5a534c';
+    });
+  });
+  picker.appendChild(swatch);
+});
+
+// ── BOOT SEQUENCE ──
+renderMenu();
+
+setTimeout(() => {
+  const boot = document.getElementById('bootScreen');
+  boot.style.transition = 'opacity 0.4s ease';
+  boot.style.opacity = '0';
+  setTimeout(() => {
+    boot.style.display = 'none';
+    menuView.classList.add('active');
+    document.querySelector('.screen-battery').classList.add('visible');
+    document.querySelector('.header-logo-link').classList.add('loaded');
+    wheel.classList.remove('locked');
+    // Cascade menu items in
+    const items = document.querySelectorAll('.menu-item');
+    items.forEach((item, i) => {
+      setTimeout(() => item.classList.add('loaded'), i * 120);
+    });
+  }, 400);
+}, 4000);
+
+// Wave animation for back button
+const backSpan = document.querySelector('.header-back span');
+if (backSpan) {
+  const text = backSpan.textContent;
+  backSpan.innerHTML = text.split('').map((ch, i) =>
+    ch === ' ' ? ' ' : `<span class="wave-char" style="--i:${i};display:inline-block">${ch}</span>`
+  ).join('');
+}
+</script>
+</body>
+</html>

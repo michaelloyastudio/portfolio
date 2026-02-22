@@ -35,7 +35,7 @@
   .p2-project .project-img, .p2-project .project-img img,
   .p2-project-hero, .p2-project-hero img,
   a, button, [onclick] {
-    cursor: url('crosshair.svg') 13 13, pointer !important;
+    cursor: url('crosshair.svg') 8 10, pointer !important;
   }
 
   body {
@@ -47,7 +47,7 @@
     padding: 0;
     width: 100vw;
     height: 100vh;
-    cursor: url('cursor.svg') 16 13, default;
+    cursor: url('cursor.svg') 16 8, default;
   }
 
   /* ── PROJECT INLINE IMAGES ── */
@@ -425,9 +425,10 @@
     pointer-events: none;
     z-index: 10;
     text-align: center;
+    opacity: 0;
   }
 
-  .p2-title span {
+  .p2-title > span {
     font-style: italic;
     color: #8a8580;
   }
@@ -441,16 +442,35 @@
   }
   .p2-nav a {
     font-family: 'Space Grotesk', sans-serif;
-    font-size: 0.8rem;
+    font-size: 1rem;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.15em;
     color: #8a8580;
     text-decoration: none;
     cursor: pointer;
-    transition: color 0.3s;
     pointer-events: auto;
+    position: relative;
+    display: inline-block;
+    padding: 0.15rem 0;
   }
-  .p2-nav a:hover { color: #ff8e3d; }
+  .p2-nav a span {
+    display: inline-block;
+    transition: color 0.3s;
+  }
+  .p2-nav a .nav-letter {
+    display: inline-block;
+    transition: color 0.3s;
+  }
+  .p2-nav a::after { display: none; }
+  .p2-nav a:hover span {
+    color: #ff8e3d;
+  }
+  @keyframes navWave {
+    0% { transform: translateY(0); }
+    40% { transform: translateY(-5px); }
+    100% { transform: translateY(0); }
+  }
+  .p2-nav a { font-style: normal; }
 
   /* ── P2 ABOUT (zoom-out reveal) ── */
   .p2-about {
@@ -483,15 +503,27 @@
     display: inline-block;
     margin-bottom: 2.5rem;
     font-family: 'Space Grotesk', sans-serif;
-    font-size: 0.8rem;
+    font-size: 1rem;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.12em;
     color: #8a8580;
     cursor: pointer;
-    transition: color 0.3s;
     text-decoration: none;
+    padding: 0.5rem 0.25rem;
+    position: relative;
   }
-  .p2-about-back:hover { color: #ff8e3d; }
+  .p2-about-back span {
+    display: inline-block;
+    transition: color 0.3s, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .p2-about-back::after { display: none; }
+  .p2-about-back:hover span {
+    color: #ff8e3d;
+  }
+  .p2-about-back .nav-letter {
+    display: inline-block;
+  }
+/* removed */
 
   .p2-about-hero {
     display: flex;
@@ -504,6 +536,12 @@
     border-radius: 8px;
     box-shadow: 0 12px 40px rgba(0,0,0,0.08);
     object-fit: cover;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .p2-about-portrait:hover {
+    transform: scale(1.04);
+    box-shadow: 0 16px 50px rgba(0,0,0,0.15);
   }
   .p2-about-text { flex: 1; }
   .p2-about-text h1 {
@@ -619,6 +657,81 @@
     transition: all 0.3s;
   }
   .p2-contact-links a:hover {
+    border-color: #ff8e3d;
+    color: #ff8e3d;
+    background: rgba(0,0,0,0.04);
+  }
+
+  /* ── P2 INTERACTIVE (Coming Soon) ── */
+  .p2-interactive {
+    position: absolute;
+    inset: 0;
+    background: #E8E0D4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease 0.3s;
+    z-index: 1;
+    overflow: hidden;
+  }
+  .p2-interactive.visible { opacity: 1; pointer-events: all; }
+  .p2-interactive-content {
+    text-align: center;
+    position: relative;
+  }
+  .p2-interactive-content h1 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 4rem;
+    font-weight: 400;
+    color: #1a1a1a;
+    margin-bottom: 0.5rem;
+    position: relative;
+  }
+  .p2-interactive-content h1 em { font-style: italic; color: #8a8580; }
+  .p2-interactive-content > p {
+    font-family: 'Space Grotesk', sans-serif;
+    color: #8a8580;
+    font-size: 1.05rem;
+    margin-bottom: 2.5rem;
+  }
+  /* Animated dots */
+  .p2-interactive-dots {
+    display: flex;
+    gap: 0.6rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+  }
+  .p2-interactive-dots span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ff8e3d;
+    animation: interactivePulse 1.4s ease-in-out infinite;
+  }
+  .p2-interactive-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .p2-interactive-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes interactivePulse {
+    0%, 100% { transform: scale(1); opacity: 0.4; }
+    50% { transform: scale(1.6); opacity: 1; }
+  }
+  /* Orbiting ring */
+  .p2-interactive-ring {
+    width: 120px;
+    height: 120px;
+    border: 2px solid transparent;
+    border-top-color: #ff8e3d;
+    border-right-color: rgba(138,133,128,0.3);
+    border-radius: 50%;
+    margin: 0 auto 2rem;
+    animation: interactiveOrbit 3s linear infinite;
+  }
+  @keyframes interactiveOrbit {
+    to { transform: rotate(360deg); }
+  }
+
+  .p2-interactive-content a.app-link:hover {
     border-color: #ff8e3d;
     color: #ff8e3d;
     background: rgba(0,0,0,0.04);
@@ -830,7 +943,7 @@
     overflow: visible;
     box-shadow: 0 8px 30px rgba(0,0,0,0.12);
     cursor: pointer;
-    transition: filter 0.5s ease, box-shadow 0.3s;
+    transition: filter 0.4s ease, opacity 0.4s ease, box-shadow 0.3s;
   }
   .p2-item:hover {
     filter: blur(0px) !important;
@@ -863,6 +976,8 @@
     letter-spacing: 0.1em;
     color: var(--text);
   }
+
+  /* slide titles removed */
 
   .p2-coming-soon {
     position: fixed;
@@ -908,13 +1023,16 @@
   <div class="p2-about" id="p2About">
     <div class="p2-about-scroll">
       <div class="p2-about-content">
-        <a class="p2-about-back" onclick="p2CloseAbout()">← Back</a>
+        <a class="p2-about-back" onclick="p2CloseAbout()"><span>← Back</span></a>
         <div class="p2-about-hero">
-          <img class="p2-about-portrait" src="mike-portrait.jpg" alt="Michael Loya">
+          <div style="position:relative;display:inline-block;">
+            <img class="p2-about-portrait" src="mike-portrait.jpg" alt="Michael Loya" onclick="document.getElementById('lightboxImg').src=this.src;document.getElementById('lightboxImg').style.display='block';document.getElementById('lightboxVideo').style.display='none';document.getElementById('lightbox').classList.add('open')">
+            <a href="https://www.mctvisual.com/" target="_blank" style="display:block;margin-top:0.4rem;font-family:'Space Grotesk',sans-serif;font-size:0.7rem;color:#8a8580;text-decoration:none;letter-spacing:0.05em;transition:color 0.3s;">📷 <span style="transition:color 0.3s;" onmouseover="this.style.color='#ff8e3d'" onmouseout="this.style.color='#8a8580'">Malcolm Taylor</span></a>
+          </div>
           <div class="p2-about-text">
             <h1>About <em>me</em></h1>
             <p>I'm a designer who works at the intersection of music, technology, and visual storytelling. Currently studying at Syracuse University, I split my time between design direction for University Union, personal creative projects, and working with AI and emerging tech — staying on top of new tools as they drop and always integrating them into my process.</p>
-            <p>My work ranges from brand identity and editorial design to AR experiences, UI/UX, and music production. I adapt quickly, experiment across mediums, and believe the best creative work comes from genuine curiosity.</p>
+            <p>My work ranges from brand identity and editorial design to UI/UX, music production, and AI-driven creative tools. I adapt quickly, experiment across mediums, and actively integrate AI into my process — using it to build, prototype, and push ideas further than I could alone.</p>
           </div>
         </div>
 
@@ -955,7 +1073,7 @@
     <div class="p2-project-scroll">
       <div class="p2-project-content">
         <div class="p2-project-back-row" id="p2ProjectBackRow">
-          <a class="p2-about-back" onclick="p2CloseProject()">← Back</a>
+          <a class="p2-about-back" onclick="p2CloseProject()"><span>← Back</span></a>
         </div>
         <div class="p2-project-top" id="p2ProjectTop">
           <div class="p2-project-hero" id="p2ProjectHero">
@@ -977,6 +1095,20 @@
       </div>
     </div>
   </div>
+  <!-- P2 Interactive layer (behind the scene) -->
+  <div class="p2-interactive" id="p2Interactive">
+    <div class="p2-interactive-content">
+      <h1>Interactive <em>Lab</em></h1>
+      <p>Experiments & mini-apps — built with AI.</p>
+      <div style="margin: 2rem 0;">
+        <a href="interactive/mpod.html" class="app-link" style="display:inline-flex;align-items:center;gap:0.75rem;font-family:'Space Grotesk',sans-serif;font-size:0.9rem;text-transform:uppercase;letter-spacing:0.1em;color:#1a1a1a;text-decoration:none;padding:1rem 1.8rem;border:1.5px solid #b8b0a5;border-radius:8px;transition:all 0.3s;">
+          <span style="font-size:1.2rem;">🎵</span> Now Playing
+        </a>
+      </div>
+      <p style="font-size:0.8rem;color:#b8b0a5;margin-bottom:2rem;">More coming soon.</p>
+      <a class="p2-about-back" onclick="p2CloseInteractive()"><span>← Back</span></a>
+    </div>
+  </div>
   <!-- P2 Contact layer (behind the scene) -->
   <div class="p2-contact" id="p2Contact">
     <div class="p2-contact-content">
@@ -987,7 +1119,7 @@
         <a href="https://www.linkedin.com/in/michael-loya/" target="_blank">LinkedIn</a>
         <a href="mailto:michaelloyadesign@gmail.com">Email</a>
       </div>
-      <a class="p2-about-back" onclick="p2CloseContact()">← Back</a>
+      <a class="p2-about-back" onclick="p2CloseContact()"><span>← Back</span></a>
     </div>
   </div>
   <!-- Floating scene (on top) -->
@@ -995,8 +1127,9 @@
     <div class="p2-title">
       <img src="logo.svg" style="height:44px;width:auto;filter:brightness(0);margin-right:0.5rem;vertical-align:middle;position:relative;top:-6px;">Michael Loya <span>Studio</span>
       <div class="p2-nav">
-        <a onclick="p2ShowAbout()">About</a>
-        <a onclick="p2ShowContact()">Contact</a>
+        <a onclick="p2ShowAbout()"><span>About</span></a>
+        <a onclick="p2ShowInteractive()"><span>Interactive</span></a>
+        <a onclick="p2ShowContact()"><span>Contact</span></a>
       </div>
     </div>
   </div>
@@ -1278,6 +1411,17 @@ function p2CloseContact() {
   document.getElementById('p2Contact').classList.remove('visible');
 }
 
+function p2ShowInteractive() {
+  _p2ProjectFloatingBack = false;
+  document.getElementById('p2Scene').classList.add('zoomed-out');
+  document.getElementById('p2Interactive').classList.add('visible');
+}
+
+function p2CloseInteractive() {
+  document.getElementById('p2Scene').classList.remove('zoomed-out');
+  document.getElementById('p2Interactive').classList.remove('visible');
+}
+
 // ── P2 project state ──
 var _p2ProjectOpen = false;
 
@@ -1473,6 +1617,7 @@ document.addEventListener('keydown', (e) => {
     // P2 overlays
     if (_p2ProjectOpen) { p2CloseProject(); return; }
     if (document.getElementById('p2About').classList.contains('visible')) { p2CloseAbout(); return; }
+    if (document.getElementById('p2Interactive').classList.contains('visible')) { p2CloseInteractive(); return; }
     if (document.getElementById('p2Contact').classList.contains('visible')) { p2CloseContact(); return; }
     if (document.getElementById('p2ComingSoon').classList.contains('active')) { document.getElementById('p2ComingSoon').classList.remove('active'); return; }
   }
@@ -1588,8 +1733,21 @@ let p2Initialized = false;
     el.addEventListener('click', () => {
       p2ShowProject(i, el);
     });
-    el.addEventListener('mouseenter', () => { el.style.filter = 'blur(0px)'; });
-    el.addEventListener('mouseleave', () => { el.style.filter = `blur(${el._baseBlur}px)`; });
+    el.addEventListener('mouseenter', () => {
+      window.p2Items.forEach(otherItem => {
+        if (otherItem.el === el) {
+          otherItem.el.style.filter = 'blur(0px)';
+        } else {
+          const boostedBlur = Math.max(otherItem.el._baseBlur * 3, 4);
+          otherItem.el.style.filter = `blur(${boostedBlur}px)`;
+        }
+      });
+    });
+    el.addEventListener('mouseleave', () => {
+      window.p2Items.forEach(otherItem => {
+        otherItem.el.style.filter = 'blur(0px)';
+      });
+    });
     scene.appendChild(el);
 
     const restX = pos.x * w - pos.s / 2;
@@ -1599,9 +1757,9 @@ let p2Initialized = false;
     const maxZ = 0, minZ = -150;
     const zRange = maxZ - minZ;
     const zNorm = (pos.z - minZ) / zRange;
-    const blurAmt = (1 - zNorm) * 4;
+    const blurAmt = (1 - zNorm) * 2;
     const scaleAmt = 0.7 + zNorm * 0.3;
-    el.style.filter = `blur(${blurAmt}px)`;
+    el.style.filter = 'blur(0px)';
     el.style.zIndex = Math.round(zNorm * 10);
     el._baseBlur = blurAmt;
     el._scale = scaleAmt;
@@ -1611,6 +1769,13 @@ let p2Initialized = false;
       bobPhase: Math.random() * Math.PI * 2,
       bobSpeed: 0.3 + Math.random() * 0.3,
       bobAmp: 6 + Math.random() * 10,
+    });
+  });
+
+  // Clear blur when mouse leaves the scene entirely
+  scene.addEventListener('mouseleave', () => {
+    p2Items.forEach(item => {
+      item.el.style.filter = 'blur(0px)';
     });
   });
 
@@ -1676,10 +1841,8 @@ let p2Initialized = false;
     const titleT = Math.min(Math.max((elapsed - 600) / 2000, 0), 1);
     const titleEase = easeOutQuint(titleT);
     titleEl.style.opacity = titleEase;
-    const titleBobBlend = Math.min(Math.max((titleT - 0.8) / 0.2, 0), 1);
-    const titleBob = Math.round(Math.sin(elapsed * 0.0004) * 6 * titleBobBlend * 100) / 100;
     const titleOffset = -50 + (1 - titleEase) * 20;
-    titleEl.style.transform = `translate3d(-50%, calc(${titleOffset}% + ${titleBob}px), 0)`;
+    titleEl.style.transform = `translate3d(-50%, ${titleOffset}%, 0)`;
 
     p2Items.forEach((item, i) => {
       const si = staggerOrder[i] !== undefined ? staggerOrder[i] : i;
@@ -1701,6 +1864,62 @@ let p2Initialized = false;
 
   requestAnimationFrame(tick);
 })();
+
+// Split nav links into individual letters for waveform animation
+document.querySelectorAll('.p2-nav a').forEach(link => {
+  const span = link.querySelector('span');
+  if (!span) return;
+  const text = span.textContent;
+  span.innerHTML = text.split('').map(ch =>
+    ch === ' ' ? ' ' : `<span class="nav-letter">${ch}</span>`
+  ).join('');
+
+  let waveTimer = null;
+  let waveIndex = 0;
+  const letters = span.querySelectorAll('.nav-letter');
+
+  link.addEventListener('mouseenter', () => {
+    waveIndex = 0;
+    clearInterval(waveTimer);
+    waveTimer = setInterval(() => {
+      if (waveIndex >= letters.length) { clearInterval(waveTimer); return; }
+      const letter = letters[waveIndex];
+      letter.style.animation = 'none';
+      letter.offsetHeight;
+      letter.style.animation = 'navWave 0.4s ease forwards';
+      waveIndex++;
+    }, 50);
+  });
+  link.addEventListener('mouseleave', () => { clearInterval(waveTimer); });
+});
+
+// Split back buttons into letters for reverse waveform
+document.querySelectorAll('.p2-about-back').forEach(link => {
+  const span = link.querySelector('span');
+  if (!span) return;
+  const text = span.textContent;
+  span.innerHTML = text.split('').map(ch =>
+    ch === ' ' ? ' ' : `<span class="nav-letter">${ch}</span>`
+  ).join('');
+
+  let waveTimer = null;
+  let waveIndex = 0;
+  const letters = span.querySelectorAll('.nav-letter');
+
+  link.addEventListener('mouseenter', () => {
+    waveIndex = letters.length - 1;
+    clearInterval(waveTimer);
+    waveTimer = setInterval(() => {
+      if (waveIndex < 0) { clearInterval(waveTimer); return; }
+      const letter = letters[waveIndex];
+      letter.style.animation = 'none';
+      letter.offsetHeight;
+      letter.style.animation = 'navWave 0.4s ease forwards';
+      waveIndex--;
+    }, 50);
+  });
+  link.addEventListener('mouseleave', () => { clearInterval(waveTimer); });
+});
 
 </script>
 </body>
