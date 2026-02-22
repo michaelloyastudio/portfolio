@@ -992,7 +992,7 @@
 <div class="footer"></div>
 
 <!-- Lightbox -->
-<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+<div class="lightbox" id="lightbox">
   <button class="lightbox-close" onclick="closeLightbox()">✕</button>
   <div class="lightbox-content" id="lightboxContent"></div>
 </div>
@@ -1548,23 +1548,39 @@ colors.forEach((c, i) => {
 });
 
 // ── LIGHTBOX ──
+let lbMedia = [];
+let lbIndex = 0;
+let lbTouchStartX = 0;
+
 function openLightbox(el) {
-  const lb = document.getElementById('lightbox');
+  // Collect all media in current project view
+  const npBody = document.getElementById('npBody');
+  lbMedia = Array.from(npBody.querySelectorAll('img, video')).map(m => ({
+    tag: m.tagName,
+    src: m.src
+  }));
+  lbIndex = lbMedia.findIndex(m => m.src === el.src);
+  if (lbIndex === -1) lbIndex = 0;
+  renderLightboxItem();
+  document.getElementById('lightbox').classList.add('open');
+}
+
+function renderLightboxItem() {
   const content = document.getElementById('lightboxContent');
-  if (el.tagName === 'VIDEO') {
+  const item = lbMedia[lbIndex];
+  const v = content.querySelector('video');
+  if (v) v.pause();
+  if (item.tag === 'VIDEO') {
+    content.innerHTML = '';
     const v = document.createElement('video');
-    v.src = el.src;
+    v.src = item.src;
     v.controls = true;
     v.autoplay = true;
     v.playsInline = true;
-    v.style.maxWidth = '95vw';
-    v.style.maxHeight = '90vh';
-    content.innerHTML = '';
     content.appendChild(v);
   } else {
-    content.innerHTML = `<img src="${el.src}" alt="">`;
+    content.innerHTML = `<img src="${item.src}" alt="">`;
   }
-  lb.classList.add('open');
 }
 
 function closeLightbox() {
@@ -1574,6 +1590,23 @@ function closeLightbox() {
   if (v) v.pause();
   document.getElementById('lightboxContent').innerHTML = '';
 }
+
+// Swipe support
+document.getElementById('lightbox').addEventListener('touchstart', (e) => {
+  lbTouchStartX = e.touches[0].clientX;
+}, { passive: true });
+
+document.getElementById('lightbox').addEventListener('touchend', (e) => {
+  const dx = e.changedTouches[0].clientX - lbTouchStartX;
+  if (Math.abs(dx) < 50) return;
+  if (dx < 0 && lbIndex < lbMedia.length - 1) {
+    lbIndex++;
+    renderLightboxItem();
+  } else if (dx > 0 && lbIndex > 0) {
+    lbIndex--;
+    renderLightboxItem();
+  }
+});
 
 // ── BOOT SEQUENCE ──
 renderMenu();
