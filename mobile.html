@@ -77,12 +77,12 @@
     flex-direction: column;
     align-items: center;
     width: 100%;
-    max-width: 90vw;
+    max-width: 320px;
   }
 
   .ipod {
     width: 100%;
-    max-width: 90vw;
+    max-width: 320px;
     background: var(--ipod-color);
     border-radius: 28px;
     padding: 5.5% 5% 6.5%;
@@ -1605,15 +1605,20 @@ document.getElementById('lightbox').addEventListener('touchend', (e) => {
   }
 });
 
-// ── FIT TO VIEWPORT ──
+// ── FIT TO VIEWPORT (mobile only) ──
 function fitToViewport() {
+  const ipod = document.getElementById('ipod');
+  if (window.innerWidth > 600) {
+    ipod.style.height = '';
+    ipod.style.maxHeight = '';
+    return;
+  }
   const vh = window.innerHeight;
   const header = document.querySelector('.header');
   const picker = document.querySelector('.color-picker');
   const headerH = header ? header.offsetHeight : 40;
   const pickerH = picker ? picker.offsetHeight + 8 : 40;
   const available = vh - headerH - pickerH;
-  const ipod = document.getElementById('ipod');
   ipod.style.height = available + 'px';
   ipod.style.maxHeight = available + 'px';
 }
