@@ -21,7 +21,9 @@
 
   html, body {
     width: 100%;
-    min-height: 100%;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
   }
 
   body {
@@ -33,7 +35,7 @@
     align-items: center;
     justify-content: flex-start;
     cursor: url('cursor.svg') 16 8, default;
-    overflow-x: hidden;
+    overflow: hidden;
     padding: 0;
   }
 
@@ -81,8 +83,6 @@
   .ipod {
     width: 100%;
     max-width: 90vw;
-    max-height: 72svh;
-    aspect-ratio: 320 / 520;
     background: var(--ipod-color);
     border-radius: 28px;
     padding: 5.5% 5% 6.5%;
@@ -115,7 +115,8 @@
   /* ── SCREEN ── */
   .screen {
     width: 100%;
-    aspect-ratio: 280 / 250;
+    flex: 1 1 auto;
+    min-height: 0;
     background: #1a1e23;
     border-radius: 8px;
     overflow: hidden;
@@ -639,6 +640,7 @@
     position: relative;
     width: 65%;
     aspect-ratio: 1;
+    flex-shrink: 1;
   }
 
   .wheel {
@@ -1602,6 +1604,21 @@ document.getElementById('lightbox').addEventListener('touchend', (e) => {
     renderLightboxItem();
   }
 });
+
+// ── FIT TO VIEWPORT ──
+function fitToViewport() {
+  const vh = window.innerHeight;
+  const header = document.querySelector('.header');
+  const picker = document.querySelector('.color-picker');
+  const headerH = header ? header.offsetHeight : 40;
+  const pickerH = picker ? picker.offsetHeight + 8 : 40;
+  const available = vh - headerH - pickerH;
+  const ipod = document.getElementById('ipod');
+  ipod.style.height = available + 'px';
+  ipod.style.maxHeight = available + 'px';
+}
+fitToViewport();
+window.addEventListener('resize', fitToViewport);
 
 // ── BOOT SEQUENCE ──
 renderMenu();
