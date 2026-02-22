@@ -46,14 +46,11 @@
 
   /* ── HEADER ── */
   .header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 1.5rem 2.5rem;
+    padding: 1rem 2.5rem;
     z-index: 100;
   }
 
@@ -720,11 +717,8 @@
 
   /* ── FOOTER ── */
   .footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 1rem;
+    position: relative;
+    padding: 0.5rem;
     text-align: center;
     font-size: 0.75rem;
     color: var(--text-muted);
@@ -870,8 +864,7 @@
   @media (max-width: 480px) {
     body {
       padding: 0.5rem;
-      justify-content: flex-start;
-      padding-top: 4rem;
+      justify-content: center;
     }
     .header {
       padding: 1rem 1.25rem;
