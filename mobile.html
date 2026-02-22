@@ -403,6 +403,14 @@
   .np-body .img-grid-4x2 .project-img,
   .np-body .img-grid-tight .project-img {
     margin: 0;
+    aspect-ratio: 1;
+    overflow: hidden;
+  }
+  .np-body .img-grid-tight .project-img img,
+  .np-body .img-grid-tight .project-img video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
   /* img-compose - uniform 2 column grid */
@@ -416,6 +424,12 @@
   .np-body .img-compose .project-img {
     margin: 0;
     width: 100%;
+    aspect-ratio: 1;
+  }
+  .np-body .img-compose .project-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
   /* Logo row */
