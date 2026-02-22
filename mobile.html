@@ -1615,11 +1615,9 @@ function fitToViewport() {
     return;
   }
   const vh = window.innerHeight;
-  const header = document.querySelector('.header');
-  const picker = document.querySelector('.color-picker');
-  const headerH = header ? header.offsetHeight : 40;
-  const pickerH = picker ? picker.offsetHeight + 8 : 40;
-  const available = vh - headerH - pickerH;
+  // Reserve fixed space for header (~50px) + color picker (~45px) + breathing room
+  const reserved = 100;
+  const available = vh - reserved;
   ipod.style.height = available + 'px';
   ipod.style.maxHeight = available + 'px';
 }
