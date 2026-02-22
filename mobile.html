@@ -377,11 +377,17 @@
   .np-body .img-grid-2,
   .np-body .img-grid-3,
   .np-body .img-grid-4,
-  .np-body .img-grid-5,
   .np-body .img-grid-4x2,
   .np-body .img-grid-tight {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
+    gap: 0.35rem;
+    margin: 0.5rem 0;
+  }
+
+  .np-body .img-grid-5 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: 0.35rem;
     margin: 0.5rem 0;
   }
@@ -395,17 +401,16 @@
     margin: 0;
   }
 
-  /* img-compose - 2 column masonry-like */
+  /* img-compose - uniform 2 column grid */
   .np-body .img-compose {
-    columns: 2;
-    column-gap: 0.35rem;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.35rem;
     margin: 0.5rem 0;
   }
 
   .np-body .img-compose .project-img {
-    margin: 0 0 0.35rem 0;
-    break-inside: avoid;
-    display: inline-block;
+    margin: 0;
     width: 100%;
   }
 
@@ -462,8 +467,8 @@
     width: 28px;
     height: 28px;
     border-radius: 50%;
-    background: var(--accent);
-    border: none;
+    background: transparent;
+    border: 1.5px solid var(--text-muted);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -474,7 +479,7 @@
   .np-body .sp-play svg {
     width: 12px;
     height: 12px;
-    fill: #0a0a0a;
+    fill: var(--text-muted);
   }
 
   .np-body .sp-meta {
@@ -533,15 +538,15 @@
     border-radius: 6px;
     padding: 0.5rem;
     margin: 0.5rem 0;
-    font-size: 0.65rem;
-    line-height: 1.6;
+    font-size: 0.8rem;
+    line-height: 1.7;
   }
 
   .np-body .verse-label {
     font-weight: 600;
     color: var(--accent);
     margin: 0.5rem 0 0.25rem;
-    font-size: 0.65rem;
+    font-size: 0.8rem;
   }
 
   .np-body .verse-label:first-child {
@@ -549,7 +554,7 @@
   }
 
   .np-body .lyrics-container p {
-    font-size: 0.65rem;
+    font-size: 0.8rem;
     margin-bottom: 0.5rem;
   }
 
@@ -1033,9 +1038,8 @@ const projects = [
 </div>
 <h3>Small Projects</h3>
 <p>Motion graphic and posters for <a href="https://open.spotify.com/artist/2848adRcxvgWNRcz1g1tQD?si=SYY1m9QBSYaGsj-x30nrzQ" target="_blank">Felly</a>, an independent artist from my hometown with 556k monthly Spotify listeners.</p>
-<div class="img-grid-3">
+<div class="img-grid-2">
 <div class="project-img"><img src="img/all/Fel1.jpg" alt="Felly poster design 1" loading="lazy"></div>
-<div class="project-img"><img src="img/all/Fel2.jpg" alt="Felly poster design 2" loading="lazy"></div>
 <div class="project-img"><img src="img/all/Fel3.jpg" alt="Felly poster design 3" loading="lazy"></div>
 </div>
 <div class="project-img project-img-video"><video src="img/all/FellyRender.mp4" autoplay loop muted playsinline style="width:100%;"></video></div>
@@ -1149,12 +1153,12 @@ const projects = [
     cover: 'img/whitenoise.jpg',
     tools: 'Photoshop, Lightroom, Camera',
     content: `<p>A collection of album covers combining graphic design and photography — "Visual Harmonies: A Fusion of Lens and Design."</p>
-<div class="img-grid-3">
+<div class="img-grid-2">
 <div class="project-img"><img src="img/all/Loya-Passion-Update-05.jpg" alt="Album cover - Passion update" loading="lazy"></div>
 <div class="project-img"><img src="img/all/Loya-Passion-4.jpg" alt="Album cover - Passion series 4" loading="lazy"></div>
-<div class="project-img"><img src="img/all/Loya-Passion-6.jpg" alt="Album cover - Passion series 6" loading="lazy"></div>
 </div>
-<div class="img-grid-2">
+<div class="img-grid-3">
+<div class="project-img"><img src="img/all/Loya-Passion-6.jpg" alt="Album cover - Passion series 6" loading="lazy"></div>
 <div class="project-img"><img src="img/all/scribbleboy.jpg" alt="Scribbleboy album cover" loading="lazy"></div>
 <div class="project-img"><img src="img/all/Loya-Passion-1.jpg" alt="Album cover - Passion series 1" loading="lazy"></div>
 </div>`
@@ -1306,6 +1310,11 @@ function renderProjectDetail() {
   // Progress bar removed
   
   // Position indicators removed with progress bar
+
+  // Make hero cover clickable
+  const cover = document.getElementById('npCover');
+  cover.style.cursor = 'zoom-in';
+  cover.onclick = (e) => { e.stopPropagation(); openLightbox(cover, true); };
 
   // Make images & videos tappable for lightbox
   setTimeout(() => {
@@ -1556,13 +1565,14 @@ let lbMedia = [];
 let lbIndex = 0;
 let lbTouchStartX = 0;
 
-function openLightbox(el) {
-  // Collect all media in current project view
+function openLightbox(el, isHero) {
+  // Collect hero + all media in current project view
+  const cover = document.getElementById('npCover');
   const npBody = document.getElementById('npBody');
-  lbMedia = Array.from(npBody.querySelectorAll('img, video')).map(m => ({
-    tag: m.tagName,
-    src: m.src
-  }));
+  lbMedia = [{ tag: 'IMG', src: cover.src }];
+  npBody.querySelectorAll('img, video').forEach(m => {
+    lbMedia.push({ tag: m.tagName, src: m.src });
+  });
   lbIndex = lbMedia.findIndex(m => m.src === el.src);
   if (lbIndex === -1) lbIndex = 0;
   renderLightboxItem();
