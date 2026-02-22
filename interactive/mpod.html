@@ -764,11 +764,13 @@
   <span class="color-label">Color</span>
 </div>
 
-<div class="footer">What I'm listening to · Last updated Feb 22</div>
+<div class="footer"></div>
 
 <audio id="audio" preload="metadata"></audio>
 
 <script>
+const isMobile = window.matchMedia('(max-width: 480px)').matches;
+
 // ── PLAYLIST ──
 const playlist = [
   { title: 'Dave Brubeck', artist: 'Vacations', src: '../img/all/Vacations_DaveBrubeck.mp3', cover: '../img/all/Vacations_DaveBrubeck_cover.jpg' },
@@ -869,6 +871,7 @@ function updateStreamingLinks(title, artist) {
 
 // ── PLAY / PAUSE ──
 function togglePlay() {
+  if (isMobile) return;
   if (isPlaying) {
     audio.pause();
     isPlaying = false;
@@ -887,9 +890,10 @@ function togglePlay() {
 function loadAndPlay(index) {
   currentIndex = index;
   const track = playlist[index];
-  audio.src = track.src;
   renderNowPlaying();
   showView('nowplaying');
+  if (isMobile) { isPlaying = false; return; }
+  audio.src = track.src;
   audio.play().then(() => {
     isPlaying = true;
     document.getElementById('npEq').classList.add('playing');
@@ -978,7 +982,7 @@ document.getElementById('btnSelect').addEventListener('click', () => {
   }
 });
 
-document.getElementById('btnPlayPause').addEventListener('click', togglePlay);
+// Play/pause wheel button disabled (no action on click)
 document.getElementById('btnFwd').addEventListener('click', nextTrack);
 document.getElementById('btnRew').addEventListener('click', prevTrack);
 

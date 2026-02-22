@@ -247,9 +247,8 @@
   .np-view {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    text-align: left;
     height: 100%;
+    overflow: hidden;
   }
 
   .np-view .screen-header {
@@ -257,24 +256,36 @@
     text-align: left;
     justify-content: space-between;
     width: 100%;
+    flex-shrink: 0;
   }
+
+  /* Scrollable content area */
+  .np-scroll {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .np-scroll::-webkit-scrollbar { display: none; }
 
   .np-track-num {
-    font-size: clamp(0.6rem, 2.5vw, 0.75rem);
+    font-size: clamp(0.5rem, 2vw, 0.6rem);
     color: #8a8580;
-    margin-top: 3%;
-    margin-bottom: 4%;
+    margin-top: 2%;
+    margin-bottom: 3%;
   }
 
-  .np-content {
+  .np-header-content {
     display: flex;
     gap: 5%;
     align-items: flex-start;
     width: 100%;
+    margin-bottom: 3%;
   }
 
   .np-cover {
-    width: 42%;
+    width: 35%;
     aspect-ratio: 1;
     border-radius: 4px;
     object-fit: cover;
@@ -288,33 +299,271 @@
     justify-content: center;
     min-width: 0;
     flex: 1;
-    height: 100%;
   }
 
   .np-title {
     font-family: 'Space Grotesk', sans-serif;
-    font-size: clamp(0.75rem, 3.2vw, 0.95rem);
+    font-size: clamp(0.7rem, 3vw, 0.85rem);
     font-weight: 500;
     color: var(--text);
     line-height: 1.3;
     margin-bottom: 1px;
-    max-width: 100%;
+  }
+
+  .np-artist {
+    font-size: clamp(0.5rem, 2.2vw, 0.65rem);
+    color: #8a8580;
+    margin-bottom: 2%;
+  }
+
+  .np-album {
+    font-size: clamp(0.45rem, 1.8vw, 0.55rem);
+    color: #6a6560;
+    line-height: 1.4;
+  }
+
+  /* ── PROJECT CONTENT AREA ── */
+  .np-body {
+    padding: 3% 0;
+    font-size: 0.65rem;
+    line-height: 1.5;
+    color: #c8c0b8;
+  }
+
+  .np-body p {
+    margin-bottom: 0.6rem;
+    font-size: 0.65rem;
+  }
+
+  .np-body a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .np-body h3 {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text);
+    margin: 0.8rem 0 0.4rem;
+    padding-bottom: 0.2rem;
+    border-bottom: 1px solid rgba(255,142,61,0.3);
+  }
+
+  /* ── PROJECT IMAGES ── */
+  .np-body .project-img {
+    margin: 0.5rem 0;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .np-body .project-img img,
+  .np-body .project-img video {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 4px;
+  }
+
+  /* Image grids - 2 columns max on mobile */
+  .np-body .img-grid-2,
+  .np-body .img-grid-3,
+  .np-body .img-grid-4,
+  .np-body .img-grid-5,
+  .np-body .img-grid-4x2,
+  .np-body .img-grid-tight {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.35rem;
+    margin: 0.5rem 0;
+  }
+
+  .np-body .img-grid-2 .project-img,
+  .np-body .img-grid-3 .project-img,
+  .np-body .img-grid-4 .project-img,
+  .np-body .img-grid-5 .project-img,
+  .np-body .img-grid-4x2 .project-img,
+  .np-body .img-grid-tight .project-img {
+    margin: 0;
+  }
+
+  /* img-compose - 2 column masonry-like */
+  .np-body .img-compose {
+    columns: 2;
+    column-gap: 0.35rem;
+    margin: 0.5rem 0;
+  }
+
+  .np-body .img-compose .project-img {
+    margin: 0 0 0.35rem 0;
+    break-inside: avoid;
+    display: inline-block;
+    width: 100%;
+  }
+
+  /* Logo row */
+  .np-body .img-logos-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.35rem;
+    margin: 0.5rem 0;
+  }
+
+  .np-body .img-logos-row .project-img {
+    margin: 0;
+  }
+
+  .np-body .img-match-height {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.35rem;
+    margin: 0.5rem 0;
+  }
+
+  .np-body .img-match-height .project-img {
+    margin: 0;
+  }
+
+  /* Main project videos with controls */
+  .np-body .project-video {
+    margin: 0.5rem 0;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .np-body .project-video video {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 4px;
+  }
+
+  /* ── SONG PLAYER (AI Song) ── */
+  .np-body .song-player {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(0,0,0,0.3);
+    border-radius: 6px;
+    padding: 0.5rem;
+    margin: 0.5rem 0;
+  }
+
+  .np-body .sp-play {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .np-body .sp-play svg {
+    width: 12px;
+    height: 12px;
+    fill: #0a0a0a;
+  }
+
+  .np-body .sp-meta {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .np-body .song-title {
+    font-size: 0.6rem;
+    font-weight: 500;
+    color: var(--text);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
-  .np-artist {
-    font-size: clamp(0.6rem, 2.5vw, 0.75rem);
+  .np-body .song-artist {
+    font-size: 0.5rem;
     color: #8a8580;
-    margin-bottom: 4%;
   }
 
-  .np-album {
-    font-size: clamp(0.48rem, 2vw, 0.58rem);
-    color: #6a6560;
-    margin-bottom: 3%;
-    line-height: 1.4;
+  .np-body .sp-track {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    width: 100%;
+    margin-top: 0.3rem;
+  }
+
+  .np-body .sp-time {
+    font-size: 0.45rem;
+    color: #8a8580;
+    min-width: 22px;
+  }
+
+  .np-body .sp-bar {
+    flex: 1;
+    height: 4px;
+    background: rgba(232,224,212,0.15);
+    border-radius: 2px;
+    position: relative;
+    cursor: pointer;
+  }
+
+  .np-body .sp-progress {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    width: 0%;
+    transition: width 0.1s linear;
+  }
+
+  /* ── LYRICS ── */
+  .np-body .lyrics-container {
+    background: rgba(0,0,0,0.25);
+    border-radius: 6px;
+    padding: 0.5rem;
+    margin: 0.5rem 0;
+    font-size: 0.55rem;
+    line-height: 1.6;
+  }
+
+  .np-body .verse-label {
+    font-weight: 600;
+    color: var(--accent);
+    margin: 0.5rem 0 0.25rem;
+    font-size: 0.55rem;
+  }
+
+  .np-body .verse-label:first-child {
+    margin-top: 0;
+  }
+
+  .np-body .lyrics-container p {
+    font-size: 0.55rem;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Rhyme scheme colors */
+  .np-body .r1 { color: #ff6b6b; }
+  .np-body .r2 { color: #4ecdc4; }
+  .np-body .r3 { color: #ffe66d; }
+  .np-body .r4 { color: #95e1d3; }
+  .np-body .r5 { color: #f38181; }
+  .np-body .r6 { color: #aa96da; }
+  .np-body .r7 { color: #fcbad3; }
+  .np-body .r8 { color: #a8d8ea; }
+  .np-body .r9 { color: #ffb347; }
+  .np-body .r10 { color: #87ceeb; }
+  .np-body .r11 { color: #dda0dd; }
+  .np-body .r12 { color: #98d8c8; }
+  .np-body .r13 { color: #f7dc6f; }
+  .np-body .r14 { color: #bb8fce; }
+
+  /* ── PROGRESS BAR (fixed at bottom) ── */
+  .np-footer {
+    flex-shrink: 0;
+    padding-top: 2%;
   }
 
   .np-progress {
@@ -322,18 +571,16 @@
     display: flex;
     flex-direction: column;
     gap: 2px;
-    margin-top: auto;
-    margin-bottom: 2%;
   }
 
   .np-bar-wrap {
     width: 100%;
-    padding: 4% 0;
+    padding: 2% 0;
     position: relative;
   }
   .np-bar {
     width: 100%;
-    height: 6px;
+    height: 5px;
     background: rgba(232,224,212,0.15);
     border-radius: 3px;
     overflow: hidden;
@@ -357,7 +604,7 @@
   }
 
   .np-time {
-    font-size: clamp(0.58rem, 2.4vw, 0.72rem);
+    font-size: clamp(0.5rem, 2vw, 0.6rem);
     color: #8a8580;
   }
 
@@ -547,16 +794,16 @@
 
   .boot-name {
     font-family: 'Instrument Serif', serif;
-    font-size: 1.8rem;
-    color: var(--text);
-    margin-top: 0.5rem;
+    font-size: 1.4rem;
+    color: var(--parchment);
+    margin-top: 0.75rem;
     opacity: 0;
     animation: bootTextIn 0.8s ease 1.8s forwards;
   }
 
-  .boot-name em {
+  .boot-name span {
     font-style: italic;
-    color: var(--accent);
+    color: var(--warm-gray);
   }
 
   @keyframes bootTextIn {
@@ -641,7 +888,7 @@
       <!-- Boot Screen -->
       <div class="boot-screen" id="bootScreen">
         <img src="interactive/logo-parchment.svg" class="boot-logo" alt="ML">
-        <div class="boot-name"><em>m</em>Pod</div>
+        <div class="boot-name">Michael Loya <span>Studio</span></div>
       </div>
 
       <!-- Persistent header battery -->
@@ -663,21 +910,19 @@
           <div class="screen-header">
             <span>Project Details</span>
           </div>
-          <div class="np-track-num" id="npTrackNum">1 of 8</div>
-          <div class="np-content">
-            <img class="np-cover" id="npCover" src="" alt="">
-            <div class="np-info">
-              <div class="np-title" id="npTitle">—</div>
-              <div class="np-artist" id="npArtist">—</div>
-              <div class="np-album" id="npAlbum">—</div>
+          <div class="np-scroll" id="npScroll">
+            <div class="np-track-num" id="npTrackNum">1 of 8</div>
+            <div class="np-header-content">
+              <img class="np-cover" id="npCover" src="" alt="">
+              <div class="np-info">
+                <div class="np-title" id="npTitle">—</div>
+                <div class="np-artist" id="npArtist">—</div>
+                <div class="np-album" id="npAlbum">—</div>
+              </div>
             </div>
+            <div class="np-body" id="npBody"></div>
           </div>
-          <div class="np-progress">
-            <div class="np-bar-wrap"><div class="np-bar"><div class="np-bar-fill" id="npBarFill"></div></div></div>
-            <div class="np-times">
-              <span class="np-time" id="npTimeCur"></span>
-              <span class="np-time" id="npTimeDur"></span>
-            </div>
+          <div class="np-footer">
           </div>
         </div>
       </div>
@@ -717,57 +962,221 @@ const projects = [
     category: 'Cover Art / Motion / Music', 
     year: '2024',
     cover: 'img/DnDFinal.jpeg',
-    tools: 'After Effects, Photoshop, Logic Pro'
+    tools: 'After Effects, Photoshop, Logic Pro',
+    content: `<p>I collaborate with my brother, who produces music under our last name Loya (stylized as "<a href="https://open.spotify.com/artist/5gNQpoYEBE1jxjCgFkLWce?si=AsVRN9PsRu2rgS5POckwnQ" target="_blank">loya</a>"), bringing his music to life through cover art, motion graphics, and social content.</p>
+<h3>loya</h3>
+<p>The cover art is for loya's upcoming EP, <a href="https://open.spotify.com/album/6roxGKDYkVpcbcdqdpj6gG?si=mku1Dh4nR9OR_AJf92bb5Q" target="_blank"><em>Diamonds and Damage</em></a>. We started with a reference image to generate the portrait, then created multiple diamond variations.</p>
+<div class="img-grid-4">
+<div class="project-img"><img src="img/all/Screenshot_2025-03-21_at_6.45.47_PM.jpg" alt="Reference photo" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Firefly_20250319125548_(1).jpg" alt="Firefly generated asset" loading="lazy"></div>
+<div class="project-img"><img src="img/all/DnDv1.jpg" alt="Diamonds and Damage variation 1" loading="lazy"></div>
+<div class="project-img"><img src="img/all/DnDv2.jpg" alt="Diamonds and Damage variation 2" loading="lazy"></div>
+<div class="project-img"><img src="img/all/DnDv3.jpg" alt="Diamonds and Damage variation 3" loading="lazy"></div>
+<div class="project-img"><img src="img/all/DnDv4.jpg" alt="Diamonds and Damage variation 4" loading="lazy"></div>
+<div class="project-img"><img src="img/all/DnDv7.jpg" alt="Diamonds and Damage variation 7" loading="lazy"></div>
+<div class="project-img"><img src="img/all/DnDv8.jpg" alt="Diamonds and Damage variation 8" loading="lazy"></div>
+</div>
+<p>I've also produced "Canvas" visuals — dynamic, looping videos using After Effects and Blender for Spotify.</p>
+<div class="project-img project-img-video"><video src="img/all/Canvases.mp4" autoplay loop muted playsinline style="width:100%;"></video></div>
+<p>I designed a logo for loya based on one of his favorite hats, using Amador, a blackletter font.</p>
+<div class="project-img img-landscape"><img src="img/all/LoyaLOGOprocess.jpg" alt="loya logo design process" loading="lazy"></div>
+<div class="img-logos-row">
+<div class="project-img img-landscape"><img src="img/all/LoyaLOGO_solo.png" alt="loya logo final" loading="lazy"></div>
+<div class="project-img img-landscape"><img src="img/all/LoyaLOGO_outline.png" alt="loya logo outline" loading="lazy"></div>
+</div>
+<h3>Small Projects</h3>
+<p>Motion graphic and posters for <a href="https://open.spotify.com/artist/2848adRcxvgWNRcz1g1tQD?si=SYY1m9QBSYaGsj-x30nrzQ" target="_blank">Felly</a>, an independent artist from my hometown with 556k monthly Spotify listeners.</p>
+<div class="img-grid-3">
+<div class="project-img"><img src="img/all/Fel1.jpg" alt="Felly poster design 1" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Fel2.jpg" alt="Felly poster design 2" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Fel3.jpg" alt="Felly poster design 3" loading="lazy"></div>
+</div>
+<div class="project-img project-img-video"><video src="img/all/FellyRender.mp4" autoplay loop muted playsinline style="width:100%;"></video></div>
+<p>Cover art concepts for <a href="https://open.spotify.com/artist/4DSFmAOMwMqDVKIsPY0kqs?si=IuyZFZwoTCCsxNR4Py_JHA" target="_blank">Sweezy</a> and Chitt.</p>
+<div class="img-grid-2">
+<div class="project-img"><img src="img/all/ExoticSweezyv4.jpg" alt="Sweezy cover art concept" loading="lazy"></div>
+<div class="project-img"><img src="img/all/FeelYourLove.jpg" alt="Chitt cover art" loading="lazy"></div>
+</div>`
   },
   { 
     title: 'BODYARMOR & Powerade', 
     category: 'Internship / Branding / AI', 
     year: '2024',
     cover: 'img/bapa.png',
-    tools: 'Figma, Midjourney, Illustrator'
+    tools: 'Figma, Midjourney, Illustrator',
+    content: `<p>Last summer I interned with BODYARMOR and Powerade in Queens, NY, designing POS ads, producing a Powerade fall football video ad, and creating an AI-generated BODYARMOR commercial as my capstone project.</p>
+<h3>Internship Work</h3>
+<p>Day-to-day work involved reformatting creative into POS ads. I produced an original video ad for Powerade's fall football campaign.</p>
+<div class="project-img project-img-video"><video src="img/all/PA_Fall_Football.mp4" autoplay loop muted playsinline style="width:100%;"></video></div>
+<h3>Capstone Project</h3>
+<p>For my capstone, I explored AI in creative production. My initial concept featured Joe Burrow ("Joe Chill") for BODYARMOR Chill, but AI struggled with character consistency.</p>
+<div class="img-match-height">
+<div class="project-img"><img src="img/all/textclarity1.jpg" alt="AI character consistency challenge - snow scene" loading="lazy"></div>
+<div class="project-img"><img src="img/all/textclarity2.jpg" alt="AI character consistency challenge - ice cave" loading="lazy"></div>
+</div>
+<p>I built an AI workflow using Runway and Kling for imagery/video, Topaz Labs for upscaling, ElevenLabs for voiceover, and After Effects for the final edit.</p>
+<div class="project-img project-img-video"><video src="img/all/kling.mp4" autoplay loop muted playsinline style="width:100%;"></video></div>
+<h3>Final Result</h3>
+<p>The final AI-generated commercial was presented to C-suite executives.</p>
+<div class="project-video"><video src="img/all/AIBACommercial.mp4" controls playsinline preload="metadata" poster="img/all/ba_frame_45s.jpg"></video></div>`
   },
   { 
     title: 'AI Song', 
     category: 'Music Production / AI / Design', 
     year: '2025',
     cover: 'img/LimitsCover.jpg',
-    tools: 'Suno, Logic Pro, Photoshop'
+    tools: 'Suno, Logic Pro, Photoshop',
+    content: `<p>I wrote a track over a Jack Harlow-type beat and used ElevenLabs to create an AI voice clone of Jack as a fake feature.</p>
+<p>Cover concepts generated in ChatGPT, refined in Illustrator. Final cover is bottom-right.</p>
+<div class="img-grid-3">
+<div class="project-img"><img src="img/all/ChatGPT_Image_Sep_13,_2025,_04_19_47_PM.jpg" alt="AI cover concept 1" loading="lazy"></div>
+<div class="project-img"><img src="img/all/ChatGPT_Image_Sep_13,_2025,_04_20_16_PM.jpg" alt="AI cover concept 2" loading="lazy"></div>
+<div class="project-img"><img src="img/all/ChatGPT_Image_Sep_13,_2025,_04_20_11_PM.jpg" alt="AI cover concept 3" loading="lazy"></div>
+<div class="project-img"><img src="img/all/ChatGPT_Image_Sep_13,_2025,_04_20_23_PM.jpg" alt="AI cover concept 4" loading="lazy"></div>
+<div class="project-img"><img src="img/all/ChatGPT_Image_Sep_13,_2025,_04_20_12_PM.jpg" alt="AI cover concept 5" loading="lazy"></div>
+<div class="project-img"><img src="img/LimitsCover.jpg" alt="Limits final cover art" loading="lazy"></div>
+</div>
+<p>I mocked up a fake DM from Jack Harlow in Photoshop and posted it alongside the track.</p>
+<div class="project-img img-landscape"><img src="img/all/HarlowDM_Mockup.jpg" alt="Fake DM with Jack Harlow phone mockup" loading="lazy"></div>
+<p style="font-size:0.55rem;opacity:0.6;">⚠️ Explicit language</p>
+<div class="song-player" id="songPlayer">
+<button class="sp-play" id="spPlay"><svg viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21" id="spIcon" fill="currentColor"/></svg></button>
+<div class="sp-meta">
+<div class="song-title">Limits (feat. Jack Harlow)</div>
+<div class="song-artist">Fucius · 203 Records</div>
+</div>
+<div class="sp-track">
+<span class="sp-time" id="spCur">0:00</span>
+<div class="sp-bar" id="spBar"><div class="sp-progress" id="spProg"></div></div>
+<span class="sp-time" id="spDur">--:--</span>
+</div>
+<audio preload="metadata" src="img/all/Limits.mp3" id="spAudio"></audio>
+</div>
+<div class="lyrics-container">
+<div class="verse-label">Verse 1: Fucius</div>
+<p>Wondering if ima ever reach the fucking <span class="r1">ceiling</span><br>I don't fuck with <span class="r5">critics</span>, lemme tell you 'bout my <span class="r5">limits</span><br>Flexing on your former brethren just ain't <span class="r1">appealing</span><br>I'm <span class="r1">feeling</span>, the heat that I'm <span class="r1">concealing</span> is a <span class="r2">light jab</span><br>Controversy gonna follow when you <span class="r2">like that</span><br>Tryna tell me what the key is, you can <span class="r2">type that</span><br>If that's how ima make it <span class="r1">thrilling</span>, then I'm <span class="r2">Mike Jack</span><br>When I'm talking 'bout a plug, I mean the <span class="r2">mic jack</span><br>Punching in to bring the <span class="r2">action</span> like it's <span class="r2">IMAX</span><br>If they sleeping on the <span class="r3">sound</span>, then it's <span class="r2">night class</span><br><span class="r2">Try</span> and break the <span class="r2">stride</span>, then I'll put you in a <span class="r2">nice cast</span><br>If I'm blowing up in Texas, then I'm <span class="r2">like Dak</span><br>Push me to the <span class="r3">ground</span> and I'm <span class="r2">right back</span><br>Never scared to <span class="r2">fight back</span><br>South Beach is where the <span class="r2">lights at</span><br>I'm going <span class="r2">blind</span> from the <span class="r2">bright flash</span><br>I cross the strip <span class="r2">like</span> a <span class="r2">live match</span><br>Watch me <span class="r2">fly past</span>, these up and comers are <span class="r3">plain</span><br>Scared to navigate the scene, but I know the <span class="r3">terrain</span><br>Getting dirty in the <span class="r3">game</span>, it's <span class="r4">official</span><br>Never <span class="r14">fold</span>, bring it <span class="r14">home</span> for the <span class="r14">gold</span> like I'm <span class="r4">Kittle</span><br>For my dogs, got the <span class="r4">kibble</span><br>I haven't been <span class="r6">writing</span>, I just <span class="r4">scribble</span><br>They yelling at me "Mike drop"—I don't ever tote a <span class="r13">gun</span><br>But the <span class="r13">bump</span> stock, is <span class="r4">beneficial</span> for the <span class="r5">hitmen</span><br>Catch me <span class="r6">writing</span> <span class="r6">lines</span>, I'm <span class="r6">live</span> when I'm in <span class="r5">Whitman</span><br>All about that <span class="r6">wine</span> and <span class="r6">dine</span>, I'm too <span class="r5">lit, man</span><br>I may not <span class="r6">align</span> with <span class="r6">times</span>, but who's <span class="r5">ticking</span><br><span class="r5">Tick, tick, tick, tick, tick</span><br>Pyromaniacs' craniums get elated when I'm <span class="r5">spitting</span><br>Gassing me up, I'm <span class="r1">filling</span> up for the <span class="r5">mission</span><br>Money's a <span class="r13">plus</span>, but not the <span class="r13">sum</span>—an <span class="r5">addition</span><br>(Admiration when I'm <span class="r12">static</span>)<br>You know my image <span class="r12">holographic</span>, <span class="r5">limited</span> <span class="r5">edition</span></p>
+<div class="verse-label">Verse 2: AI Jack Harlow</div>
+<p>This ain't my <span class="r7">last chance</span><br>I'm just doing this for Fucius, he a <span class="r7">mad man</span><br>He yelling "<span class="r7">Jack, man</span>, come and bring the <span class="r7">facts, man</span>"<br>Kentucky boy getting chicken, I'm a <span class="r7">fat man</span><br>Pick up the <span class="r9">girls</span> with the <span class="r9">curls</span>, I'm feeling <span class="r7">jacked, man</span><br>Came with the <span class="r9">pearls</span>, now your <span class="r9">girl</span> give me a <span class="r7">lap dance</span><br>Said she like surprises, I tell her come and <span class="r8">see</span><br>I'm Jack in the box, I'm popping out when she <span class="r8">need</span><br>And that's <span class="r8">frequently</span>, she loving the <span class="r8">secrecy</span><br>Frolic 'round the pad in her panties so <span class="r8">indecently</span><br>Give her love <span class="r8">peacefully</span>, I could bust <span class="r8">easily</span><br>Pussy so amazing got me thinking she a <span class="r8">deity</span><br>But I ain't ignorant, she got the <span class="r8">best of me</span><br>She just get what she wants and leave the <span class="r8">rest of me</span><br>I don't give a damn if the haters wanna <span class="r8">wrestle me</span><br>You can catch a ride in my wake, just leave the <span class="r8">rest to me</span><br>And fuck 'em if they <span class="r8">mess with me</span><br><span class="r8">Testing me</span>? That's a deadly <span class="r8">recipe</span><br>I chef the scene while you barely catching <span class="r8">breath to breathe</span><br>Tryna come and <span class="r8">flex on me</span>? Boy, that's just a <span class="r8">fantasy</span><br>I'm moving with a purpose while your crew just move <span class="r8">frantically</span><br>I been in the cut like a motherfucking <span class="r9">tendon</span><br>Grind so <span class="r10">relentless</span> I been losing all my <span class="r9">senses</span><br>Never need a gimmick, never needed no <span class="r9">amendment</span><br>Every bar has been <span class="r9">cemented</span>, every move is <span class="r9">independent</span><br>I return all my <span class="r9">investments</span>, every check has been a <span class="r9">blessing</span><br>I stand on business like <span class="r9">defendants</span><br>I make a <span class="r1">killing</span> when I <span class="r11">write</span>, so don't you ever <span class="r11">disrespect it</span><br>I'm the <span class="r1">illest</span> on the <span class="r11">mic</span>, so when I <span class="r11">pass it</span>, <span class="r11">disinfect it</span> (achoo)<br>I'm <span class="r6">sick</span> of the <span class="r6">bitching</span>, and <span class="r6">bitch</span>, I'm looking at <span class="r14">you</span><br>I'll <span class="r6">hit</span> what you're <span class="r6">pitching</span> and <span class="r6">switch it</span> back on <span class="r14">you</span><br>You claim you got a <span class="r6">vision</span> that can bring you to the <span class="r14">views</span><br>But you're stuck in the basement and pray to God that I <span class="r14">lose</span><br>You do <span class="r11">jack shit</span>, I do <span class="r11">Jack shit</span><br>Always on another level, you can't <span class="r11">match it</span><br>Talking 'bout the flows, then my breath is too <span class="r12">disgusting</span><br>If we talking 'bout the GOATs, then my name in the <span class="r12">discussion</span></p>
+</div>`
   },
   { 
     title: 'Mobile UIs', 
     category: 'UI/UX Design', 
     year: '2025',
     cover: 'img/iPhone_Mockup.png',
-    tools: 'Figma, Framer, Swift'
+    tools: 'Figma, Framer, Swift',
+    content: `<p>Two mobile UI projects: MyPinecone, a CRM app redesign, and Medobar, a beekeeping app concept for a Syracuse-based company.</p>
+<h3>MyPinecone</h3>
+<p>I analyzed the existing web version, studied competitors, and observed user testing. The sign-up flow was cluttered, so I redesigned it into fewer, clearer screens.</p>
+<div class="img-grid-5">
+<div class="project-img"><img src="img/all/Goal_Page.png" alt="Goal selection screen" loading="lazy"></div>
+<div class="project-img"><img src="img/all/First_Name_Page.png" alt="First Name sign-up screen" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Last_Name_Page.png" alt="Last Name sign-up screen" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Phone_Page.png" alt="Phone number screen" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Verification_Page.png" alt="Verification screen" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Password_Page.png" alt="Password screen" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Home_Page.png" alt="Redesigned home screen" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Interactions_Page.png" alt="Interactions page" loading="lazy"></div>
+<div class="project-img"><img src="img/all/AI_Page.png" alt="AI features page" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Account_Page.png" alt="Account page design" loading="lazy"></div>
+</div>
+<p>Interactive Figma prototype <a href="https://www.figma.com/proto/72II3Ud383V7CluTMG3R5H/Pinecone-Redesign?node-id=301-972&starting-point-node-id=301%3A972&t=8rXMJRjZIyKAgn02-1" target="_blank">here</a>.</p>
+<h3>Medobar</h3>
+<p>A mobile UI concept for a Syracuse beekeeping company. The design uses a hexagon-based layout inspired by honeycomb cells.</p>
+<div class="img-grid-4x2">
+<div class="project-img"><img src="img/all/splash.png" alt="Medobar splash screen" loading="lazy"></div>
+<div class="project-img"><img src="img/all/iPhone_13_&_14_-_1.png" alt="Medobar screen 1" loading="lazy"></div>
+<div class="project-img"><img src="img/all/iPhone_13_&_14_-_4.png" alt="Medobar screen 4" loading="lazy"></div>
+<div class="project-img"><img src="img/all/iPhone_13_&_14_-_5.png" alt="Medobar screen 5" loading="lazy"></div>
+<div class="project-img"><img src="img/all/iPhone_13_&_14_-_2.png" alt="Medobar screen 2" loading="lazy"></div>
+<div class="project-img"><img src="img/all/iPhone_13_&_14_-_3.png" alt="Medobar screen 3" loading="lazy"></div>
+<div class="project-img"><img src="img/all/iPhone_13_&_14_-_6.png" alt="Medobar screen 6" loading="lazy"></div>
+<div class="project-img"><img src="img/all/iPhone_13_&_14_-_7.png" alt="Medobar screen 7" loading="lazy"></div>
+</div>
+<div class="project-img img-landscape"><img src="img/all/iPhone_14_Mockup_(6).png" alt="Medobar high-fidelity mockup" loading="lazy"></div>`
   },
   { 
     title: 'Album Covers', 
     category: 'Graphic Design / Photography', 
     year: '2024',
     cover: 'img/whitenoise.jpg',
-    tools: 'Photoshop, Lightroom, Camera'
+    tools: 'Photoshop, Lightroom, Camera',
+    content: `<p>A collection of album covers combining graphic design and photography — "Visual Harmonies: A Fusion of Lens and Design."</p>
+<div class="img-grid-3">
+<div class="project-img"><img src="img/all/Loya-Passion-Update-05.jpg" alt="Album cover - Passion update" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Loya-Passion-4.jpg" alt="Album cover - Passion series 4" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Loya-Passion-6.jpg" alt="Album cover - Passion series 6" loading="lazy"></div>
+</div>
+<div class="img-grid-2">
+<div class="project-img"><img src="img/all/scribbleboy.jpg" alt="Scribbleboy album cover" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Loya-Passion-1.jpg" alt="Album cover - Passion series 1" loading="lazy"></div>
+</div>`
   },
   { 
     title: 'Photography Portfolio', 
     category: 'Photography', 
     year: '2024',
     cover: 'img/Portfolio_01.jpg',
-    tools: 'Lightroom, Capture One'
+    tools: 'Lightroom, Capture One',
+    content: `<p>Black-and-white photographs from my early exploration of photography — experimenting with light, shadow, texture, and contrast.</p>
+<div class="img-compose">
+<div class="project-img"><img src="img/all/20231115_VIS201_Loya_Portfolio_03.jpg" alt="B&W photograph 3" loading="lazy"></div>
+<div class="project-img"><img src="img/all/20231012_VIS201_Loya_Portfolio_09.jpg" alt="B&W photograph 9" loading="lazy"></div>
+<div class="project-img"><img src="img/all/20231002_VIS201_Loya_Portfolio_07.jpg" alt="B&W photograph 7" loading="lazy"></div>
+<div class="project-img"><img src="img/all/20231026_VIS201_Loya_Portfolio_02.jpg" alt="B&W photograph 2" loading="lazy"></div>
+<div class="project-img"><img src="img/all/20231012_VIS201_Loya_Portfolio_05.jpg" alt="B&W photograph 5" loading="lazy"></div>
+<div class="project-img"><img src="img/all/20231102_VIS201_Loya_Portfolio_04.jpg" alt="B&W photograph 4" loading="lazy"></div>
+<div class="project-img"><img src="img/all/20231109_VIS201_Loya_Portfolio_06.jpg" alt="B&W photograph 6" loading="lazy"></div>
+<div class="project-img"><img src="img/all/20231108_VIS201_Loya_Portfolio_10.jpg" alt="B&W photograph 10" loading="lazy"></div>
+<div class="project-img"><img src="img/all/20231014_VIS201_Loya_Portfolio_08.jpg" alt="B&W photograph 8" loading="lazy"></div>
+</div>`
   },
   { 
     title: 'Miscellaneous', 
     category: 'Mixed Media', 
     year: '2023',
     cover: 'img/2023_Freshmen.jpg',
-    tools: 'Various'
+    tools: 'Various',
+    content: `<p>A mix of passion projects, school assignments, professional work, and collaborations.</p>
+<div class="img-grid-tight">
+<div class="project-img"><img src="img/all/BlockParty.jpg" alt="Block Party poster" loading="lazy"></div>
+<div class="project-img"><img src="img/all/TalentShow.jpg" alt="Talent Show poster design" loading="lazy"></div>
+<div class="project-img"><img src="img/all/LUSTv2.jpg" alt="LUST experimental design" loading="lazy"></div>
+<div class="project-img"><img src="img/all/PA_Show_v4.jpg" alt="PA Show poster v4" loading="lazy"></div>
+<div class="project-img project-img-video"><video src="img/all/WebStoryFinal.mp4" autoplay loop muted playsinline style="width:100%;height:100%;object-fit:cover;"></video></div>
+<div class="project-img"><img src="img/all/Screenshot_2025-01-29_at_3.07.56_PM.jpg" alt="Design project screenshot" loading="lazy"></div>
+</div>
+<div class="project-img project-img-video" style="margin:0.5rem 0;"><video src="img/all/MLAnim2.mp4" autoplay loop muted playsinline style="width:100%;"></video></div>
+<div class="img-grid-tight">
+<div class="project-img"><img src="img/all/2024VolleyballFinalFour.jpg" alt="2024 Volleyball Final Four design" loading="lazy"></div>
+<div class="project-img"><img src="img/all/logic.jpg" alt="Logic-inspired design" loading="lazy"></div>
+<div class="project-img"><img src="img/all/2023_MM_Print.jpg" alt="2023 Mixtape Magazine print" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Screenshot_2024-12-05_at_8.09.22_PM.jpg" alt="Design project screenshot" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Screenshot_2024-12-05_at_8.15.10_PM.png" alt="Design project screenshot" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Cartoon1-01.jpg" alt="Cartoon illustration" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Screenshot_2024-12-05_at_7.20.02_PM.jpg" alt="Design project screenshot" loading="lazy"></div>
+<div class="project-img"><img src="img/all/2022_Swim.jpg" alt="2022 Swim design" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Screenshot_2024-12-05_at_8.22.22_PM.jpg" alt="Design project screenshot" loading="lazy"></div>
+<div class="project-img"><img src="img/all/2023_Billboard.jpg" alt="2023 Billboard design" loading="lazy"></div>
+<div class="project-img"><img src="img/all/PlayIn.jpg" alt="Play-In tournament design" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Screenshot_2024-12-05_at_7.15.19_PM.jpg" alt="Design project screenshot" loading="lazy"></div>
+</div>`
   },
   { 
-    title: 'mPod ♫', 
-    category: 'Interactive / Music', 
-    year: '2025',
-    cover: 'interactive/logo-parchment.svg',
-    tools: 'HTML, CSS, JavaScript',
-    link: 'interactive/mpod.html'
+    title: 'University Union', 
+    category: 'Coming Soon', 
+    year: '',
+    cover: 'img/UU.png',
+    tools: '',
+    content: `<p>Coming soon.</p>`
+  },
+  { 
+    title: 'LYRC', 
+    category: 'Coming Soon', 
+    year: '',
+    cover: 'img/LYRC.png',
+    tools: '',
+    content: `<p>Coming soon.</p>`
   },
 ];
 
@@ -804,12 +1213,13 @@ function renderMenu() {
         <img class="menu-item-thumb" src="${project.cover}" alt="" onerror="this.style.background='#333'">
         <div class="menu-item-info">
           <div class="menu-item-title">${project.title}</div>
-          <div class="menu-item-artist">${project.category} — ${project.year}</div>
+          <div class="menu-item-artist">${project.category}${project.year ? ' — ' + project.year : ''}</div>
         </div>
       `;
       el.addEventListener('click', () => {
         selectedIndex = i;
         updateMenuSelection();
+        selectProject(i);
       });
       list.appendChild(el);
     });
@@ -835,13 +1245,75 @@ function renderProjectDetail() {
   document.getElementById('npAlbum').textContent = project.tools;
   document.getElementById('npTrackNum').textContent = `${currentIndex + 1} of ${projects.length}`;
   
-  // Update progress bar
-  const pct = ((currentIndex + 1) / projects.length) * 100;
-  document.getElementById('npBarFill').style.width = pct + '%';
+  // Render project content
+  const npBody = document.getElementById('npBody');
+  npBody.innerHTML = project.content || '';
   
-  // Update position indicators
-  document.getElementById('npTimeCur').textContent = project.year;
-  document.getElementById('npTimeDur').textContent = `Project ${currentIndex + 1}`;
+  // Reset scroll position
+  document.getElementById('npScroll').scrollTop = 0;
+  
+  // Initialize song player if AI Song project
+  if (project.title === 'AI Song') {
+    setTimeout(initSongPlayer, 100);
+  }
+  
+  // Progress bar removed
+  
+  // Position indicators removed with progress bar
+}
+
+// ── SONG PLAYER ──
+function initSongPlayer() {
+  const audio = document.getElementById('spAudio');
+  const playBtn = document.getElementById('spPlay');
+  const prog = document.getElementById('spProg');
+  const bar = document.getElementById('spBar');
+  const curEl = document.getElementById('spCur');
+  const durEl = document.getElementById('spDur');
+  
+  if (!audio || !playBtn) return;
+  if (audio._spInit) return;
+  audio._spInit = true;
+  
+  const fmt = s => { 
+    const m = Math.floor(s / 60); 
+    return m + ':' + (Math.floor(s % 60) + '').padStart(2, '0'); 
+  };
+  
+  audio.addEventListener('loadedmetadata', () => { 
+    durEl.textContent = fmt(audio.duration); 
+  });
+  if (audio.duration) durEl.textContent = fmt(audio.duration);
+  
+  audio.addEventListener('timeupdate', () => {
+    if (!audio.duration) return;
+    prog.style.width = (audio.currentTime / audio.duration * 100) + '%';
+    curEl.textContent = fmt(audio.currentTime);
+  });
+  
+  audio.addEventListener('ended', () => { 
+    playBtn.innerHTML = '<svg viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21" fill="currentColor"/></svg>'; 
+  });
+  
+  playBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (audio.paused) {
+      audio.play();
+      playBtn.innerHTML = '<svg viewBox="0 0 24 24"><rect x="5" y="3" width="4" height="18" fill="currentColor"/><rect x="15" y="3" width="4" height="18" fill="currentColor"/></svg>';
+    } else {
+      audio.pause();
+      playBtn.innerHTML = '<svg viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21" fill="currentColor"/></svg>';
+    }
+  });
+  
+  bar.addEventListener('click', e => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!audio.duration) return;
+    const r = bar.getBoundingClientRect();
+    const pct = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
+    audio.currentTime = pct * audio.duration;
+  });
 }
 
 // ── SWITCH VIEW ──
@@ -849,6 +1321,15 @@ function showView(view) {
   currentView = view;
   menuView.classList.toggle('active', view === 'menu');
   npView.classList.toggle('active', view === 'detail');
+  
+  // Stop any playing audio when leaving detail view
+  if (view === 'menu') {
+    const audio = document.getElementById('spAudio');
+    if (audio) {
+      audio.pause();
+      audio._spInit = false;
+    }
+  }
 }
 
 // ── NAVIGATION ──
@@ -913,9 +1394,9 @@ document.getElementById('btnSelect').addEventListener('click', () => {
   }
 });
 
-document.getElementById('btnPlayPause').addEventListener('click', () => {
-  // Navigate to mPod
-  window.location.href = 'interactive/mpod.html';
+// Play/pause button — purely visual, does nothing
+document.getElementById('btnPlayPause').addEventListener('click', (e) => {
+  e.preventDefault();
 });
 
 document.getElementById('btnFwd').addEventListener('click', () => {

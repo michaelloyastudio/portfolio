@@ -343,6 +343,9 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     .p2-project-top { flex-direction: column; gap: 1.5rem; }
     .p2-project-hero { width: 100%; min-width: unset; }
     .p2-project-header { min-height: unset; }
+    /* Hide Interactive tab on mobile */
+    .p2-nav a[onclick="p2ShowInteractive()"] { display: none !important; }
+    .p2-interactive { display: none !important; }
   }
   @media (max-width: 480px) {
     .img-grid-5 { grid-template-columns: repeat(2, 1fr); }
@@ -1667,6 +1670,7 @@ function initSongPlayer() {
   });
   audio.addEventListener('ended', () => { playBtn.innerHTML = '<svg viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21" fill="currentColor"/></svg>'; });
   playBtn.addEventListener('click', () => {
+    if (window.matchMedia('(max-width: 768px)').matches) return; // visual only on mobile
     if (audio.paused) {
       audio.play();
       playBtn.innerHTML = '<svg viewBox="0 0 24 24"><rect x="5" y="3" width="4" height="18" fill="currentColor"/><rect x="15" y="3" width="4" height="18" fill="currentColor"/></svg>';
