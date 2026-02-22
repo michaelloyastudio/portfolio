@@ -724,6 +724,42 @@
   }
   .footer span { color: var(--accent); }
 
+  /* ── LIGHTBOX ── */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+    background: rgba(0,0,0,0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .lightbox.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .lightbox img, .lightbox video {
+    max-width: 95vw;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: 4px;
+  }
+  .lightbox-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    color: #fff;
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    opacity: 0.7;
+    z-index: 10;
+  }
+
   /* ── LOAD-IN ANIMATION ── */
   .ipod {
     opacity: 0;
@@ -953,6 +989,12 @@
 </div>
 
 <div class="footer"></div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <div class="lightbox-content" id="lightboxContent"></div>
+</div>
 
 <script>
 // ── PORTFOLIO PROJECTS ──
@@ -1260,6 +1302,17 @@ function renderProjectDetail() {
   // Progress bar removed
   
   // Position indicators removed with progress bar
+
+  // Make images & videos tappable for lightbox
+  setTimeout(() => {
+    npBody.querySelectorAll('img, video').forEach(el => {
+      el.style.cursor = 'zoom-in';
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openLightbox(el);
+      });
+    });
+  }, 50);
 }
 
 // ── SONG PLAYER ──
@@ -1493,6 +1546,34 @@ colors.forEach((c, i) => {
   });
   picker.appendChild(swatch);
 });
+
+// ── LIGHTBOX ──
+function openLightbox(el) {
+  const lb = document.getElementById('lightbox');
+  const content = document.getElementById('lightboxContent');
+  if (el.tagName === 'VIDEO') {
+    const v = document.createElement('video');
+    v.src = el.src;
+    v.controls = true;
+    v.autoplay = true;
+    v.playsInline = true;
+    v.style.maxWidth = '95vw';
+    v.style.maxHeight = '90vh';
+    content.innerHTML = '';
+    content.appendChild(v);
+  } else {
+    content.innerHTML = `<img src="${el.src}" alt="">`;
+  }
+  lb.classList.add('open');
+}
+
+function closeLightbox() {
+  const lb = document.getElementById('lightbox');
+  lb.classList.remove('open');
+  const v = lb.querySelector('video');
+  if (v) v.pause();
+  document.getElementById('lightboxContent').innerHTML = '';
+}
 
 // ── BOOT SEQUENCE ──
 renderMenu();
