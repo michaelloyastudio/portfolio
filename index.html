@@ -156,7 +156,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     gap: 0.4rem;
     margin: 1.5rem 0;
   }
-  .img-grid-tight .project-img { margin: 0; max-width: 100%; }
+  .img-grid-tight .project-img { margin: 0; max-width: 100%; overflow: hidden; }
   .img-grid-tight .project-img img {
     width: 100%;
     height: 100%;
@@ -1419,9 +1419,9 @@ const projects = [
     images: [],
     content: `<p>A mix of passion projects, school assignments, professional work, and collaborations. Not every concept made it to production, but each one shaped my process.</p>
 <div class="img-grid-tight">
-<div class="project-img"><img src="img/all/LUSTv2.jpg" alt="LUST experimental design" loading="lazy"></div>
-<div class="project-img project-img-video" data-video-src="img/all/WebStoryFinal.mp4"><video src="img/all/WebStoryFinal.mp4" autoplay loop muted playsinline style="width:100%;height:100%;object-fit:cover;"></video></div>
-<div class="project-img"><img src="img/all/Screenshot_2025-01-29_at_3.07.56_PM.jpg" alt="Design project screenshot" loading="lazy"></div>
+<div class="project-img" style="aspect-ratio:2/3;"><img src="img/all/LUSTv2.jpg" alt="LUST experimental design" loading="lazy"></div>
+<div class="project-img project-img-video" data-video-src="img/all/WebStoryFinal.mp4" style="aspect-ratio:2/3;"><video src="img/all/WebStoryFinal.mp4" autoplay loop muted playsinline style="width:100%;height:100%;object-fit:cover;"></video></div>
+<div class="project-img" style="aspect-ratio:2/3;"><img src="img/all/Screenshot_2025-01-29_at_3.07.56_PM.jpg" alt="Design project screenshot" loading="lazy"></div>
 <div class="project-img project-img-video" data-video-src="img/all/MLAnim2.mp4" style="grid-column:1/-1;"><video src="img/all/MLAnim2.mp4" autoplay loop muted playsinline style="width:100%;height:auto;object-fit:contain;"></video></div>
 <div class="project-img"><img src="img/all/2024VolleyballFinalFour.jpg" alt="2024 Volleyball Final Four design" loading="lazy"></div>
 <div class="project-img"><img src="img/all/logic.jpg" alt="Logic-inspired design" loading="lazy"></div>
