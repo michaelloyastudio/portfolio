@@ -215,7 +215,6 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
 .row-labels {
   display: flex;
   flex-direction: column;
-  gap: 3px;
   padding-right: 10px;
 }
 
@@ -237,8 +236,7 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
 .mute-all-btn.active { background: rgba(255,68,68,0.2); border-color: #ff4444; color: #ff4444; }
 
 .row-label {
-  height: 36px;
-  margin-top: -2px;
+  height: 39px;
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -296,30 +294,40 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
 .grid {
   display: flex;
   flex-direction: column;
-  gap: 3px;
   position: relative;
   overflow: visible;
 }
 
 .grid-row {
   display: flex;
-  gap: 3px;
   overflow: visible;
 }
 
 .step {
-  width: 36px;
-  height: 36px;
+  width: 39px;
+  height: 39px;
+  padding: 1.5px;
+  background: transparent;
+  position: relative;
+  transition: none;
+}
+
+.step-bg {
+  width: 100%;
+  height: 100%;
   border-radius: 4px;
   background: var(--cell);
   border: 1px solid transparent;
   transition: background 0.1s, transform 0.1s, border-color 0.1s;
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.step:hover { background: var(--cell-hover); }
+.step:hover .step-bg { background: var(--cell-hover); }
 
-.step.active {
+.step.active .step-bg {
   border-color: transparent;
   transform: scale(0.92);
 }
@@ -339,12 +347,12 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
 }
 
 /* Beat grouping — every 4 steps */
-.step.beat-start {
+.step.beat-start .step-bg {
   border-left: 2px solid #2a2a2a;
 }
 
 /* Playhead highlight */
-.step.current {
+.step.current .step-bg {
   background: var(--playhead) !important;
 }
 
@@ -355,12 +363,11 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
 /* Beat numbers */
 .beat-numbers {
   display: flex;
-  gap: 3px;
   margin-bottom: 4px;
 }
 
 .beat-num {
-  width: 36px;
+  width: 39px;
   text-align: center;
   font-size: 0.5rem;
   color: #333;
@@ -544,11 +551,11 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
 }
 
 /* ── CELL GLOW ON HOVER ── */
-.step.entered:hover {
+.step.entered:hover .step-bg {
   box-shadow: 0 0 12px rgba(255,255,255,0.06);
 }
 
-.step.active.entered:hover {
+.step.active.entered:hover .step-bg {
   box-shadow: 0 0 15px rgba(255,142,61,0.2);
 }
 
@@ -564,14 +571,14 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
 }
 
 /* ── COLUMN GLOW ── */
-.step.current.entered {
+.step.current.entered .step-bg {
   box-shadow: 0 0 8px rgba(255,142,61,0.15);
 }
 
 /* bg-pulse removed */
 
 /* ── TOGGLE POP ── */
-.step.pop {
+.step.pop .step-bg {
   animation: cellPop 0.25s ease;
 }
 
@@ -581,7 +588,7 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
   100% { transform: scale(0.92); }
 }
 
-.step:not(.active).pop {
+.step:not(.active).pop .step-bg {
   animation: cellPopOff 0.2s ease;
 }
 
@@ -593,8 +600,9 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
 
 /* ── RESPONSIVE ── */
 @media (max-width: 768px) {
-  .step { width: 28px; height: 28px; }
-  .beat-num { width: 28px; }
+  .step { width: 31px; height: 31px; }
+  .beat-num { width: 31px; }
+  .row-label { height: 31px; }
   .transport { flex-wrap: wrap; justify-content: center; }
   .row-name { min-width: 45px; font-size: 0.55rem; }
 }
@@ -1016,10 +1024,13 @@ function buildGrid() {
       step.dataset.row = row;
       step.dataset.step = s;
       
+      const bg = document.createElement('div');
+      bg.className = 'step-bg';
       const dot = document.createElement('div');
       dot.className = 'step-dot';
       dot.style.background = inst.color;
-      step.appendChild(dot);
+      bg.appendChild(dot);
+      step.appendChild(bg);
       
       step.addEventListener('mousedown', (e) => {
         e.preventDefault();
