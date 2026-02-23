@@ -966,7 +966,11 @@ barWrap.addEventListener('click', (e) => {
   const newTime = pct * audio.duration;
   console.log('SEEK to', { pct, newTime, duration: audio.duration });
   try {
-    audio.currentTime = newTime;
+    if (audio.fastSeek) {
+      audio.fastSeek(newTime);
+    } else {
+      audio.currentTime = newTime;
+    }
     console.log('SEEK result: currentTime is now', audio.currentTime, '(wanted', newTime, ')');
   } catch(err) {
     console.error('SEEK ERROR', err);
