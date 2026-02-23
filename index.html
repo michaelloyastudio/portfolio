@@ -1422,6 +1422,7 @@ const projects = [
 <div class="project-img"><img src="img/all/LUSTv2.jpg" alt="LUST experimental design" loading="lazy"></div>
 <div class="project-img project-img-video" data-video-src="img/all/WebStoryFinal.mp4"><video src="img/all/WebStoryFinal.mp4" autoplay loop muted playsinline style="width:100%;height:100%;object-fit:cover;"></video></div>
 <div class="project-img"><img src="img/all/Screenshot_2025-01-29_at_3.07.56_PM.jpg" alt="Design project screenshot" loading="lazy"></div>
+<div class="project-img project-img-video" data-video-src="img/all/TruckCircle.mp4" style="grid-column:1/-1;"><video src="img/all/TruckCircle.mp4" autoplay loop muted playsinline style="width:100%;height:auto;object-fit:contain;"></video></div>
 <div class="project-img project-img-video" data-video-src="img/all/MLAnim2.mp4" style="grid-column:1/-1;"><video src="img/all/MLAnim2.mp4" autoplay loop muted playsinline style="width:100%;height:auto;object-fit:contain;"></video></div>
 <div class="project-img"><img src="img/all/2024VolleyballFinalFour.jpg" alt="2024 Volleyball Final Four design" loading="lazy"></div>
 <div class="project-img"><img src="img/all/logic.jpg" alt="Logic-inspired design" loading="lazy"></div>
@@ -1436,7 +1437,6 @@ const projects = [
 <div class="project-img"><img src="img/all/PlayIn.jpg" alt="Play-In tournament design" loading="lazy"></div>
 <div class="project-img"><img src="img/all/Screenshot_2024-12-05_at_7.15.19_PM.jpg" alt="Design project screenshot" loading="lazy"></div>
 <div class="project-img"><img src="img/all/gettingloud2.jpg" alt="Getting Loud" loading="lazy"></div>
-<div class="project-img project-img-video" data-video-src="img/all/TruckCircle.mp4"><video src="img/all/TruckCircle.mp4" autoplay loop muted playsinline style="width:100%;height:100%;object-fit:cover;"></video></div>
 </div>`
   }
 ];
@@ -1641,7 +1641,7 @@ document.addEventListener('click', function(e) {
 
 function closeLightbox() {
   if (lbItems[lbIndex]) {
-    lbItems[lbIndex].scrollIntoView({ behavior: 'instant', block: 'center' });
+    try { lbItems[lbIndex].scrollIntoView({ behavior: 'instant', block: 'nearest' }); } catch(e) {}
   }
   lightbox.classList.remove('open');
   setTimeout(() => {
