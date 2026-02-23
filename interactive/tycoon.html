@@ -522,45 +522,7 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
 .speaker-left { left: 90px; }
 .speaker-right { right: 90px; }
 
-/* Coffee mug (always visible) */
-.coffee-mug {
-  right: 80px;
-  bottom: 10px;
-}
-
-.mug-body {
-  width: 20px;
-  height: 22px;
-  background: linear-gradient(180deg, #8B6914, #6B4F10);
-  border-radius: 0 0 4px 4px;
-  position: relative;
-}
-
-.mug-handle {
-  position: absolute;
-  right: -8px;
-  top: 4px;
-  width: 8px;
-  height: 12px;
-  border: 3px solid #8B6914;
-  border-left: none;
-  border-radius: 0 6px 6px 0;
-}
-
-.mug-steam {
-  position: absolute;
-  top: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 0.5rem;
-  opacity: 0.4;
-  animation: steam 2s infinite;
-}
-
-@keyframes steam {
-  0%, 100% { opacity: 0.2; transform: translateX(-50%) translateY(0); }
-  50% { opacity: 0.5; transform: translateX(-50%) translateY(-4px); }
-}
+/* Coffee mug removed */
 
 /* ── OS SCREEN ── */
 .os-screen {
@@ -2821,12 +2783,7 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
       <div class="headphone-cup left"></div>
       <div class="headphone-cup right"></div>
     </div>
-    <div class="desk-item coffee-mug" style="opacity:1;transform:none;">
-      <div class="mug-steam">~</div>
-      <div class="mug-body">
-        <div class="mug-handle"></div>
-      </div>
-    </div>
+    <!-- coffee mug removed -->
   </div>
   
   <!-- Computer -->
@@ -4939,14 +4896,15 @@ function bootSequence() {
   const screen = document.getElementById('osScreen');
   if (!screen) return;
   
-  // Show boot animation
+  // Show boot animation — MikeBook Pro with ML monogram
   screen.innerHTML = `
     <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;background:#000;">
-      <div style="font-size:3rem;margin-bottom:15px;">🥕</div>
-      <div style="font-size:0.8rem;color:#555;font-family:'Space Grotesk',monospace;" id="bootText">Booting RapperOS...</div>
-      <div style="width:200px;height:3px;background:#222;border-radius:2px;margin-top:15px;overflow:hidden;">
+      <img src="../logo.svg" style="width:48px;height:48px;opacity:0.7;margin-bottom:18px;" alt="ML">
+      <div style="font-size:0.7rem;color:#555;font-family:'Space Grotesk',monospace;letter-spacing:0.5px;margin-bottom:10px;">MikeBook Pro</div>
+      <div style="width:200px;height:3px;background:#222;border-radius:2px;overflow:hidden;">
         <div style="width:0%;height:100%;background:var(--accent);border-radius:2px;transition:width 0.3s;" id="bootBar"></div>
       </div>
+      <div style="font-size:0.6rem;color:#444;font-family:'Space Grotesk',monospace;margin-top:10px;" id="bootText">Booting RapperOS...</div>
     </div>
   `;
   
@@ -5051,9 +5009,9 @@ function showLoginScreen() {
     // Brief "logging in" animation
     screen.innerHTML = `
       <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;background:#000;">
-        <div style="font-size:3rem;margin-bottom:15px;">${selectedAvatar}</div>
-        <div style="font-size:0.9rem;color:var(--parchment);">Welcome, ${name}.</div>
-        <div style="font-size:0.65rem;color:#555;margin-top:6px;">Loading desktop...</div>
+        <div style="font-size:3rem;margin-bottom:12px;">${selectedAvatar}</div>
+        <div style="font-size:0.9rem;color:var(--parchment);font-weight:500;">Welcome, ${name}.</div>
+        <div style="font-size:0.6rem;color:#444;margin-top:8px;">Loading desktop...</div>
       </div>
     `;
     
