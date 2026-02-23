@@ -1467,9 +1467,8 @@ document.getElementById('btnPlayPause').addEventListener('click', () => {
 });
 
 function openLightboxFirstImage() {
-  const npBody = document.getElementById('npBody');
-  const firstMedia = npBody.querySelector('img, video');
-  if (firstMedia) openLightbox(firstMedia);
+  const cover = document.getElementById('npCover');
+  if (cover) openLightbox(cover, true);
 }
 
 document.getElementById('btnFwd').addEventListener('click', () => {
