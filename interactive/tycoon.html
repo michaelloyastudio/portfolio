@@ -1164,10 +1164,15 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
 .pianoroll-key.white { background: #ddd; color: #333; }
 .pianoroll-key.black { background: #222; color: #888; }
 
-/* The track (scrolling area) */
+/* Piano roll track area */
+.pianoroll-area {
+  flex: 1;
+  display: flex;
+  position: relative;
+}
+
 .rhythm-track {
   flex: 1;
-  margin-left: 35px;
   background: 
     repeating-linear-gradient(0deg, #1e1e1e 0px, #1e1e1e 19px, #2a2a2a 19px, #2a2a2a 20px),
     repeating-linear-gradient(90deg, transparent 0px, transparent 59px, #2a2a2a 59px, #2a2a2a 60px);
@@ -1177,47 +1182,32 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
   border-radius: 0;
 }
 
-/* Playhead / hit zone */
+/* Playhead line */
 .hit-zone {
   position: absolute;
-  left: 60px;
+  left: 80px;
   top: 0;
   bottom: 0;
-  width: 4px;
+  width: 3px;
   background: var(--accent);
-  box-shadow: 0 0 10px var(--accent), 0 0 20px rgba(255,142,61,0.3);
+  box-shadow: 0 0 8px var(--accent), 0 0 16px rgba(255,142,61,0.2);
   z-index: 12;
 }
 
-.hit-zone-center { display: none; }
-
-/* Beat notes (piano roll rectangles) */
+/* Beat notes */
 .beat-marker {
   position: absolute;
   width: 50px;
   height: 16px;
   border-radius: 2px;
   background: linear-gradient(90deg, #5a9fd4, #4a8bc2);
-  top: 50%;
-  transform: translateY(-50%);
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  padding-left: 4px;
+  display: block;
   box-shadow: 0 1px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.15);
   z-index: 10;
   border: 1px solid rgba(255,255,255,0.1);
-  font-size: 0;
 }
 
 .beat-marker::before { content: none; }
-
-/* Randomize vertical position for variety */
-.beat-marker:nth-child(odd) { top: 30%; }
-.beat-marker:nth-child(even) { top: 70%; }
-.beat-marker:nth-child(3n) { top: 50%; background: linear-gradient(90deg, #d45a5a, #c24a4a); }
-.beat-marker:nth-child(4n) { top: 20%; background: linear-gradient(90deg, #5ad4a0, #4ac28a); }
-.beat-marker:nth-child(5n) { top: 80%; background: linear-gradient(90deg, #d4b85a, #c2a64a); }
 
 /* Hit feedback */
 .hit-feedback {
@@ -3340,15 +3330,17 @@ function renderMLStudio() {
         </div>
         
         <div class="rhythm-track-container">
-          <div class="pianoroll-keys">
-            <div class="pianoroll-key white">C5</div>
-            <div class="pianoroll-key black">B4</div>
-            <div class="pianoroll-key white">A4</div>
-            <div class="pianoroll-key black">G4</div>
-            <div class="pianoroll-key white">F4</div>
-          </div>
-          <div class="rhythm-track" id="rhythmTrack">
-            <div class="hit-zone"></div>
+          <div class="pianoroll-area">
+            <div class="pianoroll-keys">
+              <div class="pianoroll-key white">C5</div>
+              <div class="pianoroll-key black">B4</div>
+              <div class="pianoroll-key white">A4</div>
+              <div class="pianoroll-key black">G4</div>
+              <div class="pianoroll-key white">F4</div>
+            </div>
+            <div class="rhythm-track" id="rhythmTrack">
+              <div class="hit-zone"></div>
+            </div>
           </div>
         </div>
         <div class="rhythm-instruction">
@@ -3964,8 +3956,24 @@ function spawnBeat() {
   
   const beat = document.createElement('div');
   beat.className = 'beat-marker';
-  beat.style.right = '-50px';
-  beat.dataset.id = Date.now();
+  beat.dataset.id = Date.now() + '_' + Math.random();
+  
+  // Random vertical lane (5 lanes matching piano keys)
+  const lanes = [10, 28, 46, 64, 82]; // % from top
+  const colors = [
+    'linear-gradient(90deg, #5a9fd4, #4a8bc2)',
+    'linear-gradient(90deg, #d45a5a, #c24a4a)',
+    'linear-gradient(90deg, #5ad4a0, #4ac28a)',
+    'linear-gradient(90deg, #d4b85a, #c2a64a)',
+    'linear-gradient(90deg, #9d5ad4, #8a4ac2)',
+  ];
+  const laneIdx = Math.floor(Math.random() * lanes.length);
+  beat.style.top = lanes[laneIdx] + '%';
+  beat.style.background = colors[laneIdx];
+  
+  // Start from right edge
+  const trackWidth = track.offsetWidth;
+  beat.style.left = trackWidth + 'px';
   
   track.appendChild(beat);
   rhythmGame.beats.push({
@@ -3974,8 +3982,12 @@ function spawnBeat() {
     hit: false
   });
   
-  // Animate the beat across the track
-  let startTime = performance.now();
+  // Animate left across track
+  const startTime = performance.now();
+  const startX = trackWidth;
+  const endX = -60;
+  const playheadX = 80; // matches .hit-zone left
+  
   const animate = () => {
     if (!rhythmGame.active) {
       beat.remove();
@@ -3984,19 +3996,19 @@ function spawnBeat() {
     
     const elapsed = performance.now() - startTime;
     const progress = elapsed / rhythmGame.beatSpeed;
-    const trackWidth = track.offsetWidth;
-    const position = trackWidth - (progress * (trackWidth + 90));
+    const x = startX + (endX - startX) * progress;
     
-    if (position < -50) {
-      // Missed
-      if (!rhythmGame.beats.find(b => b.id === beat.dataset.id)?.hit) {
+    if (x < endX) {
+      // Missed — went past left edge
+      const b = rhythmGame.beats.find(b => b.id === beat.dataset.id);
+      if (b && !b.hit) {
         recordHit('miss');
       }
       beat.remove();
       return;
     }
     
-    beat.style.right = `${trackWidth - position - 40}px`;
+    beat.style.left = x + 'px';
     requestAnimationFrame(animate);
   };
   
@@ -4008,25 +4020,19 @@ function handleRhythmInput(e) {
   if (e.type === 'keydown' && e.code !== 'Space') return;
   if (e.type === 'keydown') e.preventDefault();
   
-  const track = document.getElementById('rhythmTrack');
-  if (!track) return;
+  const playheadX = 80; // matches .hit-zone left in CSS
   
-  const hitZoneLeft = 60;
-  const hitZoneRight = 120;
-  const hitZoneCenter = 90;
-  
-  // Find the closest unhit beat in range
+  // Find closest unhit beat near the playhead
   let closestBeat = null;
   let closestDist = Infinity;
   
   rhythmGame.beats.forEach(b => {
     if (b.hit) return;
-    const rect = b.element.getBoundingClientRect();
-    const trackRect = track.getBoundingClientRect();
-    const beatCenter = rect.left - trackRect.left + rect.width / 2;
+    const beatLeft = parseFloat(b.element.style.left) || 0;
+    const beatCenter = beatLeft + 25; // half of 50px width
+    const dist = Math.abs(beatCenter - playheadX);
     
-    const dist = Math.abs(beatCenter - hitZoneCenter);
-    if (beatCenter >= hitZoneLeft - 20 && beatCenter <= hitZoneRight + 20 && dist < closestDist) {
+    if (dist < 60 && dist < closestDist) {
       closestDist = dist;
       closestBeat = b;
     }
@@ -4035,7 +4041,6 @@ function handleRhythmInput(e) {
   if (closestBeat) {
     closestBeat.hit = true;
     
-    // Determine accuracy
     if (closestDist < 15) {
       recordHit('perfect');
     } else if (closestDist < 35) {
