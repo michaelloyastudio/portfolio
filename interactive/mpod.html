@@ -766,7 +766,7 @@
 
 <div class="footer">What I'm listening to · Last updated Feb 22</div>
 
-<audio id="audio" preload="metadata"></audio>
+<audio id="audio" preload="auto"></audio>
 
 <script>
 const isMobile = window.matchMedia('(max-width: 480px)').matches;
@@ -955,7 +955,8 @@ barWrap.addEventListener('mouseleave', () => {
 barWrap.addEventListener('click', (e) => {
   e.stopPropagation();
   if (!audio.duration || isNaN(audio.duration)) return;
-  const rect = barWrap.getBoundingClientRect();
+  const bar = barWrap.querySelector('.np-bar');
+  const rect = bar.getBoundingClientRect();
   const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
   const newTime = pct * audio.duration;
   audio.currentTime = newTime;
