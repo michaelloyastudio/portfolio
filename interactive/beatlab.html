@@ -361,6 +361,215 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
   color: #333;
 }
 
+/* ── BOOT SCREEN ── */
+.boot-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  transition: opacity 0.6s ease;
+}
+
+.boot-screen.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.boot-waveform {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 40px;
+}
+
+.boot-bar {
+  width: 4px;
+  background: var(--accent);
+  border-radius: 2px;
+  animation: waveBar 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes waveBar {
+  0% { height: 8px; opacity: 0.3; }
+  100% { height: 36px; opacity: 1; }
+}
+
+.boot-text {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.boot-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: 2.2rem;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: bootTitleIn 0.6s ease forwards 0.8s;
+}
+
+@keyframes bootTitleIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── LOAD-IN ANIMATIONS ── */
+.main { opacity: 0; }
+.main.loaded { animation: mainFadeIn 0.8s ease forwards; }
+
+@keyframes mainFadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.title-row {
+  opacity: 0;
+  transform: translateY(-15px);
+}
+
+.title-row.loaded {
+  animation: slideDown 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes slideDown {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.transport {
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+.transport.loaded {
+  animation: scaleIn 0.4s ease forwards;
+}
+
+@keyframes scaleIn {
+  to { opacity: 1; transform: scale(1); }
+}
+
+.grid-wrapper {
+  opacity: 0;
+}
+
+.grid-wrapper.loaded {
+  opacity: 1;
+}
+
+/* Staggered cell entrance */
+.step {
+  opacity: 0;
+  transform: scale(0) rotate(10deg);
+}
+
+.step.entered {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+  transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.row-label {
+  opacity: 0;
+  transform: translateX(-20px);
+}
+
+.row-label.entered {
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.actions {
+  opacity: 0;
+}
+
+.actions.loaded {
+  animation: mainFadeIn 0.5s ease forwards;
+}
+
+/* ── HIT RIPPLE ── */
+.hit-ripple {
+  position: absolute;
+  inset: -4px;
+  border-radius: 6px;
+  border: 2px solid;
+  opacity: 0;
+  pointer-events: none;
+  animation: rippleOut 0.4s ease-out forwards;
+}
+
+@keyframes rippleOut {
+  0% { inset: 0; opacity: 0.8; }
+  100% { inset: -12px; opacity: 0; }
+}
+
+/* ── CELL GLOW ON HOVER ── */
+.step.entered:hover {
+  box-shadow: 0 0 12px rgba(255,255,255,0.06);
+}
+
+.step.active.entered:hover {
+  box-shadow: 0 0 15px rgba(255,142,61,0.2);
+}
+
+/* ── TRIGGERED BOUNCE ── */
+.step.triggered .step-dot {
+  animation: dotBounce 0.2s ease;
+}
+
+@keyframes dotBounce {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.35); }
+  100% { transform: scale(1); }
+}
+
+/* ── COLUMN GLOW ── */
+.step.current.entered {
+  box-shadow: 0 0 8px rgba(255,142,61,0.15);
+}
+
+/* ── BACKGROUND PULSE ── */
+.bg-pulse {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(255,142,61,0.04) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.05s;
+}
+
+.bg-pulse.flash {
+  opacity: 1;
+  transition: opacity 0.05s;
+}
+
+/* ── TOGGLE POP ── */
+.step.pop {
+  animation: cellPop 0.25s ease;
+}
+
+@keyframes cellPop {
+  0% { transform: scale(0.92); }
+  40% { transform: scale(1.1); }
+  100% { transform: scale(0.92); }
+}
+
+.step:not(.active).pop {
+  animation: cellPopOff 0.2s ease;
+}
+
+@keyframes cellPopOff {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.85); }
+  100% { transform: scale(1); }
+}
+
 /* ── RESPONSIVE ── */
 @media (max-width: 768px) {
   .step { width: 28px; height: 28px; }
@@ -371,6 +580,16 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
 </style>
 </head>
 <body>
+
+<!-- Boot Screen -->
+<div class="boot-screen" id="bootScreen">
+  <div class="boot-waveform" id="bootWaveform"></div>
+  <div class="boot-title">Beat Lab</div>
+  <div class="boot-text">Loading instruments...</div>
+</div>
+
+<!-- Background pulse -->
+<div class="bg-pulse" id="bgPulse"></div>
 
 <header class="header">
   <a href="../index.html" class="header-logo-link clickable">
@@ -959,9 +1178,113 @@ document.addEventListener('keydown', (e) => {
 });
 
 // ═══════════════════════════════════════════════════
-// INIT
+// BOOT + LOAD-IN SEQUENCE
 // ═══════════════════════════════════════════════════
+
+// Generate waveform bars
+const waveformEl = document.getElementById('bootWaveform');
+for (let i = 0; i < 16; i++) {
+  const bar = document.createElement('div');
+  bar.className = 'boot-bar';
+  bar.style.animationDelay = `${i * 0.06}s`;
+  bar.style.height = '8px';
+  waveformEl.appendChild(bar);
+}
+
 buildGrid();
+
+// Boot sequence
+setTimeout(() => {
+  const boot = document.getElementById('bootScreen');
+  boot.classList.add('fade-out');
+  
+  setTimeout(() => {
+    boot.style.display = 'none';
+    
+    // Stagger in elements
+    const main = document.querySelector('.main');
+    main.classList.add('loaded');
+    
+    setTimeout(() => document.querySelector('.title-row').classList.add('loaded'), 100);
+    setTimeout(() => document.querySelector('.transport').classList.add('loaded'), 250);
+    setTimeout(() => {
+      document.querySelector('.grid-wrapper').classList.add('loaded');
+      
+      // Stagger cells
+      const steps = document.querySelectorAll('.step');
+      steps.forEach((step, i) => {
+        const row = parseInt(step.dataset.row);
+        const col = parseInt(step.dataset.step);
+        const delay = row * 30 + col * 20;
+        setTimeout(() => step.classList.add('entered'), delay);
+      });
+      
+      // Stagger labels
+      document.querySelectorAll('.row-label').forEach((label, i) => {
+        setTimeout(() => label.classList.add('entered'), i * 40);
+      });
+    }, 400);
+    
+    setTimeout(() => document.querySelector('.actions').classList.add('loaded'), 800);
+    
+  }, 600);
+}, 2000);
+
+// ═══════════════════════════════════════════════════
+// HIT RIPPLE + BG PULSE + TRIGGERED BOUNCE
+// ═══════════════════════════════════════════════════
+const bgPulse = document.getElementById('bgPulse');
+
+// Override tick to add visual effects
+const _origTick = tick;
+
+// Patch into the playSound calls in tick — add ripple to active+current cells
+const origTickRef = tick;
+function enhancedTick() {
+  // Call original tick logic inline (we can't wrap easily since tick uses setTimeout)
+  // Instead, observe after tick: add effects to .step.active.current
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.step.active.current').forEach(step => {
+      // Bounce
+      step.classList.add('triggered');
+      setTimeout(() => step.classList.remove('triggered'), 200);
+      
+      // Ripple
+      const ripple = document.createElement('div');
+      ripple.className = 'hit-ripple';
+      const row = parseInt(step.dataset.row);
+      ripple.style.borderColor = INSTRUMENTS[row]?.color || 'var(--accent)';
+      step.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 400);
+    });
+    
+    // Bg pulse on kick (row 0)
+    const kickStep = document.querySelector('.step[data-row="0"].active.current');
+    if (kickStep) {
+      bgPulse.classList.add('flash');
+      setTimeout(() => bgPulse.classList.remove('flash'), 80);
+    }
+  });
+}
+
+// Monkey-patch: wrap tick
+const _realTick = tick;
+tick = function() {
+  _realTick();
+  enhancedTick();
+};
+
+// ═══════════════════════════════════════════════════
+// TOGGLE POP ANIMATION
+// ═══════════════════════════════════════════════════
+document.querySelector('.grid').addEventListener('mousedown', (e) => {
+  const step = e.target.closest('.step');
+  if (!step) return;
+  step.classList.remove('pop');
+  void step.offsetWidth; // force reflow
+  step.classList.add('pop');
+  setTimeout(() => step.classList.remove('pop'), 250);
+}, true);
 </script>
 </body>
 </html>
