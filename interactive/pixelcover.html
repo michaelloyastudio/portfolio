@@ -463,34 +463,19 @@ const STAMPS = [
   },
   {
     id: 'explicit', label: '🅴', name: 'Parental Advisory',
-    size: 19,
+    width: 15, height: 9,
     multicolor: true,
     colors: { 1: '#000000', 2: '#FFFFFF' },
-    // B=black bg, W=white text on black, K=black text on white, WB=white bg
-    // Top: "PARENTAL" white on black (rows 0-5)
-    // Mid: "ADVISORY" black on white (rows 6-13)
-    // Bot: "EXPLICIT CONTENT" white on black (rows 14-18)
     pattern: [
-      //0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18
-      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-      [1, 2, 2, 1, 2, 1, 2, 2, 1, 2, 2, 1, 2, 1, 2, 2, 2, 1, 1], // P A R E N T A L
-      [1, 2, 1, 2, 2, 1, 2, 1, 2, 2, 1, 2, 2, 1, 1, 2, 1, 2, 1],
-      [1, 2, 2, 1, 2, 1, 2, 2, 1, 2, 2, 1, 2, 1, 1, 2, 2, 1, 1],
-      [1, 2, 1, 1, 2, 1, 2, 1, 2, 2, 1, 2, 2, 1, 1, 2, 1, 2, 1],
-      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-      [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-      [2, 1, 1, 2, 1, 2, 1, 1, 2, 1, 2, 1, 1, 2, 1, 1, 2, 1, 2], // A D V I S O R Y
-      [2, 1, 1, 1, 1, 2, 1, 1, 2, 1, 2, 1, 1, 2, 1, 1, 2, 1, 2],
-      [2, 1, 1, 2, 1, 2, 2, 1, 2, 1, 2, 1, 1, 2, 1, 1, 2, 2, 2],
-      [2, 1, 1, 2, 1, 2, 2, 1, 2, 1, 2, 1, 1, 2, 1, 1, 2, 1, 2],
-      [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-      [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-      [1, 2, 2, 1, 2, 1, 2, 2, 1, 2, 1, 2, 2, 1, 2, 2, 2, 2, 1], // EXPLICIT
-      [1, 2, 1, 1, 2, 1, 2, 1, 2, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1],
-      [1, 2, 2, 1, 2, 1, 2, 2, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1],
-      [1, 2, 1, 1, 2, 2, 2, 1, 2, 2, 1, 2, 2, 1, 1, 2, 1, 1, 1],
-      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+      [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
+      [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
+      [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
     ]
   },
   {
@@ -719,15 +704,18 @@ function floodFill(startX, startY, fillColor) {
 }
 
 function placeStamp(gx, gy, stamp) {
-  const half = Math.floor(stamp.size / 2);
-  for (let dy = 0; dy < stamp.size; dy++) {
-    for (let dx = 0; dx < stamp.size; dx++) {
-      const val = stamp.pattern[dy][dx];
-      if (val === 0) continue;
+  const w = stamp.width || stamp.size;
+  const h = stamp.height || stamp.size;
+  const halfX = Math.floor(w / 2);
+  const halfY = Math.floor(h / 2);
+  for (let dy = 0; dy < h; dy++) {
+    for (let dx = 0; dx < w; dx++) {
+      const val = stamp.pattern[dy]?.[dx];
+      if (!val) continue;
       if (stamp.multicolor && stamp.colors) {
-        setPixel(gx - half + dx, gy - half + dy, stamp.colors[val] || currentColor);
-      } else if (val) {
-        setPixel(gx - half + dx, gy - half + dy, currentColor);
+        setPixel(gx - halfX + dx, gy - halfY + dy, stamp.colors[val] || currentColor);
+      } else {
+        setPixel(gx - halfX + dx, gy - halfY + dy, currentColor);
       }
     }
   }
