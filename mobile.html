@@ -1455,13 +1455,22 @@ document.getElementById('btnMenu').addEventListener('click', () => {
 document.getElementById('btnSelect').addEventListener('click', () => {
   if (currentView === 'menu') {
     selectProject(selectedIndex);
+  } else if (currentView === 'detail') {
+    openLightboxFirstImage();
   }
 });
 
-// Play/pause button — purely visual, does nothing
-document.getElementById('btnPlayPause').addEventListener('click', (e) => {
-  e.preventDefault();
+document.getElementById('btnPlayPause').addEventListener('click', () => {
+  if (currentView === 'detail') {
+    openLightboxFirstImage();
+  }
 });
+
+function openLightboxFirstImage() {
+  const npBody = document.getElementById('npBody');
+  const firstMedia = npBody.querySelector('img, video');
+  if (firstMedia) openLightbox(firstMedia);
+}
 
 document.getElementById('btnFwd').addEventListener('click', () => {
   if (currentView === 'detail') {
