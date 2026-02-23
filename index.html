@@ -479,6 +479,9 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     display: inline-block;
     transition: color 0.3s;
   }
+  .resume-link span { display: inline-block; transition: color 0.3s; }
+  .resume-link:hover span { color: #ff8e3d; }
+  .resume-link .nav-letter { display: inline-block; transition: color 0.3s; }
   .p2-nav a::after { display: none; }
   .p2-nav a:hover span {
     color: #ff8e3d;
@@ -1086,11 +1089,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
         </div>
 
         <div style="text-align:center;margin:1rem 0 0.5rem;">
-          <a href="Resume_Loya.pdf" download class="app-link" style="display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;font-family:'Space Grotesk',sans-serif;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:#1a1a1a;text-decoration:none;padding:0.5rem 1.2rem;border:1.5px solid #b8b0a5;border-radius:6px;transition:all 0.3s;"
-            onmouseover="this.style.borderColor='#ff8e3d';this.style.color='#ff8e3d'"
-            onmouseout="this.style.borderColor='#b8b0a5';this.style.color='#1a1a1a'">
-            ↓ Download Resume
-          </a>
+          <a href="Resume_Loya.pdf" download class="resume-link p2-nav-wave" style="font-family:'Space Grotesk',sans-serif;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.12em;color:#8a8580;text-decoration:none;display:inline-block;padding:0.25rem 0;cursor:pointer;"><span>↓ Download Resume</span></a>
         </div>
       </div>
     </div>
@@ -1897,7 +1896,7 @@ let p2Initialized = false;
 })();
 
 // Split nav links into individual letters for waveform animation
-document.querySelectorAll('.p2-nav a').forEach(link => {
+document.querySelectorAll('.p2-nav a, .resume-link').forEach(link => {
   const span = link.querySelector('span');
   if (!span) return;
   const text = span.textContent;
