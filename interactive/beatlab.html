@@ -1293,6 +1293,13 @@ document.getElementById('playBtn').addEventListener('click', () => {
 
 document.getElementById('stopBtn').addEventListener('click', stop);
 
+// Prevent arrow keys from adjusting sliders (reserved for reverb)
+document.querySelectorAll('input[type="range"]').forEach(slider => {
+  slider.addEventListener('keydown', (e) => {
+    if (e.key.startsWith('Arrow')) { e.preventDefault(); }
+  });
+});
+
 document.getElementById('bpmSlider').addEventListener('input', (e) => {
   bpm = parseInt(e.target.value);
   document.getElementById('bpmValue').textContent = bpm;
