@@ -965,10 +965,22 @@ barWrap.addEventListener('click', (e) => {
   const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
   const newTime = pct * audio.duration;
   console.log('SEEK to', { pct, newTime, duration: audio.duration });
-  audio.currentTime = newTime;
+  try {
+    audio.currentTime = newTime;
+    console.log('SEEK result: currentTime is now', audio.currentTime, '(wanted', newTime, ')');
+  } catch(err) {
+    console.error('SEEK ERROR', err);
+  }
   // Update fill immediately
   barFill.style.width = (pct * 100) + '%';
   document.getElementById('npTimeCur').textContent = fmt(newTime);
+});
+
+// Debug: detect any unexpected src changes
+const _origSrc = Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, 'src');
+let _lastSrc = '';
+audio.addEventListener('loadstart', () => {
+  console.log('AUDIO loadstart fired, src:', audio.src, 'from:', new Error().stack);
 });
 
 // ── WHEEL CONTROLS ──
