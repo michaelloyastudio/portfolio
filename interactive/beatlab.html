@@ -314,7 +314,6 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
 .grid-row {
   display: flex;
   overflow: visible;
-  position: relative;
 }
 
 .step {
@@ -551,9 +550,15 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
 }
 
 /* ── HIT RIPPLE ── */
+.ripple-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+}
+
 .hit-ripple {
   position: absolute;
-  inset: -4px;
   border-radius: 6px;
   border: 2px solid;
   opacity: 0;
@@ -562,8 +567,8 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
 }
 
 @keyframes rippleOut {
-  0% { inset: 0; opacity: 0.8; }
-  100% { inset: -12px; opacity: 0; }
+  0% { opacity: 0.8; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.5); }
 }
 
 /* ── CELL GLOW ON HOVER ── */
@@ -576,9 +581,6 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
 }
 
 /* ── TRIGGERED BOUNCE ── */
-.step.triggered {
-  z-index: 10;
-}
 .step.triggered .step-dot {
   animation: dotBounce 0.2s ease;
 }
@@ -674,7 +676,7 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
     <div class="mute-all-row"><button class="mute-all-btn clickable" id="muteAllBtn" title="Mute All (M)">Mute All</button></div>
     <div class="beat-numbers" id="beatNumbers"></div>
     <div class="row-labels" id="rowLabels"></div>
-    <div class="grid" id="grid"></div>
+    <div class="grid" id="grid"><div class="ripple-overlay" id="rippleOverlay"></div></div>
   </div>
 
   <!-- Actions -->
@@ -1338,12 +1340,20 @@ function enhancedTick() {
       step.classList.add('triggered');
       setTimeout(() => step.classList.remove('triggered'), 200);
       
-      // Ripple
+      // Ripple — positioned in overlay so it renders above all cells
+      const overlay = document.getElementById('rippleOverlay');
+      const grid = document.getElementById('grid');
       const ripple = document.createElement('div');
       ripple.className = 'hit-ripple';
       const row = parseInt(step.dataset.row);
       ripple.style.borderColor = INSTRUMENTS[row]?.color || 'var(--accent)';
-      step.appendChild(ripple);
+      const stepRect = step.getBoundingClientRect();
+      const gridRect = grid.getBoundingClientRect();
+      ripple.style.left = (stepRect.left - gridRect.left) + 'px';
+      ripple.style.top = (stepRect.top - gridRect.top) + 'px';
+      ripple.style.width = stepRect.width + 'px';
+      ripple.style.height = stepRect.height + 'px';
+      overlay.appendChild(ripple);
       setTimeout(() => ripple.remove(), 400);
     });
     
