@@ -418,7 +418,10 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
   font-size: 0.65rem;
   color: var(--text-muted);
   letter-spacing: 0.05em;
+  opacity: 0;
+  transition: opacity 0.5s ease;
 }
+.footer.loaded { opacity: 1; }
 
 /* ── BOOT SCREEN ── */
 .boot-screen {
@@ -1320,6 +1323,7 @@ setTimeout(() => {
     }, 400);
     
     setTimeout(() => document.querySelector('.actions').classList.add('loaded'), 800);
+    setTimeout(() => document.querySelector('.footer').classList.add('loaded'), 1200);
     
   }, 600);
 }, 2000);
