@@ -470,7 +470,7 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
 }
 
 /* App icon colors */
-.app-beatmaker { background: linear-gradient(135deg, #1a1a2e 0%, #2d1b4e 100%); border: 2px solid var(--accent); }
+.app-mlstudio { background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%); border: 2px solid var(--accent); }
 .app-spootify { background: linear-gradient(135deg, #1DB954, #169c46); }
 .app-z { background: linear-gradient(135deg, #1DA1F2, #0d8bd9); }
 .app-mikeazon { background: linear-gradient(135deg, #FF9900, #FF6600); }
@@ -609,82 +609,195 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
 /* ══════════════════════════════════════════════════════════════
    BEATMAKER APP - RHYTHM GAME
    ══════════════════════════════════════════════════════════════ */
-.beatmaker-app {
-  background: linear-gradient(180deg, #0a0a15 0%, #1a1025 100%);
+/* FL Studio inspired dark UI */
+.mlstudio-app {
+  background: #2a2a2a;
   height: 100%;
   display: flex;
   flex-direction: column;
 }
 
-.beatmaker-header {
-  padding: 15px 20px;
-  border-bottom: 1px solid rgba(255,142,61,0.2);
-}
-
-.beatmaker-title-gen {
-  font-family: 'Instrument Serif', serif;
-  font-size: 1.4rem;
-  color: var(--accent);
-  text-align: center;
-  min-height: 2rem;
-}
-
-.beatmaker-setup {
-  padding: 15px 20px;
+.mlstudio-toolbar {
+  height: 32px;
+  background: #3c3c3c;
   display: flex;
-  gap: 15px;
-  align-items: flex-end;
+  align-items: center;
+  padding: 0 10px;
+  gap: 8px;
+  border-bottom: 1px solid #555;
 }
 
-.beatmaker-field {
+.mlstudio-transport {
+  display: flex;
+  gap: 4px;
+}
+
+.mlstudio-transport-btn {
+  width: 24px;
+  height: 24px;
+  background: #2a2a2a;
+  border: 1px solid #555;
+  border-radius: 3px;
+  color: #aaa;
+  font-size: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.1s;
+}
+
+.mlstudio-transport-btn:hover { background: #444; color: var(--accent); }
+.mlstudio-transport-btn.active { background: var(--accent); color: #000; }
+
+.mlstudio-bpm {
+  background: #1a1a1a;
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 3px;
+  border: 1px solid #555;
+  font-family: 'Space Grotesk', monospace;
+}
+
+.mlstudio-title-gen {
+  flex: 1;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.mlstudio-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Channel Rack style setup */
+.mlstudio-setup {
+  padding: 12px 15px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  background: #333;
+  border-bottom: 1px solid #555;
+}
+
+.mlstudio-field {
   flex: 1;
 }
 
-.beatmaker-label {
-  font-size: 0.65rem;
-  color: var(--warm-gray);
+.mlstudio-label {
+  font-size: 0.6rem;
+  color: #999;
   text-transform: uppercase;
-  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
   display: block;
 }
 
-.beatmaker-select {
+.mlstudio-select {
   width: 100%;
-  background: #1a1a2e;
-  border: 1px solid rgba(255,142,61,0.3);
+  background: #1a1a1a;
+  border: 1px solid #555;
   color: var(--parchment);
-  padding: 10px 12px;
-  border-radius: 8px;
-  font-size: 0.8rem;
+  padding: 8px 10px;
+  border-radius: 3px;
+  font-size: 0.75rem;
   font-family: inherit;
 }
 
-.beatmaker-select:focus {
+.mlstudio-select:focus {
   outline: none;
   border-color: var(--accent);
 }
 
-.beatmaker-start-btn {
-  padding: 10px 25px;
-  background: linear-gradient(135deg, var(--accent), #ff6b35);
+.mlstudio-btn {
+  padding: 8px 18px;
+  background: var(--accent);
   border: none;
-  border-radius: 8px;
-  color: var(--black);
+  border-radius: 3px;
+  color: #000;
   font-weight: 700;
-  font-size: 0.85rem;
-  transition: all 0.2s;
+  font-size: 0.75rem;
+  transition: all 0.15s;
   white-space: nowrap;
 }
 
-.beatmaker-start-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 142, 61, 0.4);
+.mlstudio-btn:hover:not(:disabled) {
+  filter: brightness(1.15);
+  box-shadow: 0 2px 10px rgba(255, 142, 61, 0.3);
 }
 
-.beatmaker-start-btn:disabled {
-  opacity: 0.5;
-  transform: none;
+.mlstudio-btn:disabled {
+  opacity: 0.4;
 }
+
+.mlstudio-btn-rest {
+  background: #555;
+  color: #ccc;
+}
+
+.mlstudio-btn-rest:hover:not(:disabled) {
+  background: #666;
+  filter: none;
+  box-shadow: none;
+}
+
+/* Channel rack look for queue */
+.mlstudio-channel-rack {
+  background: #222;
+  border-top: 1px solid #555;
+  padding: 8px;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.mlstudio-channel-rack-title {
+  font-size: 0.6rem;
+  color: #777;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+  padding-left: 4px;
+}
+
+.mlstudio-channel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+  background: #2a2a2a;
+  border: 1px solid #3a3a3a;
+  border-radius: 2px;
+  margin-bottom: 3px;
+  font-size: 0.7rem;
+}
+
+.mlstudio-channel-led {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent);
+}
+
+.mlstudio-channel-name { flex: 1; color: #ccc; }
+.mlstudio-channel-grade {
+  padding: 1px 6px;
+  border-radius: 2px;
+  font-weight: 700;
+  font-size: 0.6rem;
+}
+
+.mlstudio-channel-grade.S { background: rgba(255,215,0,0.2); color: #FFD700; }
+.mlstudio-channel-grade.A { background: rgba(57,255,20,0.2); color: var(--neon-green); }
+.mlstudio-channel-grade.B { background: rgba(0,212,255,0.2); color: var(--neon-blue); }
+.mlstudio-channel-grade.C { background: rgba(255,142,61,0.2); color: var(--accent); }
+.mlstudio-channel-grade.D { background: rgba(255,149,0,0.2); color: #ff9500; }
+.mlstudio-channel-grade.F { background: rgba(255,95,86,0.2); color: #ff5f56; }
 
 /* Rhythm Game */
 .rhythm-game {
@@ -980,45 +1093,7 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
   background: #444;
 }
 
-/* Song queue in beatmaker */
-.beatmaker-queue {
-  padding: 10px 20px;
-  border-top: 1px solid rgba(255,142,61,0.2);
-  max-height: 120px;
-  overflow-y: auto;
-}
-
-.beatmaker-queue-title {
-  font-size: 0.7rem;
-  color: var(--warm-gray);
-  margin-bottom: 8px;
-}
-
-.queue-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 12px;
-  background: rgba(255,255,255,0.03);
-  border-radius: 6px;
-  margin-bottom: 6px;
-  font-size: 0.75rem;
-}
-
-.queue-item-name { color: var(--parchment); }
-.queue-item-quality { 
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-weight: 600;
-  font-size: 0.65rem;
-}
-
-.queue-item-quality.S { background: rgba(255,215,0,0.2); color: #FFD700; }
-.queue-item-quality.A { background: rgba(57,255,20,0.2); color: var(--neon-green); }
-.queue-item-quality.B { background: rgba(0,212,255,0.2); color: var(--neon-blue); }
-.queue-item-quality.C { background: rgba(255,142,61,0.2); color: var(--accent); }
-.queue-item-quality.D { background: rgba(255,149,0,0.2); color: #ff9500; }
-.queue-item-quality.F { background: rgba(255,95,86,0.2); color: #ff5f56; }
+/* queue items removed - using mlstudio-channel-rack now */
 
 /* ══════════════════════════════════════════════════════════════
    SPOOTIFY APP
@@ -1133,12 +1208,12 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
 }
 
 .bank-balance-card {
-  background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 165, 0, 0.08));
-  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(255, 153, 0, 0.15), rgba(255, 102, 0, 0.08));
+  border-radius: 8px;
   padding: 20px;
   text-align: center;
   margin-bottom: 15px;
-  border: 1px solid rgba(255, 215, 0, 0.2);
+  border: 1px solid rgba(255, 153, 0, 0.3);
 }
 
 .bank-balance-label {
@@ -1826,6 +1901,10 @@ const defaultState = {
   lastUpdate: Date.now(),
   postCooldown: 0,
   
+  // Game time (accelerated - starts at 9:00 AM Day 1)
+  gameTimeMs: 9 * 60 * 60 * 1000, // 9 AM in ms
+  gameDay: 1,
+  
   // Tutorial
   tutorialComplete: false,
   
@@ -2206,8 +2285,7 @@ function applyVisualUpgrades() {
 // ═══════════════════════════════════════════════════════════════
 function renderOS() {
   const screen = document.getElementById('osScreen');
-  const now = new Date();
-  const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const timeStr = getGameTimeStr();
   
   const canZ = gameState.fans >= 1000 || gameState.posts.length > 0;
   const canMerch = gameState.upgrades.merchPrinter;
@@ -2231,9 +2309,9 @@ function renderOS() {
     
     <!-- Desktop -->
     <div class="os-desktop">
-      <div class="app-icon clickable" data-app="beatmaker">
-        <div class="app-icon-img app-beatmaker">🎵</div>
-        <span class="app-icon-label">BeatMaker</span>
+      <div class="app-icon clickable" data-app="mlstudio">
+        <div class="app-icon-img app-mlstudio">🥕</div>
+        <span class="app-icon-label">ML Studio</span>
       </div>
       <div class="app-icon clickable" data-app="spootify">
         <div class="app-icon-img app-spootify">🎧</div>
@@ -2260,7 +2338,7 @@ function renderOS() {
     
     <!-- Dock -->
     <div class="os-dock">
-      <div class="dock-item app-beatmaker clickable" data-app="beatmaker">🎵</div>
+      <div class="dock-item app-mlstudio clickable" data-app="mlstudio">🥕</div>
       <div class="dock-item app-spootify clickable" data-app="spootify">🎧</div>
       <div class="dock-item app-mikeazon clickable" data-app="mikeazon">📦</div>
       <div class="dock-item app-dms clickable" data-app="dms">💬</div>
@@ -2300,7 +2378,7 @@ function renderOS() {
   document.getElementById('tutorialStart')?.addEventListener('click', () => {
     gameState.tutorialComplete = true;
     document.getElementById('tutorialOverlay')?.classList.add('hidden');
-    openApp('beatmaker');
+    openApp('mlstudio');
     saveGame();
   });
 }
@@ -2318,9 +2396,9 @@ function openApp(appName) {
   let title = '';
   
   switch (appName) {
-    case 'beatmaker':
-      title = '🎵 BeatMaker Pro';
-      content = renderBeatmaker();
+    case 'mlstudio':
+      title = '🥕 ML Studio';
+      content = renderMLStudio();
       break;
     case 'spootify':
       title = '🎧 Spootify';
@@ -2363,7 +2441,7 @@ function openApp(appName) {
     window.classList.remove('active');
     setTimeout(() => window.remove(), 200);
     // Stop rhythm game if closing beatmaker
-    if (appName === 'beatmaker') {
+    if (appName === 'mlstudio') {
       stopRhythmGame();
     }
   });
@@ -2375,7 +2453,7 @@ function openApp(appName) {
 // ═══════════════════════════════════════════════════════════════
 // APP RENDERERS
 // ═══════════════════════════════════════════════════════════════
-function renderBeatmaker() {
+function renderMLStudio() {
   const topicOptions = TOPICS.map(t => 
     `<option value="${t.id}">${t.emoji} ${t.name}</option>`
   ).join('');
@@ -2387,31 +2465,41 @@ function renderBeatmaker() {
   const canWrite = gameState.energy >= 20;
   
   const queueItems = gameState.songs.map(s => `
-    <div class="queue-item">
-      <span class="queue-item-name">${s.name}</span>
-      <span class="queue-item-quality ${s.grade}">${s.grade}</span>
+    <div class="mlstudio-channel">
+      <div class="mlstudio-channel-led"></div>
+      <span class="mlstudio-channel-name">${s.name}</span>
+      <span class="mlstudio-channel-grade ${s.grade}">${s.grade}</span>
     </div>
   `).join('');
   
   return `
-    <div class="beatmaker-app">
-      <div class="beatmaker-header">
-        <div class="beatmaker-title-gen" id="songTitleGen"></div>
+    <div class="mlstudio-app">
+      <!-- FL Studio style toolbar -->
+      <div class="mlstudio-toolbar">
+        <div class="mlstudio-transport">
+          <button class="mlstudio-transport-btn clickable" title="Stop">⏹</button>
+          <button class="mlstudio-transport-btn active clickable" title="Play">▶</button>
+          <button class="mlstudio-transport-btn clickable" title="Record">⏺</button>
+        </div>
+        <div class="mlstudio-bpm">140 BPM</div>
+        <div class="mlstudio-title-gen" id="songTitleGen"></div>
+        <span style="font-size:0.65rem;color:#777;">⚡ ${Math.round(gameState.energy)}</span>
       </div>
       
-      <div class="beatmaker-setup" id="beatmakerSetup">
-        <div class="beatmaker-field">
-          <label class="beatmaker-label">Topic</label>
-          <select class="beatmaker-select clickable" id="songTopic">${topicOptions}</select>
+      <div class="mlstudio-body">
+      <div class="mlstudio-setup" id="beatmakerSetup">
+        <div class="mlstudio-field">
+          <label class="mlstudio-label">Topic</label>
+          <select class="mlstudio-select clickable" id="songTopic">${topicOptions}</select>
         </div>
-        <div class="beatmaker-field">
-          <label class="beatmaker-label">Style</label>
-          <select class="beatmaker-select clickable" id="songStyle">${styleOptions}</select>
+        <div class="mlstudio-field">
+          <label class="mlstudio-label">Style</label>
+          <select class="mlstudio-select clickable" id="songStyle">${styleOptions}</select>
         </div>
-        <button class="beatmaker-start-btn clickable" id="startSongBtn" ${!canWrite ? 'disabled' : ''}>
-          🎵 Write Song (20⚡)
+        <button class="mlstudio-btn clickable" id="startSongBtn" ${!canWrite ? 'disabled' : ''}>
+          ● REC (20⚡)
         </button>
-        <button class="beatmaker-start-btn clickable" id="restBtn" style="background: linear-gradient(135deg, #6366F1, #4338CA);">
+        <button class="mlstudio-btn mlstudio-btn-rest clickable" id="restBtn">
           😴 Rest (+30⚡)
         </button>
       </div>
@@ -2471,13 +2559,14 @@ function renderBeatmaker() {
         </div>
       </div>
       
-      <!-- Queue -->
+      <!-- Channel Rack (unreleased songs) -->
       ${gameState.songs.length > 0 ? `
-        <div class="beatmaker-queue">
-          <div class="beatmaker-queue-title">📁 Unreleased (${gameState.songs.length})</div>
+        <div class="mlstudio-channel-rack">
+          <div class="mlstudio-channel-rack-title">Channel Rack — ${gameState.songs.length} unreleased</div>
           ${queueItems}
         </div>
       ` : ''}
+      </div>
     </div>
   `;
 }
@@ -2520,7 +2609,7 @@ function renderSpootify() {
   });
   
   if (songsHtml === '') {
-    songsHtml = '<div class="spootify-empty">No songs yet. Open BeatMaker to create your first track!</div>';
+    songsHtml = '<div class="spootify-empty">No songs yet. Open ML Studio to create your first track!</div>';
   }
   
   return `
@@ -2575,7 +2664,7 @@ function renderMikeazon() {
   return `
     <div class="bank-app">
       <div class="bank-balance-card">
-        <div class="bank-balance-label">Current Balance</div>
+        <div class="bank-balance-label">Mikeazon Wallet</div>
         <div class="bank-balance-value">${formatMoney(gameState.balance)}</div>
         <div class="bank-income-row">
           <span class="bank-income-item positive">+${formatMoney(netIncome)}/sec</span>
@@ -2746,7 +2835,7 @@ function renderMerchDrop() {
 // ═══════════════════════════════════════════════════════════════
 function bindAppEvents(appName, window) {
   switch (appName) {
-    case 'beatmaker':
+    case 'mlstudio':
       window.querySelector('#startSongBtn')?.addEventListener('click', startRhythmGame);
       window.querySelector('#restBtn')?.addEventListener('click', restEnergy);
       window.querySelector('#releaseNowBtn')?.addEventListener('click', releaseCurrentSong);
@@ -3086,12 +3175,12 @@ function saveCurrentSong() {
   checkMilestoneEvents();
   saveGame();
   
-  // Reset beatmaker
+  // Reset ML Studio
   document.getElementById('beatmakerSetup').style.display = 'flex';
   document.getElementById('songResult').classList.remove('active');
   document.getElementById('songTitleGen').textContent = '';
   
-  openApp('beatmaker');
+  openApp('mlstudio');
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -3242,15 +3331,49 @@ function handleDM(dmIndex, choice) {
 }
 
 // ═══════════════════════════════════════════════════════════════
+// GAME TIME SYSTEM (1 real second = 10 game minutes)
+// ═══════════════════════════════════════════════════════════════
+const GAME_TIME_SPEED = 10; // 1 real second = 10 game minutes
+
+function getGameTimeStr() {
+  const totalMs = gameState.gameTimeMs;
+  const totalMinutes = Math.floor(totalMs / (60 * 1000));
+  let hours = Math.floor(totalMinutes / 60) % 24;
+  const minutes = totalMinutes % 60;
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  const displayHours = hours === 0 ? 12 : hours > 12 ? hours - 12 : hours;
+  return `Day ${gameState.gameDay} ${displayHours}:${String(minutes).padStart(2, '0')} ${ampm}`;
+}
+
+function advanceGameTime(realDeltaSec) {
+  const gameMinutesElapsed = realDeltaSec * GAME_TIME_SPEED;
+  gameState.gameTimeMs += gameMinutesElapsed * 60 * 1000;
+  
+  // Check for day rollover
+  const totalHours = gameState.gameTimeMs / (60 * 60 * 1000);
+  if (totalHours >= 24) {
+    gameState.gameDay += Math.floor(totalHours / 24);
+    gameState.gameTimeMs = gameState.gameTimeMs % (24 * 60 * 60 * 1000);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
 // REST FUNCTION
 // ═══════════════════════════════════════════════════════════════
 function restEnergy() {
   if (gameState.energy >= 100) return;
   gameState.energy = Math.min(100, gameState.energy + 30);
-  // Small time penalty - hype drops a bit while resting
-  gameState.hype = Math.max(0, gameState.hype - 2);
+  // Resting costs game time (2 hours) and slight hype decay
+  gameState.gameTimeMs += 2 * 60 * 60 * 1000;
+  gameState.hype = Math.max(0, gameState.hype - 3);
+  // Check day rollover
+  const totalHours = gameState.gameTimeMs / (60 * 60 * 1000);
+  if (totalHours >= 24) {
+    gameState.gameDay += Math.floor(totalHours / 24);
+    gameState.gameTimeMs = gameState.gameTimeMs % (24 * 60 * 60 * 1000);
+  }
   saveGame();
-  openApp('beatmaker');
+  openApp('mlstudio');
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -3345,6 +3468,9 @@ function gameLoop() {
   const delta = (now - gameState.lastUpdate) / 1000;
   gameState.lastUpdate = now;
   
+  // Advance game time
+  advanceGameTime(delta);
+  
   // Income
   const labelCut = gameState.contract ? (gameState.streamIncomePerSec * (gameState.contract.cut / 100)) : 0;
   const netIncome = gameState.streamIncomePerSec + gameState.merchIncomePerSec - labelCut;
@@ -3388,12 +3514,9 @@ function gameLoop() {
   const energyEl = document.getElementById('dockEnergy');
   if (energyEl) energyEl.textContent = Math.round(gameState.energy);
   
-  // Update clock in real-time
+  // Update game clock
   const timeEl = document.getElementById('menuTime');
-  if (timeEl) {
-    const t = new Date();
-    timeEl.textContent = t.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-  }
+  if (timeEl) timeEl.textContent = getGameTimeStr();
   
   // Check events
   checkMilestoneEvents();
