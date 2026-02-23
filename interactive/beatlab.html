@@ -533,21 +533,7 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
   box-shadow: 0 0 8px rgba(255,142,61,0.15);
 }
 
-/* ── BACKGROUND PULSE ── */
-.bg-pulse {
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(circle at 50% 50%, rgba(255,142,61,0.04) 0%, transparent 60%);
-  pointer-events: none;
-  z-index: -1;
-  opacity: 0;
-  transition: opacity 0.05s;
-}
-
-.bg-pulse.flash {
-  opacity: 1;
-  transition: opacity 0.05s;
-}
+/* bg-pulse removed */
 
 /* ── TOGGLE POP ── */
 .step.pop {
@@ -588,8 +574,7 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
   <div class="boot-text">Loading instruments...</div>
 </div>
 
-<!-- Background pulse -->
-<div class="bg-pulse" id="bgPulse"></div>
+<!-- bg-pulse removed -->
 
 <header class="header">
   <a href="../index.html" class="header-logo-link clickable">
@@ -660,6 +645,10 @@ const KITS = {
     { id: 'tom',     name: 'Tom',      color: '#9B59B6', type: 'tom',     p: { start: 200, end: 80, decay: 0.2 } },
     { id: 'rim',     name: 'Rimshot',  color: '#00BCD4', type: 'rim',     p: { freq: 800 } },
     { id: 'perc',    name: 'Perc',     color: '#ff8e3d', type: 'perc',    p: { start: 3000, end: 500, decay: 0.06 } },
+    { id: 'vox1',    name: 'Vox "Ah"', color: '#E879F9', type: 'vocal',   p: { pitch: 340, f1: 800, f2: 1150, f3: 2800, decay: 0.18, wave: 'sawtooth' } },
+    { id: 'vox2',    name: 'Vox "Ee"', color: '#C084FC', type: 'vocal',   p: { pitch: 380, f1: 270, f2: 2300, f3: 3000, decay: 0.15, wave: 'sawtooth' } },
+    { id: 'vox3',    name: 'Vox "Oh"', color: '#A78BFA', type: 'vocal',   p: { pitch: 320, f1: 500, f2: 800,  f3: 2830, decay: 0.2, wave: 'sawtooth' } },
+    { id: 'vox4',    name: 'Vox "Oo"', color: '#818CF8', type: 'vocal',   p: { pitch: 300, f1: 300, f2: 650,  f3: 2700, decay: 0.22, wave: 'sawtooth' } },
   ],
   'Trap': [
     { id: 'kick',    name: '808',      color: '#FF4466', type: 'kick',    p: { start: 120, end: 20, decay: 0.6 } },
@@ -670,6 +659,10 @@ const KITS = {
     { id: 'tom',     name: '808 Slide',color: '#9B59B6', type: 'kick',    p: { start: 90, end: 25, decay: 0.8 } },
     { id: 'rim',     name: 'Rim',      color: '#00BCD4', type: 'rim',     p: { freq: 1200 } },
     { id: 'perc',    name: 'Bell',     color: '#ff8e3d', type: 'perc',    p: { start: 5000, end: 2000, decay: 0.1 } },
+    { id: 'vox1',    name: 'Vox "Ah"', color: '#E879F9', type: 'vocal',   p: { pitch: 280, f1: 800, f2: 1150, f3: 2800, decay: 0.12, wave: 'sawtooth' } },
+    { id: 'vox2',    name: 'Vox "Hey"',color: '#C084FC', type: 'vocal',   p: { pitch: 400, f1: 600, f2: 1700, f3: 2600, decay: 0.1, wave: 'square' } },
+    { id: 'vox3',    name: 'Vox "Oh"', color: '#A78BFA', type: 'vocal',   p: { pitch: 260, f1: 500, f2: 800,  f3: 2830, decay: 0.15, wave: 'sawtooth' } },
+    { id: 'vox4',    name: 'Vox "Uh"', color: '#818CF8', type: 'vocal',   p: { pitch: 220, f1: 600, f2: 1000, f3: 2400, decay: 0.2, wave: 'sawtooth' } },
   ],
   'House': [
     { id: 'kick',    name: 'Kick',     color: '#FF4466', type: 'kick',    p: { start: 160, end: 40, decay: 0.25 } },
@@ -680,6 +673,10 @@ const KITS = {
     { id: 'tom',     name: 'Conga',    color: '#9B59B6', type: 'tom',     p: { start: 350, end: 150, decay: 0.12 } },
     { id: 'rim',     name: 'Shaker',   color: '#00BCD4', type: 'hihat',   p: { decay: 0.02, hp: 10000 } },
     { id: 'perc',    name: 'Cowbell',  color: '#ff8e3d', type: 'perc',    p: { start: 800, end: 700, decay: 0.08 } },
+    { id: 'vox1',    name: 'Vox "Ah"', color: '#E879F9', type: 'vocal',   p: { pitch: 360, f1: 800, f2: 1150, f3: 2800, decay: 0.2, wave: 'sawtooth' } },
+    { id: 'vox2',    name: 'Vox "Ee"', color: '#C084FC', type: 'vocal',   p: { pitch: 420, f1: 270, f2: 2300, f3: 3000, decay: 0.15, wave: 'sawtooth' } },
+    { id: 'vox3',    name: 'Vox "Oh"', color: '#A78BFA', type: 'vocal',   p: { pitch: 340, f1: 500, f2: 800,  f3: 2830, decay: 0.25, wave: 'sawtooth' } },
+    { id: 'vox4',    name: 'Vox "Oo"', color: '#818CF8', type: 'vocal',   p: { pitch: 300, f1: 300, f2: 650,  f3: 2700, decay: 0.3, wave: 'sawtooth' } },
   ],
   'Lo-Fi': [
     { id: 'kick',    name: 'Thud',     color: '#FF4466', type: 'kick',    p: { start: 100, end: 35, decay: 0.2 } },
@@ -690,6 +687,10 @@ const KITS = {
     { id: 'tom',     name: 'Bongo',    color: '#9B59B6', type: 'tom',     p: { start: 280, end: 100, decay: 0.15 } },
     { id: 'rim',     name: 'Click',    color: '#00BCD4', type: 'rim',     p: { freq: 1500 } },
     { id: 'perc',    name: 'Chime',    color: '#ff8e3d', type: 'perc',    p: { start: 2000, end: 800, decay: 0.12 } },
+    { id: 'vox1',    name: 'Vox "Mm"', color: '#E879F9', type: 'vocal',   p: { pitch: 240, f1: 300, f2: 700,  f3: 2200, decay: 0.3, wave: 'sine' } },
+    { id: 'vox2',    name: 'Vox "Ah"', color: '#C084FC', type: 'vocal',   p: { pitch: 280, f1: 800, f2: 1150, f3: 2800, decay: 0.25, wave: 'sawtooth' } },
+    { id: 'vox3',    name: 'Vox "Oh"', color: '#A78BFA', type: 'vocal',   p: { pitch: 260, f1: 500, f2: 800,  f3: 2830, decay: 0.28, wave: 'triangle' } },
+    { id: 'vox4',    name: 'Vox "Oo"', color: '#818CF8', type: 'vocal',   p: { pitch: 220, f1: 300, f2: 650,  f3: 2700, decay: 0.35, wave: 'triangle' } },
   ],
   'Drum & Bass': [
     { id: 'kick',    name: 'Kick',     color: '#FF4466', type: 'kick',    p: { start: 180, end: 25, decay: 0.18 } },
@@ -700,6 +701,10 @@ const KITS = {
     { id: 'tom',     name: 'Bass Hit', color: '#9B59B6', type: 'kick',    p: { start: 200, end: 40, decay: 0.15 } },
     { id: 'rim',     name: 'Cross',    color: '#00BCD4', type: 'rim',     p: { freq: 1000 } },
     { id: 'perc',    name: 'Zap',      color: '#ff8e3d', type: 'perc',    p: { start: 4000, end: 300, decay: 0.04 } },
+    { id: 'vox1',    name: 'Vox "Ah"', color: '#E879F9', type: 'vocal',   p: { pitch: 380, f1: 800, f2: 1150, f3: 2800, decay: 0.1, wave: 'sawtooth' } },
+    { id: 'vox2',    name: 'Vox "Ee"', color: '#C084FC', type: 'vocal',   p: { pitch: 450, f1: 270, f2: 2300, f3: 3000, decay: 0.08, wave: 'square' } },
+    { id: 'vox3',    name: 'Vox "Oh"', color: '#A78BFA', type: 'vocal',   p: { pitch: 360, f1: 500, f2: 800,  f3: 2830, decay: 0.12, wave: 'sawtooth' } },
+    { id: 'vox4',    name: 'Vox "Uh"', color: '#818CF8', type: 'vocal',   p: { pitch: 300, f1: 600, f2: 1000, f3: 2400, decay: 0.1, wave: 'sawtooth' } },
   ],
 };
 
@@ -871,6 +876,52 @@ function playSound(inst) {
       osc.start(t); osc.stop(t + (p.decay || 0.06) + 0.01);
       break;
     }
+    case 'vocal': {
+      // Formant synthesis — creates vowel-like sounds via bandpass-filtered oscillators
+      const dur = p.decay || 0.2;
+      const pitch = p.pitch || 340;
+      const formants = [p.f1 || 800, p.f2 || 1200, p.f3 || 2800];
+      const formantQ = [12, 10, 8];
+      const formantGain = [0.28, 0.18, 0.08];
+      const out = getOutput();
+      
+      // Base oscillator (rich harmonics)
+      const osc = audioCtx.createOscillator();
+      osc.type = p.wave || 'sawtooth';
+      osc.frequency.setValueAtTime(pitch, t);
+      // Slight pitch drop for natural feel
+      osc.frequency.exponentialRampToValueAtTime(pitch * 0.97, t + dur);
+      
+      // Route through formant filters
+      formants.forEach((freq, i) => {
+        const bp = audioCtx.createBiquadFilter();
+        bp.type = 'bandpass';
+        bp.frequency.value = freq;
+        bp.Q.value = formantQ[i];
+        const g = audioCtx.createGain();
+        g.gain.setValueAtTime(formantGain[i], t);
+        g.gain.setValueAtTime(formantGain[i], t + dur * 0.1);
+        g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+        osc.connect(bp).connect(g).connect(out);
+      });
+      
+      // Add breathy noise layer
+      const noiseDur = dur * 0.6;
+      const nBuf = audioCtx.createBuffer(1, audioCtx.sampleRate * noiseDur, audioCtx.sampleRate);
+      const nData = nBuf.getChannelData(0);
+      for (let i = 0; i < nData.length; i++) nData[i] = Math.random() * 2 - 1;
+      const nSrc = audioCtx.createBufferSource(); nSrc.buffer = nBuf;
+      const nGain = audioCtx.createGain();
+      nGain.gain.setValueAtTime(0.04, t);
+      nGain.gain.exponentialRampToValueAtTime(0.001, t + noiseDur);
+      const nBp = audioCtx.createBiquadFilter();
+      nBp.type = 'bandpass'; nBp.frequency.value = formants[1]; nBp.Q.value = 3;
+      nSrc.connect(nBp).connect(nGain).connect(out);
+      nSrc.start(t); nSrc.stop(t + noiseDur + 0.01);
+      
+      osc.start(t); osc.stop(t + dur + 0.01);
+      break;
+    }
   }
 }
 
@@ -1030,6 +1081,10 @@ const PRESETS = {
     [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
     [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
     [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
+    [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
+    [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
+    [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
+    [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
   ],
   'Trap': [
     [1,0,0,0, 0,0,1,0, 0,0,1,0, 0,0,0,0],
@@ -1040,6 +1095,10 @@ const PRESETS = {
     [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
     [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
     [0,0,1,0, 0,0,0,0, 0,0,1,0, 0,0,0,0],
+    [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
+    [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
+    [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
+    [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
   ],
   'House': [
     [1,0,0,0, 1,0,0,0, 1,0,0,0, 1,0,0,0],
@@ -1050,6 +1109,10 @@ const PRESETS = {
     [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
     [0,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,0,0],
     [1,0,0,1, 0,0,1,0, 0,1,0,0, 1,0,0,1],
+    [1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,0,0],
+    [0,0,0,0, 0,0,1,0, 0,0,0,0, 0,0,1,0],
+    [0,0,1,0, 0,0,0,0, 0,0,0,0, 0,0,0,1],
+    [0,0,0,0, 0,0,0,0, 0,0,1,0, 0,0,0,0],
   ],
   'Reggaeton': [
     [1,0,0,1, 0,0,1,0, 0,1,0,0, 1,0,0,0],
@@ -1060,6 +1123,38 @@ const PRESETS = {
     [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
     [0,0,1,0, 0,0,1,0, 0,0,1,0, 0,0,1,0],
     [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
+    [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
+    [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
+    [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
+    [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
+  ],
+  'Vocal House': [
+    [1,0,0,0, 1,0,0,0, 1,0,0,0, 1,0,0,0],
+    [0,0,0,0, 1,0,0,0, 0,0,0,0, 1,0,0,1],
+    [0,0,1,0, 0,0,1,0, 0,0,1,0, 0,0,1,0],
+    [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,1],
+    [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
+    [0,0,0,0, 0,0,0,0, 0,1,0,0, 0,0,0,0],
+    [1,0,0,0, 1,0,0,0, 1,0,0,0, 1,0,0,0],
+    [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
+    [1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,0,0],
+    [0,0,0,1, 0,0,0,0, 0,0,0,1, 0,0,0,0],
+    [0,0,0,0, 0,0,1,0, 0,0,0,0, 0,0,0,0],
+    [0,0,0,0, 0,0,0,0, 0,0,0,0, 1,0,0,0],
+  ],
+  'Deep Vocal': [
+    [1,0,0,0, 1,0,0,0, 1,0,0,0, 1,0,0,0],
+    [0,0,0,0, 1,0,0,0, 0,0,0,0, 1,0,0,0],
+    [0,0,1,0, 0,0,1,0, 0,0,1,0, 0,0,1,0],
+    [0,0,0,0, 0,0,0,0, 0,1,0,0, 0,0,0,0],
+    [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
+    [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
+    [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
+    [0,0,0,0, 0,0,1,0, 0,0,0,0, 0,0,1,0],
+    [1,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
+    [0,0,1,0, 0,0,0,0, 1,0,0,0, 0,0,0,0],
+    [0,0,0,0, 1,0,0,0, 0,0,0,0, 1,0,0,0],
+    [0,0,0,0, 0,0,0,1, 0,0,0,0, 0,0,1,0],
   ],
 };
 
@@ -1114,7 +1209,7 @@ function clearGrid() {
 
 function randomize() {
   INSTRUMENTS.forEach((inst, row) => {
-    const density = inst.type === 'kick' ? 0.25 : inst.type === 'hihat' ? 0.5 : 0.15;
+    const density = inst.type === 'kick' ? 0.25 : inst.type === 'hihat' ? 0.5 : inst.type === 'vocal' ? 0.12 : 0.15;
     for (let s = 0; s < STEPS; s++) {
       grid[row][s] = Math.random() < density;
     }
@@ -1233,7 +1328,7 @@ setTimeout(() => {
 // ═══════════════════════════════════════════════════
 // HIT RIPPLE + BG PULSE + TRIGGERED BOUNCE
 // ═══════════════════════════════════════════════════
-const bgPulse = document.getElementById('bgPulse');
+// bg pulse removed
 
 // Override tick to add visual effects
 const _origTick = tick;
@@ -1258,12 +1353,7 @@ function enhancedTick() {
       setTimeout(() => ripple.remove(), 400);
     });
     
-    // Bg pulse on kick (row 0)
-    const kickStep = document.querySelector('.step[data-row="0"].active.current');
-    if (kickStep) {
-      bgPulse.classList.add('flash');
-      setTimeout(() => bgPulse.classList.remove('flash'), 80);
-    }
+    // bg pulse removed
   });
 }
 
