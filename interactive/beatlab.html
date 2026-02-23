@@ -219,6 +219,23 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
   padding-right: 10px;
 }
 
+.mute-all-btn {
+  font-size: 0.5rem;
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid #333;
+  border-radius: 4px;
+  padding: 2px 6px;
+  height: auto;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  transition: all 0.15s;
+  margin-bottom: 4px;
+  align-self: flex-end;
+}
+.mute-all-btn:hover { border-color: #ff4444; color: #ff4444; }
+.mute-all-btn.active { background: rgba(255,68,68,0.2); border-color: #ff4444; color: #ff4444; }
+
 .row-label {
   height: 36px;
   display: flex;
@@ -609,7 +626,9 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
 
   <!-- Grid -->
   <div class="grid-wrapper">
-    <div class="row-labels" id="rowLabels"></div>
+    <div class="row-labels" id="rowLabels">
+      <button class="mute-all-btn clickable" id="muteAllBtn" title="Mute All (M)">Mute All</button>
+    </div>
     <div>
       <div class="beat-numbers" id="beatNumbers"></div>
       <div class="grid" id="grid"></div>
@@ -1164,8 +1183,23 @@ document.getElementById('presetBtn').addEventListener('click', () => {
 });
 
 // Keyboard: space = play/pause
+// Mute All toggle — lets sounds decay naturally, just stops new triggers
+let allMuted = false;
+function toggleMuteAll() {
+  allMuted = !allMuted;
+  const btn = document.getElementById('muteAllBtn');
+  btn.classList.toggle('active', allMuted);
+  btn.textContent = allMuted ? 'Unmute' : 'Mute All';
+  // Set all individual mutes to match
+  muted.fill(allMuted);
+  document.querySelectorAll('.row-mute').forEach(b => b.classList.toggle('muted', allMuted));
+}
+
+document.getElementById('muteAllBtn').addEventListener('click', toggleMuteAll);
+
 document.addEventListener('keydown', (e) => {
   if (e.code === 'Space') { e.preventDefault(); playing ? pause() : play(); }
+  if (e.key === 'm' || e.key === 'M') { e.preventDefault(); toggleMuteAll(); }
 });
 
 // ═══════════════════════════════════════════════════
