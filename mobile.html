@@ -215,6 +215,7 @@
     overflow-y: auto;
     overflow-x: hidden;
     scrollbar-width: none;
+    scroll-behavior: smooth;
   }
   .menu-list::-webkit-scrollbar { display: none; }
 
@@ -1266,7 +1267,7 @@ function updateMenuSelection() {
     item.classList.toggle('selected', i === selectedIndex);
   });
   const selected = document.querySelector('.menu-item.selected');
-  if (selected) selected.scrollIntoView({ block: 'nearest', behavior: 'instant' });
+  if (selected) selected.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
 }
 
 // ── RENDER PROJECT DETAIL ──
