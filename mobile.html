@@ -1473,24 +1473,44 @@ wheel.addEventListener('wheel', (e) => {
   document.querySelectorAll('.menu-item').forEach(item => item.classList.add('loaded'));
 }, { passive: false });
 
-// Touch/swipe support for wheel
-let touchStartY = 0;
+// Touch/swipe support for wheel — detect clockwise/counterclockwise
+let lastAngle = null;
+let angleDelta = 0;
+const ANGLE_THRESHOLD = 25; // degrees to trigger a scroll step
+
+function getAngle(touch) {
+  const rect = wheel.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+  return Math.atan2(touch.clientY - cy, touch.clientX - cx) * (180 / Math.PI);
+}
+
 wheel.addEventListener('touchstart', (e) => {
-  touchStartY = e.touches[0].clientY;
+  lastAngle = getAngle(e.touches[0]);
+  angleDelta = 0;
 }, { passive: true });
 
 wheel.addEventListener('touchmove', (e) => {
   if (currentView !== 'menu') return;
-  const deltaY = touchStartY - e.touches[0].clientY;
-  if (Math.abs(deltaY) > 30) {
-    if (deltaY > 0) {
+  const angle = getAngle(e.touches[0]);
+  if (lastAngle === null) { lastAngle = angle; return; }
+  let diff = angle - lastAngle;
+  // Normalize to -180..180
+  if (diff > 180) diff -= 360;
+  if (diff < -180) diff += 360;
+  angleDelta += diff;
+  lastAngle = angle;
+  if (Math.abs(angleDelta) >= ANGLE_THRESHOLD) {
+    if (angleDelta > 0) {
+      // Clockwise → scroll down
       selectedIndex = Math.min(selectedIndex + 1, projects.length - 1);
     } else {
+      // Counter-clockwise → scroll up
       selectedIndex = Math.max(selectedIndex - 1, 0);
     }
     renderMenu();
     document.querySelectorAll('.menu-item').forEach(item => item.classList.add('loaded'));
-    touchStartY = e.touches[0].clientY;
+    angleDelta = 0;
   }
 }, { passive: true });
 
