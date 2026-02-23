@@ -1295,12 +1295,12 @@ setTimeout(() => {
   const boot = document.getElementById('bootScreen');
   boot.classList.add('fade-out');
   
+  // Start main fade-in while boot is still fading out (overlap)
+  const main = document.querySelector('.main');
+  setTimeout(() => { main.classList.add('loaded'); }, 300);
+  
   setTimeout(() => {
     boot.style.display = 'none';
-    
-    // Stagger in elements
-    const main = document.querySelector('.main');
-    main.classList.add('loaded');
     
     setTimeout(() => document.querySelector('.title-row').classList.add('loaded'), 100);
     setTimeout(() => document.querySelector('.transport').classList.add('loaded'), 250);
