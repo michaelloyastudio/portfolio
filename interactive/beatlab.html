@@ -413,7 +413,7 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
   <div class="actions">
     <button class="action-btn clickable" id="clearBtn">Clear All</button>
     <button class="action-btn clickable" id="randomBtn">Random</button>
-    <!-- kit selector in transport -->
+    <button class="action-btn clickable" id="presetBtn">Preset: Boom Bap</button>
   </div>
 </div>
 
@@ -767,6 +767,61 @@ document.addEventListener('mouseup', () => { isDragging = false; });
 // ═══════════════════════════════════════════════════
 // PRESETS
 // ═══════════════════════════════════════════════════
+const PRESETS = {
+  'Boom Bap': [
+    [1,0,0,0, 0,0,0,0, 1,0,1,0, 0,0,0,0],
+    [0,0,0,0, 1,0,0,0, 0,0,0,0, 1,0,0,0],
+    [1,0,1,0, 1,0,1,0, 1,0,1,0, 1,0,1,0],
+    [0,0,0,0, 0,0,0,1, 0,0,0,0, 0,0,0,1],
+    [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
+    [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
+    [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
+    [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
+  ],
+  'Trap': [
+    [1,0,0,0, 0,0,1,0, 0,0,1,0, 0,0,0,0],
+    [0,0,0,0, 1,0,0,0, 0,0,0,0, 1,0,0,0],
+    [1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1],
+    [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,1],
+    [0,0,0,0, 1,0,0,0, 0,0,0,0, 1,0,0,0],
+    [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
+    [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
+    [0,0,1,0, 0,0,0,0, 0,0,1,0, 0,0,0,0],
+  ],
+  'House': [
+    [1,0,0,0, 1,0,0,0, 1,0,0,0, 1,0,0,0],
+    [0,0,0,0, 1,0,0,0, 0,0,0,0, 1,0,0,0],
+    [0,0,1,0, 0,0,1,0, 0,0,1,0, 0,0,1,0],
+    [0,0,0,0, 0,0,0,1, 0,0,0,0, 0,0,0,1],
+    [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
+    [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
+    [0,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,0,0],
+    [1,0,0,1, 0,0,1,0, 0,1,0,0, 1,0,0,1],
+  ],
+  'Reggaeton': [
+    [1,0,0,1, 0,0,1,0, 0,1,0,0, 1,0,0,0],
+    [0,0,0,0, 1,0,0,0, 0,0,0,0, 1,0,0,0],
+    [1,0,1,0, 1,0,1,0, 1,0,1,0, 1,0,1,0],
+    [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
+    [0,0,0,1, 0,0,0,0, 0,0,0,1, 0,0,0,0],
+    [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
+    [0,0,1,0, 0,0,1,0, 0,0,1,0, 0,0,1,0],
+    [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
+  ],
+};
+
+const presetNames = Object.keys(PRESETS);
+let presetIndex = 0;
+
+function loadPreset(name) {
+  const preset = PRESETS[name];
+  if (!preset) return;
+  preset.forEach((pattern, row) => {
+    for (let s = 0; s < STEPS; s++) grid[row][s] = !!pattern[s];
+  });
+  updateGridUI();
+}
+
 function switchKit(name) {
   if (!KITS[name]) return;
   currentKit = name;
@@ -853,6 +908,13 @@ Object.keys(KITS).forEach(name => {
   kitSelect.appendChild(opt);
 });
 kitSelect.addEventListener('change', (e) => { switchKit(e.target.value); });
+
+document.getElementById('presetBtn').addEventListener('click', () => {
+  initAudio();
+  loadPreset(presetNames[presetIndex]);
+  document.getElementById('presetBtn').textContent = `Preset: ${presetNames[presetIndex]}`;
+  presetIndex = (presetIndex + 1) % presetNames.length;
+});
 
 // Keyboard: space = play/pause
 document.addEventListener('keydown', (e) => {
