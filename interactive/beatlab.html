@@ -314,6 +314,7 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
 .grid-row {
   display: flex;
   overflow: visible;
+  position: relative;
 }
 
 .step {
@@ -575,6 +576,9 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
 }
 
 /* ── TRIGGERED BOUNCE ── */
+.step.triggered {
+  z-index: 10;
+}
 .step.triggered .step-dot {
   animation: dotBounce 0.2s ease;
 }
