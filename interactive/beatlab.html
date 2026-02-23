@@ -744,12 +744,17 @@ function initAudio() {
     }
     reverbNode = audioCtx.createConvolver();
     reverbNode.buffer = impulse;
+    // Low-pass on reverb to tame harsh high end
+    const reverbLP = audioCtx.createBiquadFilter();
+    reverbLP.type = 'lowpass';
+    reverbLP.frequency.value = 2800;
+    reverbLP.Q.value = 0.7;
     dryGain = audioCtx.createGain();
     wetGain = audioCtx.createGain();
     dryGain.gain.value = 1;
     wetGain.gain.value = 0;
     dryGain.connect(audioCtx.destination);
-    reverbNode.connect(wetGain);
+    reverbNode.connect(reverbLP).connect(wetGain);
     wetGain.connect(audioCtx.destination);
   }
   if (audioCtx.state === 'suspended') audioCtx.resume();
