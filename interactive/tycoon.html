@@ -571,6 +571,92 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
   flex-direction: column;
 }
 
+/* ── LOGIN SCREEN ── */
+.login-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background: linear-gradient(135deg, #0d0d1a 0%, #1a1a2e 50%, #0d0d1a 100%);
+  gap: 18px;
+  user-select: none;
+}
+
+.login-avatar-row {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 4px;
+}
+
+.login-avatar {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  background: rgba(255,255,255,0.06);
+  border: 3px solid transparent;
+  transition: all 0.2s;
+}
+
+.login-avatar:hover { background: rgba(255,255,255,0.12); transform: scale(1.1); }
+.login-avatar.selected { border-color: var(--accent); background: rgba(255,142,61,0.15); transform: scale(1.12); }
+
+.login-selected-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  background: rgba(255,255,255,0.08);
+  border: 3px solid rgba(255,255,255,0.15);
+  margin-bottom: 6px;
+}
+
+.login-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 220px;
+}
+
+.login-input {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(0,0,0,0.4);
+  color: var(--parchment);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.8rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.login-input:focus { border-color: var(--accent); }
+.login-input::placeholder { color: rgba(255,255,255,0.25); }
+
+.login-btn {
+  padding: 8px 0;
+  border-radius: 8px;
+  border: none;
+  background: var(--accent);
+  color: #000;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: opacity 0.2s;
+  margin-top: 4px;
+}
+
+.login-btn:hover { opacity: 0.85; }
+.login-btn:disabled { opacity: 0.35; }
+
 /* OS Menubar */
 .os-menubar {
   height: 28px;
@@ -2822,6 +2908,10 @@ const defaultState = {
   gameTimeMs: 9 * 60 * 60 * 1000, // 9 AM in ms
   gameDay: 1,
   
+  // Identity
+  rapperName: '',
+  avatar: '',
+  
   // Tutorial
   tutorialComplete: false,
   
@@ -3359,7 +3449,7 @@ function renderOS() {
     <!-- Menubar -->
     <div class="os-menubar">
       <div class="os-left">
-        <span class="clickable" onclick="resetGame()" style="opacity:0.6" title="Reset Progress">🎵 RapperOS</span>
+        <span class="clickable" onclick="resetGame()" style="opacity:0.6" title="Reset Progress">${gameState.avatar || '🎵'} ${gameState.rapperName || 'RapperOS'}</span>
       </div>
       <div class="os-right">
         ${contractInfo ? `<span class="os-contract">${contractInfo}</span>` : ''}
@@ -3447,7 +3537,7 @@ function renderOS() {
     <!-- Tutorial Overlay -->
     <div class="tutorial-overlay ${gameState.tutorialComplete ? 'hidden' : ''}" id="tutorialOverlay">
       <div class="tutorial-icon">🎤</div>
-      <div class="tutorial-title">Welcome, Future Star</div>
+      <div class="tutorial-title">Welcome, ${gameState.rapperName || 'Future Star'}</div>
       <div class="tutorial-text">
         Your journey from bedroom producer to platinum artist starts now. Write songs, build your fanbase, and maybe catch a label deal.
       </div>
@@ -4843,10 +4933,13 @@ function gameLoop() {
 // ═══════════════════════════════════════════════════════════════
 // INITIALIZATION
 // ═══════════════════════════════════════════════════════════════
+const AVATARS = ['🎤', '🎧', '🔥', '💎', '👑', '🐍', '🦅', '🌊', '💀', '🎭', '🤖', '🦇'];
+
 function bootSequence() {
   const screen = document.getElementById('osScreen');
   if (!screen) return;
   
+  // Show boot animation
   screen.innerHTML = `
     <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;background:#000;">
       <div style="font-size:3rem;margin-bottom:15px;">🥕</div>
@@ -4859,13 +4952,22 @@ function bootSequence() {
   
   const bar = document.getElementById('bootBar');
   const text = document.getElementById('bootText');
-  const steps = [
-    [20, 'Loading kernel...'],
-    [40, 'Mounting beats...'],
-    [60, 'Initializing ML Studio...'],
-    [80, 'Loading your tracks...'],
-    [100, 'Welcome back.'],
-  ];
+  
+  const isReturning = !!gameState.rapperName;
+  const steps = isReturning
+    ? [
+        [20, 'Loading kernel...'],
+        [40, 'Mounting beats...'],
+        [60, 'Initializing ML Studio...'],
+        [80, 'Loading your tracks...'],
+        [100, `Welcome back, ${gameState.rapperName}.`],
+      ]
+    : [
+        [25, 'Loading kernel...'],
+        [50, 'Mounting beats...'],
+        [75, 'First time? Setting up...'],
+        [100, 'Ready.'],
+      ];
   
   steps.forEach(([pct, msg], i) => {
     setTimeout(() => {
@@ -4873,12 +4975,93 @@ function bootSequence() {
       if (text) text.textContent = msg;
       if (pct === 100) {
         setTimeout(() => {
-          renderOS();
-          applyVisualUpgrades();
+          if (isReturning) {
+            renderOS();
+            applyVisualUpgrades();
+          } else {
+            showLoginScreen();
+          }
         }, 400);
       }
     }, (i + 1) * 350);
   });
+}
+
+function showLoginScreen() {
+  const screen = document.getElementById('osScreen');
+  if (!screen) return;
+  
+  let selectedAvatar = AVATARS[0];
+  
+  screen.innerHTML = `
+    <div class="login-screen">
+      <div class="login-selected-avatar" id="loginBigAvatar">${selectedAvatar}</div>
+      <div class="login-avatar-row" id="avatarRow">
+        ${AVATARS.map((a, i) => `<div class="login-avatar clickable ${i === 0 ? 'selected' : ''}" data-avatar="${a}">${a}</div>`).join('')}
+      </div>
+      <div class="login-fields">
+        <input class="login-input" id="loginName" type="text" placeholder="Rapper name" maxlength="20" autocomplete="off" spellcheck="false">
+        <input class="login-input" id="loginPass" type="password" placeholder="Password" autocomplete="off">
+        <button class="login-btn clickable" id="loginBtn" disabled>Log In</button>
+      </div>
+    </div>
+  `;
+  
+  const nameInput = screen.querySelector('#loginName');
+  const passInput = screen.querySelector('#loginPass');
+  const loginBtn = screen.querySelector('#loginBtn');
+  const bigAvatar = screen.querySelector('#loginBigAvatar');
+  
+  // Avatar selection
+  screen.querySelectorAll('.login-avatar').forEach(el => {
+    el.addEventListener('click', () => {
+      screen.querySelectorAll('.login-avatar').forEach(a => a.classList.remove('selected'));
+      el.classList.add('selected');
+      selectedAvatar = el.dataset.avatar;
+      bigAvatar.textContent = selectedAvatar;
+    });
+  });
+  
+  // Enable button when name is filled
+  nameInput.addEventListener('input', () => {
+    loginBtn.disabled = !nameInput.value.trim();
+  });
+  
+  // Enter key on password field triggers login
+  passInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && nameInput.value.trim()) doLogin();
+  });
+  nameInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') passInput.focus();
+  });
+  
+  loginBtn.addEventListener('click', doLogin);
+  
+  // Auto-focus name input
+  setTimeout(() => nameInput.focus(), 100);
+  
+  function doLogin() {
+    const name = nameInput.value.trim();
+    if (!name) return;
+    
+    gameState.rapperName = name;
+    gameState.avatar = selectedAvatar;
+    saveGame();
+    
+    // Brief "logging in" animation
+    screen.innerHTML = `
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;background:#000;">
+        <div style="font-size:3rem;margin-bottom:15px;">${selectedAvatar}</div>
+        <div style="font-size:0.9rem;color:var(--parchment);">Welcome, ${name}.</div>
+        <div style="font-size:0.65rem;color:#555;margin-top:6px;">Loading desktop...</div>
+      </div>
+    `;
+    
+    setTimeout(() => {
+      renderOS();
+      applyVisualUpgrades();
+    }, 800);
+  }
 }
 
 function init() {
