@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pixel Cover — Michael Loya Studio</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0a;
+  --text: #E8E0D4;
+  --text-muted: #8a8580;
+  --accent: #ff8e3d;
+  --espresso: #3d2b1f;
+  --parchment: #E8E0D4;
+  --panel: #151515;
+  --panel-border: #252525;
+  --tool-active: rgba(255,142,61,0.2);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Space Grotesk', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  cursor: url('../cursor.svg') 16 8, default;
+  overflow-x: hidden;
+}
+
+a, button, .clickable, input, select, label { cursor: url('../crosshair.svg') 8 10, pointer !important; }
+h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
+
+/* ── HEADER ── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.8rem 2rem;
+  background: rgba(10, 10, 10, 0.9);
+  backdrop-filter: blur(10px);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-logo-link { display: block; position: relative; height: 24px; }
+.header-logo { height: 24px; transition: opacity 0.2s ease; }
+.header-logo-link .logo-hover { position: absolute; top: 0; left: 0; opacity: 0; }
+.header-logo-link:hover .logo-default { opacity: 0; }
+.header-logo-link:hover .logo-hover { opacity: 1; }
+
+/* ── LAYOUT ── */
+.app-container {
+  flex: 1;
+  display: flex;
+  gap: 0;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* ── LEFT TOOLBAR ── */
+.toolbar {
+  width: 56px;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-self: flex-start;
+  margin-right: 12px;
+}
+
+.tool-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.tool-btn:hover { background: rgba(255,255,255,0.06); color: var(--text); }
+.tool-btn.active { background: var(--tool-active); color: var(--accent); }
+
+.tool-divider {
+  height: 1px;
+  background: var(--panel-border);
+  margin: 4px 0;
+}
+
+/* ── CANVAS AREA ── */
+.canvas-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.canvas-wrapper {
+  position: relative;
+  border: 2px solid var(--panel-border);
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+}
+
+canvas#pixelCanvas {
+  display: block;
+  image-rendering: pixelated;
+}
+
+/* Grid overlay */
+.grid-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  opacity: 0.15;
+}
+
+/* ── RIGHT PANEL ── */
+.right-panel {
+  width: 220px;
+  margin-left: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-self: flex-start;
+}
+
+.panel-section {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.panel-label {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+/* Color palette */
+.color-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 4px;
+}
+
+.color-swatch {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 4px;
+  border: 2px solid transparent;
+  transition: all 0.15s;
+}
+
+.color-swatch:hover { transform: scale(1.15); }
+.color-swatch.active { border-color: #fff; transform: scale(1.1); box-shadow: 0 0 8px rgba(255,255,255,0.3); }
+
+.color-current {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.color-preview {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 2px solid var(--panel-border);
+}
+
+.color-hex {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  font-family: 'Space Grotesk', monospace;
+}
+
+input[type="color"] {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 4px;
+  background: none;
+  padding: 0;
+}
+
+/* Brush size */
+.brush-sizes {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.brush-size-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  border: 1px solid var(--panel-border);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.brush-size-btn:hover { border-color: var(--text-muted); }
+.brush-size-btn.active { border-color: var(--accent); background: var(--tool-active); }
+
+.brush-preview {
+  background: var(--text);
+  border-radius: 1px;
+}
+
+/* Stamps */
+.stamp-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+}
+
+.stamp-btn {
+  aspect-ratio: 1;
+  border-radius: 6px;
+  border: 1px solid var(--panel-border);
+  background: transparent;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.stamp-btn:hover { border-color: var(--text-muted); background: rgba(255,255,255,0.04); }
+.stamp-btn.active { border-color: var(--accent); background: var(--tool-active); }
+
+/* Actions bar */
+.actions-bar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--panel-border);
+  background: transparent;
+  color: var(--text-muted);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.65rem;
+  transition: all 0.15s;
+}
+
+.action-btn:hover { border-color: var(--text-muted); color: var(--text); }
+.action-btn.primary { background: var(--accent); border-color: var(--accent); color: #000; font-weight: 600; }
+.action-btn.primary:hover { opacity: 0.85; }
+
+/* Eraser cursor indicator */
+.canvas-wrapper.eraser-mode { cursor: url('../crosshair.svg') 8 10, crosshair; }
+
+/* ── FOOTER ── */
+.footer {
+  text-align: center;
+  padding: 16px;
+  font-size: 0.6rem;
+  color: var(--text-muted);
+}
+
+/* ── STAMP PREVIEW (floating) ── */
+.stamp-cursor {
+  position: fixed;
+  pointer-events: none;
+  z-index: 999;
+  font-size: 2rem;
+  opacity: 0.6;
+  transform: translate(-50%, -50%);
+  display: none;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .app-container { flex-direction: column; padding: 12px; }
+  .toolbar { flex-direction: row; width: 100%; align-self: stretch; flex-wrap: wrap; justify-content: center; margin-right: 0; margin-bottom: 8px; }
+  .right-panel { width: 100%; margin-left: 0; margin-top: 8px; flex-direction: row; flex-wrap: wrap; gap: 8px; }
+  .right-panel .panel-section { flex: 1; min-width: 140px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <a href="../index.html" class="header-logo-link clickable">
+    <img src="logo-gray.svg" alt="ML" class="header-logo logo-default">
+    <img src="logo-orange.svg" alt="ML" class="header-logo logo-hover">
+  </a>
+</header>
+
+<!-- App -->
+<div class="app-container">
+  
+  <!-- Left Toolbar -->
+  <div class="toolbar" id="toolbar">
+    <button class="tool-btn active clickable" data-tool="brush" title="Brush (B)">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg>
+    </button>
+    <button class="tool-btn clickable" data-tool="eraser" title="Eraser (E)">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 20H7L3 16l9-9 8 8-4 4z"/><path d="M6 11l8 8"/></svg>
+    </button>
+    <button class="tool-btn clickable" data-tool="fill" title="Paint Bucket (G)">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 22l1-1h3l9-9"/><path d="M3 21v-3l9-9 3 3-9 9"/><path d="M14 6l3-3 3 3-3 3"/><path d="M19 15c1 1 2 2 2 3.5A2.5 2.5 0 0118.5 21 2.5 2.5 0 0116 18.5c0-1.5 1-2.5 2-3.5l1-1z"/></svg>
+    </button>
+    <button class="tool-btn clickable" data-tool="eyedropper" title="Eyedropper (I)">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 22l1-1h3l7-7"/><path d="M7 17v-3l7-7 3 3-7 7"/><circle cx="19" cy="5" r="3"/></svg>
+    </button>
+    <div class="tool-divider"></div>
+    <button class="tool-btn clickable" data-tool="stamp" title="Stamps (S)">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2l2.5 7H22l-6 4.5 2.5 7L12 16l-6.5 4.5 2.5-7L2 9h7.5z"/></svg>
+    </button>
+    <div class="tool-divider"></div>
+    <button class="tool-btn clickable" id="undoBtn" title="Undo (Ctrl+Z)">↩</button>
+    <button class="tool-btn clickable" id="redoBtn" title="Redo (Ctrl+Y)">↪</button>
+  </div>
+
+  <!-- Canvas -->
+  <div class="canvas-area">
+    <div class="canvas-wrapper" id="canvasWrapper">
+      <canvas id="pixelCanvas"></canvas>
+      <canvas id="gridOverlay" class="grid-overlay"></canvas>
+    </div>
+    <div class="actions-bar">
+      <button class="action-btn clickable" id="clearBtn">Clear</button>
+      <button class="action-btn clickable" id="gridToggle">Grid: On</button>
+      <button class="action-btn primary clickable" id="exportBtn">Export PNG</button>
+    </div>
+  </div>
+
+  <!-- Right Panel -->
+  <div class="right-panel">
+    
+    <!-- Current Color -->
+    <div class="panel-section">
+      <div class="panel-label">Color</div>
+      <div class="color-current">
+        <div class="color-preview" id="colorPreview" style="background:#E8E0D4;"></div>
+        <span class="color-hex" id="colorHex">#E8E0D4</span>
+        <input type="color" id="customColor" value="#E8E0D4" class="clickable" title="Custom color">
+      </div>
+      <div class="color-grid" id="colorGrid"></div>
+    </div>
+
+    <!-- Brush Size -->
+    <div class="panel-section" id="brushPanel">
+      <div class="panel-label">Brush Size</div>
+      <div class="brush-sizes" id="brushSizes"></div>
+    </div>
+
+    <!-- Stamps -->
+    <div class="panel-section" id="stampPanel" style="display:none;">
+      <div class="panel-label">Stamps</div>
+      <div class="stamp-grid" id="stampGrid"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Floating stamp cursor -->
+<div class="stamp-cursor" id="stampCursor"></div>
+
+<!-- Footer -->
+<div class="footer">Pixel Cover · Michael Loya Studio</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════════════
+const GRID = 50;
+const PIXEL_SIZE = 12; // display size per pixel
+const CANVAS_SIZE = GRID * PIXEL_SIZE; // 600px
+
+// ═══════════════════════════════════════════════════
+// COLOR PALETTE
+// ═══════════════════════════════════════════════════
+const PALETTE = [
+  // Row 1 — basics
+  '#000000', '#FFFFFF', '#E8E0D4', '#ff8e3d', '#3d2b1f', '#8a8580',
+  // Row 2 — reds/pinks
+  '#FF0000', '#CC0000', '#FF4444', '#FF6B6B', '#FF69B4', '#FFB6C1',
+  // Row 3 — oranges/yellows
+  '#FF6600', '#FF9900', '#FFD700', '#FFFF00', '#FFF8DC', '#FFDAB9',
+  // Row 4 — greens
+  '#00FF00', '#32CD32', '#228B22', '#006400', '#90EE90', '#98FB98',
+  // Row 5 — blues
+  '#0000FF', '#1E90FF', '#00BFFF', '#87CEEB', '#000080', '#4169E1',
+  // Row 6 — purples/browns
+  '#800080', '#9B59B6', '#8B5CF6', '#DA70D6', '#8B4513', '#D2691E',
+];
+
+// ═══════════════════════════════════════════════════
+// STAMPS — pixel art patterns drawn onto the grid
+// ═══════════════════════════════════════════════════
+const STAMPS = [
+  {
+    id: 'star4', label: '✦', name: '4-Point Star',
+    size: 7,
+    pattern: [
+      [0,0,0,1,0,0,0],
+      [0,0,1,1,1,0,0],
+      [0,1,1,1,1,1,0],
+      [1,1,1,1,1,1,1],
+      [0,1,1,1,1,1,0],
+      [0,0,1,1,1,0,0],
+      [0,0,0,1,0,0,0],
+    ]
+  },
+  {
+    id: 'heart', label: '♥', name: 'Heart',
+    size: 7,
+    pattern: [
+      [0,1,1,0,1,1,0],
+      [1,1,1,1,1,1,1],
+      [1,1,1,1,1,1,1],
+      [0,1,1,1,1,1,0],
+      [0,0,1,1,1,0,0],
+      [0,0,0,1,0,0,0],
+      [0,0,0,0,0,0,0],
+    ]
+  },
+  {
+    id: 'flower', label: '✿', name: 'Flower',
+    size: 7,
+    pattern: [
+      [0,0,1,0,1,0,0],
+      [0,1,0,1,0,1,0],
+      [1,0,1,1,1,0,1],
+      [0,1,1,1,1,1,0],
+      [1,0,1,1,1,0,1],
+      [0,1,0,1,0,1,0],
+      [0,0,1,0,1,0,0],
+    ]
+  },
+  {
+    id: 'explicit', label: '🅴', name: 'Explicit',
+    size: 9,
+    pattern: [
+      [1,1,1,1,1,1,1,1,1],
+      [1,0,0,0,0,0,0,0,1],
+      [1,0,1,1,0,1,1,0,1],
+      [1,0,1,0,0,1,0,0,1],
+      [1,0,1,1,0,1,1,0,1],
+      [1,0,1,0,0,1,0,0,1],
+      [1,0,1,1,0,1,1,0,1],
+      [1,0,0,0,0,0,0,0,1],
+      [1,1,1,1,1,1,1,1,1],
+    ]
+  },
+  {
+    id: 'skull', label: '💀', name: 'Skull',
+    size: 7,
+    pattern: [
+      [0,1,1,1,1,1,0],
+      [1,1,1,1,1,1,1],
+      [1,0,1,1,1,0,1],
+      [1,1,1,0,1,1,1],
+      [0,1,1,1,1,1,0],
+      [0,0,1,0,1,0,0],
+      [0,0,1,1,1,0,0],
+    ]
+  },
+  {
+    id: 'lightning', label: '⚡', name: 'Lightning',
+    size: 7,
+    pattern: [
+      [0,0,0,1,1,0,0],
+      [0,0,1,1,0,0,0],
+      [0,1,1,1,1,0,0],
+      [0,0,0,1,1,0,0],
+      [0,0,1,1,0,0,0],
+      [0,1,1,0,0,0,0],
+      [0,0,0,0,0,0,0],
+    ]
+  },
+  {
+    id: 'cross', label: '✚', name: 'Cross',
+    size: 7,
+    pattern: [
+      [0,0,1,1,1,0,0],
+      [0,0,1,1,1,0,0],
+      [1,1,1,1,1,1,1],
+      [1,1,1,1,1,1,1],
+      [1,1,1,1,1,1,1],
+      [0,0,1,1,1,0,0],
+      [0,0,1,1,1,0,0],
+    ]
+  },
+  {
+    id: 'diamond', label: '◆', name: 'Diamond',
+    size: 7,
+    pattern: [
+      [0,0,0,1,0,0,0],
+      [0,0,1,1,1,0,0],
+      [0,1,1,1,1,1,0],
+      [1,1,1,1,1,1,1],
+      [0,1,1,1,1,1,0],
+      [0,0,1,1,1,0,0],
+      [0,0,0,1,0,0,0],
+    ]
+  },
+  {
+    id: 'moon', label: '☽', name: 'Crescent Moon',
+    size: 7,
+    pattern: [
+      [0,0,1,1,1,0,0],
+      [0,1,1,0,0,0,0],
+      [1,1,0,0,0,0,0],
+      [1,1,0,0,0,0,0],
+      [1,1,0,0,0,0,0],
+      [0,1,1,0,0,0,0],
+      [0,0,1,1,1,0,0],
+    ]
+  },
+  {
+    id: 'fire', label: '🔥', name: 'Flame',
+    size: 7,
+    pattern: [
+      [0,0,0,1,0,0,0],
+      [0,0,1,1,0,0,0],
+      [0,0,1,1,1,0,0],
+      [0,1,1,1,1,0,0],
+      [0,1,1,1,1,1,0],
+      [1,1,1,1,1,1,0],
+      [0,1,1,1,1,0,0],
+    ]
+  },
+  {
+    id: 'music', label: '♪', name: 'Music Note',
+    size: 7,
+    pattern: [
+      [0,0,1,1,1,1,0],
+      [0,0,1,0,0,1,0],
+      [0,0,1,0,0,1,0],
+      [0,0,1,0,0,1,0],
+      [0,1,1,0,1,1,0],
+      [1,1,1,1,1,1,0],
+      [0,1,0,0,1,0,0],
+    ]
+  },
+  {
+    id: 'crown', label: '👑', name: 'Crown',
+    size: 9,
+    pattern: [
+      [0,0,0,0,0,0,0,0,0],
+      [0,1,0,0,1,0,0,1,0],
+      [0,1,1,0,1,0,1,1,0],
+      [0,1,1,1,1,1,1,1,0],
+      [0,1,1,1,1,1,1,1,0],
+      [0,1,1,1,1,1,1,1,0],
+      [0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0],
+    ]
+  },
+];
+
+// ═══════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════
+let pixels = []; // 50x50 array of hex colors (null = transparent)
+let currentColor = '#E8E0D4';
+let currentTool = 'brush';
+let brushSize = 1;
+let currentStamp = null;
+let showGrid = true;
+let isDrawing = false;
+let history = [];
+let historyIndex = -1;
+const MAX_HISTORY = 50;
+
+// ═══════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════
+const canvas = document.getElementById('pixelCanvas');
+const ctx = canvas.getContext('2d');
+const gridCanvas = document.getElementById('gridOverlay');
+const gridCtx = gridCanvas.getContext('2d');
+
+canvas.width = CANVAS_SIZE;
+canvas.height = CANVAS_SIZE;
+gridCanvas.width = CANVAS_SIZE;
+gridCanvas.height = CANVAS_SIZE;
+
+// Init pixel array
+for (let y = 0; y < GRID; y++) {
+  pixels[y] = [];
+  for (let x = 0; x < GRID; x++) {
+    pixels[y][x] = null;
+  }
+}
+
+pushHistory();
+renderCanvas();
+drawGrid();
+buildUI();
+
+// ═══════════════════════════════════════════════════
+// RENDERING
+// ═══════════════════════════════════════════════════
+function renderCanvas() {
+  // Transparent checkerboard background
+  for (let y = 0; y < GRID; y++) {
+    for (let x = 0; x < GRID; x++) {
+      const px = x * PIXEL_SIZE;
+      const py = y * PIXEL_SIZE;
+      // Checkerboard
+      ctx.fillStyle = (x + y) % 2 === 0 ? '#1a1a1a' : '#222';
+      ctx.fillRect(px, py, PIXEL_SIZE, PIXEL_SIZE);
+      // Pixel color
+      if (pixels[y][x]) {
+        ctx.fillStyle = pixels[y][x];
+        ctx.fillRect(px, py, PIXEL_SIZE, PIXEL_SIZE);
+      }
+    }
+  }
+}
+
+function drawGrid() {
+  gridCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+  if (!showGrid) return;
+  gridCtx.strokeStyle = 'rgba(255,255,255,0.1)';
+  gridCtx.lineWidth = 0.5;
+  for (let i = 0; i <= GRID; i++) {
+    const pos = i * PIXEL_SIZE;
+    gridCtx.beginPath();
+    gridCtx.moveTo(pos, 0);
+    gridCtx.lineTo(pos, CANVAS_SIZE);
+    gridCtx.stroke();
+    gridCtx.beginPath();
+    gridCtx.moveTo(0, pos);
+    gridCtx.lineTo(CANVAS_SIZE, pos);
+    gridCtx.stroke();
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// PIXEL OPERATIONS
+// ═══════════════════════════════════════════════════
+function setPixel(gx, gy, color) {
+  if (gx < 0 || gx >= GRID || gy < 0 || gy >= GRID) return;
+  pixels[gy][gx] = color;
+}
+
+function paintBrush(gx, gy) {
+  const half = Math.floor(brushSize / 2);
+  for (let dy = 0; dy < brushSize; dy++) {
+    for (let dx = 0; dx < brushSize; dx++) {
+      setPixel(gx - half + dx, gy - half + dy, currentTool === 'eraser' ? null : currentColor);
+    }
+  }
+}
+
+function floodFill(startX, startY, fillColor) {
+  const targetColor = pixels[startY]?.[startX];
+  if (targetColor === fillColor) return;
+  
+  const stack = [[startX, startY]];
+  const visited = new Set();
+  
+  while (stack.length > 0) {
+    const [x, y] = stack.pop();
+    const key = `${x},${y}`;
+    if (visited.has(key)) continue;
+    if (x < 0 || x >= GRID || y < 0 || y >= GRID) continue;
+    if (pixels[y][x] !== targetColor) continue;
+    
+    visited.add(key);
+    pixels[y][x] = fillColor;
+    
+    stack.push([x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]);
+  }
+}
+
+function placeStamp(gx, gy, stamp) {
+  const half = Math.floor(stamp.size / 2);
+  for (let dy = 0; dy < stamp.size; dy++) {
+    for (let dx = 0; dx < stamp.size; dx++) {
+      if (stamp.pattern[dy][dx]) {
+        setPixel(gx - half + dx, gy - half + dy, currentColor);
+      }
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// HISTORY
+// ═══════════════════════════════════════════════════
+function pushHistory() {
+  // Remove any future states
+  history = history.slice(0, historyIndex + 1);
+  // Deep copy
+  history.push(pixels.map(row => [...row]));
+  if (history.length > MAX_HISTORY) history.shift();
+  historyIndex = history.length - 1;
+}
+
+function undo() {
+  if (historyIndex <= 0) return;
+  historyIndex--;
+  pixels = history[historyIndex].map(row => [...row]);
+  renderCanvas();
+}
+
+function redo() {
+  if (historyIndex >= history.length - 1) return;
+  historyIndex++;
+  pixels = history[historyIndex].map(row => [...row]);
+  renderCanvas();
+}
+
+// ═══════════════════════════════════════════════════
+// CANVAS EVENTS
+// ═══════════════════════════════════════════════════
+function getGridPos(e) {
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = CANVAS_SIZE / rect.width;
+  const scaleY = CANVAS_SIZE / rect.height;
+  const x = Math.floor((e.clientX - rect.left) * scaleX / PIXEL_SIZE);
+  const y = Math.floor((e.clientY - rect.top) * scaleY / PIXEL_SIZE);
+  return [Math.max(0, Math.min(GRID - 1, x)), Math.max(0, Math.min(GRID - 1, y))];
+}
+
+canvas.addEventListener('mousedown', (e) => {
+  e.preventDefault();
+  const [gx, gy] = getGridPos(e);
+  
+  if (currentTool === 'fill') {
+    floodFill(gx, gy, currentColor);
+    renderCanvas();
+    pushHistory();
+    return;
+  }
+  
+  if (currentTool === 'eyedropper') {
+    const c = pixels[gy]?.[gx];
+    if (c) {
+      currentColor = c;
+      updateColorUI();
+    }
+    return;
+  }
+  
+  if (currentTool === 'stamp' && currentStamp) {
+    placeStamp(gx, gy, currentStamp);
+    renderCanvas();
+    pushHistory();
+    return;
+  }
+  
+  isDrawing = true;
+  paintBrush(gx, gy);
+  renderCanvas();
+});
+
+canvas.addEventListener('mousemove', (e) => {
+  // Update stamp cursor position
+  const stampCursor = document.getElementById('stampCursor');
+  if (currentTool === 'stamp' && currentStamp) {
+    stampCursor.style.display = 'block';
+    stampCursor.style.left = e.clientX + 'px';
+    stampCursor.style.top = e.clientY + 'px';
+  } else {
+    stampCursor.style.display = 'none';
+  }
+  
+  if (!isDrawing) return;
+  const [gx, gy] = getGridPos(e);
+  paintBrush(gx, gy);
+  renderCanvas();
+});
+
+canvas.addEventListener('mouseup', () => {
+  if (isDrawing) {
+    isDrawing = false;
+    pushHistory();
+  }
+});
+
+canvas.addEventListener('mouseleave', () => {
+  if (isDrawing) {
+    isDrawing = false;
+    pushHistory();
+  }
+});
+
+// Touch support
+canvas.addEventListener('touchstart', (e) => {
+  e.preventDefault();
+  const touch = e.touches[0];
+  canvas.dispatchEvent(new MouseEvent('mousedown', { clientX: touch.clientX, clientY: touch.clientY }));
+}, { passive: false });
+
+canvas.addEventListener('touchmove', (e) => {
+  e.preventDefault();
+  const touch = e.touches[0];
+  canvas.dispatchEvent(new MouseEvent('mousemove', { clientX: touch.clientX, clientY: touch.clientY }));
+}, { passive: false });
+
+canvas.addEventListener('touchend', () => {
+  canvas.dispatchEvent(new MouseEvent('mouseup'));
+});
+
+// ═══════════════════════════════════════════════════
+// KEYBOARD SHORTCUTS
+// ═══════════════════════════════════════════════════
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT') return;
+  
+  if ((e.ctrlKey || e.metaKey) && e.key === 'z') { e.preventDefault(); undo(); return; }
+  if ((e.ctrlKey || e.metaKey) && e.key === 'y') { e.preventDefault(); redo(); return; }
+  
+  switch (e.key.toLowerCase()) {
+    case 'b': selectTool('brush'); break;
+    case 'e': selectTool('eraser'); break;
+    case 'g': selectTool('fill'); break;
+    case 'i': selectTool('eyedropper'); break;
+    case 's': selectTool('stamp'); break;
+    case '1': setBrushSize(1); break;
+    case '2': setBrushSize(2); break;
+    case '3': setBrushSize(3); break;
+    case '4': setBrushSize(5); break;
+    case '5': setBrushSize(8); break;
+  }
+});
+
+// ═══════════════════════════════════════════════════
+// UI BUILDERS
+// ═══════════════════════════════════════════════════
+function buildUI() {
+  // Color grid
+  const colorGrid = document.getElementById('colorGrid');
+  PALETTE.forEach(c => {
+    const swatch = document.createElement('button');
+    swatch.className = `color-swatch clickable ${c === currentColor ? 'active' : ''}`;
+    swatch.style.background = c;
+    if (c === '#000000') swatch.style.border = '1px solid #333';
+    swatch.addEventListener('click', () => {
+      currentColor = c;
+      updateColorUI();
+    });
+    colorGrid.appendChild(swatch);
+  });
+  
+  // Brush sizes
+  const sizes = [1, 2, 3, 5, 8];
+  const brushSizesEl = document.getElementById('brushSizes');
+  sizes.forEach(s => {
+    const btn = document.createElement('button');
+    btn.className = `brush-size-btn clickable ${s === brushSize ? 'active' : ''}`;
+    const previewSize = Math.min(s * 4, 24);
+    btn.innerHTML = `<div class="brush-preview" style="width:${previewSize}px;height:${previewSize}px;"></div>`;
+    btn.addEventListener('click', () => setBrushSize(s));
+    brushSizesEl.appendChild(btn);
+  });
+  
+  // Stamps
+  const stampGrid = document.getElementById('stampGrid');
+  STAMPS.forEach(stamp => {
+    const btn = document.createElement('button');
+    btn.className = 'stamp-btn clickable';
+    btn.textContent = stamp.label;
+    btn.title = stamp.name;
+    btn.addEventListener('click', () => {
+      currentStamp = stamp;
+      document.querySelectorAll('.stamp-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('stampCursor').textContent = stamp.label;
+    });
+    stampGrid.appendChild(btn);
+  });
+  
+  // Tool buttons
+  document.querySelectorAll('.tool-btn[data-tool]').forEach(btn => {
+    btn.addEventListener('click', () => selectTool(btn.dataset.tool));
+  });
+  
+  // Actions
+  document.getElementById('clearBtn').addEventListener('click', () => {
+    if (!confirm('Clear the canvas?')) return;
+    for (let y = 0; y < GRID; y++)
+      for (let x = 0; x < GRID; x++)
+        pixels[y][x] = null;
+    renderCanvas();
+    pushHistory();
+  });
+  
+  document.getElementById('gridToggle').addEventListener('click', () => {
+    showGrid = !showGrid;
+    document.getElementById('gridToggle').textContent = `Grid: ${showGrid ? 'On' : 'Off'}`;
+    drawGrid();
+  });
+  
+  document.getElementById('exportBtn').addEventListener('click', exportPNG);
+  document.getElementById('undoBtn').addEventListener('click', undo);
+  document.getElementById('redoBtn').addEventListener('click', redo);
+  
+  // Custom color picker
+  document.getElementById('customColor').addEventListener('input', (e) => {
+    currentColor = e.target.value;
+    updateColorUI();
+  });
+}
+
+function selectTool(tool) {
+  currentTool = tool;
+  document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.tool-btn[data-tool="${tool}"]`)?.classList.add('active');
+  
+  // Toggle panels
+  document.getElementById('brushPanel').style.display = (tool === 'stamp') ? 'none' : 'block';
+  document.getElementById('stampPanel').style.display = (tool === 'stamp') ? 'block' : 'none';
+  
+  // Eraser cursor
+  const wrapper = document.getElementById('canvasWrapper');
+  wrapper.classList.toggle('eraser-mode', tool === 'eraser');
+  
+  // Hide stamp cursor
+  if (tool !== 'stamp') {
+    document.getElementById('stampCursor').style.display = 'none';
+  }
+}
+
+function setBrushSize(size) {
+  brushSize = size;
+  document.querySelectorAll('.brush-size-btn').forEach((btn, i) => {
+    btn.classList.toggle('active', [1,2,3,5,8][i] === size);
+  });
+}
+
+function updateColorUI() {
+  document.getElementById('colorPreview').style.background = currentColor;
+  document.getElementById('colorHex').textContent = currentColor.toUpperCase();
+  document.getElementById('customColor').value = currentColor;
+  document.querySelectorAll('.color-swatch').forEach(s => {
+    s.classList.toggle('active', s.style.background === currentColor || 
+      rgbToHex(s.style.background) === currentColor.toUpperCase());
+  });
+}
+
+function rgbToHex(rgb) {
+  if (rgb.startsWith('#')) return rgb.toUpperCase();
+  const match = rgb.match(/(\d+)/g);
+  if (!match || match.length < 3) return rgb;
+  return '#' + match.slice(0, 3).map(n => parseInt(n).toString(16).padStart(2, '0')).join('').toUpperCase();
+}
+
+// ═══════════════════════════════════════════════════
+// EXPORT
+// ═══════════════════════════════════════════════════
+function exportPNG() {
+  const exportCanvas = document.createElement('canvas');
+  exportCanvas.width = GRID;
+  exportCanvas.height = GRID;
+  const ectx = exportCanvas.getContext('2d');
+  
+  for (let y = 0; y < GRID; y++) {
+    for (let x = 0; x < GRID; x++) {
+      if (pixels[y][x]) {
+        ectx.fillStyle = pixels[y][x];
+        ectx.fillRect(x, y, 1, 1);
+      }
+    }
+  }
+  
+  // Scale up to 500x500 for a nice export
+  const bigCanvas = document.createElement('canvas');
+  bigCanvas.width = 500;
+  bigCanvas.height = 500;
+  const bctx = bigCanvas.getContext('2d');
+  bctx.imageSmoothingEnabled = false;
+  bctx.drawImage(exportCanvas, 0, 0, 500, 500);
+  
+  const link = document.createElement('a');
+  link.download = 'pixel-cover.png';
+  link.href = bigCanvas.toDataURL('image/png');
+  link.click();
+}
+</script>
+</body>
+</html>
