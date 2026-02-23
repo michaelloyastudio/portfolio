@@ -380,7 +380,13 @@
 
   /* Image grids - 2 columns max on mobile */
   .np-body .img-grid-2,
-  .np-body .img-grid-3,
+  .np-body .img-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.35rem;
+    margin: 0.5rem 0;
+  }
+
   .np-body .img-grid-4,
   .np-body .img-grid-4x2,
   .np-body .img-grid-tight {
