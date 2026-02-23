@@ -1379,6 +1379,29 @@ document.querySelector('.grid').addEventListener('mousedown', (e) => {
   step.classList.add('pop');
   setTimeout(() => step.classList.remove('pop'), 250);
 }, true);
+
+// ═══════════════════════════════════════════════════
+// PAGE TRANSITIONS
+// ═══════════════════════════════════════════════════
+(function() {
+  const overlay = document.createElement('div');
+  overlay.id = 'pageTransition';
+  Object.assign(overlay.style, {
+    position: 'fixed', inset: '0', background: '#0a0a0a', zIndex: '99999',
+    opacity: '1', transition: 'opacity 0.4s ease', pointerEvents: 'none'
+  });
+  document.body.appendChild(overlay);
+  // Fade in on load
+  requestAnimationFrame(() => { overlay.style.opacity = '0'; });
+  // Fade out on back navigation (logo click)
+  document.querySelector('.header-logo-link').addEventListener('click', function(e) {
+    e.preventDefault();
+    const href = this.href;
+    overlay.style.pointerEvents = 'all';
+    overlay.style.opacity = '1';
+    setTimeout(() => { window.location.href = href; }, 400);
+  });
+})();
 </script>
 </body>
 </html>

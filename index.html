@@ -1943,6 +1943,28 @@ document.querySelectorAll('.p2-about-back').forEach(link => {
   link.addEventListener('mouseleave', () => { clearInterval(waveTimer); });
 });
 
+// ── PAGE TRANSITIONS ──
+(function() {
+  const overlay = document.createElement('div');
+  overlay.id = 'pageTransition';
+  Object.assign(overlay.style, {
+    position: 'fixed', inset: '0', background: '#0a0a0a', zIndex: '99999',
+    opacity: '1', transition: 'opacity 0.4s ease', pointerEvents: 'none'
+  });
+  document.body.appendChild(overlay);
+  // Fade in on load
+  requestAnimationFrame(() => { overlay.style.opacity = '0'; });
+  // Intercept app links — fade out then navigate
+  document.querySelectorAll('a[href*="interactive/"]').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const href = this.href;
+      overlay.style.pointerEvents = 'all';
+      overlay.style.opacity = '1';
+      setTimeout(() => { window.location.href = href; }, 400);
+    });
+  });
+})();
 </script>
 </body>
 </html>
