@@ -1949,11 +1949,13 @@ document.querySelectorAll('.p2-about-back').forEach(link => {
   overlay.id = 'pageTransition';
   Object.assign(overlay.style, {
     position: 'fixed', inset: '0', background: '#0a0a0a', zIndex: '99999',
-    opacity: '1', transition: 'opacity 0.4s ease', pointerEvents: 'none'
+    opacity: '1', transition: 'opacity 0.6s ease', pointerEvents: 'none'
   });
   document.body.appendChild(overlay);
-  // Fade in on load
-  requestAnimationFrame(() => { overlay.style.opacity = '0'; });
+  // Slight delay so the page renders underneath first, then reveal
+  window.addEventListener('load', () => {
+    setTimeout(() => { overlay.style.opacity = '0'; }, 50);
+  });
   // Intercept app links — fade out then navigate
   document.querySelectorAll('a[href*="interactive/"]').forEach(link => {
     link.addEventListener('click', function(e) {
@@ -1961,7 +1963,7 @@ document.querySelectorAll('.p2-about-back').forEach(link => {
       const href = this.href;
       overlay.style.pointerEvents = 'all';
       overlay.style.opacity = '1';
-      setTimeout(() => { window.location.href = href; }, 400);
+      setTimeout(() => { window.location.href = href; }, 500);
     });
   });
 })();

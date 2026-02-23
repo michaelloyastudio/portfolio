@@ -1080,7 +1080,7 @@ if (backSpan) {
   overlay.id = 'pageTransition';
   Object.assign(overlay.style, {
     position: 'fixed', inset: '0', background: '#0a0a0a', zIndex: '99999',
-    opacity: '1', transition: 'opacity 0.4s ease', pointerEvents: 'none'
+    opacity: '1', transition: 'opacity 0.5s ease', pointerEvents: 'none'
   });
   document.body.appendChild(overlay);
   requestAnimationFrame(() => { overlay.style.opacity = '0'; });
@@ -1089,9 +1089,19 @@ if (backSpan) {
     logoLink.addEventListener('click', function(e) {
       e.preventDefault();
       const href = this.href;
+      // Fade audio out
+      const audio = document.querySelector('audio');
+      if (audio && !audio.paused) {
+        let vol = audio.volume;
+        const fadeAudio = setInterval(() => {
+          vol = Math.max(0, vol - 0.1);
+          audio.volume = vol;
+          if (vol <= 0) { clearInterval(fadeAudio); audio.pause(); }
+        }, 40);
+      }
       overlay.style.pointerEvents = 'all';
       overlay.style.opacity = '1';
-      setTimeout(() => { window.location.href = href; }, 400);
+      setTimeout(() => { window.location.href = href; }, 500);
     });
   }
 })();
