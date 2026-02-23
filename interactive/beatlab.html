@@ -390,8 +390,8 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
     </div>
     <div class="transport-divider"></div>
     <div class="swing-control">
-      <span class="bpm-label">Swing</span>
-      <input type="range" class="swing-slider clickable" id="swingSlider" min="0" max="50" value="0">
+      <span class="bpm-label">Reverb</span>
+      <input type="range" class="swing-slider clickable" id="reverbSlider" min="0" max="100" value="0">
     </div>
     <div class="transport-divider"></div>
     <div class="bpm-control">
@@ -488,7 +488,10 @@ const STEPS = 16;
 let grid = []; // [row][step] = true/false
 let muted = new Array(INSTRUMENTS.length).fill(false);
 let bpm = 120;
-let swing = 0;
+let reverbMix = 0;
+let reverbNode = null;
+let dryGain = null;
+let wetGain = null;
 let playing = false;
 let currentStep = 0;
 let intervalId = null;
@@ -503,8 +506,37 @@ INSTRUMENTS.forEach(() => {
 // AUDIO
 // ═══════════════════════════════════════════════════
 function initAudio() {
-  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    // Create reverb
+    const sampleRate = audioCtx.sampleRate;
+    const length = sampleRate * 2;
+    const impulse = audioCtx.createBuffer(2, length, sampleRate);
+    for (let ch = 0; ch < 2; ch++) {
+      const data = impulse.getChannelData(ch);
+      for (let i = 0; i < length; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, 2.5);
+      }
+    }
+    reverbNode = audioCtx.createConvolver();
+    reverbNode.buffer = impulse;
+    dryGain = audioCtx.createGain();
+    wetGain = audioCtx.createGain();
+    dryGain.gain.value = 1;
+    wetGain.gain.value = 0;
+    dryGain.connect(audioCtx.destination);
+    reverbNode.connect(wetGain);
+    wetGain.connect(audioCtx.destination);
+  }
   if (audioCtx.state === 'suspended') audioCtx.resume();
+}
+
+function getOutput() {
+  // Returns a node to connect sounds to (splits to dry + reverb)
+  const merger = audioCtx.createGain();
+  merger.connect(dryGain);
+  merger.connect(reverbNode);
+  return merger;
 }
 
 function playSound(inst) {
@@ -521,7 +553,7 @@ function playSound(inst) {
       osc.frequency.exponentialRampToValueAtTime(p.end || 30, t + 0.12);
       gain.gain.setValueAtTime(0.8, t);
       gain.gain.exponentialRampToValueAtTime(0.001, t + (p.decay || 0.3));
-      osc.connect(gain).connect(audioCtx.destination);
+      osc.connect(gain).connect(getOutput());
       osc.start(t); osc.stop(t + (p.decay || 0.3) + 0.01);
       break;
     }
@@ -534,12 +566,12 @@ function playSound(inst) {
       const ng = audioCtx.createGain();
       ng.gain.setValueAtTime(0.5, t); ng.gain.exponentialRampToValueAtTime(0.001, t + dur);
       const hp = audioCtx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 1000;
-      noise.connect(hp).connect(ng).connect(audioCtx.destination);
+      noise.connect(hp).connect(ng).connect(getOutput());
       noise.start(t); noise.stop(t + dur + 0.01);
       const osc = audioCtx.createOscillator(); const og = audioCtx.createGain();
       osc.type = 'triangle'; osc.frequency.value = p.tone || 180;
       og.gain.setValueAtTime(0.4, t); og.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
-      osc.connect(og).connect(audioCtx.destination);
+      osc.connect(og).connect(getOutput());
       osc.start(t); osc.stop(t + 0.09);
       break;
     }
@@ -552,7 +584,7 @@ function playSound(inst) {
       const gain = audioCtx.createGain();
       gain.gain.setValueAtTime(0.3, t); gain.gain.exponentialRampToValueAtTime(0.001, t + dur);
       const hp = audioCtx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = p.hp || 7000;
-      src.connect(hp).connect(gain).connect(audioCtx.destination);
+      src.connect(hp).connect(gain).connect(getOutput());
       src.start(t); src.stop(t + dur + 0.01);
       break;
     }
@@ -565,7 +597,7 @@ function playSound(inst) {
       const gain = audioCtx.createGain();
       gain.gain.setValueAtTime(0.25, t); gain.gain.exponentialRampToValueAtTime(0.001, t + dur);
       const hp = audioCtx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = p.hp || 6000;
-      src.connect(hp).connect(gain).connect(audioCtx.destination);
+      src.connect(hp).connect(gain).connect(getOutput());
       src.start(t); src.stop(t + dur + 0.02);
       break;
     }
@@ -578,7 +610,7 @@ function playSound(inst) {
         const gain = audioCtx.createGain(); const off = n * 0.012;
         gain.gain.setValueAtTime(0.4, t + off); gain.gain.exponentialRampToValueAtTime(0.001, t + off + 0.03);
         const bp = audioCtx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 2000;
-        src.connect(bp).connect(gain).connect(audioCtx.destination);
+        src.connect(bp).connect(gain).connect(getOutput());
         src.start(t + off); src.stop(t + off + 0.04);
       }
       break;
@@ -590,7 +622,7 @@ function playSound(inst) {
       osc.frequency.exponentialRampToValueAtTime(p.end || 80, t + (p.decay || 0.15));
       gain.gain.setValueAtTime(0.5, t);
       gain.gain.exponentialRampToValueAtTime(0.001, t + (p.decay || 0.2));
-      osc.connect(gain).connect(audioCtx.destination);
+      osc.connect(gain).connect(getOutput());
       osc.start(t); osc.stop(t + (p.decay || 0.2) + 0.01);
       break;
     }
@@ -598,7 +630,7 @@ function playSound(inst) {
       const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
       osc.type = 'square'; osc.frequency.value = p.freq || 800;
       gain.gain.setValueAtTime(0.3, t); gain.gain.exponentialRampToValueAtTime(0.001, t + 0.03);
-      osc.connect(gain).connect(audioCtx.destination);
+      osc.connect(gain).connect(getOutput());
       osc.start(t); osc.stop(t + 0.04);
       break;
     }
@@ -609,7 +641,7 @@ function playSound(inst) {
       osc.frequency.exponentialRampToValueAtTime(p.end || 500, t + 0.05);
       gain.gain.setValueAtTime(0.25, t);
       gain.gain.exponentialRampToValueAtTime(0.001, t + (p.decay || 0.06));
-      osc.connect(gain).connect(audioCtx.destination);
+      osc.connect(gain).connect(getOutput());
       osc.start(t); osc.stop(t + (p.decay || 0.06) + 0.01);
       break;
     }
@@ -641,13 +673,8 @@ function tick() {
   // Advance
   currentStep = (currentStep + 1) % STEPS;
   
-  // Schedule next with swing
-  const base = getStepInterval();
-  const isOdd = currentStep % 2 === 1;
-  const swingOffset = isOdd ? base * (swing / 100) : 0;
-  
   if (playing) {
-    intervalId = setTimeout(tick, base + swingOffset);
+    intervalId = setTimeout(tick, getStepInterval());
   }
 }
 
@@ -891,8 +918,11 @@ document.getElementById('bpmSlider').addEventListener('input', (e) => {
   document.getElementById('bpmValue').textContent = bpm;
 });
 
-document.getElementById('swingSlider').addEventListener('input', (e) => {
-  swing = parseInt(e.target.value);
+document.getElementById('reverbSlider').addEventListener('input', (e) => {
+  reverbMix = parseInt(e.target.value) / 100;
+  initAudio();
+  dryGain.gain.value = 1 - reverbMix * 0.5;
+  wetGain.gain.value = reverbMix;
 });
 
 document.getElementById('clearBtn').addEventListener('click', clearGrid);
