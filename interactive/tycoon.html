@@ -4394,22 +4394,13 @@ function advanceGameTime(realDeltaSec) {
 // REST FUNCTION
 // ═══════════════════════════════════════════════════════════════
 function sleepEnergy() {
-  // Only sleep after 8 PM game time
-  const currentHour = gameState.gameTimeMs / (60 * 60 * 1000);
-  if (currentHour < 20 && currentHour >= 6) {
-    // Show a message — can't sleep yet
-    alert('Too early to sleep! Come back after 8 PM.');
-    return;
-  }
-  
-  // Sleep until 8 AM next day
   gameState.energy = 100;
   gameState.hype = Math.max(0, gameState.hype - 5);
   gameState.gameTimeMs = 8 * 60 * 60 * 1000; // 8 AM
   gameState.gameDay++;
   
   saveGame();
-  renderOS(); // Refresh desktop (updates clock)
+  renderOS();
 }
 
 // ═══════════════════════════════════════════════════════════════
