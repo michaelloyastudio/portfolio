@@ -1954,7 +1954,7 @@ document.querySelectorAll('.p2-about-back').forEach(link => {
   document.body.appendChild(overlay);
   // Slight delay so the page renders underneath first, then reveal
   window.addEventListener('load', () => {
-    setTimeout(() => { overlay.style.opacity = '0'; }, 50);
+    setTimeout(() => { overlay.style.opacity = '0'; }, 500);
   });
   // Intercept app links — fade out then navigate
   document.querySelectorAll('a[href*="interactive/"]').forEach(link => {
