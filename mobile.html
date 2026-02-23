@@ -1266,7 +1266,7 @@ function updateMenuSelection() {
     item.classList.toggle('selected', i === selectedIndex);
   });
   const selected = document.querySelector('.menu-item.selected');
-  if (selected) selected.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  if (selected) selected.scrollIntoView({ block: 'nearest', behavior: 'instant' });
 }
 
 // ── RENDER PROJECT DETAIL ──
