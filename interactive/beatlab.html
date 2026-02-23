@@ -1268,6 +1268,7 @@ document.getElementById('muteAllBtn').addEventListener('click', toggleMuteAll);
 document.addEventListener('keydown', (e) => {
   if (e.code === 'Space') { e.preventDefault(); playing ? pause() : play(); }
   if (e.key === 'm' || e.key === 'M') { e.preventDefault(); toggleMuteAll(); }
+  if (e.key === 's' || e.key === 'S') { e.preventDefault(); soloed.fill(false); document.querySelectorAll('.row-solo').forEach(b => b.classList.remove('soloed')); }
 });
 
 // ═══════════════════════════════════════════════════
