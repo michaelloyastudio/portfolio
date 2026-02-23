@@ -88,90 +88,239 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
   left: 0;
   right: 0;
   height: 50%;
-  background: linear-gradient(180deg, #2a2520 0%, #1e1a16 100%);
+  background: linear-gradient(180deg, #6b3a4a 0%, #5a2e3e 100%);
   z-index: 0;
 }
 
-/* Room details */
-.room-window {
-  position: absolute;
-  top: 50px;
-  right: 12%;
-  width: 100px;
-  height: 120px;
-  background: linear-gradient(180deg, #1a2a3a 0%, #0d1a2a 100%);
-  border: 6px solid #3d3530;
-  border-radius: 3px;
-  z-index: 1;
-  box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
-  overflow: hidden;
-}
-
-.room-window::before {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 0;
-  bottom: 0;
-  width: 3px;
-  background: #3d3530;
-  transform: translateX(-50%);
-}
-
-.room-window::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: #3d3530;
-  transform: translateY(-50%);
-}
-
-/* Stars in window */
-.window-star {
-  position: absolute;
-  width: 2px;
-  height: 2px;
-  background: #fff;
-  border-radius: 50%;
-  animation: twinkle 3s infinite;
-}
-
-@keyframes twinkle {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 1; }
-}
-
-/* Shelf on wall */
+/* ── WALL SHELVES ── */
 .wall-shelf {
   position: absolute;
-  top: 65px;
-  left: 10%;
-  width: 90px;
-  height: 8px;
-  background: #4a3f35;
-  border-radius: 2px;
   z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.wall-shelf-left { top: 40px; left: 6%; }
+.wall-shelf-right { top: 40px; right: 6%; }
+
+.shelf-board {
+  width: 120px;
+  height: 8px;
+  background: #3d2b1f;
+  border-radius: 2px;
   box-shadow: 0 3px 8px rgba(0,0,0,0.4);
 }
 
 .shelf-items {
-  position: absolute;
-  bottom: 8px;
-  left: 5px;
   display: flex;
-  gap: 6px;
+  gap: 4px;
+  align-items: flex-end;
+  position: relative;
+  top: -8px;
+  padding: 0 6px;
 }
 
-.shelf-item {
-  width: 14px;
-  height: 20px;
+.shelf-book {
+  border-radius: 1px;
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+}
+
+.shelf-binder {
+  border-radius: 2px;
+  position: relative;
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+}
+
+.shelf-binder::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 4px;
+  border: 1.5px solid rgba(255,255,255,0.4);
   border-radius: 2px;
 }
 
-/* Gold plaques on wall */
+/* ── WALL CLOCK ── */
+.wall-clock {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 65px;
+  height: 65px;
+  background: #1a1a1a;
+  border-radius: 50%;
+  border: 4px solid #222;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.4);
+}
+
+.clock-face {
+  width: 52px;
+  height: 52px;
+  background: #f5f0e8;
+  border-radius: 50%;
+  position: relative;
+}
+
+.clock-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  background: #222;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+}
+
+.clock-hand {
+  position: absolute;
+  bottom: 50%;
+  left: 50%;
+  transform-origin: bottom center;
+  border-radius: 2px;
+}
+
+.clock-hand-hour {
+  width: 3px;
+  height: 14px;
+  background: #222;
+  transform: translateX(-50%) rotate(210deg);
+}
+
+.clock-hand-minute {
+  width: 2px;
+  height: 19px;
+  background: #333;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.clock-mark {
+  position: absolute;
+  width: 2px;
+  height: 4px;
+  background: #999;
+  top: 3px;
+  left: 50%;
+  transform-origin: 50% 23px;
+}
+
+/* ── FRAMED PICTURE ── */
+.wall-picture {
+  position: absolute;
+  top: 30px;
+  right: 18%;
+  width: 75px;
+  height: 55px;
+  background: #222;
+  border: 4px solid #3d3530;
+  z-index: 1;
+  overflow: hidden;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.4);
+}
+
+.picture-scene {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.picture-sky { position: absolute; top: 0; left: 0; right: 0; height: 55%; background: #5b9bd5; }
+.picture-sun { position: absolute; top: 8px; right: 10px; width: 12px; height: 12px; background: #ffd700; border-radius: 50%; }
+.picture-hills { position: absolute; bottom: 0; left: 0; right: 0; height: 55%; background: #4caf50; border-radius: 50% 60% 0 0; }
+
+.wall-picture-hook {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 10px solid #3d3530;
+}
+
+/* ── DESK LAMP ── */
+.desk-lamp {
+  left: 60px;
+  bottom: 15px;
+}
+
+.lamp-shade {
+  width: 32px;
+  height: 20px;
+  background: linear-gradient(180deg, #ff8e3d, #e07828);
+  border-radius: 50% 50% 0 0;
+  position: relative;
+  box-shadow: 0 6px 20px rgba(255,142,61,0.15);
+}
+
+.lamp-shade::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(0,0,0,0.15);
+  border-radius: 0 0 2px 2px;
+}
+
+.lamp-neck {
+  width: 4px;
+  height: 24px;
+  background: #8a8580;
+  margin: 0 auto;
+}
+
+.lamp-base-piece {
+  width: 22px;
+  height: 5px;
+  background: #8a8580;
+  border-radius: 2px;
+  margin: 0 auto;
+}
+
+/* ── PENCIL CUP ── */
+.pencil-cup {
+  right: 65px;
+  bottom: 12px;
+}
+
+.cup-body {
+  width: 18px;
+  height: 22px;
+  background: linear-gradient(180deg, #e8a020, #c88010);
+  border-radius: 0 0 3px 3px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.cup-pencils {
+  display: flex;
+  gap: 2px;
+  position: absolute;
+  bottom: 14px;
+}
+
+.cup-pencil {
+  width: 3px;
+  height: 16px;
+  border-radius: 1px 1px 0 0;
+}
+
+/* ── GOLD PLAQUES ── */
 .wall-plaques {
   position: absolute;
   top: 55px;
@@ -373,10 +522,11 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
 
 .desk-surface {
   width: 100%;
-  height: 50px;
-  background: linear-gradient(180deg, #5a4a3a 0%, #3d2b1f 100%);
+  height: 20px;
+  background: linear-gradient(180deg, #5a4a3a 0%, #4a3a2a 100%);
   position: relative;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  z-index: 2;
 }
 
 .desk-surface::before {
@@ -385,8 +535,59 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
   top: 0;
   left: 0;
   right: 0;
-  height: 3px;
+  height: 2px;
   background: linear-gradient(90deg, transparent 5%, rgba(255,255,255,0.08) 50%, transparent 95%);
+}
+
+.desk-body {
+  width: 100%;
+  height: 70px;
+  display: flex;
+  justify-content: center;
+  position: relative;
+}
+
+.desk-pedestal {
+  width: 180px;
+  height: 70px;
+  background: linear-gradient(180deg, #4a5568, #3a4556);
+  border-radius: 0 0 4px 4px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 10px;
+}
+
+.desk-pedestal-left { position: absolute; left: 12%; }
+.desk-pedestal-right { position: absolute; right: 12%; }
+
+.desk-drawer {
+  flex: 1;
+  background: linear-gradient(180deg, #556677, #4a5a6a);
+  border-radius: 2px;
+  position: relative;
+}
+
+.desk-drawer::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 16px;
+  height: 3px;
+  background: #8a9ab0;
+  border-radius: 2px;
+}
+
+.desk-gap {
+  width: calc(76% - 360px);
+  min-width: 100px;
+  height: 70px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 /* ── DESK ITEMS ── */
@@ -2703,8 +2904,10 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
   .dock-stats { display: none; }
   .desk-items { display: none; }
   .wall-plaques { display: none; }
-  .room-window { display: none; }
   .wall-shelf { display: none; }
+  .wall-clock { display: none; }
+  .wall-picture { display: none; }
+  .desk-body { display: none; }
   .side-monitor { display: none !important; }
   .calendar-widget { display: none; }
 }
@@ -2725,22 +2928,57 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
   <!-- Bedroom Wall -->
   <div class="wall"></div>
   
-  <!-- Room Window -->
-  <div class="room-window">
-    <div class="window-star" style="top:15%;left:20%;animation-delay:0s;"></div>
-    <div class="window-star" style="top:35%;left:65%;animation-delay:1s;"></div>
-    <div class="window-star" style="top:60%;left:30%;animation-delay:0.5s;"></div>
-    <div class="window-star" style="top:25%;left:80%;animation-delay:1.5s;"></div>
-    <div class="window-star" style="top:75%;left:55%;animation-delay:2s;"></div>
+  <!-- Left Shelf -->
+  <div class="wall-shelf wall-shelf-left">
+    <div class="shelf-items">
+      <div class="shelf-binder" style="width:14px;height:26px;background:#27ae60;"></div>
+      <div class="shelf-book" style="width:10px;height:22px;background:#2980b9;"></div>
+      <div class="shelf-book" style="width:8px;height:20px;background:#c0392b;"></div>
+      <div class="shelf-book" style="width:12px;height:24px;background:#8e44ad;"></div>
+      <div class="shelf-book" style="width:9px;height:18px;background:#f39c12;"></div>
+    </div>
+    <div class="shelf-board"></div>
   </div>
   
-  <!-- Wall Shelf -->
-  <div class="wall-shelf">
+  <!-- Right Shelf -->
+  <div class="wall-shelf wall-shelf-right">
     <div class="shelf-items">
-      <div class="shelf-item" style="background:#c0392b;"></div>
-      <div class="shelf-item" style="background:#2980b9;height:18px;"></div>
-      <div class="shelf-item" style="background:#27ae60;height:16px;"></div>
-      <div class="shelf-item" style="background:#f39c12;height:22px;"></div>
+      <div class="shelf-book" style="width:10px;height:20px;background:#e74c3c;"></div>
+      <div class="shelf-book" style="width:8px;height:22px;background:#3498db;"></div>
+      <div class="shelf-book" style="width:12px;height:18px;background:#f1c40f;"></div>
+      <div class="shelf-binder" style="width:14px;height:26px;background:#e91e63;"></div>
+    </div>
+    <div class="shelf-board"></div>
+  </div>
+  
+  <!-- Wall Clock -->
+  <div class="wall-clock">
+    <div class="clock-face">
+      <div class="clock-mark" style="transform:translateX(-50%) rotate(0deg);"></div>
+      <div class="clock-mark" style="transform:translateX(-50%) rotate(30deg);"></div>
+      <div class="clock-mark" style="transform:translateX(-50%) rotate(60deg);"></div>
+      <div class="clock-mark" style="transform:translateX(-50%) rotate(90deg);"></div>
+      <div class="clock-mark" style="transform:translateX(-50%) rotate(120deg);"></div>
+      <div class="clock-mark" style="transform:translateX(-50%) rotate(150deg);"></div>
+      <div class="clock-mark" style="transform:translateX(-50%) rotate(180deg);"></div>
+      <div class="clock-mark" style="transform:translateX(-50%) rotate(210deg);"></div>
+      <div class="clock-mark" style="transform:translateX(-50%) rotate(240deg);"></div>
+      <div class="clock-mark" style="transform:translateX(-50%) rotate(270deg);"></div>
+      <div class="clock-mark" style="transform:translateX(-50%) rotate(300deg);"></div>
+      <div class="clock-mark" style="transform:translateX(-50%) rotate(330deg);"></div>
+      <div class="clock-hand clock-hand-hour" id="clockHour"></div>
+      <div class="clock-hand clock-hand-minute" id="clockMinute"></div>
+      <div class="clock-dot"></div>
+    </div>
+  </div>
+  
+  <!-- Framed Picture -->
+  <div class="wall-picture">
+    <div class="wall-picture-hook"></div>
+    <div class="picture-scene">
+      <div class="picture-sky"></div>
+      <div class="picture-sun"></div>
+      <div class="picture-hills"></div>
     </div>
   </div>
   
@@ -2783,7 +3021,23 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
       <div class="headphone-cup left"></div>
       <div class="headphone-cup right"></div>
     </div>
-    <!-- coffee mug removed -->
+    <!-- Desk Lamp -->
+    <div class="desk-item desk-lamp" style="opacity:1;transform:none;">
+      <div class="lamp-shade"></div>
+      <div class="lamp-neck"></div>
+      <div class="lamp-base-piece"></div>
+    </div>
+    <!-- Pencil Cup -->
+    <div class="desk-item pencil-cup" style="opacity:1;transform:none;">
+      <div class="cup-body">
+        <div class="cup-pencils">
+          <div class="cup-pencil" style="background:#e74c3c;height:18px;"></div>
+          <div class="cup-pencil" style="background:#2ecc71;height:14px;"></div>
+          <div class="cup-pencil" style="background:#3498db;height:16px;"></div>
+          <div class="cup-pencil" style="background:#f1c40f;height:12px;"></div>
+        </div>
+      </div>
+    </div>
   </div>
   
   <!-- Computer -->
@@ -2800,6 +3054,18 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
   <!-- Desk -->
   <div class="desk">
     <div class="desk-surface"></div>
+    <div class="desk-body">
+      <div class="desk-pedestal desk-pedestal-left">
+        <div class="desk-drawer"></div>
+        <div class="desk-drawer"></div>
+        <div class="desk-drawer"></div>
+      </div>
+      <div class="desk-pedestal desk-pedestal-right">
+        <div class="desk-drawer"></div>
+        <div class="desk-drawer"></div>
+        <div class="desk-drawer"></div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -4874,6 +5140,15 @@ function gameLoop() {
   // Update game clock
   const timeEl = document.getElementById('menuTime');
   if (timeEl) timeEl.textContent = getGameTimeStr();
+  
+  // Update wall clock hands
+  const totalMinutes = gameState.gameTimeMs / 60000;
+  const hours = totalMinutes / 60;
+  const mins = totalMinutes % 60;
+  const hourHand = document.getElementById('clockHour');
+  const minHand = document.getElementById('clockMinute');
+  if (hourHand) hourHand.style.transform = `translateX(-50%) rotate(${(hours % 12) * 30 + mins * 0.5}deg)`;
+  if (minHand) minHand.style.transform = `translateX(-50%) rotate(${mins * 6}deg)`;
   
   // Check events
   checkMilestoneEvents();
