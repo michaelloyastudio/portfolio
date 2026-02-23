@@ -3086,7 +3086,7 @@ function renderOS() {
     <!-- Menubar -->
     <div class="os-menubar">
       <div class="os-left">
-        <span>🎵 RapperOS</span>
+        <span class="clickable" onclick="resetGame()" style="opacity:0.6" title="Reset Progress">🎵 RapperOS</span>
       </div>
       <div class="os-right">
         ${contractInfo ? `<span class="os-contract">${contractInfo}</span>` : ''}
