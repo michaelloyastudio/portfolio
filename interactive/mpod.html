@@ -764,7 +764,7 @@
   <span class="color-label">Color</span>
 </div>
 
-<div class="footer"></div>
+<div class="footer">What I'm listening to · Last updated Feb 22</div>
 
 <audio id="audio" preload="metadata"></audio>
 
@@ -982,7 +982,7 @@ document.getElementById('btnSelect').addEventListener('click', () => {
   }
 });
 
-// Play/pause wheel button disabled (no action on click)
+document.getElementById('btnPlayPause').addEventListener('click', togglePlay);
 document.getElementById('btnFwd').addEventListener('click', nextTrack);
 document.getElementById('btnRew').addEventListener('click', prevTrack);
 
