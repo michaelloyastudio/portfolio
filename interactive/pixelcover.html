@@ -462,18 +462,27 @@ const STAMPS = [
     ]
   },
   {
-    id: 'explicit', label: '🅴', name: 'Explicit',
-    size: 9,
+    id: 'explicit', label: '🅴', name: 'Parental Advisory',
+    size: 15,
+    // Multicolor stamp: uses special value 2 for "secondary" (white on black bg)
+    multicolor: true,
+    colors: { 1: '#000000', 2: '#FFFFFF' },
     pattern: [
-      [1,1,1,1,1,1,1,1,1],
-      [1,0,0,0,0,0,0,0,1],
-      [1,0,1,1,0,1,1,0,1],
-      [1,0,1,0,0,1,0,0,1],
-      [1,0,1,1,0,1,1,0,1],
-      [1,0,1,0,0,1,0,0,1],
-      [1,0,1,1,0,1,1,0,1],
-      [1,0,0,0,0,0,0,0,1],
-      [1,1,1,1,1,1,1,1,1],
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+      [1,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
+      [1,2,1,1,1,1,1,1,1,1,1,1,1,2,1],
+      [1,2,1,2,2,0,2,2,0,2,2,0,1,2,1],
+      [1,2,1,2,0,2,2,0,0,2,0,2,1,2,1],
+      [1,2,1,2,2,0,2,2,0,2,2,0,1,2,1],
+      [1,2,1,2,0,0,2,0,0,2,0,0,1,2,1],
+      [1,2,1,1,1,1,1,1,1,1,1,1,1,2,1],
+      [1,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
+      [1,2,1,1,1,1,1,1,1,1,1,1,1,2,1],
+      [1,2,1,2,0,2,0,2,0,2,0,2,1,2,1],
+      [1,2,1,0,0,2,0,2,0,2,0,0,1,2,1],
+      [1,2,1,1,1,1,1,1,1,1,1,1,1,2,1],
+      [1,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
     ]
   },
   {
@@ -705,7 +714,11 @@ function placeStamp(gx, gy, stamp) {
   const half = Math.floor(stamp.size / 2);
   for (let dy = 0; dy < stamp.size; dy++) {
     for (let dx = 0; dx < stamp.size; dx++) {
-      if (stamp.pattern[dy][dx]) {
+      const val = stamp.pattern[dy][dx];
+      if (val === 0) continue;
+      if (stamp.multicolor && stamp.colors) {
+        setPixel(gx - half + dx, gy - half + dy, stamp.colors[val] || currentColor);
+      } else if (val) {
         setPixel(gx - half + dx, gy - half + dy, currentColor);
       }
     }
