@@ -1406,7 +1406,7 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 's' || e.key === 'S') { e.preventDefault(); soloed.fill(false); document.querySelectorAll('.row-solo').forEach(b => b.classList.remove('soloed')); }
   if (e.key === 'd' || e.key === 'D') { e.preventDefault(); toggleGroupMute('drums'); }
   if (e.key === 'v' || e.key === 'V') { e.preventDefault(); toggleGroupMute('vocals'); }
-  if (e.key === 'r' || e.key === 'R') { e.preventDefault(); setReverb(0, 1.2); updateReverbHud(); setTimeout(hideReverbHud, 1200); }
+  if (e.key === 'r' || e.key === 'R') { e.preventDefault(); setReverb(0, 3.5); updateReverbHud(); setTimeout(hideReverbHud, 3500); }
   // Arrow keys for reverb
   if ((e.key === 'ArrowUp' || e.key === 'ArrowDown') && !e.repeat) {
     e.preventDefault();
