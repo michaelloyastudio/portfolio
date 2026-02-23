@@ -1306,10 +1306,7 @@ document.getElementById('bpmSlider').addEventListener('input', (e) => {
 });
 
 document.getElementById('reverbSlider').addEventListener('input', (e) => {
-  reverbMix = parseInt(e.target.value) / 100;
-  initAudio();
-  dryGain.gain.value = 1 - reverbMix * 0.5;
-  wetGain.gain.value = reverbMix;
+  setReverb(parseInt(e.target.value) / 100, 0);
 });
 
 document.getElementById('clearBtn').addEventListener('click', clearGrid);
@@ -1359,12 +1356,24 @@ function hideReverbHud() {
   document.getElementById('reverbHud').classList.remove('visible');
 }
 
-function nudgeReverb(dir) {
+function setReverb(val, rampTime) {
   initAudio();
-  reverbMix = Math.max(0, Math.min(1, reverbMix + dir * REVERB_STEP));
-  dryGain.gain.value = 1 - reverbMix * 0.5;
-  wetGain.gain.value = reverbMix;
+  reverbMix = Math.max(0, Math.min(1, val));
+  const now = audioCtx.currentTime;
+  if (rampTime && rampTime > 0) {
+    dryGain.gain.cancelScheduledValues(now);
+    wetGain.gain.cancelScheduledValues(now);
+    dryGain.gain.setTargetAtTime(1 - reverbMix * 0.5, now, rampTime / 3);
+    wetGain.gain.setTargetAtTime(reverbMix, now, rampTime / 3);
+  } else {
+    dryGain.gain.value = 1 - reverbMix * 0.5;
+    wetGain.gain.value = reverbMix;
+  }
   updateReverbHud();
+}
+
+function nudgeReverb(dir) {
+  setReverb(reverbMix + dir * REVERB_STEP, 0);
 }
 
 // ── GROUP MUTE ──
@@ -1397,6 +1406,7 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 's' || e.key === 'S') { e.preventDefault(); soloed.fill(false); document.querySelectorAll('.row-solo').forEach(b => b.classList.remove('soloed')); }
   if (e.key === 'd' || e.key === 'D') { e.preventDefault(); toggleGroupMute('drums'); }
   if (e.key === 'v' || e.key === 'V') { e.preventDefault(); toggleGroupMute('vocals'); }
+  if (e.key === 'r' || e.key === 'R') { e.preventDefault(); setReverb(0, 1.2); updateReverbHud(); setTimeout(hideReverbHud, 1200); }
   // Arrow keys for reverb
   if ((e.key === 'ArrowUp' || e.key === 'ArrowDown') && !e.repeat) {
     e.preventDefault();
