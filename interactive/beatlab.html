@@ -32,7 +32,7 @@ body {
   cursor: url('../cursor.svg') 16 8, default;
 }
 
-a, button, .clickable, input, select, input[type="range"], label, [onclick], .step, .row-mute, .row-solo, .mute-all-btn, .transport-btn, .action-btn { cursor: url('../crosshair.svg') 8 10, pointer !important; }
+a, button, .clickable, input, select, input[type="range"], label, [onclick], .step, .row-mute, .row-solo, .mute-all-btn, .group-mute-btn, .transport-btn, .action-btn { cursor: url('../crosshair.svg') 8 10, pointer !important; }
 input[type="range"]::-webkit-slider-thumb { cursor: url('../crosshair.svg') 8 10, pointer !important; }
 h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
 
@@ -246,6 +246,59 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
 }
 .mute-all-btn:hover { border-color: #ff4444; color: #ff4444; }
 .mute-all-btn.active { background: rgba(255,68,68,0.2); border-color: #ff4444; color: #ff4444; }
+
+.group-mute-row {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+  justify-content: center;
+}
+.group-mute-btn {
+  font-size: 0.5rem;
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid #333;
+  border-radius: 4px;
+  padding: 3px 8px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  transition: all 0.15s;
+}
+.group-mute-btn:hover { border-color: var(--accent); color: var(--accent); }
+.group-mute-btn.active { background: rgba(255,142,61,0.15); border-color: var(--accent); color: var(--accent); }
+
+.reverb-indicator {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(19,19,19,0.9);
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0;
+  transition: opacity 0.2s;
+  z-index: 200;
+  pointer-events: none;
+}
+.reverb-indicator.visible { opacity: 1; }
+.reverb-indicator .reverb-bar {
+  width: 80px;
+  height: 4px;
+  background: #333;
+  border-radius: 2px;
+  margin-top: 4px;
+  overflow: hidden;
+}
+.reverb-indicator .reverb-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width 0.05s;
+}
 
 .row-label {
   height: 39px;
@@ -682,6 +735,18 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
     <div class="beat-numbers" id="beatNumbers"></div>
     <div class="row-labels" id="rowLabels"></div>
     <div class="grid" id="grid"><div class="ripple-overlay" id="rippleOverlay"></div></div>
+  </div>
+
+  <!-- Group Mutes -->
+  <div class="group-mute-row">
+    <button class="group-mute-btn clickable" id="muteDrumsBtn" title="Mute Drums">Mute Drums</button>
+    <button class="group-mute-btn clickable" id="muteVocalsBtn" title="Mute Vocals">Mute Vocals</button>
+  </div>
+
+  <!-- Reverb HUD -->
+  <div class="reverb-indicator" id="reverbHud">
+    Reverb <span id="reverbPct">0%</span>
+    <div class="reverb-bar"><div class="reverb-fill" id="reverbFill" style="width:0%"></div></div>
   </div>
 
   <!-- Actions -->
@@ -1268,10 +1333,80 @@ function toggleMuteAll() {
 
 document.getElementById('muteAllBtn').addEventListener('click', toggleMuteAll);
 
+// ── ARROW KEY REVERB ──
+let arrowReverbInterval = null;
+let arrowHeld = null;
+const REVERB_STEP = 0.03;
+const REVERB_INTERVAL = 50;
+
+function updateReverbHud() {
+  const pct = Math.round(reverbMix * 100);
+  document.getElementById('reverbPct').textContent = pct + '%';
+  document.getElementById('reverbFill').style.width = pct + '%';
+  document.getElementById('reverbSlider').value = pct;
+  const hud = document.getElementById('reverbHud');
+  hud.classList.add('visible');
+}
+
+function hideReverbHud() {
+  document.getElementById('reverbHud').classList.remove('visible');
+}
+
+function nudgeReverb(dir) {
+  initAudio();
+  reverbMix = Math.max(0, Math.min(1, reverbMix + dir * REVERB_STEP));
+  dryGain.gain.value = 1 - reverbMix * 0.5;
+  wetGain.gain.value = reverbMix;
+  updateReverbHud();
+}
+
+// ── GROUP MUTE ──
+let drumsMuted = false;
+let vocalsMuted = false;
+
+function toggleGroupMute(type) {
+  const isDrums = type === 'drums';
+  if (isDrums) drumsMuted = !drumsMuted; else vocalsMuted = !vocalsMuted;
+  const active = isDrums ? drumsMuted : vocalsMuted;
+  const btn = document.getElementById(isDrums ? 'muteDrumsBtn' : 'muteVocalsBtn');
+  btn.classList.toggle('active', active);
+  btn.textContent = active ? (isDrums ? 'Unmute Drums' : 'Unmute Vocals') : (isDrums ? 'Mute Drums' : 'Mute Vocals');
+  INSTRUMENTS.forEach((inst, i) => {
+    const match = isDrums ? inst.type !== 'vocal' : inst.type === 'vocal';
+    if (match) {
+      muted[i] = active;
+      const muteBtn = document.querySelectorAll('.row-mute')[i];
+      if (muteBtn) muteBtn.classList.toggle('muted', active);
+    }
+  });
+}
+
+document.getElementById('muteDrumsBtn').addEventListener('click', () => toggleGroupMute('drums'));
+document.getElementById('muteVocalsBtn').addEventListener('click', () => toggleGroupMute('vocals'));
+
 document.addEventListener('keydown', (e) => {
   if (e.code === 'Space') { e.preventDefault(); playing ? pause() : play(); }
   if (e.key === 'm' || e.key === 'M') { e.preventDefault(); toggleMuteAll(); }
   if (e.key === 's' || e.key === 'S') { e.preventDefault(); soloed.fill(false); document.querySelectorAll('.row-solo').forEach(b => b.classList.remove('soloed')); }
+  if (e.key === 'd' || e.key === 'D') { e.preventDefault(); toggleGroupMute('drums'); }
+  if (e.key === 'v' || e.key === 'V') { e.preventDefault(); toggleGroupMute('vocals'); }
+  // Arrow keys for reverb
+  if ((e.key === 'ArrowUp' || e.key === 'ArrowDown') && !e.repeat) {
+    e.preventDefault();
+    const dir = e.key === 'ArrowUp' ? 1 : -1;
+    arrowHeld = dir;
+    nudgeReverb(dir);
+    arrowReverbInterval = setInterval(() => nudgeReverb(dir), REVERB_INTERVAL);
+  }
+});
+
+document.addEventListener('keyup', (e) => {
+  if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+    arrowHeld = null;
+    clearInterval(arrowReverbInterval);
+    arrowReverbInterval = null;
+    setTimeout(hideReverbHud, 800);
+  }
 });
 
 // ═══════════════════════════════════════════════════
