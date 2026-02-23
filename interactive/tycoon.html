@@ -1,0 +1,1751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rapper Tycoon — Michael Loya Studio</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0a;
+  --parchment: #E8E0D4;
+  --accent: #ff8e3d;
+  --espresso: #3d2b1f;
+  --warm-gray: #8a8580;
+  --text: #E8E0D4;
+  --text-muted: #8a8580;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Space Grotesk', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  cursor: url('../cursor.svg') 16 8, default;
+  overflow-x: hidden;
+}
+
+a, button, .action-btn, .upgrade-item, .modal-option, .event-btn {
+  cursor: url('../crosshair.svg') 8 10, pointer !important;
+}
+
+/* ── HEADER ── */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 2rem;
+  z-index: 100;
+  background: linear-gradient(to bottom, var(--bg), transparent);
+}
+
+.header-logo-link {
+  display: block;
+  transition: opacity 0.3s ease;
+}
+
+.header-logo {
+  height: 28px;
+  transition: opacity 0.2s ease;
+}
+
+.header-logo-link .logo-hover { position: absolute; top: 0; left: 0; opacity: 0; }
+.header-logo-link:hover .logo-default { opacity: 0; }
+.header-logo-link:hover .logo-hover { opacity: 1; }
+.header-logo-link { position: relative; }
+
+/* ── TOP BAR ── */
+.top-bar {
+  position: fixed;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  background: rgba(20, 20, 20, 0.9);
+  backdrop-filter: blur(10px);
+  padding: 0.75rem 1.5rem;
+  border-radius: 50px;
+  border: 1px solid rgba(255, 142, 61, 0.2);
+  z-index: 90;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.stat-icon {
+  font-size: 1rem;
+}
+
+.stat-value {
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.stat-label {
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.artist-name {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.1rem;
+  font-style: italic;
+  color: var(--accent);
+}
+
+/* ── MAIN GAME AREA ── */
+.game-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 140px 20px 200px;
+  min-height: 100vh;
+}
+
+/* ── STATS PANEL ── */
+.stats-panel {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-circle {
+  width: 80px;
+  height: 80px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.stat-circle svg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.stat-circle circle {
+  fill: none;
+  stroke-width: 4;
+}
+
+.stat-circle .bg {
+  stroke: rgba(255, 142, 61, 0.15);
+}
+
+.stat-circle .fill {
+  stroke: var(--accent);
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.5s ease;
+}
+
+.stat-circle .stat-num {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.stat-circle .stat-name {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* ── ISOMETRIC ROOM ── */
+.room-container {
+  perspective: 1000px;
+  margin-bottom: 2rem;
+}
+
+.room {
+  width: 450px;
+  height: 280px;
+  position: relative;
+  transform-style: preserve-3d;
+  transform: rotateX(55deg) rotateZ(-45deg);
+}
+
+.floor {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #1a1614 0%, #252220 50%, #1f1c1a 100%);
+  border-radius: 8px;
+  box-shadow: 
+    0 40px 80px rgba(0, 0, 0, 0.8),
+    inset 0 0 100px rgba(255, 142, 61, 0.03);
+}
+
+/* Floor pattern */
+.floor::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(255, 142, 61, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 142, 61, 0.02) 1px, transparent 1px);
+  background-size: 30px 30px;
+  border-radius: 8px;
+}
+
+/* Wall */
+.wall-back {
+  position: absolute;
+  width: 100%;
+  height: 180px;
+  bottom: 100%;
+  transform-origin: bottom;
+  transform: rotateX(-90deg);
+  background: linear-gradient(to top, #1a1614, #141210);
+}
+
+.wall-left {
+  position: absolute;
+  width: 180px;
+  height: 100%;
+  right: 100%;
+  transform-origin: right;
+  transform: rotateY(90deg);
+  background: linear-gradient(to left, #181614, #121010);
+}
+
+/* ── DESK ── */
+.desk {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 20px;
+  transform-style: preserve-3d;
+}
+
+.desk-top {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #4a3828, #3d2b1f);
+  border-radius: 2px;
+  box-shadow: 0 -2px 10px rgba(255, 142, 61, 0.1);
+}
+
+.desk-top::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 50px;
+  bottom: 100%;
+  left: 0;
+  transform-origin: bottom;
+  transform: rotateX(-90deg);
+  background: linear-gradient(to top, #3d2b1f, #2a1d15);
+}
+
+.desk-leg {
+  position: absolute;
+  width: 8px;
+  height: 40px;
+  background: #2a1d15;
+  bottom: -40px;
+  transform: translateZ(-20px);
+}
+
+.desk-leg.left { left: 20px; }
+.desk-leg.right { right: 20px; }
+
+/* ── MONITOR ── */
+.monitor {
+  position: absolute;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 8px;
+  transform-style: preserve-3d;
+}
+
+.monitor-screen {
+  position: absolute;
+  width: 100%;
+  height: 70px;
+  bottom: 100%;
+  transform-origin: bottom;
+  transform: rotateX(-75deg);
+  background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
+  border-radius: 4px;
+  border: 3px solid #2a2a2a;
+  box-shadow: 
+    0 0 20px rgba(255, 142, 61, 0.2),
+    inset 0 0 30px rgba(255, 142, 61, 0.1);
+  overflow: hidden;
+}
+
+.monitor-screen.working::after {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  background: linear-gradient(135deg, 
+    rgba(255, 142, 61, 0.3) 0%, 
+    rgba(255, 142, 61, 0.1) 50%,
+    rgba(255, 142, 61, 0.2) 100%);
+  animation: screenGlow 2s ease-in-out infinite;
+}
+
+@keyframes screenGlow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+.monitor-stand {
+  position: absolute;
+  width: 20px;
+  height: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #2a2a2a;
+  border-radius: 2px;
+}
+
+/* ── MICROPHONE ── */
+.mic-setup {
+  position: absolute;
+  bottom: 50px;
+  left: 80px;
+  transform-style: preserve-3d;
+}
+
+.mic-stand {
+  width: 4px;
+  height: 60px;
+  background: linear-gradient(to top, #1a1a1a, #333);
+  border-radius: 2px;
+}
+
+.mic-arm {
+  position: absolute;
+  bottom: 50px;
+  left: 2px;
+  width: 40px;
+  height: 3px;
+  background: #333;
+  transform-origin: left;
+  transform: rotate(-20deg);
+}
+
+.mic-head {
+  position: absolute;
+  right: -15px;
+  top: -10px;
+  width: 18px;
+  height: 25px;
+  background: linear-gradient(135deg, #444, #222);
+  border-radius: 8px 8px 4px 4px;
+  border: 2px solid #555;
+}
+
+.mic-head.upgraded {
+  background: linear-gradient(135deg, var(--accent), #cc6b20);
+  border-color: #ffaa66;
+  box-shadow: 0 0 15px rgba(255, 142, 61, 0.5);
+}
+
+/* ── CHARACTER ── */
+.character {
+  position: absolute;
+  bottom: 55px;
+  left: 50%;
+  transform: translateX(-50%);
+  transform-style: preserve-3d;
+}
+
+.char-body {
+  width: 30px;
+  height: 40px;
+  background: linear-gradient(135deg, #4a4a4a, #2a2a2a);
+  border-radius: 8px 8px 4px 4px;
+  position: relative;
+}
+
+.char-head {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24px;
+  height: 24px;
+  background: linear-gradient(135deg, #8b7355, #6b5344);
+  border-radius: 50%;
+  margin-bottom: 2px;
+}
+
+.char-headphones {
+  position: absolute;
+  width: 30px;
+  height: 12px;
+  top: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 3px solid #333;
+  border-bottom: none;
+  border-radius: 15px 15px 0 0;
+}
+
+.char-headphones::before,
+.char-headphones::after {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 10px;
+  background: #333;
+  border-radius: 2px;
+  top: 8px;
+}
+
+.char-headphones::before { left: -5px; }
+.char-headphones::after { right: -5px; }
+
+/* Working animation */
+.character.working {
+  animation: charBounce 0.5s ease-in-out infinite;
+}
+
+@keyframes charBounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-3px); }
+}
+
+/* ── BED ── */
+.bed {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  width: 80px;
+  height: 120px;
+  transform-style: preserve-3d;
+}
+
+.bed-frame {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #3d2b1f, #2a1d15);
+  border-radius: 4px;
+}
+
+.bed-mattress {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  right: 5px;
+  bottom: 5px;
+  background: linear-gradient(135deg, #4a4a5a, #3a3a4a);
+  border-radius: 3px;
+}
+
+.bed-pillow {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  right: 10px;
+  height: 20px;
+  background: var(--parchment);
+  border-radius: 4px;
+  opacity: 0.9;
+}
+
+/* ── POSTERS ── */
+.poster {
+  position: absolute;
+  transform-style: preserve-3d;
+  border-radius: 2px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.poster-1 {
+  width: 40px;
+  height: 50px;
+  top: -120px;
+  left: 100px;
+  transform: rotateX(-90deg);
+  background: linear-gradient(135deg, var(--accent), #cc6b20);
+}
+
+.poster-2 {
+  width: 35px;
+  height: 45px;
+  top: -100px;
+  left: 160px;
+  transform: rotateX(-90deg);
+  background: linear-gradient(135deg, #6a5acd, #483d8b);
+}
+
+.poster-3 {
+  width: 45px;
+  height: 55px;
+  top: 80px;
+  left: -130px;
+  transform: rotateY(90deg);
+  background: linear-gradient(135deg, #20b2aa, #008b8b);
+}
+
+/* ── SPEAKER ── */
+.speaker {
+  position: absolute;
+  bottom: 50px;
+  right: 80px;
+  width: 25px;
+  height: 40px;
+  background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+  border-radius: 3px;
+  border: 2px solid #333;
+}
+
+.speaker::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 15px;
+  height: 15px;
+  background: radial-gradient(circle, #444 40%, #222 100%);
+  border-radius: 50%;
+}
+
+.speaker::after {
+  content: '';
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 10px;
+  background: radial-gradient(circle, #444 40%, #222 100%);
+  border-radius: 50%;
+}
+
+/* ── AMBIENT GLOW ── */
+.room::after {
+  content: '';
+  position: absolute;
+  top: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(255, 142, 61, 0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* ── ACTION PANEL ── */
+.action-panel {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem;
+  background: linear-gradient(to top, var(--bg) 60%, transparent);
+}
+
+.action-btn {
+  padding: 1rem 2rem;
+  background: rgba(255, 142, 61, 0.1);
+  border: 1px solid rgba(255, 142, 61, 0.3);
+  border-radius: 12px;
+  color: var(--text);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.action-btn:hover {
+  background: rgba(255, 142, 61, 0.2);
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.action-btn:active {
+  transform: translateY(0);
+}
+
+.action-btn:disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.action-btn .icon {
+  font-size: 1.2rem;
+}
+
+/* ── MODAL ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.modal {
+  background: #141414;
+  border: 1px solid rgba(255, 142, 61, 0.2);
+  border-radius: 20px;
+  padding: 2rem;
+  max-width: 500px;
+  width: 90%;
+  transform: scale(0.9) translateY(20px);
+  transition: transform 0.3s ease;
+}
+
+.modal-overlay.active .modal {
+  transform: scale(1) translateY(0);
+}
+
+.modal-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.8rem;
+  color: var(--accent);
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.modal-subtitle {
+  color: var(--text-muted);
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 0.85rem;
+}
+
+/* Song creation */
+.option-group {
+  margin-bottom: 1.5rem;
+}
+
+.option-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+}
+
+.option-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.5rem;
+}
+
+.modal-option {
+  padding: 0.75rem 0.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.75rem;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.modal-option:hover {
+  background: rgba(255, 142, 61, 0.1);
+  border-color: rgba(255, 142, 61, 0.3);
+}
+
+.modal-option.selected {
+  background: rgba(255, 142, 61, 0.2);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.modal-btn {
+  padding: 0.75rem 2rem;
+  border-radius: 30px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.modal-btn.primary {
+  background: var(--accent);
+  border: none;
+  color: var(--bg);
+}
+
+.modal-btn.primary:hover {
+  background: #ffaa66;
+  transform: scale(1.02);
+}
+
+.modal-btn.secondary {
+  background: transparent;
+  border: 1px solid var(--text-muted);
+  color: var(--text-muted);
+}
+
+.modal-btn.secondary:hover {
+  border-color: var(--text);
+  color: var(--text);
+}
+
+/* ── UPGRADE SHOP ── */
+.upgrade-grid {
+  display: grid;
+  gap: 0.75rem;
+  max-height: 350px;
+  overflow-y: auto;
+}
+
+.upgrade-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.upgrade-item:hover:not(.owned):not(.locked) {
+  background: rgba(255, 142, 61, 0.08);
+  border-color: rgba(255, 142, 61, 0.3);
+}
+
+.upgrade-item.owned {
+  opacity: 0.5;
+  border-color: rgba(100, 200, 100, 0.3);
+}
+
+.upgrade-item.locked {
+  opacity: 0.4;
+}
+
+.upgrade-icon {
+  font-size: 1.5rem;
+  width: 40px;
+  text-align: center;
+}
+
+.upgrade-info {
+  flex: 1;
+}
+
+.upgrade-name {
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.upgrade-desc {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.upgrade-cost {
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.upgrade-item.owned .upgrade-cost {
+  color: #6b6;
+}
+
+.upgrade-item.owned .upgrade-cost::before {
+  content: '✓ ';
+}
+
+/* ── NOTIFICATIONS ── */
+.notification {
+  position: fixed;
+  top: 130px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  background: rgba(20, 20, 20, 0.95);
+  border: 1px solid var(--accent);
+  border-radius: 12px;
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  z-index: 150;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.notification.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.notification-icon {
+  font-size: 1.5rem;
+}
+
+.notification-text {
+  font-size: 0.9rem;
+}
+
+.notification-text strong {
+  color: var(--accent);
+}
+
+/* ── FAN COUNTER ANIMATION ── */
+.fan-burst {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Instrument Serif', serif;
+  font-size: 4rem;
+  color: var(--accent);
+  z-index: 160;
+  opacity: 0;
+  pointer-events: none;
+  text-shadow: 0 0 40px rgba(255, 142, 61, 0.5);
+}
+
+.fan-burst.animate {
+  animation: fanBurst 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fanBurst {
+  0% { 
+    opacity: 0; 
+    transform: translate(-50%, -50%) scale(0.5); 
+  }
+  20% { 
+    opacity: 1; 
+    transform: translate(-50%, -50%) scale(1.2); 
+  }
+  80% { 
+    opacity: 1; 
+  }
+  100% { 
+    opacity: 0; 
+    transform: translate(-50%, -50%) scale(1) translateY(-50px); 
+  }
+}
+
+/* ── EVENT MODAL ── */
+.event-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.event-btn {
+  padding: 1rem 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: var(--text);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.9rem;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.event-btn:hover {
+  background: rgba(255, 142, 61, 0.15);
+  border-color: var(--accent);
+}
+
+.event-desc {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+}
+
+/* ── PROGRESS MESSAGE ── */
+.progress-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 180;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.progress-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.progress-message {
+  font-family: 'Instrument Serif', serif;
+  font-size: 2rem;
+  color: var(--accent);
+  margin-bottom: 1rem;
+}
+
+.progress-bar {
+  width: 200px;
+  height: 6px;
+  background: rgba(255, 142, 61, 0.2);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--accent);
+  width: 0%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+/* ── MILESTONE ── */
+.milestone-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.95);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+
+.milestone-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.milestone-icon {
+  font-size: 5rem;
+  margin-bottom: 1rem;
+  animation: milestonePop 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes milestonePop {
+  0% { transform: scale(0); opacity: 0; }
+  60% { transform: scale(1.2); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.milestone-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: 2.5rem;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
+
+.milestone-desc {
+  color: var(--text-muted);
+  margin-bottom: 2rem;
+}
+
+/* ── FOOTER ── */
+.footer {
+  position: fixed;
+  bottom: 100px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  pointer-events: none;
+}
+
+/* ── LOAD ANIMATION ── */
+.game-container {
+  opacity: 0;
+  animation: fadeIn 0.8s ease 0.3s forwards;
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  .room {
+    transform: rotateX(55deg) rotateZ(-45deg) scale(0.7);
+  }
+  
+  .top-bar {
+    gap: 1rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+  }
+  
+  .stats-panel {
+    gap: 1rem;
+  }
+  
+  .stat-circle {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .action-btn {
+    padding: 0.75rem 1rem;
+    font-size: 0.8rem;
+  }
+  
+  .option-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <a href="../index.html" class="header-logo-link">
+    <img src="logo-gray.svg" class="header-logo logo-default" alt="ML">
+    <img src="logo-orange.svg" class="header-logo logo-hover" alt="ML">
+  </a>
+</div>
+
+<!-- Top Bar -->
+<div class="top-bar">
+  <div class="stat-item">
+    <span class="artist-name" id="artistName">Lil Unknown</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-icon">👥</span>
+    <span class="stat-value" id="fansDisplay">0</span>
+    <span class="stat-label">Fans</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-icon">💵</span>
+    <span class="stat-value" id="cashDisplay">$100</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-icon">📅</span>
+    <span class="stat-value" id="weekDisplay">Week 1</span>
+  </div>
+</div>
+
+<!-- Main Game -->
+<div class="game-container">
+  <!-- Stats Circles -->
+  <div class="stats-panel">
+    <div class="stat-circle" data-stat="bars">
+      <svg viewBox="0 0 36 36">
+        <circle class="bg" cx="18" cy="18" r="16"/>
+        <circle class="fill" cx="18" cy="18" r="16" stroke-dasharray="100" stroke-dashoffset="80"/>
+      </svg>
+      <span class="stat-num" id="barsNum">20</span>
+      <span class="stat-name">Bars</span>
+    </div>
+    <div class="stat-circle" data-stat="flow">
+      <svg viewBox="0 0 36 36">
+        <circle class="bg" cx="18" cy="18" r="16"/>
+        <circle class="fill" cx="18" cy="18" r="16" stroke-dasharray="100" stroke-dashoffset="85"/>
+      </svg>
+      <span class="stat-num" id="flowNum">15</span>
+      <span class="stat-name">Flow</span>
+    </div>
+    <div class="stat-circle" data-stat="production">
+      <svg viewBox="0 0 36 36">
+        <circle class="bg" cx="18" cy="18" r="16"/>
+        <circle class="fill" cx="18" cy="18" r="16" stroke-dasharray="100" stroke-dashoffset="90"/>
+      </svg>
+      <span class="stat-num" id="prodNum">10</span>
+      <span class="stat-name">Prod</span>
+    </div>
+    <div class="stat-circle" data-stat="hype">
+      <svg viewBox="0 0 36 36">
+        <circle class="bg" cx="18" cy="18" r="16"/>
+        <circle class="fill" cx="18" cy="18" r="16" stroke-dasharray="100" stroke-dashoffset="95"/>
+      </svg>
+      <span class="stat-num" id="hypeNum">5</span>
+      <span class="stat-name">Hype</span>
+    </div>
+  </div>
+
+  <!-- Isometric Room -->
+  <div class="room-container">
+    <div class="room">
+      <div class="floor"></div>
+      <div class="wall-back"></div>
+      <div class="wall-left"></div>
+      
+      <!-- Posters -->
+      <div class="poster poster-1"></div>
+      <div class="poster poster-2"></div>
+      <div class="poster poster-3"></div>
+      
+      <!-- Bed -->
+      <div class="bed">
+        <div class="bed-frame"></div>
+        <div class="bed-mattress"></div>
+        <div class="bed-pillow"></div>
+      </div>
+      
+      <!-- Desk -->
+      <div class="desk">
+        <div class="desk-top"></div>
+        <div class="desk-leg left"></div>
+        <div class="desk-leg right"></div>
+      </div>
+      
+      <!-- Monitor -->
+      <div class="monitor">
+        <div class="monitor-screen" id="monitorScreen"></div>
+        <div class="monitor-stand"></div>
+      </div>
+      
+      <!-- Mic -->
+      <div class="mic-setup">
+        <div class="mic-stand"></div>
+        <div class="mic-arm">
+          <div class="mic-head" id="micHead"></div>
+        </div>
+      </div>
+      
+      <!-- Speaker -->
+      <div class="speaker"></div>
+      
+      <!-- Character -->
+      <div class="character" id="character">
+        <div class="char-head">
+          <div class="char-headphones"></div>
+        </div>
+        <div class="char-body"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Action Panel -->
+<div class="action-panel">
+  <button class="action-btn" id="btnWrite">
+    <span class="icon">✍️</span>
+    Write Song
+  </button>
+  <button class="action-btn" id="btnRelease" disabled>
+    <span class="icon">🎵</span>
+    Release
+  </button>
+  <button class="action-btn" id="btnUpgrade">
+    <span class="icon">⬆️</span>
+    Upgrade
+  </button>
+  <button class="action-btn" id="btnRest">
+    <span class="icon">😴</span>
+    Rest
+  </button>
+</div>
+
+<!-- Write Song Modal -->
+<div class="modal-overlay" id="writeModal">
+  <div class="modal">
+    <div class="modal-title">Write a Song</div>
+    <div class="modal-subtitle">Choose your topic and style</div>
+    
+    <div class="option-group">
+      <div class="option-label">Topic</div>
+      <div class="option-grid" id="topicGrid">
+        <button class="modal-option" data-topic="flex">💪 Flex</button>
+        <button class="modal-option" data-topic="love">❤️ Love</button>
+        <button class="modal-option" data-topic="hustle">💰 Hustle</button>
+        <button class="modal-option" data-topic="diss">🔥 Diss</button>
+        <button class="modal-option" data-topic="party">🎉 Party</button>
+      </div>
+    </div>
+    
+    <div class="option-group">
+      <div class="option-label">Style</div>
+      <div class="option-grid" id="styleGrid">
+        <button class="modal-option" data-style="trap">🎹 Trap</button>
+        <button class="modal-option" data-style="boombap">🥁 Boom Bap</button>
+        <button class="modal-option" data-style="melodic">🎤 Melodic</button>
+        <button class="modal-option" data-style="drill">⚡ Drill</button>
+        <button class="modal-option" data-style="rnb">🎷 R&B</button>
+      </div>
+    </div>
+    
+    <div class="modal-actions">
+      <button class="modal-btn secondary" id="cancelWrite">Cancel</button>
+      <button class="modal-btn primary" id="confirmWrite">Start Writing</button>
+    </div>
+  </div>
+</div>
+
+<!-- Upgrade Modal -->
+<div class="modal-overlay" id="upgradeModal">
+  <div class="modal">
+    <div class="modal-title">Upgrade Shop</div>
+    <div class="modal-subtitle">Invest in your career</div>
+    
+    <div class="upgrade-grid" id="upgradeGrid"></div>
+    
+    <div class="modal-actions">
+      <button class="modal-btn secondary" id="closeUpgrade">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Event Modal -->
+<div class="modal-overlay" id="eventModal">
+  <div class="modal">
+    <div class="modal-title" id="eventTitle">Random Event!</div>
+    <div class="modal-subtitle" id="eventDesc"></div>
+    
+    <div class="event-choices" id="eventChoices"></div>
+  </div>
+</div>
+
+<!-- Progress Overlay -->
+<div class="progress-overlay" id="progressOverlay">
+  <div class="progress-message" id="progressMessage">Writing...</div>
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+</div>
+
+<!-- Milestone Overlay -->
+<div class="milestone-overlay" id="milestoneOverlay">
+  <div class="milestone-icon" id="milestoneIcon">🏆</div>
+  <div class="milestone-title" id="milestoneTitle">Milestone!</div>
+  <div class="milestone-desc" id="milestoneDesc">You did it!</div>
+  <button class="modal-btn primary" id="closeMilestone">Nice!</button>
+</div>
+
+<!-- Notification -->
+<div class="notification" id="notification">
+  <span class="notification-icon" id="notifIcon">🎵</span>
+  <span class="notification-text" id="notifText"></span>
+</div>
+
+<!-- Fan Burst -->
+<div class="fan-burst" id="fanBurst"></div>
+
+<!-- Footer -->
+<div class="footer">An interactive experiment by Michael Loya Studio</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// RAPPER TYCOON - GAME ENGINE
+// ══════════════════════════════════════════════════════════════
+
+const game = {
+  // Player stats
+  artistName: 'Lil Unknown',
+  fans: 0,
+  cash: 100,
+  week: 1,
+  
+  // Skills (0-100)
+  bars: 20,
+  flow: 15,
+  production: 10,
+  hype: 5,
+  
+  // Current song
+  currentSong: null,
+  songsReleased: 0,
+  
+  // Upgrades owned
+  upgrades: {},
+  
+  // Milestones hit
+  milestones: [],
+  
+  // Energy
+  energy: 100,
+};
+
+// Upgrades definition
+const UPGRADES = [
+  { id: 'mic1', name: 'Studio Mic', desc: '+10 Production', cost: 200, stat: 'production', boost: 10, icon: '🎙️', requires: null },
+  { id: 'mic2', name: 'Pro Mic', desc: '+15 Production', cost: 800, stat: 'production', boost: 15, icon: '🎤', requires: 'mic1' },
+  { id: 'beats1', name: 'Producer Collab', desc: '+10 Production', cost: 300, stat: 'production', boost: 10, icon: '🎹', requires: null },
+  { id: 'beats2', name: 'Custom Beats', desc: '+20 Production', cost: 1500, stat: 'production', boost: 20, icon: '🔊', requires: 'beats1' },
+  { id: 'marketing', name: 'Social Media Marketing', desc: '+15 Hype', cost: 250, stat: 'hype', boost: 15, icon: '📱', requires: null },
+  { id: 'vocal', name: 'Vocal Coach', desc: '+15 Flow', cost: 400, stat: 'flow', boost: 15, icon: '🗣️', requires: null },
+  { id: 'writing', name: 'Writing Workshop', desc: '+15 Bars', cost: 350, stat: 'bars', boost: 15, icon: '📝', requires: null },
+  { id: 'marketing2', name: 'PR Campaign', desc: '+25 Hype', cost: 1000, stat: 'hype', boost: 25, icon: '📰', requires: 'marketing' },
+];
+
+// Milestones
+const MILESTONES = [
+  { fans: 1000, icon: '🌟', title: '1K Fans!', desc: 'You\'re starting to get noticed!' },
+  { fans: 10000, icon: '⭐', title: '10K Fans!', desc: 'Building a real following!' },
+  { fans: 100000, icon: '🏆', title: '100K Fans!', desc: 'You\'re going viral!' },
+  { fans: 1000000, icon: '👑', title: '1M Fans!', desc: 'You made it big!' },
+  { fans: 10000000, icon: '💎', title: '10M Fans!', desc: 'Global superstar!' },
+  { fans: 100000000, icon: '🌍', title: '100M Fans!', desc: 'LEGENDARY STATUS!' },
+];
+
+// Random events
+const EVENTS = [
+  {
+    id: 'viral',
+    title: '🔥 Your Song Went Viral!',
+    desc: 'TikTok picked up your track!',
+    choices: [
+      { text: 'Ride the wave', desc: '+5000 fans, +$500', effect: () => { game.fans += 5000; game.cash += 500; } }
+    ]
+  },
+  {
+    id: 'beef',
+    title: '😤 Rap Beef!',
+    desc: 'Another rapper dissed you on their track.',
+    choices: [
+      { text: 'Drop a diss track', desc: '+3000 fans, +20 hype', effect: () => { game.fans += 3000; game.hype = Math.min(100, game.hype + 20); } },
+      { text: 'Stay quiet', desc: 'Keep your dignity', effect: () => { game.bars = Math.min(100, game.bars + 5); } }
+    ]
+  },
+  {
+    id: 'label',
+    title: '🏢 Label Offer!',
+    desc: 'A major label wants to sign you.',
+    choices: [
+      { text: 'Sign the deal', desc: '+$5000, but less creative freedom', effect: () => { game.cash += 5000; } },
+      { text: 'Stay independent', desc: '+10 all stats', effect: () => { 
+        game.bars = Math.min(100, game.bars + 10);
+        game.flow = Math.min(100, game.flow + 10);
+        game.production = Math.min(100, game.production + 10);
+        game.hype = Math.min(100, game.hype + 10);
+      }}
+    ]
+  },
+  {
+    id: 'feature',
+    title: '🤝 Feature Request!',
+    desc: 'A hot artist wants you on their track.',
+    choices: [
+      { text: 'Do the feature', desc: '+2000 fans, +15 hype', effect: () => { game.fans += 2000; game.hype = Math.min(100, game.hype + 15); } }
+    ]
+  },
+  {
+    id: 'interview',
+    title: '🎬 Interview Opportunity',
+    desc: 'A popular podcast wants you on.',
+    choices: [
+      { text: 'Do the interview', desc: '+1500 fans, +10 hype', effect: () => { game.fans += 1500; game.hype = Math.min(100, game.hype + 10); } },
+      { text: 'Focus on music', desc: '+5 bars, +5 flow', effect: () => { 
+        game.bars = Math.min(100, game.bars + 5);
+        game.flow = Math.min(100, game.flow + 5);
+      }}
+    ]
+  }
+];
+
+// Song name generator
+const SONG_PREFIXES = ['Late Night', 'No Cap', 'Real', 'Drip', 'Ice Cold', 'Money', 'Boss', 'Savage', 'Lit', 'Vibes'];
+const SONG_SUFFIXES = ['Dreams', 'Mode', 'Wave', 'Life', 'Talk', 'Moves', 'Season', 'Energy', 'Flow', 'Story'];
+
+function generateSongName() {
+  const prefix = SONG_PREFIXES[Math.floor(Math.random() * SONG_PREFIXES.length)];
+  const suffix = SONG_SUFFIXES[Math.floor(Math.random() * SONG_SUFFIXES.length)];
+  return `${prefix} ${suffix}`;
+}
+
+// ══════════════════════════════════════════════════════════════
+// UI UPDATES
+// ══════════════════════════════════════════════════════════════
+
+function updateUI() {
+  // Top bar
+  document.getElementById('artistName').textContent = game.artistName;
+  document.getElementById('fansDisplay').textContent = formatNumber(game.fans);
+  document.getElementById('cashDisplay').textContent = '$' + formatNumber(game.cash);
+  document.getElementById('weekDisplay').textContent = 'Week ' + game.week;
+  
+  // Stats circles
+  updateStatCircle('bars', game.bars);
+  updateStatCircle('flow', game.flow);
+  updateStatCircle('production', game.production);
+  updateStatCircle('hype', game.hype);
+  
+  document.getElementById('barsNum').textContent = game.bars;
+  document.getElementById('flowNum').textContent = game.flow;
+  document.getElementById('prodNum').textContent = game.production;
+  document.getElementById('hypeNum').textContent = game.hype;
+  
+  // Release button
+  document.getElementById('btnRelease').disabled = !game.currentSong;
+  
+  // Visual upgrades
+  if (game.upgrades.mic1 || game.upgrades.mic2) {
+    document.getElementById('micHead').classList.add('upgraded');
+  }
+}
+
+function updateStatCircle(stat, value) {
+  const circle = document.querySelector(`[data-stat="${stat}"] .fill`);
+  const circumference = 100;
+  const offset = circumference - (value / 100) * circumference;
+  circle.style.strokeDashoffset = offset;
+}
+
+function formatNumber(num) {
+  if (num >= 1000000000) return (num / 1000000000).toFixed(1) + 'B';
+  if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+  if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+  return num.toString();
+}
+
+function showNotification(icon, text) {
+  const notif = document.getElementById('notification');
+  document.getElementById('notifIcon').textContent = icon;
+  document.getElementById('notifText').innerHTML = text;
+  notif.classList.add('show');
+  setTimeout(() => notif.classList.remove('show'), 3000);
+}
+
+function showFanBurst(amount) {
+  const burst = document.getElementById('fanBurst');
+  burst.textContent = '+' + formatNumber(amount) + ' fans!';
+  burst.classList.add('animate');
+  setTimeout(() => burst.classList.remove('animate'), 1500);
+}
+
+// ══════════════════════════════════════════════════════════════
+// GAME ACTIONS
+// ══════════════════════════════════════════════════════════════
+
+let selectedTopic = null;
+let selectedStyle = null;
+
+// Write Song
+document.getElementById('btnWrite').addEventListener('click', () => {
+  selectedTopic = null;
+  selectedStyle = null;
+  document.querySelectorAll('#topicGrid .modal-option').forEach(b => b.classList.remove('selected'));
+  document.querySelectorAll('#styleGrid .modal-option').forEach(b => b.classList.remove('selected'));
+  document.getElementById('writeModal').classList.add('active');
+});
+
+document.querySelectorAll('#topicGrid .modal-option').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#topicGrid .modal-option').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    selectedTopic = btn.dataset.topic;
+  });
+});
+
+document.querySelectorAll('#styleGrid .modal-option').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#styleGrid .modal-option').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    selectedStyle = btn.dataset.style;
+  });
+});
+
+document.getElementById('cancelWrite').addEventListener('click', () => {
+  document.getElementById('writeModal').classList.remove('active');
+});
+
+document.getElementById('confirmWrite').addEventListener('click', () => {
+  if (!selectedTopic || !selectedStyle) {
+    showNotification('⚠️', 'Pick a topic and style!');
+    return;
+  }
+  
+  document.getElementById('writeModal').classList.remove('active');
+  startWriting();
+});
+
+function startWriting() {
+  const character = document.getElementById('character');
+  const monitor = document.getElementById('monitorScreen');
+  const progress = document.getElementById('progressOverlay');
+  const progressFill = document.getElementById('progressFill');
+  
+  character.classList.add('working');
+  monitor.classList.add('working');
+  progress.classList.add('active');
+  document.getElementById('progressMessage').textContent = 'Writing lyrics...';
+  
+  // Animate progress
+  let pct = 0;
+  const interval = setInterval(() => {
+    pct += 5;
+    progressFill.style.width = pct + '%';
+    
+    if (pct === 30) document.getElementById('progressMessage').textContent = 'Finding the flow...';
+    if (pct === 60) document.getElementById('progressMessage').textContent = 'Laying down vocals...';
+    if (pct === 90) document.getElementById('progressMessage').textContent = 'Final touches...';
+    
+    if (pct >= 100) {
+      clearInterval(interval);
+      finishWriting();
+    }
+  }, 100);
+}
+
+function finishWriting() {
+  const character = document.getElementById('character');
+  const monitor = document.getElementById('monitorScreen');
+  const progress = document.getElementById('progressOverlay');
+  
+  character.classList.remove('working');
+  monitor.classList.remove('working');
+  progress.classList.remove('active');
+  document.getElementById('progressFill').style.width = '0%';
+  
+  // Calculate song quality
+  const baseQuality = (game.bars + game.flow + game.production) / 3;
+  const randomFactor = 0.8 + Math.random() * 0.4; // 0.8 to 1.2
+  const quality = Math.round(baseQuality * randomFactor);
+  
+  game.currentSong = {
+    name: generateSongName(),
+    topic: selectedTopic,
+    style: selectedStyle,
+    quality: quality
+  };
+  
+  // Improve bars slightly
+  game.bars = Math.min(100, game.bars + Math.floor(Math.random() * 3) + 1);
+  
+  // Advance time
+  advanceWeek();
+  
+  showNotification('✍️', `Wrote "<strong>${game.currentSong.name}</strong>" (Quality: ${quality})`);
+  updateUI();
+}
+
+// Release Song
+document.getElementById('btnRelease').addEventListener('click', () => {
+  if (!game.currentSong) return;
+  
+  releaseSong();
+});
+
+function releaseSong() {
+  const song = game.currentSong;
+  
+  // Calculate results based on quality and hype
+  const qualityMult = song.quality / 50;
+  const hypeMult = 1 + (game.hype / 100);
+  
+  const baseFans = Math.floor(100 * qualityMult * hypeMult);
+  const randomFans = Math.floor(Math.random() * baseFans * 0.5);
+  const newFans = baseFans + randomFans;
+  
+  const baseCash = Math.floor(50 * qualityMult);
+  const randomCash = Math.floor(Math.random() * baseCash * 0.5);
+  const newCash = baseCash + randomCash;
+  
+  // Apply results
+  const oldFans = game.fans;
+  game.fans += newFans;
+  game.cash += newCash;
+  game.songsReleased++;
+  
+  // Improve flow
+  game.flow = Math.min(100, game.flow + Math.floor(Math.random() * 3) + 2);
+  
+  // Boost hype
+  game.hype = Math.min(100, game.hype + Math.floor(song.quality / 10));
+  
+  // Clear current song
+  game.currentSong = null;
+  
+  showFanBurst(newFans);
+  showNotification('🎵', `Released "<strong>${song.name}</strong>"! +$${newCash}`);
+  
+  // Check milestones
+  checkMilestones(oldFans, game.fans);
+  
+  // Random event chance (20%)
+  if (Math.random() < 0.2 && game.songsReleased >= 2) {
+    setTimeout(() => triggerRandomEvent(), 2000);
+  }
+  
+  updateUI();
+}
+
+// Upgrade
+document.getElementById('btnUpgrade').addEventListener('click', () => {
+  renderUpgrades();
+  document.getElementById('upgradeModal').classList.add('active');
+});
+
+document.getElementById('closeUpgrade').addEventListener('click', () => {
+  document.getElementById('upgradeModal').classList.remove('active');
+});
+
+function renderUpgrades() {
+  const grid = document.getElementById('upgradeGrid');
+  grid.innerHTML = '';
+  
+  UPGRADES.forEach(upgrade => {
+    const owned = game.upgrades[upgrade.id];
+    const locked = upgrade.requires && !game.upgrades[upgrade.requires];
+    const canAfford = game.cash >= upgrade.cost;
+    
+    const item = document.createElement('div');
+    item.className = 'upgrade-item' + (owned ? ' owned' : '') + (locked ? ' locked' : '');
+    item.innerHTML = `
+      <div class="upgrade-icon">${upgrade.icon}</div>
+      <div class="upgrade-info">
+        <div class="upgrade-name">${upgrade.name}</div>
+        <div class="upgrade-desc">${locked ? 'Requires: ' + UPGRADES.find(u => u.id === upgrade.requires).name : upgrade.desc}</div>
+      </div>
+      <div class="upgrade-cost">${owned ? 'Owned' : '$' + upgrade.cost}</div>
+    `;
+    
+    if (!owned && !locked) {
+      item.addEventListener('click', () => {
+        if (game.cash >= upgrade.cost) {
+          game.cash -= upgrade.cost;
+          game.upgrades[upgrade.id] = true;
+          game[upgrade.stat] = Math.min(100, game[upgrade.stat] + upgrade.boost);
+          showNotification(upgrade.icon, `Purchased <strong>${upgrade.name}</strong>!`);
+          updateUI();
+          renderUpgrades();
+        } else {
+          showNotification('💸', 'Not enough cash!');
+        }
+      });
+    }
+    
+    grid.appendChild(item);
+  });
+}
+
+// Rest
+document.getElementById('btnRest').addEventListener('click', () => {
+  game.energy = 100;
+  advanceWeek();
+  showNotification('😴', 'Rested up! Ready to grind.');
+  updateUI();
+});
+
+// ══════════════════════════════════════════════════════════════
+// TIME & EVENTS
+// ══════════════════════════════════════════════════════════════
+
+function advanceWeek() {
+  game.week++;
+  
+  // Hype decay
+  game.hype = Math.max(0, game.hype - 3);
+  
+  // Random small event chance
+  if (Math.random() < 0.1 && game.songsReleased >= 3) {
+    const smallBoost = Math.floor(Math.random() * 500) + 100;
+    game.fans += smallBoost;
+    showNotification('📈', `Organic growth: +${smallBoost} fans`);
+  }
+}
+
+function triggerRandomEvent() {
+  const event = EVENTS[Math.floor(Math.random() * EVENTS.length)];
+  
+  document.getElementById('eventTitle').textContent = event.title;
+  document.getElementById('eventDesc').textContent = event.desc;
+  
+  const choicesDiv = document.getElementById('eventChoices');
+  choicesDiv.innerHTML = '';
+  
+  event.choices.forEach(choice => {
+    const btn = document.createElement('button');
+    btn.className = 'event-btn';
+    btn.innerHTML = `
+      ${choice.text}
+      <div class="event-desc">${choice.desc}</div>
+    `;
+    btn.addEventListener('click', () => {
+      choice.effect();
+      document.getElementById('eventModal').classList.remove('active');
+      showNotification('✨', choice.desc);
+      updateUI();
+    });
+    choicesDiv.appendChild(btn);
+  });
+  
+  document.getElementById('eventModal').classList.add('active');
+}
+
+function checkMilestones(oldFans, newFans) {
+  MILESTONES.forEach(milestone => {
+    if (oldFans < milestone.fans && newFans >= milestone.fans && !game.milestones.includes(milestone.fans)) {
+      game.milestones.push(milestone.fans);
+      setTimeout(() => showMilestone(milestone), 1800);
+    }
+  });
+}
+
+function showMilestone(milestone) {
+  document.getElementById('milestoneIcon').textContent = milestone.icon;
+  document.getElementById('milestoneTitle').textContent = milestone.title;
+  document.getElementById('milestoneDesc').textContent = milestone.desc;
+  document.getElementById('milestoneOverlay').classList.add('active');
+}
+
+document.getElementById('closeMilestone').addEventListener('click', () => {
+  document.getElementById('milestoneOverlay').classList.remove('active');
+});
+
+// ══════════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════════
+
+// Initial render
+updateUI();
+
+// Welcome message after a moment
+setTimeout(() => {
+  showNotification('🎤', 'Welcome to the grind! Write your first song.');
+}, 1500);
+</script>
+</body>
+</html>
