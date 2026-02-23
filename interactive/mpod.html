@@ -938,6 +938,7 @@ audio.addEventListener('ended', nextTrack);
 
 // ── SEEK ON PROGRESS BAR CLICK ──
 const barWrap = document.getElementById('npBarWrap');
+const barFill = document.getElementById('npBarFill');
 const barHover = document.getElementById('npBarHover');
 
 barWrap.addEventListener('mousemove', (e) => {
@@ -952,11 +953,15 @@ barWrap.addEventListener('mouseleave', () => {
 });
 
 barWrap.addEventListener('click', (e) => {
-  if (!audio.duration) return;
-  const bar = barWrap.querySelector('.np-bar');
-  const rect = bar.getBoundingClientRect();
+  e.stopPropagation();
+  if (!audio.duration || isNaN(audio.duration)) return;
+  const rect = barWrap.getBoundingClientRect();
   const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-  audio.currentTime = pct * audio.duration;
+  const newTime = pct * audio.duration;
+  audio.currentTime = newTime;
+  // Update fill immediately
+  barFill.style.width = (pct * 100) + '%';
+  document.getElementById('npTimeCur').textContent = fmt(newTime);
 });
 
 // ── WHEEL CONTROLS ──
@@ -983,17 +988,8 @@ document.getElementById('btnSelect').addEventListener('click', () => {
 });
 
 document.getElementById('btnPlayPause').addEventListener('click', togglePlay);
-document.getElementById('btnFwd').addEventListener('click', () => {
-  if (!audio.src) return;
-  if (audio.currentTime + 15 >= audio.duration) { nextTrack(); }
-  else { audio.currentTime += 15; }
-});
-document.getElementById('btnRew').addEventListener('click', () => {
-  if (!audio.src) return;
-  if (audio.currentTime < 3) { prevTrack(); }
-  else if (audio.currentTime < 15) { audio.currentTime = 0; }
-  else { audio.currentTime -= 15; }
-});
+document.getElementById('btnFwd').addEventListener('click', nextTrack);
+document.getElementById('btnRew').addEventListener('click', prevTrack);
 
 // Scroll wheel for menu navigation
 wheel.addEventListener('wheel', (e) => {
@@ -1011,8 +1007,8 @@ wheel.addEventListener('wheel', (e) => {
 // Keyboard
 document.addEventListener('keydown', (e) => {
   if (e.code === 'Space') { e.preventDefault(); togglePlay(); }
-  if (e.code === 'ArrowRight') { if (!audio.src) return; if (audio.currentTime + 15 >= audio.duration) nextTrack(); else audio.currentTime += 15; }
-  if (e.code === 'ArrowLeft') { if (!audio.src) return; if (audio.currentTime < 3) prevTrack(); else if (audio.currentTime < 15) audio.currentTime = 0; else audio.currentTime -= 15; }
+  if (e.code === 'ArrowRight') nextTrack();
+  if (e.code === 'ArrowLeft') prevTrack();
   if (e.code === 'ArrowDown' && currentView === 'menu') {
     selectedIndex = Math.min(selectedIndex + 1, playlist.length - 1);
     renderMenu();
