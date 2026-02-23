@@ -954,11 +954,14 @@ barWrap.addEventListener('mouseleave', () => {
 
 barWrap.addEventListener('click', (e) => {
   e.stopPropagation();
-  if (!audio.duration || isNaN(audio.duration)) return;
+  e.preventDefault();
+  console.log('SEEK clicked', { duration: audio.duration, readyState: audio.readyState, networkState: audio.networkState, src: audio.src });
+  if (!audio.duration || isNaN(audio.duration)) { console.log('SEEK aborted - no duration'); return; }
   const bar = barWrap.querySelector('.np-bar');
   const rect = bar.getBoundingClientRect();
   const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
   const newTime = pct * audio.duration;
+  console.log('SEEK to', { pct, newTime, duration: audio.duration });
   audio.currentTime = newTime;
   // Update fill immediately
   barFill.style.width = (pct * 100) + '%';
