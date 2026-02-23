@@ -3080,7 +3080,6 @@ function renderOS() {
       </div>
       <div class="os-right">
         ${contractInfo ? `<span class="os-contract">${contractInfo}</span>` : ''}
-        <span class="os-balance" id="menuBalance">${formatMoney(gameState.displayBalance)}</span>
         <span class="os-time" id="menuTime">${timeStr}</span>
       </div>
     </div>
@@ -3143,6 +3142,10 @@ function renderOS() {
       <div class="dock-item app-dms clickable" data-app="dms">💬</div>
       <div class="dock-divider"></div>
       <div class="dock-stats">
+        <div class="dock-stat">
+          <span class="dock-stat-icon">💰</span>
+          <span class="dock-stat-value" id="menuBalance" style="color:var(--bank-gold);">${formatMoney(gameState.displayBalance)}</span>
+        </div>
         <div class="dock-stat">
           <span class="dock-stat-icon">👥</span>
           <span class="dock-stat-value" id="dockFans">${formatNumber(gameState.displayFans)}</span>
