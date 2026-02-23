@@ -1631,7 +1631,7 @@ function scaleFrame() {
   const frame = document.getElementById('frame');
   const scaleX = window.innerWidth / 393;
   const scaleY = window.innerHeight / 852;
-  const scale = Math.min(scaleX, scaleY, 1); // never scale up past 1
+  const scale = Math.min(scaleX, scaleY, 1) * 0.95; // slight downscale
   frame.style.transform = 'scale(' + scale + ')';
 }
 scaleFrame();
