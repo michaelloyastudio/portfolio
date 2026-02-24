@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>mPod — Michael Loya Studio</title>
+<title>The Rotation — Michael Loya Studio</title>
 <link rel="icon" type="image/svg+xml" href="../logo.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -546,6 +546,29 @@
   }
 
   /* ── FOOTER ── */
+  .title-row {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+  .title-row.loaded { opacity: 1; }
+  .page-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.8rem;
+    letter-spacing: 0.05em;
+    color: #E8E0D4;
+  }
+  .page-subtitle {
+    font-size: 0.65rem;
+    color: #8a8580;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
   .footer {
     position: fixed;
     bottom: 0;
@@ -629,8 +652,8 @@
 
   .boot-name {
     font-family: 'Instrument Serif', serif;
-    font-size: 1.8rem;
-    color: var(--text);
+    font-size: 2.2rem;
+    color: #E8E0D4;
     margin-top: 0.5rem;
     opacity: 0;
     animation: bootTextIn 0.8s ease 1.8s forwards;
@@ -681,6 +704,10 @@
   </a>
 </div>
 
+<div class="title-row" id="titleRow">
+  <div class="page-title">The Rotation</div>
+</div>
+
 <!-- iPod -->
 <div class="ipod" id="ipod">
 
@@ -700,7 +727,7 @@
     <!-- Menu View -->
     <div class="screen-view" id="menuView">
       <div class="screen-header">
-        <span>mPod</span>
+        <span>The Rotation</span>
       </div>
       <div class="menu-list" id="menuList"></div>
     </div>
@@ -1069,6 +1096,7 @@ setTimeout(() => {
     menuView.classList.add('active');
     document.querySelector('.screen-battery').classList.add('visible');
     document.querySelector('.header-logo-link').classList.add('loaded');
+    document.getElementById('titleRow').classList.add('loaded');
     wheel.classList.remove('locked');
     // Cascade menu items in
     const items = document.querySelectorAll('.menu-item');

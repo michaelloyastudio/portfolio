@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Archive — Michael Loya Studio</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0a;
+  --text: #E8E0D4;
+  --text-muted: #8a8580;
+  --accent: #ff8e3d;
+  --panel: #131313;
+  --card: #111;
+  --card-border: #222;
+  --espresso: #3d2b1f;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Space Grotesk', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  cursor: url('../cursor.svg') 16 8, default;
+}
+
+a, button, .product-card, .size-btn, .filter-btn, .cart-toggle, .close-btn, .checkout-btn, .remove-btn, .add-to-cart-btn {
+  cursor: url('../crosshair.svg') 8 10, pointer !important;
+}
+
+h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { display: none; }
+html { scrollbar-width: none; overflow-y: scroll; }
+
+/* ── HEADER ── */
+.header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3rem 2.5rem;
+  z-index: 100;
+  background: var(--bg);
+}
+
+.header-logo-link {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: block;
+  height: 32px;
+}
+.header-logo { height: 32px; transition: opacity 0.2s ease; }
+.header-logo-link .logo-hover { position: absolute; top: 0; left: 0; opacity: 0; }
+.header-logo-link:hover .logo-default { opacity: 0; }
+.header-logo-link:hover .logo-hover { opacity: 1; }
+
+.header-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.header-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.2rem;
+  letter-spacing: 0.05em;
+}
+.header-sub {
+  font-size: 0.55rem;
+  color: var(--text-muted);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.cart-toggle {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  position: relative;
+  transition: color 0.2s;
+}
+.cart-toggle:hover { color: var(--accent); }
+.cart-count {
+  position: absolute;
+  top: -6px; right: -14px;
+  background: var(--accent);
+  color: #000;
+  font-size: 0.5rem;
+  font-weight: 600;
+  width: 16px; height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+.cart-count.hidden { display: none; }
+
+/* ── MARQUEE ── */
+.marquee-wrap {
+  position: fixed;
+  top: 62px; left: 0; right: 0;
+  z-index: 99;
+  background: var(--espresso);
+  overflow: hidden;
+  height: 24px;
+  display: flex;
+  align-items: center;
+}
+.marquee {
+  display: flex;
+  white-space: nowrap;
+  animation: marquee 25s linear infinite;
+}
+.marquee span {
+  font-size: 0.55rem;
+  color: var(--accent);
+  letter-spacing: 0.15em;
+  padding: 0 3rem;
+}
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ── MAIN ── */
+main {
+  padding: 85px 2.5rem 4rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  flex: 1;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+main.loaded { opacity: 1; transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+
+/* ── HERO ── */
+.hero {
+  text-align: center;
+  padding: 2rem 0 1rem;
+}
+.title-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.title-row.loaded { opacity: 1; transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+.title-row { transform: translateY(10px); }
+.title-row.loaded { transform: translateY(0); }
+.page-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.8rem;
+  letter-spacing: 0.05em;
+  color: var(--text);
+}
+.page-subtitle {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+.hero-desc {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  letter-spacing: 0.12em;
+  margin-top: 0.8rem;
+  line-height: 1.8;
+  opacity: 0;
+  transform: translateY(10px);
+}
+.hero-desc.visible {
+  animation: heroDescIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes heroDescIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── DIVIDER ANIMATIONS ── */
+.divider-accent {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  margin: 0.2rem 0 1rem;
+  transform: scaleX(0);
+}
+.divider-accent.visible {
+  animation: dividerGrow 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes dividerGrow {
+  to { transform: scaleX(1); }
+}
+
+/* ── FILTER ANIMATIONS ── */
+.filters {
+  opacity: 0;
+  transform: translateY(8px);
+  display: flex;
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.filters.visible {
+  animation: filtersIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes filtersIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── DIVIDER ── */
+.divider {
+  height: 1px;
+  background: var(--card-border);
+  margin: 1.5rem 0;
+}
+.filter-btn {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.5rem 1.2rem;
+  background: transparent;
+  border: 1px solid var(--card-border);
+  border-radius: 6px;
+  color: var(--text-muted);
+  transition: all 0.2s;
+}
+.filter-btn:hover {
+  border-color: var(--text);
+  color: var(--text);
+}
+.filter-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #000;
+}
+
+/* ── PRODUCT GRID ── */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.2rem;
+}
+
+/* ── PRODUCT CARD ── */
+.product-card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s, box-shadow 0.35s ease;
+  will-change: transform;
+  perspective: 800px;
+}
+.product-card:hover {
+  border-color: #444;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,142,61,0.1);
+}
+.product-card.cascade-in {
+  opacity: 0;
+  transform: translateY(40px) scale(0.92);
+  filter: blur(6px);
+  animation: cascadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.product-card.cascade-out {
+  animation: cascadeOut 0.25s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+@keyframes cascadeIn {
+  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+@keyframes cascadeOut {
+  to { opacity: 0; transform: translateY(-15px) scale(0.95); filter: blur(4px); }
+}
+.product-img {
+  width: 100%;
+  aspect-ratio: 1;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+.product-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.product-card:hover .product-img img {
+  transform: scale(1.08);
+}
+.product-img .placeholder-icon {
+  font-size: 2rem;
+  color: #ccc;
+  font-family: 'Instrument Serif', serif;
+}
+.product-tag {
+  position: absolute;
+  top: 10px; left: 10px;
+  background: var(--accent);
+  color: #000;
+  font-size: 0.5rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 3px;
+  letter-spacing: 0.08em;
+}
+.product-tag-sold {
+  background: #333;
+  color: var(--text-muted);
+}
+.product-info {
+  padding: 1rem;
+}
+.product-name {
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
+}
+.product-detail {
+  font-size: 0.55rem;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+  margin-bottom: 0.6rem;
+}
+.product-price {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+.product-price-original {
+  text-decoration: line-through;
+  color: var(--text-muted);
+  font-weight: 400;
+  font-size: 0.6rem;
+  margin-left: 0.5rem;
+}
+
+/* ── MODAL ── */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(8px);
+  display: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.modal-backdrop.visible {
+  opacity: 1;
+}
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 14px;
+  max-width: 420px;
+  width: 90%;
+  overflow: hidden;
+  opacity: 0;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+  z-index: 201;
+}
+.modal-backdrop.visible .modal {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+}
+.modal-img {
+  width: 100%;
+  aspect-ratio: 1;
+  background: #fff;
+  overflow: hidden;
+}
+.modal-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  cursor: url('../crosshair.svg') 8 10, pointer !important;
+}
+
+/* ── LIGHTBOX ── */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  background: rgba(0,0,0,0.92);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.lightbox.visible {
+  display: flex;
+  opacity: 1;
+}
+.lightbox img {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 8px;
+  transform: scale(0.9);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.lightbox.visible img {
+  transform: scale(1);
+}
+.lightbox-close {
+  position: absolute;
+  top: 20px; right: 24px;
+  background: rgba(255,255,255,0.1);
+  border: none;
+  color: #fff;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+  cursor: url('../crosshair.svg') 8 10, pointer !important;
+}
+.lightbox-close:hover { background: var(--accent); }
+.modal-body {
+  padding: 1.2rem 1.4rem 1.4rem;
+}
+.modal-name {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.3rem;
+  letter-spacing: 0.03em;
+  margin-bottom: 0.3rem;
+}
+.modal-desc {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+  line-height: 1.8;
+  margin-bottom: 0.8rem;
+}
+.modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.modal-price {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+.modal-purchase {
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+.modal-purchase a {
+  color: var(--accent);
+  text-decoration: none;
+}
+.modal-close {
+  position: absolute;
+  top: 12px; right: 14px;
+  background: rgba(0,0,0,0.5);
+  border: none;
+  color: #fff;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+  z-index: 1;
+}
+.modal-close:hover { background: var(--accent); }
+.sold-label {
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+}
+
+/* ── CART DRAWER ── */
+.cart-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 299;
+  display: none;
+  backdrop-filter: blur(4px);
+}
+.cart-backdrop.visible { display: block; }
+
+.cart-drawer {
+  position: fixed;
+  top: 0; right: -400px;
+  width: 400px;
+  height: 100%;
+  background: var(--bg);
+  z-index: 300;
+  border-left: 1px solid var(--card-border);
+  display: flex;
+  flex-direction: column;
+  transition: right 0.3s ease;
+}
+.cart-drawer.open { right: 0; }
+.cart-drawer-header {
+  padding: 1.5rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--card-border);
+}
+.cart-drawer-header h3 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.2rem;
+  letter-spacing: 0.05em;
+}
+.close-btn {
+  font-size: 1rem;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  transition: color 0.2s;
+}
+.close-btn:hover { color: var(--accent); }
+.cart-items {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 2rem;
+}
+.cart-item {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--card-border);
+  align-items: center;
+}
+.cart-item-img {
+  width: 56px; height: 56px;
+  background: #fff;
+  border: 1px solid var(--card-border);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.cart-item-img img {
+  width: 75%; height: 75%;
+  object-fit: contain;
+}
+.cart-item-info { flex: 1; }
+.cart-item-name {
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.15rem;
+}
+.cart-item-size {
+  font-size: 0.5rem;
+  color: var(--text-muted);
+}
+.cart-item-price {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+.remove-btn {
+  font-size: 0.8rem;
+  background: none;
+  border: none;
+  color: #555;
+  transition: color 0.15s;
+}
+.remove-btn:hover { color: var(--accent); }
+.cart-empty {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 3rem 0;
+  letter-spacing: 0.05em;
+}
+.cart-footer {
+  padding: 1.5rem 2rem;
+  border-top: 1px solid var(--card-border);
+}
+.cart-total {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+}
+.cart-total-price { color: var(--accent); font-weight: 600; }
+.checkout-btn {
+  width: 100%;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.9rem;
+  background: var(--accent);
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+.checkout-btn:hover { background: #ffa05a; }
+.checkout-btn:active { transform: scale(0.97); }
+
+/* ── BOOT SCREEN ── */
+#bootScreen {
+  position: fixed; inset: 0;
+  background: var(--bg);
+  z-index: 100000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.8rem;
+  transition: opacity 0.6s ease;
+}
+#bootScreen.fade-out { opacity: 0; pointer-events: none; }
+
+.boot-icon {
+  width: 48px;
+  height: 48px;
+  animation: bootSpinIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  filter: blur(8px);
+  opacity: 0;
+}
+@keyframes bootSpinIn {
+  0% { transform: scale(0.3) rotate(-180deg); filter: blur(8px); opacity: 0; }
+  100% { transform: scale(1) rotate(0deg); filter: blur(0); opacity: 1; }
+}
+
+.boot-text {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  opacity: 0;
+  animation: bootFadeIn 0.5s ease 0.6s forwards;
+}
+@keyframes bootFadeIn {
+  to { opacity: 1; }
+}
+
+.boot-progress {
+  width: 120px;
+  height: 2px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 1px;
+  overflow: hidden;
+  opacity: 0;
+  animation: bootFadeIn 0.3s ease 0.9s forwards;
+}
+.boot-progress-bar {
+  width: 0%;
+  height: 100%;
+  background: var(--accent);
+  border-radius: 1px;
+  animation: bootLoad 1.2s cubic-bezier(0.4, 0, 0.2, 1) 1s forwards;
+}
+@keyframes bootLoad {
+  0% { width: 0%; }
+  60% { width: 75%; }
+  100% { width: 100%; }
+}
+
+/* ── FOOTER ── */
+.footer {
+  text-align: center;
+  padding: 2rem;
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+}
+.footer a {
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer a:hover { color: var(--accent); }
+
+/* ── PAGE TRANSITION ── */
+#pageTransition {
+  position: fixed; inset: 0;
+  background: var(--bg);
+  z-index: 99999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+#pageTransition.active { opacity: 1; pointer-events: all; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .header { padding: 1rem 1.2rem; }
+  .header-center { display: none; }
+  main { padding: 100px 1.2rem 3rem; }
+  .hero h1 { font-size: 2rem; }
+  .product-grid { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+  .detail-inner { grid-template-columns: 1fr; gap: 1.5rem; padding: 5rem 1.5rem 3rem; }
+  .cart-drawer { width: 100%; right: -100%; }
+  .filters { gap: 0.4rem; }
+  .filter-btn { padding: 0.4rem 0.8rem; font-size: 0.5rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- PAGE TRANSITION -->
+<div id="pageTransition"></div>
+
+<!-- BOOT SCREEN -->
+<div id="bootScreen">
+  <img src="logo-parchment.svg" alt="ML" class="boot-icon">
+  <div class="boot-text">The Archive</div>
+  <div class="boot-progress"><div class="boot-progress-bar"></div></div>
+</div>
+
+<!-- HEADER -->
+<header class="header">
+  <a href="../index.html" class="header-logo-link" onclick="return navigateBack(event)">
+    <img src="logo-gray.svg" alt="ML" class="header-logo logo-default">
+    <img src="logo-orange.svg" alt="ML" class="header-logo logo-hover">
+  </a>
+</header>
+
+<!-- marquee removed -->
+
+<main id="mainContent">
+  <!-- HERO -->
+  <div class="hero">
+    <div class="title-row" id="titleRow">
+      <div class="page-title">The Archive</div>
+    </div>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filters">
+    <button class="filter-btn active" onclick="filterProducts('all', this)">All</button>
+    <button class="filter-btn" onclick="filterProducts('gear', this)">Gear</button>
+    <button class="filter-btn" onclick="filterProducts('collectibles', this)">Collectibles</button>
+    <button class="filter-btn" onclick="filterProducts('shoes', this)">Shoes</button>
+  </div>
+
+  <!-- PRODUCT GRID -->
+  <div class="product-grid" id="productGrid"></div>
+</main>
+
+<div class="footer">
+  I take pride in my tastes · All prices final
+</div>
+
+<!-- MODAL -->
+<div class="modal-backdrop" id="modalBackdrop" onclick="closeModal(event)">
+  <div class="modal" id="modal" style="position:relative;"></div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <button class="lightbox-close" onclick="closeLightbox(event)">✕</button>
+  <img id="lightboxImg" src="" alt="">
+</div>
+
+<!-- no cart -->
+
+<script>
+// ── PRODUCTS ──
+const PRODUCTS = [
+  {
+    id: 1, name: 'Dr Pepper Mini Fridge', category: 'collectibles',
+    detail: 'Mini · Retro',
+    desc: 'Dr Pepper branded mini fridge. Fits 6 cans. Works great. Perfect for a dorm or desk.',
+    price: 15, originalPrice: null, sizes: [], tag: null, img: '../img/shop/drumkit.jpg'
+  },
+  {
+    id: 2, name: 'Murakami Flower Pillow', category: 'collectibles',
+    detail: 'Plush · Colorful',
+    desc: 'Takashi Murakami flower pillow. Vibrant colors, great condition.',
+    price: 10, originalPrice: null, sizes: [], tag: null, img: '../img/shop/murakami.jpg'
+  },
+  {
+    id: 3, name: 'Nintendo Switch', category: 'gear',
+    detail: 'Console · Charger · Carrying Case',
+    desc: 'Nintendo Switch console. Works perfectly. Comes with charger and carrying case.',
+    price: 130, originalPrice: null, sizes: [], tag: null, img: '../img/shop/switch.jpg'
+  },
+  {
+    id: 4, name: 'Akai MPK Mini', category: 'gear',
+    detail: 'MIDI Controller · USB',
+    desc: 'Akai MPK Mini MIDI keyboard controller. 25 keys, 8 pads. Great for production. Lightly used.',
+    price: 50, originalPrice: null, sizes: [], tag: null, img: '../img/shop/mpk.jpg'
+  },
+  {
+    id: 5, name: 'The Fall Off', category: 'collectibles',
+    detail: 'Vinyl · Sealed',
+    desc: 'Sealed vinyl record. Collector\'s item. Never opened.',
+    price: 100, originalPrice: null, sizes: [], tag: null, img: '../img/shop/falloff.jpg'
+  },
+  {
+    id: 6, name: 'Kramer Cardboard Cutout', category: 'collectibles',
+    detail: 'Life-size · Iconic',
+    desc: 'Life-size Cosmo Kramer cardboard cutout. The man himself. Conversation starter guaranteed.',
+    price: 30, originalPrice: null, sizes: [], tag: null, img: '../img/shop/kramer.jpg'
+  },
+  {
+    id: 7, name: 'PS5 Controller', category: 'gear',
+    detail: 'Red · DualSense',
+    desc: 'Red PlayStation DualSense controller. Fully functional, no stick drift.',
+    price: 70, originalPrice: null, sizes: [], tag: null, img: '../img/shop/ps-controller.jpg'
+  },
+  {
+    id: 8, name: 'Rolling Stones Rug', category: 'collectibles',
+    detail: 'Tongue Logo · Floor Rug',
+    desc: 'Rolling Stones tongue logo rug. Kinda dirty. Statement piece.',
+    price: 50, originalPrice: null, sizes: [], tag: null, img: '../img/shop/rolling-stones.jpg'
+  },
+  {
+    id: 9, name: 'Arcane Bearbrick', category: 'collectibles',
+    detail: '400% · Limited Edition',
+    desc: 'Arcane-themed Bearbrick figure. Limited edition. Comes with 400% and 100% figures.',
+    price: 300, originalPrice: null, sizes: [], tag: null, img: '../img/shop/boombox.jpg'
+  },
+  {
+    id: 12, name: 'Ferrofluid Visualizer', category: 'gear',
+    detail: 'Sound-reactive · Magnetic',
+    desc: 'Ferrofluid visualizer that reacts to sound. Mesmerizing magnetic liquid dances to music.',
+    price: 80, originalPrice: null, sizes: [], tag: null, img: '../img/shop/ferrofluid.jpg'
+  },
+  {
+    id: 11, name: "SF Air Force 1 High 'Laser Orange'", category: 'shoes',
+    detail: 'Size 13 · 9/10',
+    desc: 'Nike SF Air Force 1 High in Laser Orange. Some wear.',
+    price: 150, originalPrice: null, sizes: ['13'], tag: null, img: '../img/shop/sneaker.jpg'
+  },
+  {
+    id: 12, name: "Off-White x AJ1 Retro High OG 'UNC'", category: 'shoes',
+    detail: 'Size 13 · Replica · 1:1',
+    desc: "Off-White x Air Jordan 1 Retro High OG 'UNC' replica. 1:1 detail. Some wear, lightly worn.",
+    price: 180, originalPrice: null, sizes: ['13'], tag: null, img: '../img/shop/sneaker2.jpg'
+  },
+];
+
+let currentFilter = 'all';
+
+function animatePageIn() {
+  setTimeout(() => document.getElementById('titleRow').classList.add('loaded'), 100);
+  setTimeout(() => document.querySelector('.filters').classList.add('visible'), 400);
+  // Re-trigger card cascade after filters
+  setTimeout(() => renderGrid(true), 600);
+}
+
+// ── RENDER GRID ──
+function renderGrid(animate = true) {
+  const grid = document.getElementById('productGrid');
+  const filtered = currentFilter === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.category === currentFilter);
+  grid.innerHTML = filtered.map((p, i) => `
+    <div class="product-card ${animate ? 'cascade-in' : ''}" style="${animate ? `animation-delay:${i * 70}ms` : ''}" onclick="openDetail(${p.id})" onmouseenter="tiltCard(event, this)" onmousemove="tiltCard(event, this)" onmouseleave="resetTilt(this)">
+      <div class="product-img">
+        ${p.img ? `<img src="${p.img}" alt="${p.name}">` : `<div class="placeholder-icon">✦</div>`}
+        ${p.sold ? `<div class="product-tag product-tag-sold">SOLD</div>` : p.tag ? `<div class="product-tag">${p.tag}</div>` : ''}
+      </div>
+      <div class="product-info">
+        <div class="product-name">${p.name}</div>
+        <div class="product-detail">${p.detail}</div>
+        <div class="product-price">
+          ${p.sold ? '<span style="color:var(--text-muted)">Sold</span>' : `$${p.price}`}
+          ${p.originalPrice && !p.sold ? `<span class="product-price-original">$${p.originalPrice}</span>` : ''}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── 3D TILT ──
+function tiltCard(e, card) {
+  const rect = card.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  const centerX = rect.width / 2;
+  const centerY = rect.height / 2;
+  const rotateX = ((y - centerY) / centerY) * -6;
+  const rotateY = ((x - centerX) / centerX) * 6;
+  card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+}
+function resetTilt(card) {
+  card.style.transform = '';
+}
+
+// ── FILTER WITH EXIT ANIMATION ──
+function filterProducts(cat, btn) {
+  if (cat === currentFilter) return;
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  
+  // Animate out existing cards
+  const cards = document.querySelectorAll('.product-card');
+  cards.forEach((card, i) => {
+    card.style.animationDelay = `${i * 30}ms`;
+    card.classList.remove('cascade-in');
+    card.classList.add('cascade-out');
+  });
+  
+  // After exit animation, render new
+  setTimeout(() => {
+    renderGrid(true);
+  }, cards.length * 30 + 250);
+}
+
+// ── MODAL ──
+function openDetail(id) {
+  const p = PRODUCTS.find(x => x.id === id);
+  if (!p) return;
+  const modal = document.getElementById('modal');
+  modal.innerHTML = `
+    <button class="modal-close" onclick="closeModal(event)">✕</button>
+    <div class="modal-img">
+      ${p.img ? `<img src="${p.img}" alt="${p.name}" onclick="openLightbox('${p.img}')">` : `<div style="font-size:3rem;color:#ccc;display:flex;align-items:center;justify-content:center;height:100%;">✦</div>`}
+    </div>
+    <div class="modal-body">
+      <div class="modal-name">${p.name}</div>
+      <div class="modal-desc">${p.desc}</div>
+      <div class="modal-footer">
+        <div class="modal-price">${p.sold ? '<span style="color:var(--text-muted);font-size:0.8rem;">Sold</span>' : `$${p.price}`}</div>
+        ${p.sold 
+          ? '<div class="sold-label">Sold</div>' 
+          : '<div class="modal-purchase">Text <a href="sms:2039233280">203-923-3280</a> to buy</div>'}
+      </div>
+    </div>
+  `;
+  
+  const backdrop = document.getElementById('modalBackdrop');
+  backdrop.style.display = 'block';
+  requestAnimationFrame(() => { requestAnimationFrame(() => backdrop.classList.add('visible')); });
+}
+
+function closeModal(e) {
+  if (e && e.type === 'click') {
+    const backdrop = document.getElementById('modalBackdrop');
+    const modal = document.getElementById('modal');
+    const isBackdropClick = e.target === backdrop;
+    const isCloseBtn = e.target.closest('.modal-close');
+    if (!isBackdropClick && !isCloseBtn) return;
+  }
+  const backdrop = document.getElementById('modalBackdrop');
+  if (!backdrop.classList.contains('visible')) return;
+  backdrop.classList.remove('visible');
+  setTimeout(() => { 
+    backdrop.style.display = 'none';
+    document.getElementById('modal').innerHTML = '';
+  }, 350);
+}
+
+// ── LIGHTBOX ──
+function openLightbox(src) {
+  const lb = document.getElementById('lightbox');
+  document.getElementById('lightboxImg').src = src;
+  lb.style.display = 'flex';
+  requestAnimationFrame(() => { requestAnimationFrame(() => lb.classList.add('visible')); });
+}
+function closeLightbox(e) {
+  if (e && e.type === 'click' && e.target !== document.getElementById('lightbox') && !e.target.closest('.lightbox-close')) return;
+  const lb = document.getElementById('lightbox');
+  lb.classList.remove('visible');
+  setTimeout(() => lb.style.display = 'none', 300);
+}
+
+function navigateBack(e) {
+  e.preventDefault();
+  const overlay = document.getElementById('pageTransition');
+  overlay.classList.add('active');
+  setTimeout(() => { window.location.href = '../index.html'; }, 600);
+  return false;
+}
+
+// ── BOOT + PAGE REVEAL ──
+window.addEventListener('load', () => {
+  const boot = document.getElementById('bootScreen');
+  // Boot runs ~2.2s (spin + progress bar), then fade out
+  setTimeout(() => {
+    boot.classList.add('fade-out');
+    document.getElementById('mainContent').classList.add('loaded');
+    animatePageIn();
+  }, 2400);
+  setTimeout(() => boot.remove(), 3000);
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    const lb = document.getElementById('lightbox');
+    if (lb.classList.contains('visible')) { closeLightbox(e); return; }
+    closeModal(e);
+  }
+});
+</script>
+</body>
+</html>
