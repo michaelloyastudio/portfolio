@@ -1035,6 +1035,16 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   }
 
   /* die removed — P2 is now the main landing */
+
+  /* ── CLICK / ACTIVE STATES ── */
+  .p2-contact-links a:active {
+    transform: scale(0.95);
+    transition: transform 0.08s ease;
+  }
+  .p2-interactive-content a.app-link:active {
+    transform: scale(0.95);
+    transition: transform 0.08s ease;
+  }
 </style>
 </head>
 <body style="background:#E8E0D4">
@@ -1257,7 +1267,7 @@ const projects = [
 
 <h3 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:1.4rem;margin:2.5rem 0 0.5rem;">Juice Jam 2025</h3>
 <p style="margin-bottom:1rem;">Full visual identity for Syracuse's annual outdoor music festival featuring Ashe & Jordan Ward. Designed the main poster, digital signage, and large-format print materials. Retro risograph aesthetic with bold gold typography.</p>
-<div class="project-img" style="margin-bottom:0;"><img src="img/all/jj_78508.jpg" alt="Juice Jam - horizontal digital screen" loading="lazy"></div>
+<div class="project-img project-img-video" style="margin-bottom:0;"><video src="img/all/jj_timelapse.mp4" autoplay loop muted playsinline style="width:100%;height:auto;object-fit:contain;border-radius:8px;"></video></div>
 <div class="img-grid-3" style="margin:0.6rem 0 0 0;margin-bottom:0;">
 <div class="project-img"><img src="img/all/jj_78507.jpg" alt="Juice Jam - vertical kiosk" loading="lazy"></div>
 <div class="project-img"><img src="img/all/jj_78506.jpg" alt="Juice Jam - printed poster" loading="lazy"></div>
