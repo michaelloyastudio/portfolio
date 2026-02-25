@@ -792,7 +792,6 @@ main.loaded { opacity: 1; transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1)
 
 <!-- LIGHTBOX -->
 <div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
-  <button class="lightbox-close" onclick="closeLightbox(event)">✕</button>
   <img id="lightboxImg" src="" alt="">
 </div>
 
@@ -853,7 +852,7 @@ const PRODUCTS = [
     id: 9, name: 'Arcane Bearbrick', category: 'collectibles',
     detail: 'Limited Edition',
     desc: 'Arcane-themed Bearbrick figure. Limited edition. Comes with 400% and 100% figures.',
-    price: 300, originalPrice: null, sizes: [], tag: null, img: '../img/shop/boombox.jpg'
+    price: 250, originalPrice: null, sizes: [], tag: null, img: '../img/shop/boombox.jpg'
   },
   {
     id: 12, name: 'Ferrofluid Visualizer', category: 'tech',
@@ -880,7 +879,7 @@ const PRODUCTS = [
     price: 150, originalPrice: null, sizes: ['13'], tag: null, img: '../img/shop/sneaker.jpg'
   },
   {
-    id: 12, name: "Off-White x AJ1 'UNC' (Reps)", category: 'shoes',
+    id: 13, name: "Off-White x AJ1 'UNC' (Reps)", category: 'shoes',
     detail: 'Size 13',
     desc: "Off-White x Air Jordan 1 Retro High OG 'UNC' replica. 1:1 detail. Some wear, lightly worn.",
     price: 180, originalPrice: null, sizes: ['13'], tag: null, img: '../img/shop/sneaker2.jpg'
@@ -1018,7 +1017,7 @@ function openLightbox(src) {
   requestAnimationFrame(() => { requestAnimationFrame(() => lb.classList.add('visible')); });
 }
 function closeLightbox(e) {
-  if (e && e.type === 'click' && e.target !== document.getElementById('lightbox') && !e.target.closest('.lightbox-close')) return;
+  if (e && e.type === 'click' && e.target.closest('.detail-img')) return;
   const lb = document.getElementById('lightbox');
   lb.classList.remove('visible');
   setTimeout(() => lb.style.display = 'none', 300);
