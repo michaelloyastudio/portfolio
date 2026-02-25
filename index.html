@@ -2052,7 +2052,7 @@ document.querySelectorAll('.p2-about-back').forEach(link => {
       const href = this.href;
       overlay.style.pointerEvents = 'all';
       overlay.style.opacity = '1';
-      setTimeout(() => { window.location.href = href; }, 700);
+      setTimeout(() => { window.open(href, '_blank'); overlay.style.opacity = '0'; overlay.style.pointerEvents = 'none'; }, 700);
     });
   });
 })();
