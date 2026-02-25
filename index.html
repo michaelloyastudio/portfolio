@@ -1670,7 +1670,45 @@ function closeLightbox() {
   lbIndex = 0;
 }
 
+/* Track touches so pinch-zoom doesn't trigger close/nav */
+let _lbTouchStart = null;
+let _lbTouchFingers = 0;
+lightbox.addEventListener('touchstart', (e) => {
+  _lbTouchFingers = e.touches.length;
+  if (e.touches.length === 1) {
+    _lbTouchStart = { x: e.touches[0].clientX, y: e.touches[0].clientY, t: Date.now() };
+  } else {
+    _lbTouchStart = null; // multi-finger = zoom, ignore
+  }
+}, { passive: true });
+lightbox.addEventListener('touchmove', (e) => {
+  if (e.touches.length > 1) { _lbTouchStart = null; _lbTouchFingers = e.touches.length; }
+}, { passive: true });
+lightbox.addEventListener('touchend', (e) => {
+  if (_lbTouchFingers > 1 || !_lbTouchStart) { _lbTouchStart = null; return; }
+  const dt = Date.now() - _lbTouchStart.t;
+  const dx = e.changedTouches[0].clientX - _lbTouchStart.x;
+  const dy = e.changedTouches[0].clientY - _lbTouchStart.y;
+  const dist = Math.sqrt(dx*dx + dy*dy);
+  _lbTouchStart = null;
+  // Swipe horizontal → prev/next
+  if (dist > 50 && Math.abs(dx) > Math.abs(dy) && dt < 400) {
+    e.preventDefault();
+    if (lbItems.length > 1) {
+      if (dx < 0) showLightboxItem(lbIndex < lbItems.length - 1 ? lbIndex + 1 : 0);
+      else showLightboxItem(lbIndex > 0 ? lbIndex - 1 : lbItems.length - 1);
+    }
+    return;
+  }
+  // Short tap on background → close
+  if (dist < 15 && dt < 300) {
+    const t = e.target || document.elementFromPoint(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+    if (t === lightbox || t === lightboxImg || t === lightboxVideo) closeLightbox();
+  }
+});
+// Desktop click — only if not touch device
 lightbox.addEventListener('click', (e) => {
+  if (e.sourceCapabilities && e.sourceCapabilities.firesTouchEvents) return; // skip touch-generated clicks
   if (e.target === lightbox || e.target === lightboxImg || e.target === lightboxVideo) closeLightbox();
 });
 lightboxClose.addEventListener('click', (e) => {
