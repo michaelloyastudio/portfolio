@@ -772,7 +772,7 @@ main.loaded { opacity: 1; transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1)
   <!-- FILTERS -->
   <div class="filters">
     <button class="filter-btn active" onclick="filterProducts('all', this)">All</button>
-    <button class="filter-btn" onclick="filterProducts('gear', this)">Gear</button>
+    <button class="filter-btn" onclick="filterProducts('tech', this)">Tech</button>
     <button class="filter-btn" onclick="filterProducts('collectibles', this)">Collectibles</button>
     <button class="filter-btn" onclick="filterProducts('shoes', this)">Shoes</button>
   </div>
@@ -803,75 +803,99 @@ main.loaded { opacity: 1; transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1)
 const PRODUCTS = [
   {
     id: 1, name: 'Dr Pepper Mini Fridge', category: 'collectibles',
-    detail: 'Mini · Retro',
+    detail: 'Fits 6 Cans',
     desc: 'Dr Pepper branded mini fridge. Fits 6 cans. Works great. Perfect for a dorm or desk.',
     price: 15, originalPrice: null, sizes: [], tag: null, img: '../img/shop/drumkit.jpg'
   },
   {
     id: 2, name: 'Murakami Flower Pillow', category: 'collectibles',
-    detail: 'Plush · Colorful',
+    detail: 'Plush',
     desc: 'Takashi Murakami flower pillow. Vibrant colors, great condition.',
     price: 10, originalPrice: null, sizes: [], tag: null, img: '../img/shop/murakami.jpg'
   },
   {
-    id: 3, name: 'Nintendo Switch', category: 'gear',
-    detail: 'Console · Charger · Carrying Case',
+    id: 3, name: 'Nintendo Switch', category: 'tech',
+    detail: 'Console',
     desc: 'Nintendo Switch console. Works perfectly. Comes with charger and carrying case.',
     price: 130, originalPrice: null, sizes: [], tag: null, img: '../img/shop/switch.jpg'
   },
   {
-    id: 4, name: 'Akai MPK Mini', category: 'gear',
-    detail: 'MIDI Controller · USB',
+    id: 4, name: 'Akai MPK Mini', category: 'tech',
+    detail: 'MIDI Controller',
     desc: 'Akai MPK Mini MIDI keyboard controller. 25 keys, 8 pads. Great for production. Lightly used.',
     price: 50, originalPrice: null, sizes: [], tag: null, img: '../img/shop/mpk.jpg'
   },
   {
     id: 5, name: 'The Fall Off', category: 'collectibles',
-    detail: 'Vinyl · Sealed',
+    detail: 'Sealed Vinyl',
     desc: 'Sealed vinyl record. Collector\'s item. Never opened.',
     price: 100, originalPrice: null, sizes: [], tag: null, img: '../img/shop/falloff.jpg'
   },
   {
     id: 6, name: 'Kramer Cardboard Cutout', category: 'collectibles',
-    detail: 'Life-size · Iconic',
+    detail: 'Life-size',
     desc: 'Life-size Cosmo Kramer cardboard cutout. The man himself. Conversation starter guaranteed.',
     price: 30, originalPrice: null, sizes: [], tag: null, img: '../img/shop/kramer.jpg'
   },
   {
-    id: 7, name: 'PS5 Controller', category: 'gear',
-    detail: 'Red · DualSense',
+    id: 7, name: 'PS5 Controller', category: 'tech',
+    detail: 'Volcanic Red',
     desc: 'Red PlayStation DualSense controller. Fully functional, no stick drift.',
     price: 70, originalPrice: null, sizes: [], tag: null, img: '../img/shop/ps-controller.jpg'
   },
   {
     id: 8, name: 'Rolling Stones Rug', category: 'collectibles',
-    detail: 'Tongue Logo · Floor Rug',
+    detail: 'Floor Rug',
     desc: 'Rolling Stones tongue logo rug. Kinda dirty. Statement piece.',
     price: 50, originalPrice: null, sizes: [], tag: null, img: '../img/shop/rolling-stones.jpg'
   },
   {
     id: 9, name: 'Arcane Bearbrick', category: 'collectibles',
-    detail: '400% · Limited Edition',
+    detail: 'Limited Edition',
     desc: 'Arcane-themed Bearbrick figure. Limited edition. Comes with 400% and 100% figures.',
     price: 300, originalPrice: null, sizes: [], tag: null, img: '../img/shop/boombox.jpg'
   },
   {
-    id: 12, name: 'Ferrofluid Visualizer', category: 'gear',
-    detail: 'Sound-reactive · Magnetic',
+    id: 12, name: 'Ferrofluid Visualizer', category: 'tech',
+    detail: 'Sound-reactive',
     desc: 'Ferrofluid visualizer that reacts to sound. Mesmerizing magnetic liquid dances to music.',
     price: 80, originalPrice: null, sizes: [], tag: null, img: '../img/shop/ferrofluid.jpg'
   },
   {
+    id: 13, name: 'Gus Fring Youtooz', category: 'collectibles',
+    detail: 'Vinyl Figure',
+    desc: 'Youtooz Breaking Bad Face Off Gus Fring vinyl figure (#15). The half-face. Collector\'s item.',
+    price: 30, originalPrice: null, sizes: [], tag: null, img: '../img/shop/faceoff.jpg'
+  },
+  {
+    id: 15, name: 'Fitz Youtooz', category: 'collectibles',
+    detail: 'Vinyl Figure',
+    desc: 'Youtooz Fitz vinyl figure (#1). Rainbow gradient head, blue hoodie. In box.',
+    price: 30, originalPrice: null, sizes: [], tag: null, img: '../img/shop/fitz.jpg'
+  },
+  {
     id: 11, name: "SF Air Force 1 High 'Laser Orange'", category: 'shoes',
-    detail: 'Size 13 · 9/10',
+    detail: 'Size 13',
     desc: 'Nike SF Air Force 1 High in Laser Orange. Some wear.',
     price: 150, originalPrice: null, sizes: ['13'], tag: null, img: '../img/shop/sneaker.jpg'
   },
   {
-    id: 12, name: "Off-White x AJ1 Retro High OG 'UNC'", category: 'shoes',
-    detail: 'Size 13 · Replica · 1:1',
+    id: 12, name: "Off-White x AJ1 'UNC' (Reps)", category: 'shoes',
+    detail: 'Size 13',
     desc: "Off-White x Air Jordan 1 Retro High OG 'UNC' replica. 1:1 detail. Some wear, lightly worn.",
     price: 180, originalPrice: null, sizes: ['13'], tag: null, img: '../img/shop/sneaker2.jpg'
+  },
+  {
+    id: 14, name: "AJ1 High OG 'Light Fusion Red'", category: 'shoes',
+    detail: 'Size 13',
+    desc: "Air Jordan 1 Retro High OG 'Light Fusion Red'. White leather, red overlays, gold swoosh.",
+    price: 100, originalPrice: null, sizes: ['13'], tag: null, img: '../img/shop/af1.jpg'
+  },
+  {
+    id: 16, name: "Travis Scott x McDonald's Lunch Tray", category: 'collectibles',
+    detail: 'Cactus Jack',
+    desc: "Travis Scott x McDonald's branded lunch tray. Cactus Jack collab. Collector's item.",
+    price: 40, originalPrice: null, sizes: [], tag: null, img: '../img/shop/lunchtray.jpg'
   },
 ];
 
