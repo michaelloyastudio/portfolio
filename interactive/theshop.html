@@ -970,6 +970,7 @@ function openDetail(id) {
   const p = PRODUCTS.find(x => x.id === id);
   if (!p) return;
   const modal = document.getElementById('modal');
+  modal.dataset.productId = id;
   modal.innerHTML = `
     <button class="modal-close" onclick="closeModal(event)">✕</button>
     <div class="modal-img">
@@ -1048,6 +1049,20 @@ document.addEventListener('keydown', e => {
     const lb = document.getElementById('lightbox');
     if (lb.classList.contains('visible')) { closeLightbox(e); return; }
     closeModal(e);
+    return;
+  }
+  // Arrow keys navigate between products (only in modal, not lightbox)
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+    const lb = document.getElementById('lightbox');
+    if (lb.classList.contains('visible')) return; // don't navigate during lightbox
+    const backdrop = document.getElementById('modalBackdrop');
+    if (!backdrop.classList.contains('visible')) return; // only when modal is open
+    const filtered = currentFilter === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.category === currentFilter);
+    const currentId = parseInt(document.getElementById('modal').dataset.productId);
+    const idx = filtered.findIndex(p => p.id === currentId);
+    if (idx === -1) return;
+    const nextIdx = e.key === 'ArrowRight' ? (idx + 1) % filtered.length : (idx - 1 + filtered.length) % filtered.length;
+    openDetail(filtered[nextIdx].id);
   }
 });
 </script>
