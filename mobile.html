@@ -1089,7 +1089,7 @@ const projects = [
 
 <h3 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:1.1rem;margin:1.5rem 0 0.4rem;">Juice Jam 2025</h3>
 <p style="margin-bottom:0.8rem;font-size:0.7rem;">Full visual identity for Syracuse's annual outdoor music festival featuring Ashe & Jordan Ward. Retro risograph aesthetic with bold gold typography.</p>
-<div class="project-img" style="margin-bottom:0;"><img src="img/all/jj_78508.jpg" alt="Juice Jam - horizontal digital screen" loading="lazy"></div>
+<div class="project-img project-img-video" style="margin-bottom:0;"><video src="img/all/jj_timelapse.mp4" autoplay loop muted playsinline style="width:100%;height:auto;object-fit:contain;border-radius:8px;"></video></div>
 <div class="img-grid-3" style="margin:0.6rem 0 0 0;margin-bottom:0;">
 <div class="project-img"><img src="img/all/jj_78507.jpg" alt="Juice Jam - vertical kiosk" loading="lazy"></div>
 <div class="project-img"><img src="img/all/jj_merch.jpg" alt="Juice Jam - merch mockup" loading="lazy"></div>
@@ -1669,12 +1669,19 @@ function closeLightbox() {
   document.getElementById('lightboxContent').innerHTML = '';
 }
 
-// Swipe support
+// Swipe support (ignores pinch-zoom)
+let _mlbFingers = 0;
 document.getElementById('lightbox').addEventListener('touchstart', (e) => {
-  lbTouchStartX = e.touches[0].clientX;
+  _mlbFingers = e.touches.length;
+  lbTouchStartX = e.touches.length === 1 ? e.touches[0].clientX : null;
+}, { passive: true });
+
+document.getElementById('lightbox').addEventListener('touchmove', (e) => {
+  if (e.touches.length > 1) { lbTouchStartX = null; _mlbFingers = e.touches.length; }
 }, { passive: true });
 
 document.getElementById('lightbox').addEventListener('touchend', (e) => {
+  if (_mlbFingers > 1 || lbTouchStartX === null) { lbTouchStartX = null; return; }
   const dx = e.changedTouches[0].clientX - lbTouchStartX;
   if (Math.abs(dx) < 50) return;
   if (dx < 0 && lbIndex < lbMedia.length - 1) {

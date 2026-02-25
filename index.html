@@ -1702,13 +1702,16 @@ lightbox.addEventListener('touchend', (e) => {
   }
   // Short tap on background → close
   if (dist < 15 && dt < 300) {
+    _lbTouchHandled = true;
+    setTimeout(() => { _lbTouchHandled = false; }, 400);
     const t = e.target || document.elementFromPoint(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
     if (t === lightbox || t === lightboxImg || t === lightboxVideo) closeLightbox();
   }
 });
-// Desktop click — only if not touch device
+let _lbTouchHandled = false;
+// Desktop click — skip if touch already handled
 lightbox.addEventListener('click', (e) => {
-  if (e.sourceCapabilities && e.sourceCapabilities.firesTouchEvents) return; // skip touch-generated clicks
+  if (_lbTouchHandled) return;
   if (e.target === lightbox || e.target === lightboxImg || e.target === lightboxVideo) closeLightbox();
 });
 lightboxClose.addEventListener('click', (e) => {
