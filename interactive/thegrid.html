@@ -1558,7 +1558,7 @@ document.querySelector('.grid').addEventListener('mousedown', (e) => {
     const href = this.href;
     overlay.style.pointerEvents = 'all';
     overlay.style.opacity = '1';
-    setTimeout(() => { window.location.href = href; }, 400);
+    setTimeout(() => { window.close(); if (!window.closed) window.location.href = href; }, 400);
   });
 })();
 </script>

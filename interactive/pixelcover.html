@@ -312,7 +312,7 @@ input[type="color"] {
 
 <!-- Header -->
 <header class="header">
-  <a href="../index.html" class="header-logo-link clickable">
+  <a href="../index.html" class="header-logo-link clickable" onclick="event.preventDefault();window.close();if(!window.closed)window.location.href='../index.html';">
     <img src="logo-gray.svg" alt="ML" class="header-logo logo-default">
     <img src="logo-orange.svg" alt="ML" class="header-logo logo-hover">
   </a>

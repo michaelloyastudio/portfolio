@@ -2934,7 +2934,7 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
 
 <!-- Header -->
 <header class="header">
-  <a href="../index.html" class="header-logo-link">
+  <a href="../index.html" class="header-logo-link" onclick="event.preventDefault();window.close();if(!window.closed)window.location.href='../index.html';">
     <img src="logo-gray.svg" class="header-logo logo-default" alt="ML">
     <img src="logo-orange.svg" class="header-logo logo-hover" alt="ML">
   </a>

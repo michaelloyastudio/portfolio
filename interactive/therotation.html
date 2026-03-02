@@ -1182,7 +1182,7 @@ if (backSpan) {
       }
       overlay.style.pointerEvents = 'all';
       overlay.style.opacity = '1';
-      setTimeout(() => { window.location.href = href; }, 500);
+      setTimeout(() => { window.close(); if (!window.closed) window.location.href = href; }, 500);
     });
   }
 })();
