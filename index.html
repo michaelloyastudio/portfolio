@@ -737,7 +737,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     color: #ff8e3d;
   }
   .p2-wrap.dark-mode .p2-title img {
-    filter: brightness(0) invert(0.88);
+    filter: brightness(0) invert(1) sepia(0.15) saturate(0.6) hue-rotate(350deg) brightness(0.92);
   }
 
   /* ── P2 PROJECT DETAIL (shared-element zoom-in) ── */
@@ -2106,8 +2106,9 @@ let p2Initialized = false;
       titleEl.style.opacity = Math.max(1 - fallT * 5, 0);
 
       _p2LabItems.forEach((item, i) => {
+        const si = staggerOrder[i] !== undefined ? staggerOrder[i] : i;
         const fromY = item._projFallFromY || item.restY;
-        const targetY = window.innerHeight + 200 + i * 50;
+        const targetY = window.innerHeight + 200 + si * 50;
         const curY = fromY + (targetY - fromY) * fallEase;
         item.el.style.transform = `translate3d(${item.restX}px, ${curY}px, 0) scale(${item.scaleAmt})`;
       });
@@ -2126,7 +2127,7 @@ let p2Initialized = false;
 
     // Animate the active items (lab cards or work items)
     const activeItems = _p2InteractiveMode ? _p2LabItems : p2Items;
-    const activeStaggerOrder = _p2InteractiveMode ? _p2LabItems.map((_, i) => i) : staggerOrder;
+    const activeStaggerOrder = staggerOrder;
 
     activeItems.forEach((item, i) => {
       const si = activeStaggerOrder[i] !== undefined ? activeStaggerOrder[i] : i;
