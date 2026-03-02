@@ -884,8 +884,8 @@ function renderMenu() {
       el.innerHTML = `
         <img class="menu-item-thumb" src="${track.cover}" alt="">
         <div class="menu-item-info">
-          <div class="menu-item-title">${track.title}</div>
-          <div class="menu-item-artist">${track.artist}${track.explicit ? ' <span class="explicit-badge" style="display:inline-flex;vertical-align:middle;margin-left:3px;">E</span>' : ''}</div>
+          <div class="menu-item-title">${track.title}${track.explicit ? ' <span class="explicit-badge" style="display:inline-flex;vertical-align:middle;margin-left:3px;">E</span>' : ''}</div>
+          <div class="menu-item-artist">${track.artist}</div>
         </div>
         ${badgeHtml}
       `;
@@ -912,8 +912,8 @@ function updateMenuSelection() {
 function renderNowPlaying() {
   const track = playlist[currentIndex];
   document.getElementById('npCover').src = track.cover;
-  document.getElementById('npTitle').textContent = track.title;
-  document.getElementById('npArtist').innerHTML = track.artist + (track.explicit ? ' <span class="explicit-badge" style="display:inline-flex;vertical-align:middle;margin-left:3px;">E</span>' : '');
+  document.getElementById('npTitle').innerHTML = track.title + (track.explicit ? ' <span class="explicit-badge" style="display:inline-flex;vertical-align:middle;margin-left:3px;">E</span>' : '');
+  document.getElementById('npArtist').textContent = track.artist;
   const npTrackEl = document.getElementById('npTrackNum');
   npTrackEl.innerHTML = `${currentIndex + 1} of ${playlist.length}` + (track.weeks ? ` <span class="weeks-badge" style="margin-left:6px;">${track.weeks}w on rotation</span>` : '');
   updateStreamingLinks(track.title, track.artist);
