@@ -736,8 +736,12 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   .p2-wrap.dark-mode .p2-nav a:hover .nav-letter {
     color: #ff8e3d;
   }
-  .p2-wrap.dark-mode .p2-title img {
-    filter: brightness(0) invert(1) sepia(0.15) saturate(0.6) hue-rotate(350deg) brightness(0.92);
+  .p2-title img.p2-logo {
+    filter: brightness(0);
+    transition: filter 0.85s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .p2-wrap.dark-mode .p2-title img.p2-logo {
+    filter: none;
   }
 
   /* ── P2 PROJECT DETAIL (shared-element zoom-in) ── */
@@ -1129,7 +1133,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   <!-- Floating scene (on top) -->
   <div class="p2-scene" id="p2Scene">
     <div class="p2-title">
-      <img src="logo.svg" style="height:44px;width:auto;filter:brightness(0);margin-right:0.5rem;vertical-align:middle;position:relative;top:-6px;">Michael Loya <span>Studio</span>
+      <img src="logo.svg" class="p2-logo" style="height:44px;width:auto;margin-right:0.5rem;vertical-align:middle;position:relative;top:-6px;">Michael Loya <span>Studio</span>
       <div class="p2-nav">
         <a onclick="p2ShowAbout()"><span>About</span></a>
         <a onclick="p2ShowInteractive()"><span>Interactive</span></a>
@@ -1473,6 +1477,7 @@ function p2ShowInteractive() {
 
     // Dark mode
     document.getElementById('p2Wrap').classList.add('dark-mode');
+    document.querySelector('.p2-title img').src = 'logo-cream.svg';
 
     // Change nav text: "Interactive" → "Work"
     var navLinks = document.querySelectorAll('.p2-nav a');
@@ -1601,6 +1606,7 @@ function p2ShowWork() {
 
     // Light mode
     document.getElementById('p2Wrap').classList.remove('dark-mode');
+    document.querySelector('.p2-title img').src = 'logo.svg';
 
     // Change nav text: "Work" → "Interactive"
     var navLinks = document.querySelectorAll('.p2-nav a');
