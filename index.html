@@ -1502,12 +1502,9 @@ var _p2LabItems = [];
 var _p2WorkItemsBackup = [];
 
 var _p2LabApps = [
-  { emoji: '🎵', name: 'The Rotation', href: 'interactive/therotation.html' },
-  { emoji: '🥁', name: 'The Grid', href: 'interactive/thegrid.html' },
-  { emoji: '🏷️', name: 'The Shop', href: 'interactive/theshop.html' },
-  { emoji: '🎨', name: 'Pixel Cover', href: 'interactive/pixelcover.html' },
-  { emoji: '🎸', name: 'Rhythm', href: 'interactive/rhythm.html' },
-  { emoji: '🎮', name: 'Tycoon', href: 'interactive/tycoon.html' },
+  { name: 'The Rotation', href: 'interactive/therotation.html', cover: 'interactive/cover-rotation.svg' },
+  { name: 'The Grid', href: 'interactive/thegrid.html', cover: 'interactive/cover-grid.svg' },
+  { name: 'The Shop', href: 'interactive/theshop.html', cover: 'interactive/cover-shop.svg' },
 ];
 
 function p2ShowInteractive() {
@@ -1583,9 +1580,6 @@ function _p2CreateLabCards() {
     { x: 0.50, y: 0.16, z: -70,  s: 185 },
     { x: 0.78, y: 0.42, z: -110, s: 170 },
     { x: 0.30, y: 0.78, z: -30,  s: 180 },
-    { x: 0.08, y: 0.65, z: -50,  s: 190 },
-    { x: 0.88, y: 0.68, z: -100, s: 160 },
-    { x: 0.65, y: 0.80, z: -90,  s: 175 },
   ];
 
   _p2LabItems = [];
@@ -1595,11 +1589,7 @@ function _p2CreateLabCards() {
     var el = document.createElement('div');
     el.className = 'p2-item';
     el.style.width = pos.s + 'px';
-    el.style.height = pos.s + 'px';
-    el.innerHTML = '<a href="' + app.href + '" class="p2-lab-card" style="width:100%;height:100%;text-decoration:none;display:flex;flex-direction:column;align-items:center;justify-content:center;">' +
-      '<span class="lab-emoji">' + app.emoji + '</span>' +
-      '<span class="lab-name">' + app.name + '</span>' +
-      '</a>';
+    el.innerHTML = '<img src="' + app.cover + '" alt="' + app.name + '" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">';
 
     var maxZ = 0, minZ = -150;
     var zRange = maxZ - minZ;
@@ -1624,6 +1614,11 @@ function _p2CreateLabCards() {
       _p2LabItems.forEach(function(otherItem) {
         otherItem.el.style.filter = 'blur(0px)';
       });
+    });
+    el.addEventListener('click', function() {
+      var overlay = document.getElementById('pageTransition');
+      if (overlay) { overlay.style.pointerEvents = 'all'; overlay.style.opacity = '1'; }
+      setTimeout(function() { window.open(app.href, '_blank'); if (overlay) { overlay.style.opacity = '0'; overlay.style.pointerEvents = 'none'; } }, 700);
     });
 
     scene.appendChild(el);

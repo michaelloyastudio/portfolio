@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <defs>
+    <radialGradient id="rg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ff8e3d" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#0a0a0a"/>
+    </radialGradient>
+  </defs>
+  <rect width="400" height="400" fill="#0a0a0a"/>
+  <!-- Vinyl grooves -->
+  <circle cx="200" cy="200" r="170" fill="none" stroke="#1a1a1a" stroke-width="0.5"/>
+  <circle cx="200" cy="200" r="155" fill="none" stroke="#1a1a1a" stroke-width="0.5"/>
+  <circle cx="200" cy="200" r="140" fill="none" stroke="#1a1a1a" stroke-width="0.5"/>
+  <circle cx="200" cy="200" r="125" fill="none" stroke="#1a1a1a" stroke-width="0.5"/>
+  <circle cx="200" cy="200" r="110" fill="none" stroke="#1a1a1a" stroke-width="0.5"/>
+  <circle cx="200" cy="200" r="95" fill="none" stroke="#1a1a1a" stroke-width="0.5"/>
+  <circle cx="200" cy="200" r="80" fill="none" stroke="#1a1a1a" stroke-width="0.5"/>
+  <circle cx="200" cy="200" r="65" fill="none" stroke="#1a1a1a" stroke-width="0.5"/>
+  <!-- Highlight arc -->
+  <circle cx="200" cy="200" r="130" fill="none" stroke="#ff8e3d" stroke-width="1.5" stroke-dasharray="80 740" opacity="0.6"/>
+  <circle cx="200" cy="200" r="100" fill="none" stroke="#ff8e3d" stroke-width="1" stroke-dasharray="50 580" stroke-dashoffset="120" opacity="0.4"/>
+  <!-- Center label -->
+  <circle cx="200" cy="200" r="40" fill="#1a1a1a"/>
+  <circle cx="200" cy="200" r="38" fill="none" stroke="#3d2b1f" stroke-width="0.5"/>
+  <circle cx="200" cy="200" r="4" fill="#ff8e3d"/>
+  <!-- Title -->
+  <text x="200" y="195" text-anchor="middle" fill="#E8E0D4" font-family="'Space Grotesk',sans-serif" font-size="8" font-weight="500" letter-spacing="0.1em" text-transform="uppercase">THE</text>
+  <text x="200" y="208" text-anchor="middle" fill="#E8E0D4" font-family="'Space Grotesk',sans-serif" font-size="8" font-weight="500" letter-spacing="0.1em">ROTATION</text>
+</svg>
