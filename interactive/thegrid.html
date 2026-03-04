@@ -70,18 +70,20 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
   align-items: center;
   justify-content: center;
   padding: 30px 20px;
+  padding-top: 40px;
   gap: 20px;
 }
 
 .title-row {
   display: flex;
-  align-items: baseline;
-  gap: 12px;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
 }
 
 .title {
   font-family: 'Instrument Serif', serif;
-  font-size: 1.8rem;
+  font-size: 3rem;
   letter-spacing: 0.05em;
 }
 
@@ -692,7 +694,6 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
 <!-- Boot Screen -->
 <div class="boot-screen" id="bootScreen">
   <div class="boot-waveform" id="bootWaveform"></div>
-  <div class="boot-title">The Grid</div>
   <div class="boot-text">Loading instruments...</div>
 </div>
 
@@ -708,7 +709,7 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
 <div class="main">
   <div class="title-row">
     <div class="title">The Grid</div>
-    <div style="font-size:0.65rem;color:#8a8580;letter-spacing:0.15em;text-transform:uppercase;font-family:'Space Grotesk',sans-serif;margin-top:0.3rem;">Beat maker</div>
+    <div style="font-size:0.85rem;color:#8a8580;letter-spacing:0.15em;text-transform:uppercase;font-family:'Space Grotesk',sans-serif;">Beat maker</div>
   </div>
 
   <!-- Transport -->

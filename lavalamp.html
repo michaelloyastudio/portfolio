@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Blob — Michael Loya Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0a0a; overflow: hidden; height: 100vh; width: 100vw; cursor: url('cursor.svg') 16 8, default; }
+svg.goo-defs { position: absolute; width: 0; height: 0; }
+.lava-container { position: fixed; inset: 0; filter: url(#goo); opacity: 0; transition: opacity 1.5s ease; }
+.lava-container.loaded { opacity: 1; }
+.blob { position: absolute; border-radius: 50%; will-change: transform; }
+.logo-watermark {
+  position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  pointer-events: none; z-index: 10; mix-blend-mode: difference;
+  display: flex; flex-direction: column; align-items: center;
+  white-space: nowrap; user-select: none;
+}
+.wm-name {
+  font-family: 'Instrument Serif', serif;
+  font-size: 6.5rem; color: #f0ece4;
+  font-weight: 400; line-height: 1;
+}
+.wm-sub {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.2rem; color: #8a8580;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  margin-top: 0.3rem;
+  transition: color 0.3s;
+}
+.wm-sub.eject { cursor: url('crosshair.svg') 8 10, pointer; pointer-events: all; }
+.wm-sub.eject:hover { color: #ff8e3d; }
+.wm-sub .eject-letter { display: inline-block; }
+@keyframes navWave {
+  0% { transform: translateY(0); }
+  40% { transform: translateY(-5px); }
+  100% { transform: translateY(0); }
+}
+.wm-letter {
+  display: inline-block;
+}
+.heat-glow { position: fixed; bottom: -80px; left: 50%; transform: translateX(-50%); width: 120%; height: 200px; background: radial-gradient(ellipse at center, rgba(255,142,61,0.06) 0%, transparent 70%); pointer-events: none; z-index: 5; }
+.vignette { position: fixed; inset: 0; background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.4) 100%); pointer-events: none; z-index: 5; }
+
+/* ── BOOT SCREEN ── */
+.boot {
+  position: fixed; inset: 0; z-index: 100;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: #0a0a0a;
+  transition: opacity 0.8s ease;
+}
+.boot.fade-out { opacity: 0; pointer-events: none; }
+
+.boot-blobs {
+  width: 200px; height: 80px;
+  filter: url(#goo-boot);
+  position: relative;
+  margin-bottom: 1rem;
+}
+.boot-blob {
+  position: absolute;
+  border-radius: 50%;
+  top: 50%; left: 50%;
+}
+.boot-blob:nth-child(1) {
+  width: 50px; height: 50px;
+  background: rgba(255,142,61,0.88);
+  animation: bootBlob1 2s ease-in-out infinite;
+}
+.boot-blob:nth-child(2) {
+  width: 40px; height: 40px;
+  background: rgba(210,100,30,0.85);
+  animation: bootBlob2 2s ease-in-out infinite;
+}
+.boot-blob:nth-child(3) {
+  width: 45px; height: 45px;
+  background: rgba(235,85,40,0.85);
+  animation: bootBlob3 2s ease-in-out infinite;
+}
+
+@keyframes bootBlob1 {
+  0%, 100% { transform: translate(-85px, -25px) scale(1); }
+  50% { transform: translate(-40px, -25px) scale(1.15); }
+}
+@keyframes bootBlob2 {
+  0%, 100% { transform: translate(40px, -20px) scale(1); }
+  50% { transform: translate(-5px, -20px) scale(1.1); }
+}
+@keyframes bootBlob3 {
+  0%, 100% { transform: translate(-22px, -22px) scale(0.9); }
+  50% { transform: translate(-22px, -22px) scale(1.2); }
+}
+
+.boot-text {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.6rem;
+  color: var(--muted, #8a8580);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+}
+
+/* ── DROP MODULE ── */
+.drop-module {
+  position: fixed;
+  top: 58%; left: 50%; transform: translateX(-50%);
+  z-index: 50;
+  background: #111;
+  border: 1.5px dashed #333;
+  border-radius: 12px;
+  padding: 1.2rem 2.5rem;
+  display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
+  cursor: url('crosshair.svg') 8 10, pointer;
+  transition: all 0.4s ease;
+  opacity: 0;
+}
+.drop-module.visible { opacity: 1; }
+.drop-module:hover { border-color: #555; background: #141414; }
+.drop-module.drag-over { border-color: #ff8e3d; background: rgba(255,142,61,0.05); box-shadow: 0 0 30px rgba(255,142,61,0.1); }
+.drop-module.hidden, .drop-module.cascade-in.revealed.hidden { opacity: 0; pointer-events: none; }
+.drop-module .drop-label {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.65rem; color: #666;
+  letter-spacing: 0.1em; text-transform: uppercase;
+}
+.drop-module input[type="file"] { display: none; }
+
+/* ── FOOTER ── */
+.footer {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  text-align: center; padding: 1rem;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.65rem; color: #8a8580;
+  letter-spacing: 0.05em; z-index: 50; mix-blend-mode: difference;
+  opacity: 0; transition: opacity 0.5s ease;
+}
+.footer.loaded { opacity: 1; }
+
+/* ── EJECT (replaces subtitle when playing) ── */
+
+/* ── HEADER ── */
+.header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 70;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 3rem 2.5rem;
+}
+.header-logo-link {
+  position: absolute; left: 50%; transform: translateX(-50%);
+  display: block; height: 32px;
+}
+.header-logo { height: 32px; transition: opacity 0.2s ease; }
+.header-logo-link .logo-hover { position: absolute; top: 0; left: 0; opacity: 0; }
+.header-logo-link:hover .logo-default { opacity: 0; }
+.header-logo-link:hover .logo-hover { opacity: 1; }
+/* ── CASCADE REVEAL ── */
+.cascade-in { opacity: 0; }
+.cascade-in.revealed { opacity: 1; }
+.header.cascade-in { transform: translateY(15px); transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+.header.cascade-in.revealed { transform: translateY(0); }
+.logo-watermark.cascade-in { transform: translate(-50%, calc(-50% + 15px)); transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+.logo-watermark.cascade-in.revealed { transform: translate(-50%, -50%); }
+.drop-module.cascade-in { transform: translateX(-50%) translateY(15px); transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+.drop-module.cascade-in.revealed { transform: translateX(-50%) translateY(0); }
+.footer.cascade-in { transform: translateY(15px); transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+.footer.cascade-in.revealed { transform: translateY(0); }
+
+/* Play cursor for clickable items */
+.drop-module, .header-logo-link { cursor: url('crosshair.svg') 8 10, pointer !important; }
+</style>
+</head>
+<body>
+
+<svg class="goo-defs"><defs>
+  <filter id="goo" filterUnits="userSpaceOnUse" x="0" y="0" width="100%" height="100%">
+    <!-- Metaball merge: higher blur + aggressive threshold for seamless blending -->
+    <feGaussianBlur in="SourceGraphic" stdDeviation="28" result="blur"/>
+    <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 45 -18" result="goo"/>
+    <!-- Stipple texture on blob edges -->
+    <feTurbulence type="fractalNoise" baseFrequency="2.2" numOctaves="3" seed="7" stitchTiles="stitch" result="stipple"/>
+    <feColorMatrix in="stipple" type="saturate" values="0" result="grayStipple"/>
+    <feDisplacementMap in="goo" in2="grayStipple" scale="3" xChannelSelector="R" yChannelSelector="G" result="distressed"/>
+  </filter>
+  <filter id="goo-boot">
+    <feGaussianBlur in="SourceGraphic" stdDeviation="12" result="blur"/>
+    <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 30 -11" result="goo"/>
+  </filter>
+</defs></svg>
+
+<!-- Boot screen -->
+<div class="boot" id="boot">
+  <div class="boot-blobs">
+    <div class="boot-blob"></div>
+    <div class="boot-blob"></div>
+    <div class="boot-blob"></div>
+  </div>
+  <div class="boot-text">Warming up...</div>
+</div>
+
+<div class="lava-container" id="lavaContainer"></div>
+<div class="heat-glow"></div>
+<div class="logo-watermark cascade-in" id="logoWatermark">
+  <div class="wm-name" id="wmName"></div>
+  <div class="wm-sub" id="wmSub">Lava lamp visualizer</div>
+</div>
+<div class="vignette"></div>
+
+<!-- Header -->
+<header class="header cascade-in" id="cascadeHeader">
+  <a href="index.html" class="header-logo-link" id="headerLogo">
+    <img src="interactive/logo-gray.svg" alt="ML" class="header-logo logo-default">
+    <img src="interactive/logo-orange.svg" alt="ML" class="header-logo logo-hover">
+  </a>
+</header>
+<!-- title row removed, lives in center watermark -->
+
+<!-- Drop module -->
+<div class="drop-module cascade-in" id="dropModule">
+  <div class="drop-label">Drop an MP3 or click to upload</div>
+  <input type="file" id="fileInput" accept="audio/*">
+</div>
+
+<div class="footer cascade-in" id="footer">Drop a track · Watch the blobs react</div>
+
+<!-- now-playing bar removed, eject is in subtitle -->
+<div id="debug" style="display:none"></div>
+<div id="beatDot" style="display:none"></div>
+
+<script>
+// ═══════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════
+const BLOB_COUNT = 24;
+const MIN_RADIUS = 45;
+const MAX_RADIUS = 120;
+// Base hues — 3D shading applied via radial gradient
+const COLORS = [
+  [255,142,61],[255,142,61],[255,142,61],[255,142,61], // brand orange
+  [210,100,30],[210,100,30],  // darker orange
+  [235,85,40],[235,85,40],   // warm deep orange
+];
+function blob3dGradient(rgb) {
+  const [r,g,b] = rgb;
+  // Highlight: warmer, keep orange not yellow (boost R most, G less, B least)
+  const hi = `rgba(${Math.min(r+40,255)},${Math.min(g+25,255)},${Math.min(b+15,255)},0.95)`;
+  const mid = `rgba(${r},${g},${b},0.88)`;
+  const lo = `rgba(${Math.max(r-70,0)},${Math.max(g-55,0)},${Math.max(b-30,0)},0.92)`;
+  return `radial-gradient(circle at 35% 30%, ${hi} 0%, ${mid} 50%, ${lo} 100%)`;
+}
+const BASE_RISE_MIN = 0.08;
+const BASE_RISE_MAX = 1.2;
+const WOBBLE_SPEED = 0.3;
+const BASE_WOBBLE_AMP = 12;
+const PULSE_SPEED = 0.4;
+const BASE_PULSE_AMP = 0.03;
+
+// ═══════════════════════════════════════
+// AUDIO
+// ═══════════════════════════════════════
+let audioCtx = null;
+let analyser = null;
+let timeData = null;
+let audioReactive = false;
+let connectedAudioEl = null;
+let dbgMethod = 'none';
+let pulse = 0;
+
+function ensureAudioCtx() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 256;
+    analyser.smoothingTimeConstant = 0.3;
+    timeData = new Uint8Array(analyser.fftSize);
+  }
+}
+
+function connectAudio(audioEl, isIframe) {
+  if (connectedAudioEl === audioEl) return;
+  ensureAudioCtx();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+
+  // For iframe audio: use createMediaElementSource (same-origin, works reliably)
+  // For local files: also use createMediaElementSource
+  try {
+    const src = audioCtx.createMediaElementSource(audioEl);
+    src.connect(analyser);
+    analyser.connect(audioCtx.destination);
+    connectedAudioEl = audioEl;
+    audioReactive = true;
+    dbgMethod = 'mediaElement' + (isIframe ? '(iframe)' : '');
+    // If iframe audio was muted by CORS, unmute it
+    audioEl.volume = 1;
+    audioEl.muted = false;
+    return;
+  } catch(e) {
+    // Already connected to a different context — try captureStream
+  }
+  try {
+    const stream = audioEl.captureStream ? audioEl.captureStream() : audioEl.mozCaptureStream();
+    const src = audioCtx.createMediaStreamSource(stream);
+    src.connect(analyser);
+    // Don't connect to destination — audio already plays from the element
+    connectedAudioEl = audioEl;
+    audioReactive = true;
+    dbgMethod = 'captureStream' + (isIframe ? '(iframe)' : '');
+  } catch(e) { dbgMethod = 'FAILED: ' + e.message; }
+}
+
+function getVolume() {
+  analyser.getByteTimeDomainData(timeData);
+  let sum = 0;
+  for (let i = 0; i < timeData.length; i++) { const v = (timeData[i] - 128) / 128; sum += v * v; }
+  return Math.sqrt(sum / timeData.length);
+}
+
+let envelope = 0;
+let cooldown = 0;
+
+function updateAudio() {
+  if (!audioReactive) return;
+  const vol = getVolume();
+  if (vol > envelope) { envelope += (vol - envelope) * 0.03; }
+  else { envelope += (vol - envelope) * 0.006; }
+  if (cooldown > 0) cooldown--;
+  const threshold = Math.max(envelope * 1.6, 0.015);
+  const isHit = vol > threshold && cooldown === 0;
+  if (isHit) {
+    const strength = Math.min((vol / Math.max(envelope, 0.005)) - 1, 1.0);
+    pulse = Math.max(pulse, 0.3 + strength * 0.7);
+    cooldown = 6;
+  }
+  pulse *= 0.92;
+  // debug removed
+}
+
+// ═══════════════════════════════════════
+// EJECT / NOW PLAYING
+// ═══════════════════════════════════════
+let currentAudio = null;
+
+const wmNameEl = document.getElementById('wmName');
+const wmDefaultTitle = 'The\u00a0Blob';
+const wmDefaultSub = 'Lava lamp visualizer';
+
+function setWmText(title, sub) {
+  wmNameEl.innerHTML = '';
+  wmLetters = [];
+  title.split('').forEach(ch => {
+    const span = document.createElement('span');
+    span.className = 'wm-letter';
+    span.textContent = ch;
+    wmNameEl.appendChild(span);
+    wmLetters.push(span);
+  });
+  document.getElementById('wmSub').textContent = sub || '';
+}
+
+function showNowPlaying(name) {
+  setWmText(name, '');
+  const sub = document.getElementById('wmSub');
+  sub.classList.add('eject');
+  sub.innerHTML = 'Eject'.split('').map(ch =>
+    `<span class="eject-letter">${ch}</span>`
+  ).join('');
+  let waveTimer = null, waveIdx = 0;
+  sub.onmouseenter = () => {
+    waveIdx = 0; clearInterval(waveTimer);
+    const letters = sub.querySelectorAll('.eject-letter');
+    waveTimer = setInterval(() => {
+      if (waveIdx >= letters.length) { clearInterval(waveTimer); return; }
+      const l = letters[waveIdx];
+      l.style.animation = 'none'; l.offsetHeight;
+      l.style.animation = 'navWave 0.4s ease forwards';
+      waveIdx++;
+    }, 50);
+  };
+  sub.onmouseleave = () => { clearInterval(waveTimer); };
+  sub.onclick = ejectAudio;
+  dropModule.classList.add('hidden');
+  dropModule.classList.remove('visible');
+}
+
+function ejectAudio() {
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio.src = '';
+    currentAudio = null;
+  }
+  connectedAudioEl = null;
+  audioReactive = false;
+  envelope = 0;
+  pulse = 0;
+  const sub = document.getElementById('wmSub');
+  sub.classList.remove('eject');
+  sub.onclick = null;
+  dropModule.classList.remove('hidden');
+  dropModule.classList.add('visible');
+  setWmText(wmDefaultTitle, wmDefaultSub);
+}
+
+// ═══════════════════════════════════════
+// BLOB
+// ═══════════════════════════════════════
+const W = () => window.innerWidth;
+const H = () => window.innerHeight;
+
+class Blob {
+  constructor(el, stagger, index) {
+    this.el = el;
+    this.laneIndex = index;
+    this.baseRadius = MIN_RADIUS + Math.random() * (MAX_RADIUS - MIN_RADIUS);
+    this.radius = this.baseRadius;
+    this.baseRiseSpeed = BASE_RISE_MIN + Math.random() * (BASE_RISE_MAX - BASE_RISE_MIN);
+    this.phaseX = Math.random() * Math.PI * 2;
+    this.phasePulse = Math.random() * Math.PI * 2;
+    this.wobbleFreq = 0.3 + Math.random() * 0.7;
+    this.bw = 0.6 + Math.random() * 0.4;
+    this.currentScale = 0;
+    this.colorRgb = COLORS[Math.floor(Math.random() * COLORS.length)];
+    this.el.style.background = blob3dGradient(this.colorRgb);
+    const lane = (this.laneIndex / BLOB_COUNT) + (Math.random() * 0.6 / BLOB_COUNT);
+    this.x = lane * W();
+    this.y = H() + this.radius + stagger;
+  }
+  respawn() {
+    this.baseRadius = MIN_RADIUS + Math.random() * (MAX_RADIUS - MIN_RADIUS);
+    this.baseRiseSpeed = BASE_RISE_MIN + Math.random() * (BASE_RISE_MAX - BASE_RISE_MIN);
+    const lane = (this.laneIndex / BLOB_COUNT) + (Math.random() * 0.6 / BLOB_COUNT);
+    this.x = lane * W();
+    this.y = H() + this.baseRadius + Math.random() * 200;
+    this.phaseX = Math.random() * Math.PI * 2;
+    this.phasePulse = Math.random() * Math.PI * 2;
+    this.wobbleFreq = 0.3 + Math.random() * 0.7;
+    this.bw = 0.6 + Math.random() * 0.4;
+    this.colorRgb = COLORS[Math.floor(Math.random() * COLORS.length)];
+    this.el.style.background = blob3dGradient(this.colorRgb);
+  }
+  update(t) {
+    this.y -= this.baseRiseSpeed;
+    // Upside-down house shape: rectangle on top (header zone) + triangle below
+    // Rectangle keeps blobs out of the header, triangle funnels them around
+    const cx = W() * 0.5;
+    const roofTop = -50;        // above screen
+    const roofBottom = 130;     // bottom of header "roof" (rectangular zone)
+    const roofHalf = 350;       // half-width of the rectangular exclusion
+    const funnelBottom = 280;   // bottom tip of the triangle funnel
+    const influencePad = 120 + this.radius;
+
+    let exclusionHalf = 0;
+    if (this.y < roofBottom) {
+      // In the rectangular roof zone — constant width
+      exclusionHalf = roofHalf;
+    } else if (this.y < funnelBottom) {
+      // In the triangle funnel — narrows linearly from roofHalf to 0
+      const t = (this.y - roofBottom) / (funnelBottom - roofBottom);
+      exclusionHalf = roofHalf * (1 - t);
+    }
+
+    if (exclusionHalf > 0 && this.y < funnelBottom + this.radius * 2) {
+      const influenceHalf = exclusionHalf + influencePad;
+      const dx = this.x - cx;
+      const dist = Math.abs(dx);
+      const dir = Math.sign(dx || (this.laneIndex % 2 === 0 ? 1 : -1));
+      if (dist < influenceHalf) {
+        const depth = 1 - (dist / influenceHalf);
+        this.x += dir * depth * depth * depth * 0.5;
+      }
+    }
+    this.x += Math.sin(t * WOBBLE_SPEED * this.wobbleFreq + this.phaseX) * BASE_WOBBLE_AMP * 0.01;
+    const ambient = Math.sin(t * PULSE_SPEED + this.phasePulse) * BASE_PULSE_AMP;
+    const beatScale = pulse * this.bw * 0.18;
+    const target = Math.min(ambient + beatScale, 0.15);
+    const lerp = target > this.currentScale ? 0.25 : 0.05;
+    this.currentScale += (target - this.currentScale) * lerp;
+    this.radius = this.baseRadius * (1 + this.currentScale);
+    if (this.y < -this.radius * 2) this.respawn();
+    const d = this.radius * 2;
+    this.el.style.width = d + 'px';
+    this.el.style.height = d + 'px';
+    this.el.style.transform = `translate(${this.x - this.radius}px, ${this.y - this.radius}px)`;
+  }
+}
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+const container = document.getElementById('lavaContainer');
+const blobs = [];
+for (let i = 0; i < BLOB_COUNT; i++) {
+  const el = document.createElement('div');
+  el.className = 'blob';
+  container.appendChild(el);
+  blobs.push(new Blob(el, -i * (window.innerHeight * 1.5 / BLOB_COUNT) - Math.random() * 200, i));
+}
+
+// ═══════════════════════════════════════
+// WORDMARK LETTERS
+// ═══════════════════════════════════════
+let wmLetters = [];
+// Build initial title
+setWmText(wmDefaultTitle, wmDefaultSub);
+
+function animateLetters() {
+  if (!audioReactive || pulse < 0.05) {
+    // Reset letters when no audio
+    for (const l of wmLetters) l.style.transform = '';
+    return;
+  }
+  for (let i = 0; i < wmLetters.length; i++) {
+    // Each letter gets a slightly different phase so they ripple
+    const phase = (i / wmLetters.length) * Math.PI * 2;
+    const t = performance.now() / 1000;
+    const wave = Math.sin(t * 8 + phase);
+    const yOff = wave * pulse * 8; // vertical bounce, scaled by beat pulse
+    const scaleBoost = 1 + pulse * 0.06; // subtle scale on whole wordmark
+    wmLetters[i].style.transform = `translateY(${yOff}px) scale(${scaleBoost})`;
+  }
+}
+
+let startTime = performance.now();
+function animate() {
+  const t = (performance.now() - startTime) / 1000;
+  updateAudio();
+  for (const b of blobs) b.update(t);
+  animateLetters();
+  requestAnimationFrame(animate);
+}
+
+// ═══════════════════════════════════════
+// BOOT SEQUENCE
+// ═══════════════════════════════════════
+setTimeout(() => {
+  // Fade out boot
+  document.getElementById('boot').classList.add('fade-out');
+  // Fade in blobs
+  document.getElementById('lavaContainer').classList.add('loaded');
+
+  setTimeout(() => {
+    document.getElementById('boot').style.display = 'none';
+
+    // Cascade reveal: header → title → subtitle → upload → footer
+    const cascade = [
+      { el: document.getElementById('cascadeHeader'), delay: 0 },
+      { el: document.getElementById('logoWatermark'), delay: 200 },
+      { el: document.getElementById('dropModule'), delay: 400 },
+      { el: document.getElementById('footer'), delay: 600 },
+    ];
+
+    cascade.forEach(({ el, delay }) => {
+      setTimeout(() => {
+        if (el.id === 'dropModule') {
+          el.classList.add('visible');
+        } else if (el.id === 'footer') {
+          el.classList.add('loaded');
+        }
+        el.classList.add('revealed');
+      }, delay);
+    });
+  }, 800);
+}, 2500);
+
+animate();
+
+// ═══════════════════════════════════════
+// DROP MODULE
+// ═══════════════════════════════════════
+const dropModule = document.getElementById('dropModule');
+const fileInput = document.getElementById('fileInput');
+
+function hideDropModule() {
+  dropModule.classList.add('hidden');
+}
+
+dropModule.addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', (e) => {
+  if (!e.target.files[0]) return;
+  if (currentAudio) { currentAudio.pause(); currentAudio.src = ''; }
+  ensureAudioCtx();
+  const audio = new Audio();
+  audio.crossOrigin = 'anonymous';
+  audio.src = URL.createObjectURL(e.target.files[0]);
+  connectAudio(audio, false);
+  audio.play();
+  currentAudio = audio;
+  showNowPlaying(e.target.files[0].name);
+});
+
+// Drag events on whole page
+document.addEventListener('dragover', (e) => { e.preventDefault(); dropModule.classList.add('drag-over'); });
+document.addEventListener('dragleave', (e) => { if (!e.relatedTarget) dropModule.classList.remove('drag-over'); });
+document.addEventListener('drop', (e) => {
+  e.preventDefault(); dropModule.classList.remove('drag-over');
+  const f = e.dataTransfer.files[0];
+  if (f && f.type.startsWith('audio/')) {
+    if (currentAudio) { currentAudio.pause(); currentAudio.src = ''; }
+    ensureAudioCtx();
+    const audio = new Audio();
+    audio.crossOrigin = 'anonymous';
+    audio.src = URL.createObjectURL(f);
+    connectAudio(audio, false);
+    audio.play();
+    currentAudio = audio;
+    showNowPlaying(f.name);
+  }
+});
+
+document.addEventListener('keydown', (e) => { if (e.code === 'Escape') hideDropModule(); });
+document.addEventListener('click', () => { if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume(); });
+
+// (hover zone removed)
+
+// (eject handled via wmSub click)
+
+// Header logo — close tab or navigate back
+document.getElementById('headerLogo').addEventListener('click', function(e) {
+  e.preventDefault();
+  const href = this.getAttribute('href');
+  setTimeout(() => { window.close(); if (!window.closed) window.location.href = href; }, 200);
+});
+</script>
+</body>
+</html>

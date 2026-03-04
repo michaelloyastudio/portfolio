@@ -436,7 +436,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     left: 50%;
     transform: translate(-50%, -50%) translateZ(0);
     font-family: 'Instrument Serif', serif;
-    font-size: 4rem;
+    font-size: 5rem;
     font-weight: 400;
     color: #1a1a1a;
     white-space: nowrap;
@@ -446,9 +446,32 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     opacity: 0;
   }
 
-  .p2-title > span {
+  .p2-title-line span {
     font-style: italic;
     color: #8a8580;
+  }
+  /* Title mask slider */
+  .p2-title-mask {
+    display: block;
+    position: relative;
+    height: 90px;
+    overflow: hidden;
+    clip-path: inset(0);
+    -webkit-clip-path: inset(0);
+  }
+  .p2-title-slider {
+    display: block;
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .p2-title-slider .p2-title-line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    height: 90px;
+  }
+  .p2-title-mask.slid .p2-title-slider {
+    transform: translateY(-90px);
   }
 
   .p2-nav {
@@ -460,7 +483,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   }
   .p2-nav a {
     font-family: 'Space Grotesk', sans-serif;
-    font-size: 1rem;
+    font-size: 1.2rem;
     text-transform: uppercase;
     letter-spacing: 0.15em;
     color: #8a8580;
@@ -712,6 +735,18 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     color: #E8E0D4;
   }
 
+  /* Lab card floating items: orange stroke + glow */
+  .p2-scene.dark-mode-scene .p2-item img,
+  .p2-wrap.dark-mode .p2-item img {
+    border: 2px solid #ff8e3d;
+    border-radius: 8px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .p2-scene.dark-mode-scene .p2-item:hover img,
+  .p2-wrap.dark-mode .p2-item:hover img {
+    box-shadow: 0 0 20px rgba(255,142,61,0.45), 0 0 40px rgba(255,142,61,0.2);
+  }
+
   /* Dark mode transitions for interactive mode */
   .p2-wrap {
     transition: background-color 0.6s ease;
@@ -725,8 +760,11 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   .p2-wrap.dark-mode .p2-title {
     color: #E8E0D4;
   }
-  .p2-wrap.dark-mode .p2-title > span {
+  .p2-wrap.dark-mode .p2-title-line span {
     color: #8a8580;
+  }
+  .p2-app-name {
+    font-style: normal;
   }
   .p2-wrap.dark-mode .p2-nav a span,
   .p2-wrap.dark-mode .p2-nav a .nav-letter {
@@ -1194,7 +1232,12 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   <!-- Floating scene (on top) -->
   <div class="p2-scene" id="p2Scene">
     <div class="p2-title">
-      <img src="logo.svg" class="p2-logo" style="height:44px;width:auto;margin-right:0.5rem;vertical-align:middle;position:relative;top:-6px;">Michael Loya <span>Studio</span>
+      <span class="p2-title-mask">
+        <span class="p2-title-slider" id="p2TitleSlider">
+          <span class="p2-title-line"><img src="logo.svg" class="p2-logo" style="height:54px;width:auto;margin-right:0.6rem;">Michael Loya&nbsp;<span>Studio</span></span>
+          <span class="p2-title-line p2-app-name" id="p2AppName"></span>
+        </span>
+      </span>
       <div class="p2-nav">
         <a onclick="p2ShowAbout()"><span>About</span></a>
         <a onclick="p2ShowInteractive()"><span>Interactive</span></a>
@@ -1349,44 +1392,7 @@ const projects = [
 <p>This ain't my <span class="r7">last chance</span><br>I'm just doing this for Fucius, he a <span class="r7">mad man</span><br>He yelling "<span class="r7">Jack, man</span>, come and bring the <span class="r7">facts, man</span>"<br>Kentucky boy getting chicken, I'm a <span class="r7">fat man</span><br>Pick up the <span class="r9">girls</span> with the <span class="r9">curls</span>, I'm feeling <span class="r7">jacked, man</span><br>Came with the <span class="r9">pearls</span>, now your <span class="r9">girl</span> give me a <span class="r7">lap dance</span><br>Said she like surprises, I tell her come and <span class="r8">see</span><br>I'm Jack in the box, I'm popping out when she <span class="r8">need</span><br>And that's <span class="r8">frequently</span>, she loving the <span class="r8">secrecy</span><br>Frolic 'round the pad in her panties so <span class="r8">indecently</span><br>Give her love <span class="r8">peacefully</span>, I could bust <span class="r8">easily</span><br>Pussy so amazing got me thinking she a <span class="r8">deity</span><br>But I ain't ignorant, she got the <span class="r8">best of me</span><br>She just get what she wants and leave the <span class="r8">rest of me</span><br>I don't give a damn if the haters wanna <span class="r8">wrestle me</span><br>You can catch a ride in my wake, just leave the <span class="r8">rest to me</span><br>And fuck 'em if they <span class="r8">mess with me</span><br><span class="r8">Testing me</span>? That's a deadly <span class="r8">recipe</span><br>I chef the scene while you barely catching <span class="r8">breath to breathe</span><br>Tryna come and <span class="r8">flex on me</span>? Boy, that's just a <span class="r8">fantasy</span><br>I'm moving with a purpose while your crew just move <span class="r8">frantically</span><br>I been in the cut like a motherfucking <span class="r9">tendon</span><br>Grind so <span class="r10">relentless</span> I been losing all my <span class="r9">senses</span><br>Never need a gimmick, never needed no <span class="r9">amendment</span><br>Every bar has been <span class="r9">cemented</span>, every move is <span class="r9">independent</span><br>I return all my <span class="r9">investments</span>, every check has been a <span class="r9">blessing</span><br>I stand on business like <span class="r9">defendants</span><br>I make a <span class="r1">killing</span> when I <span class="r11">write</span>, so don't you ever <span class="r11">disrespect it</span><br>I'm the <span class="r1">illest</span> on the <span class="r11">mic</span>, so when I <span class="r11">pass it</span>, <span class="r11">disinfect it</span> (achoo)<br>I'm <span class="r6">sick</span> of the <span class="r6">bitching</span>, and <span class="r6">bitch</span>, I'm looking at <span class="r14">you</span><br>I'll <span class="r6">hit</span> what you're <span class="r6">pitching</span> and <span class="r6">switch it</span> back on <span class="r14">you</span><br>You claim you got a <span class="r6">vision</span> that can bring you to the <span class="r14">views</span><br>But you're stuck in the basement and pray to God that I <span class="r14">lose</span><br>You do <span class="r11">jack shit</span>, I do <span class="r11">Jack shit</span><br>Always on another level, you can't <span class="r11">match it</span><br>Talking 'bout the flows, then my breath is too <span class="r12">disgusting</span><br>If we talking 'bout the GOATs, then my name in the <span class="r12">discussion</span></p>
 </div>`
   },
-  {
-    title: "Mobile UIs",
-    overlayTitle: "Mobile&nbsp;UIs",
-    category: "UI/UX Design",
-    tools: "Figma",
-    year: "2025",
-    cover: `img/iPhone_Mockup.png`,
-    images: [],
-    content: `<p>Two mobile UI projects: MyPinecone, a CRM app redesign focused on simplifying contact management, and Medobar, a beekeeping app concept for a Syracuse-based company.</p>
-<h3>MyPinecone</h3>
-<p>I analyzed the existing web version, studied competitors, and observed a user testing session. The sign-up flow was cluttered and confusing, so I redesigned it into fewer, clearer screens.</p>
-<div class="img-grid-5">
-<div class="project-img"><img src="img/all/Goal_Page.png" alt="Goal selection screen" loading="lazy"></div>
-<div class="project-img"><img src="img/all/First_Name_Page.png" alt="First Name sign-up screen" loading="lazy"></div>
-<div class="project-img"><img src="img/all/Last_Name_Page.png" alt="Last Name sign-up screen" loading="lazy"></div>
-<div class="project-img"><img src="img/all/Phone_Page.png" alt="Phone number screen" loading="lazy"></div>
-<div class="project-img"><img src="img/all/Verification_Page.png" alt="Verification screen" loading="lazy"></div>
-<div class="project-img"><img src="img/all/Password_Page.png" alt="Password screen" loading="lazy"></div>
-<div class="project-img"><img src="img/all/Home_Page.png" alt="Redesigned home screen" loading="lazy"></div>
-<div class="project-img"><img src="img/all/Interactions_Page.png" alt="Interactions page" loading="lazy"></div>
-<div class="project-img"><img src="img/all/AI_Page.png" alt="AI features page" loading="lazy"></div>
-<div class="project-img"><img src="img/all/Account_Page.png" alt="Account page design" loading="lazy"></div>
-</div>
-<p>Interactive Figma prototype <a href="https://www.figma.com/proto/72II3Ud383V7CluTMG3R5H/Pinecone-Redesign?node-id=301-972&starting-point-node-id=301%3A972&t=8rXMJRjZIyKAgn02-1" target="_blank">here</a>.</p>
-<h3>Medobar</h3>
-<p>Medobar: a mobile UI concept for a Syracuse beekeeping company, targeting adults 40+ who are curious about beekeeping. The design needed to feel approachable and simple — the interface uses a hexagon-based layout inspired by honeycomb cells, with customizable modular sections. I also designed a logo using shapes derived from the A, B, and O in the Medobar wordmark.</p>
-<div class="img-grid-4x2">
-<div class="project-img"><img src="img/all/splash.png" alt="Medobar splash screen" loading="lazy"></div>
-<div class="project-img"><img src="img/all/iPhone_13_&_14_-_1.png" alt="Medobar screen 1" loading="lazy"></div>
-<div class="project-img"><img src="img/all/iPhone_13_&_14_-_4.png" alt="Medobar screen 4" loading="lazy"></div>
-<div class="project-img"><img src="img/all/iPhone_13_&_14_-_5.png" alt="Medobar screen 5" loading="lazy"></div>
-<div class="project-img"><img src="img/all/iPhone_13_&_14_-_2.png" alt="Medobar screen 2" loading="lazy"></div>
-<div class="project-img"><img src="img/all/iPhone_13_&_14_-_3.png" alt="Medobar screen 3" loading="lazy"></div>
-<div class="project-img"><img src="img/all/iPhone_13_&_14_-_6.png" alt="Medobar screen 6" loading="lazy"></div>
-<div class="project-img"><img src="img/all/iPhone_13_&_14_-_7.png" alt="Medobar screen 7" loading="lazy"></div>
-</div>
-<div class="project-img img-landscape"><img src="img/all/iPhone_14_Mockup_(6).png" alt="Medobar high-fidelity mockup" loading="lazy"></div>`
-  },
+  /* Mobile UIs removed */
   {
     title: "LYRC",
     overlayTitle: "LYRC",
@@ -1502,9 +1508,10 @@ var _p2LabItems = [];
 var _p2WorkItemsBackup = [];
 
 var _p2LabApps = [
-  { name: 'The Rotation', href: 'interactive/therotation.html', cover: 'interactive/cover-rotation.jpg' },
-  { name: 'The Grid', href: 'interactive/thegrid.html', cover: 'interactive/cover-grid.jpg' },
-  { name: 'The Shop', href: 'interactive/theshop.html', cover: 'interactive/cover-shop.svg' },
+  { name: 'The Rotation', href: 'interactive/therotation.html', cover: 'interactive/cover-rotation.svg?v=2' },
+  { name: 'The Grid', href: 'interactive/thegrid.html', cover: 'interactive/cover-grid.svg?v=3' },
+  { name: 'The Shop', href: 'interactive/theshop.html', cover: 'interactive/cover-shop.svg?v=3' },
+  { name: 'The Blob', href: 'lavalamp.html', cover: 'interactive/cover-blob.svg?v=2' },
 ];
 
 function p2ShowInteractive() {
@@ -1536,6 +1543,10 @@ function p2ShowInteractive() {
     // Dark mode
     document.getElementById('p2Wrap').classList.add('dark-mode');
     document.querySelector('.p2-title img').src = 'logo-cream.svg';
+
+    // Swap title to "Interactive Lab"
+    var titleLine = document.querySelector('.p2-title-line');
+    if (titleLine) titleLine.innerHTML = '<img src="logo-cream.svg" class="p2-logo" style="height:54px;width:auto;margin-right:0.6rem;">Interactive\u00a0<span style="font-style:italic;color:#8a8580">Lab</span>';
 
     // Change nav text: "Interactive" → "Work"
     var navLinks = document.querySelectorAll('.p2-nav a');
@@ -1579,7 +1590,8 @@ function _p2CreateLabCards() {
   var positions = [
     { x: 0.50, y: 0.16, z: -70,  s: 185 },
     { x: 0.78, y: 0.42, z: -110, s: 170 },
-    { x: 0.30, y: 0.78, z: -30,  s: 180 },
+    { x: 0.20, y: 0.58, z: -30,  s: 180 },
+    { x: 0.58, y: 0.82, z: -90,  s: 175 },
   ];
 
   _p2LabItems = [];
@@ -1589,7 +1601,7 @@ function _p2CreateLabCards() {
     var el = document.createElement('div');
     el.className = 'p2-item';
     el.style.width = pos.s + 'px';
-    el.innerHTML = '<img src="' + app.cover + '" alt="' + app.name + '" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">';
+    el.innerHTML = '<img src="' + app.cover + '" alt="' + app.name + '">';
 
     var maxZ = 0, minZ = -150;
     var zRange = maxZ - minZ;
@@ -1614,6 +1626,17 @@ function _p2CreateLabCards() {
       _p2LabItems.forEach(function(otherItem) {
         otherItem.el.style.filter = 'blur(0px)';
       });
+    });
+    // Slide title mask to show app name on hover
+    el.addEventListener('mouseenter', function() {
+      var appNameEl = document.getElementById('p2AppName');
+      var mask = document.querySelector('.p2-title-mask');
+      if (appNameEl) appNameEl.textContent = app.name;
+      if (mask) mask.classList.add('slid');
+    });
+    el.addEventListener('mouseleave', function() {
+      var mask = document.querySelector('.p2-title-mask');
+      if (mask) mask.classList.remove('slid');
     });
     el.addEventListener('click', function() {
       var overlay = document.getElementById('pageTransition');
@@ -1663,6 +1686,12 @@ function p2ShowWork() {
     // Light mode
     document.getElementById('p2Wrap').classList.remove('dark-mode');
     document.querySelector('.p2-title img').src = 'logo.svg';
+
+    // Restore title to "Michael Loya Studio"
+    var titleLine = document.querySelector('.p2-title-line');
+    if (titleLine) titleLine.innerHTML = '<img src="logo.svg" class="p2-logo" style="height:54px;width:auto;margin-right:0.6rem;">Michael Loya\u00a0<span>Studio</span>';
+    var mask = document.querySelector('.p2-title-mask');
+    if (mask) mask.classList.remove('slid');
 
     // Change nav text: "Work" → "Interactive"
     var navLinks = document.querySelectorAll('.p2-nav a');
@@ -2024,15 +2053,14 @@ let p2Initialized = false;
   window.p2Items = window.p2Items || [];
   const p2Items = window.p2Items;
   const positions = [
-    { x: 0.50, y: 0.16, z: -70,  s: 185 },  // Sound & Vision
-    { x: 0.78, y: 0.42, z: -110, s: 170 },  // BODYARMOR
-    { x: 0.30, y: 0.78, z: -30,  s: 180 },  // University Union
-    { x: 0.08, y: 0.65, z: -50,  s: 190 },  // AI Song
-    { x: 0.88, y: 0.68, z: -100, s: 160 },  // Mobile UIs — down+right
-    { x: 0.65, y: 0.80, z: -90,  s: 175 },  // LYRC
-    { x: 0.20, y: 0.40, z: -60,  s: 155 },  // Album Covers
-    { x: 0.88, y: 0.20, z: -120, s: 150 },  // Photography
-    { x: 0.12, y: 0.18, z: -80,  s: 200 },  // Misc
+    { x: 0.50, y: 0.16, z: -70,  s: 185 },  // Sound & Vision — FIXED
+    { x: 0.78, y: 0.42, z: -110, s: 170 },  // BODYARMOR — FIXED
+    { x: 0.30, y: 0.78, z: -30,  s: 180 },  // University Union — FIXED
+    { x: 0.10, y: 0.58, z: -50,  s: 185 },  // AI Song
+    { x: 0.58, y: 0.82, z: -90,  s: 175 },  // LYRC
+    { x: 0.85, y: 0.72, z: -60,  s: 160 },  // Album Covers
+    { x: 0.88, y: 0.16, z: -120, s: 155 },  // Photography
+    { x: 0.20, y: 0.23, z: -80,  s: 195 },  // Misc
   ];
 
   projects.forEach((p, i) => {
