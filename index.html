@@ -747,6 +747,19 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     box-shadow: 0 0 20px rgba(255,142,61,0.45), 0 0 40px rgba(255,142,61,0.2);
   }
 
+  /* Dark mode cursors */
+  .p2-wrap.dark-mode {
+    cursor: url('cursor.svg') 16 8, default;
+  }
+  .p2-wrap.dark-mode a,
+  .p2-wrap.dark-mode button,
+  .p2-wrap.dark-mode [onclick],
+  .p2-wrap.dark-mode .p2-item,
+  .p2-wrap.dark-mode .p2-item img,
+  .p2-wrap.dark-mode .p2-nav a {
+    cursor: url('crosshair-light.svg') 8 10, pointer !important;
+  }
+
   /* Dark mode transitions for interactive mode */
   .p2-wrap {
     transition: background-color 0.6s ease;
