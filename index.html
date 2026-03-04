@@ -750,7 +750,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   /* Dark mode cursors — must override body rule */
   .p2-wrap.dark-mode,
   .p2-wrap.dark-mode * {
-    cursor: url('cursor-light.svg') 16 8, default;
+    cursor: url('interactive/cursor.svg') 16 8, default;
   }
   .p2-wrap.dark-mode a,
   .p2-wrap.dark-mode a *,
@@ -762,7 +762,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   .p2-wrap.dark-mode .p2-item *,
   .p2-wrap.dark-mode .p2-nav a,
   .p2-wrap.dark-mode .p2-nav a * {
-    cursor: url('crosshair-light.svg') 8 10, pointer !important;
+    cursor: url('interactive/crosshair.svg') 8 10, pointer !important;
   }
 
   /* Dark mode transitions for interactive mode */
@@ -1561,8 +1561,8 @@ function p2ShowInteractive() {
     // Dark mode
     document.getElementById('p2Wrap').classList.add('dark-mode');
     document.getElementById('p2Scene').classList.add('dark-mode-scene');
-    document.body.style.cursor = "url('cursor-light.svg') 16 8, default";
-    document.getElementById('p2Scene').style.cursor = "url('cursor-light.svg') 16 8, default";
+    document.body.style.cursor = "url('interactive/cursor.svg') 16 8, default";
+    document.getElementById('p2Scene').style.cursor = "url('interactive/cursor.svg') 16 8, default";
     document.querySelector('.p2-title img').src = 'logo-cream.svg';
 
     // Swap title to "Interactive Lab"
