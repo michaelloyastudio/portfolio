@@ -837,16 +837,16 @@ const isMobile = window.matchMedia('(max-width: 480px)').matches;
 
 // ── PLAYLIST ──
 const playlist = [
-  { title: 'Dead Ringers', artist: 'Surf Curse', src: '../img/all/SurfCurse_DeadRingers.mp3', cover: '../img/all/SurfCurse_DeadRingers_cover.jpg', weeks: 2 },
-  { title: 'Just The Way You Are', artist: 'Milky', src: '../img/all/Milky_JustTheWayYouAre.mp3', cover: '../img/all/Milky_JustTheWayYouAre_cover.jpg' },
-  { title: 'Here & Now', artist: 'Yot Club', src: '../img/all/YotClub_HereAndNow.mp3', cover: '../img/all/YotClub_HereAndNow_cover.jpg' },
-  { title: 'does anybody love me', artist: 'NESYA', src: '../img/all/NESYA_DoesAnybodyLoveMe.mp3', cover: '../img/all/NESYA_DoesAnybodyLoveMe_cover.jpg', explicit: true },
-  { title: 'Mouthful of Diamonds', artist: 'Phantogram', src: '../img/all/Phantogram_MouthfulOfDiamonds.mp3', cover: '../img/all/Phantogram_MouthfulOfDiamonds_cover.jpg' },
-  { title: 'superficial', artist: 'Souly Had, Felly', src: '../img/all/SoulyHad_Superficial.mp3', cover: '../img/all/SoulyHad_Superficial_cover.jpg' },
-  { title: 'Maybe Not', artist: 'Souly Had, Mac Ayres', src: '../img/all/SoulyHad_MaybeNot.mp3', cover: '../img/all/SoulyHad_MaybeNot_cover.jpg' },
-  { title: 'Roommates', artist: 'Malcolm Todd', src: '../img/all/MalcolmTodd_Roommates.mp3', cover: '../img/all/MalcolmTodd_Roommates_cover.jpg' },
-  { title: 'like you', artist: 'Silo, heygwuapo', src: '../img/all/Silo_LikeYou.mp3', cover: '../img/all/Silo_LikeYou_cover.jpg', explicit: true },
-  { title: 'Not Fair', artist: 'iann dior', src: '../img/all/IannDior_NotFair.mp3', cover: '../img/all/IannDior_NotFair_cover.jpg', explicit: true },
+  { title: 'Just The Way You Are', artist: 'Milky', src: '../img/all/Milky_JustTheWayYouAre.mp3', cover: '../img/all/Milky_JustTheWayYouAre_cover.jpg', updates: 2 },
+  { title: 'Sleepyhead', artist: 'Passion Pit', src: '../img/all/PassionPit_Sleepyhead.mp3', cover: '../img/all/PassionPit_Sleepyhead_cover.jpg' },
+  { title: 'The Thrill', artist: 'Wiz Khalifa, Empire Of The Sun', src: '../img/all/WizKhalifa_TheThrill.mp3', cover: '../img/all/WizKhalifa_TheThrill_cover.jpg' },
+  { title: 'We Are The People', artist: 'Empire Of The Sun', src: '../img/all/EmpireOfTheSun_WeAreThePeople.mp3', cover: '../img/all/EmpireOfTheSun_WeAreThePeople_cover.jpg' },
+  { title: 'diamonds are forever', artist: 'bbno$', src: '../img/all/bbno_DiamondsAreForever.mp3', cover: '../img/all/bbno_DiamondsAreForever_cover.jpg' },
+  { title: 'Kagefumi', artist: '百景', src: '../img/all/Hyakkei_Kagefumi.mp3', cover: '../img/all/Hyakkei_Kagefumi_cover.jpg' },
+  { title: 'Handful of Nothing', artist: "Mind's Eye", src: '../img/all/MindsEye_HandfulOfNothing.mp3', cover: '../img/all/MindsEye_HandfulOfNothing_cover.jpg' },
+  { title: "there's a ghost!", artist: 'NESYA', src: '../img/all/NESYA_TheresAGhost.mp3', cover: '../img/all/NESYA_TheresAGhost_cover.jpg' },
+  { title: 'Her', artist: 'The American Dawn', src: '../img/all/TheAmericanDawn_Her.mp3', cover: '../img/all/TheAmericanDawn_Her_cover.jpg' },
+  { title: 'zzz', artist: '60 juno', src: '../img/all/60Juno_ZZZ.mp3', cover: '../img/all/60Juno_ZZZ_cover.jpg' },
 ];
 
 // ── iPOD COLORS ──
@@ -880,7 +880,7 @@ function renderMenu() {
     playlist.forEach((track, i) => {
       const el = document.createElement('div');
       el.className = 'menu-item';
-      const badgeHtml = track.weeks ? `<div class="weeks-badge">${track.weeks}w</div>` : '';
+      const badgeHtml = track.updates ? `<div class="weeks-badge">${track.updates}x</div>` : '';
       const explicitHtml = track.explicit ? `<div class="explicit-badge">E</div>` : '';
       el.innerHTML = `
         <img class="menu-item-thumb" src="${track.cover}" alt="">
@@ -916,7 +916,7 @@ function renderNowPlaying() {
   document.getElementById('npTitle').innerHTML = track.title + (track.explicit ? ' <span class="explicit-badge" style="display:inline-flex;vertical-align:middle;margin-left:3px;">E</span>' : '');
   document.getElementById('npArtist').textContent = track.artist;
   const npTrackEl = document.getElementById('npTrackNum');
-  npTrackEl.innerHTML = `${currentIndex + 1} of ${playlist.length}` + (track.weeks ? ` <span class="weeks-badge" style="margin-left:6px;">${track.weeks}w on rotation</span>` : '');
+  npTrackEl.innerHTML = `${currentIndex + 1} of ${playlist.length}` + (track.updates ? ` <span class="weeks-badge" style="margin-left:6px;">${track.updates}x on rotation</span>` : '');
   updateStreamingLinks(track.title, track.artist);
 }
 
