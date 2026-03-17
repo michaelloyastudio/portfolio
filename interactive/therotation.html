@@ -719,6 +719,65 @@
     transform: translateY(0);
   }
 
+  /* ── PLAYLIST SELECTOR VIEW ── */
+  .playlist-list {
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+  .playlist-list::-webkit-scrollbar { display: none; }
+
+  .playlist-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 8px;
+    border-radius: 4px;
+    color: #c8c0b8;
+    transition: background 0.15s, color 0.15s, opacity 0.4s ease, transform 0.4s ease;
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  .playlist-item { cursor: url('crosshair.svg') 8 10, pointer; }
+  .playlist-item.loaded {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .playlist-item.selected {
+    background: var(--accent);
+    color: #0a0a0a;
+  }
+
+  .playlist-quad {
+    width: 36px;
+    height: 36px;
+    border-radius: 4px;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    flex-shrink: 0;
+  }
+  .playlist-quad img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .playlist-item-info { flex: 1; min-width: 0; }
+  .playlist-item-name {
+    font-size: 0.82rem;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .playlist-item-meta {
+    font-size: 0.65rem;
+    opacity: 0.6;
+  }
+  .playlist-item.selected .playlist-item-meta { opacity: 0.8; }
+
   /* ── RESPONSIVE ── */
   @media (max-width: 480px) {
     .ipod {
@@ -767,9 +826,17 @@
     <!-- Menu View -->
     <div class="screen-view" id="menuView">
       <div class="screen-header">
-        <span>mPod</span>
+        <span id="menuHeaderTitle">mPod</span>
       </div>
       <div class="menu-list" id="menuList"></div>
+    </div>
+
+    <!-- Playlist Selector View -->
+    <div class="screen-view" id="playlistView">
+      <div class="screen-header">
+        <span>Playlists</span>
+      </div>
+      <div class="playlist-list" id="playlistList"></div>
     </div>
 
     <!-- Now Playing View -->
@@ -838,19 +905,60 @@
 <script>
 const isMobile = window.matchMedia('(max-width: 480px)').matches;
 
-// ── PLAYLIST ──
-const playlist = [
-  { title: 'Just The Way You Are', artist: 'Milky', src: '../img/all/Milky_JustTheWayYouAre.mp3', cover: '../img/all/Milky_JustTheWayYouAre_cover.jpg', updates: 2 },
-  { title: 'Sleepyhead', artist: 'Passion Pit', src: '../img/all/PassionPit_Sleepyhead.mp3', cover: '../img/all/PassionPit_Sleepyhead_cover.jpg' },
-  { title: 'The Thrill', artist: 'Wiz Khalifa, Empire Of The Sun', src: '../img/all/WizKhalifa_TheThrill.mp3', cover: '../img/all/WizKhalifa_TheThrill_cover.jpg' },
-  { title: 'We Are The People', artist: 'Empire Of The Sun', src: '../img/all/EmpireOfTheSun_WeAreThePeople.mp3', cover: '../img/all/EmpireOfTheSun_WeAreThePeople_cover.jpg' },
-  { title: 'diamonds are forever', artist: 'bbno$', src: '../img/all/bbno_DiamondsAreForever.mp3', cover: '../img/all/bbno_DiamondsAreForever_cover.jpg' },
-  { title: 'Kagefumi', artist: '百景', src: '../img/all/Hyakkei_Kagefumi.mp3', cover: '../img/all/Hyakkei_Kagefumi_cover.jpg' },
-  { title: 'Handful of Nothing', artist: "Mind's Eye", src: '../img/all/MindsEye_HandfulOfNothing.mp3', cover: '../img/all/MindsEye_HandfulOfNothing_cover.jpg' },
-  { title: "there's a ghost!", artist: 'NESYA', src: '../img/all/NESYA_TheresAGhost.mp3', cover: '../img/all/NESYA_TheresAGhost_cover.jpg' },
-  { title: 'Her', artist: 'The American Dawn', src: '../img/all/TheAmericanDawn_Her.mp3', cover: '../img/all/TheAmericanDawn_Her_cover.jpg' },
-  { title: 'zzz', artist: '60 juno', src: '../img/all/60Juno_ZZZ.mp3', cover: '../img/all/60Juno_ZZZ_cover.jpg' },
+// ── ALL PLAYLISTS ──
+const allPlaylists = [
+  {
+    name: 'The Rotation',
+    date: 'March 15',
+    tracks: [
+      { title: 'Just The Way You Are', artist: 'Milky', src: '../img/all/Milky_JustTheWayYouAre.mp3', cover: '../img/all/Milky_JustTheWayYouAre_cover.jpg', updates: 2 },
+      { title: 'Sleepyhead', artist: 'Passion Pit', src: '../img/all/PassionPit_Sleepyhead.mp3', cover: '../img/all/PassionPit_Sleepyhead_cover.jpg' },
+      { title: 'The Thrill', artist: 'Wiz Khalifa, Empire Of The Sun', src: '../img/all/WizKhalifa_TheThrill.mp3', cover: '../img/all/WizKhalifa_TheThrill_cover.jpg' },
+      { title: 'We Are The People', artist: 'Empire Of The Sun', src: '../img/all/EmpireOfTheSun_WeAreThePeople.mp3', cover: '../img/all/EmpireOfTheSun_WeAreThePeople_cover.jpg' },
+      { title: 'diamonds are forever', artist: 'bbno$', src: '../img/all/bbno_DiamondsAreForever.mp3', cover: '../img/all/bbno_DiamondsAreForever_cover.jpg' },
+      { title: 'Kagefumi', artist: '百景', src: '../img/all/Hyakkei_Kagefumi.mp3', cover: '../img/all/Hyakkei_Kagefumi_cover.jpg' },
+      { title: 'Handful of Nothing', artist: "Mind's Eye", src: '../img/all/MindsEye_HandfulOfNothing.mp3', cover: '../img/all/MindsEye_HandfulOfNothing_cover.jpg' },
+      { title: "there's a ghost!", artist: 'NESYA', src: '../img/all/NESYA_TheresAGhost.mp3', cover: '../img/all/NESYA_TheresAGhost_cover.jpg' },
+      { title: 'Her', artist: 'The American Dawn', src: '../img/all/TheAmericanDawn_Her.mp3', cover: '../img/all/TheAmericanDawn_Her_cover.jpg' },
+      { title: 'zzz', artist: '60 juno', src: '../img/all/60Juno_ZZZ.mp3', cover: '../img/all/60Juno_ZZZ_cover.jpg' },
+    ]
+  },
+  {
+    name: 'The Rotation',
+    date: 'March 1',
+    tracks: [
+      { title: 'Dead Ringers', artist: 'Surf Curse', src: '../img/all/SurfCurse_DeadRingers.mp3', cover: '../img/all/SurfCurse_DeadRingers_cover.jpg' },
+      { title: 'Just The Way You Are', artist: 'Milky', src: '../img/all/Milky_JustTheWayYouAre.mp3', cover: '../img/all/Milky_JustTheWayYouAre_cover.jpg' },
+      { title: 'like you', artist: 'Silo, heygwuapo', src: '../img/all/Silo_LikeYou.mp3', cover: '../img/all/Silo_LikeYou_cover.jpg' },
+      { title: 'Not Fair', artist: 'iann dior', src: '../img/all/IannDior_NotFair.mp3', cover: '../img/all/IannDior_NotFair_cover.jpg' },
+      { title: 'Here & Now', artist: 'Yot Club', src: '../img/all/YotClub_HereAndNow.mp3', cover: '../img/all/YotClub_HereAndNow_cover.jpg' },
+      { title: 'does anybody love me', artist: 'NESYA', src: '../img/all/NESYA_DoesAnybodyLoveMe.mp3', cover: '../img/all/NESYA_DoesAnybodyLoveMe_cover.jpg' },
+      { title: 'Mouthful of Diamonds', artist: 'Phantogram', src: '../img/all/Phantogram_MouthfulOfDiamonds.mp3', cover: '../img/all/Phantogram_MouthfulOfDiamonds_cover.jpg' },
+      { title: 'superficial', artist: 'Souly Had, Felly', src: '../img/all/SoulyHad_Superficial.mp3', cover: '../img/all/SoulyHad_Superficial_cover.jpg' },
+      { title: 'Maybe Not', artist: 'Souly Had, Mac Ayres', src: '../img/all/SoulyHad_MaybeNot.mp3', cover: '../img/all/SoulyHad_MaybeNot_cover.jpg' },
+      { title: 'Roommates', artist: 'Malcolm Todd', src: '../img/all/MalcolmTodd_Roommates.mp3', cover: '../img/all/MalcolmTodd_Roommates_cover.jpg' },
+    ]
+  },
+  {
+    name: 'The Rotation',
+    date: 'February 22',
+    tracks: [
+      { title: 'Dave Brubeck', artist: 'Vacations', src: '../img/all/Vacations_DaveBrubeck.mp3', cover: '../img/all/Vacations_DaveBrubeck_cover.jpg' },
+      { title: 'Dræm Girl', artist: 'No Vacation', src: '../img/all/NoVacation_DreamGirl_vbr.mp3', cover: '../img/all/NoVacation_DreamGirl_cover.jpg' },
+      { title: 'Close to You', artist: 'Dayglow', src: '../img/all/Dayglow_CloseToYou.mp3', cover: '../img/all/Dayglow_CloseToYou_cover.jpg' },
+      { title: 'Dead Ringers', artist: 'Surf Curse', src: '../img/all/SurfCurse_DeadRingers.mp3', cover: '../img/all/SurfCurse_DeadRingers_cover.jpg' },
+      { title: 'Kim', artist: 'Joy Again', src: '../img/all/JoyAgain_Kim.mp3', cover: '../img/all/JoyAgain_Kim_cover.jpg' },
+      { title: 'openingup', artist: 'Gunnr', src: '../img/all/Gunnr_OpeningUp.mp3', cover: '../img/all/Gunnr_OpeningUp_cover.jpg' },
+      { title: 'jelly', artist: 'loya', src: '../img/all/Loya_Jelly.mp3', cover: '../img/all/Loya_Jelly_cover.jpg' },
+      { title: 'Under Your Spell', artist: 'Snow Strippers', src: '../img/all/SnowStrippers_UnderYourSpell.mp3', cover: '../img/all/SnowStrippers_UnderYourSpell_cover.jpg' },
+      { title: 'Not Allowed', artist: 'TV Girl', src: '../img/all/TVGirl_NotAllowed.mp3', cover: '../img/all/TVGirl_NotAllowed_cover.jpg' },
+      { title: 'Hello Miss Johnson', artist: 'Jack Harlow', src: '../img/all/JackHarlow_HelloMissJohnson.mp3', cover: '../img/all/JackHarlow_HelloMissJohnson_cover.jpg' },
+    ]
+  }
 ];
+
+let currentPlaylistIndex = 0;
+let playlist = allPlaylists[currentPlaylistIndex].tracks;
 
 // ── iPOD COLORS ──
 const colors = [
@@ -866,20 +974,23 @@ const colors = [
 let currentIndex = 0;
 let selectedIndex = 0;
 let isPlaying = false;
-let currentView = 'menu'; // 'menu' | 'nowplaying'
+let currentView = 'menu'; // 'menu' | 'nowplaying' | 'playlists'
+let selectedPlaylistIndex = 0;
 
 const audio = document.getElementById('audio');
 const ipod = document.getElementById('ipod');
 const wheel = document.getElementById('wheel');
 const menuView = document.getElementById('menuView');
 const npView = document.getElementById('npView');
+const playlistView = document.getElementById('playlistView');
 
 // ── RENDER MENU ──
 function renderMenu() {
   const list = document.getElementById('menuList');
-  // Only rebuild DOM if items don't exist yet
-  if (list.children.length !== playlist.length) {
+  // Rebuild DOM if playlist changed or items don't match
+  if (list.children.length !== playlist.length || list.dataset.playlistIndex !== String(currentPlaylistIndex)) {
     list.innerHTML = '';
+    list.dataset.playlistIndex = currentPlaylistIndex;
     playlist.forEach((track, i) => {
       const el = document.createElement('div');
       el.className = 'menu-item';
@@ -928,6 +1039,64 @@ function showView(view) {
   currentView = view;
   menuView.classList.toggle('active', view === 'menu');
   npView.classList.toggle('active', view === 'nowplaying');
+  playlistView.classList.toggle('active', view === 'playlists');
+}
+
+// ── PLAYLIST SELECTOR ──
+function renderPlaylistSelector() {
+  const list = document.getElementById('playlistList');
+  list.innerHTML = '';
+  allPlaylists.forEach((pl, i) => {
+    const el = document.createElement('div');
+    el.className = 'playlist-item' + (i === selectedPlaylistIndex ? ' selected' : '');
+    // Quad cover from first 4 tracks
+    const covers = pl.tracks.slice(0, 4).map(t => t.cover);
+    const quadHtml = covers.map(c => `<img src="${c}" alt="">`).join('');
+    const currentLabel = i === currentPlaylistIndex ? ' · Now Playing' : '';
+    el.innerHTML = `
+      <div class="playlist-quad">${quadHtml}</div>
+      <div class="playlist-item-info">
+        <div class="playlist-item-name">${pl.name}</div>
+        <div class="playlist-item-meta">${pl.date} · ${pl.tracks.length} songs${currentLabel}</div>
+      </div>
+    `;
+    el.addEventListener('click', () => {
+      selectedPlaylistIndex = i;
+      updatePlaylistSelection();
+    });
+    list.appendChild(el);
+  });
+  // Cascade in
+  setTimeout(() => {
+    document.querySelectorAll('.playlist-item').forEach((item, i) => {
+      setTimeout(() => item.classList.add('loaded'), i * 100);
+    });
+  }, 50);
+}
+
+function updatePlaylistSelection() {
+  const items = document.querySelectorAll('.playlist-item');
+  items.forEach((item, i) => item.classList.toggle('selected', i === selectedPlaylistIndex));
+}
+
+function switchPlaylist(index) {
+  currentPlaylistIndex = index;
+  playlist = allPlaylists[index].tracks;
+  currentIndex = 0;
+  selectedIndex = 0;
+  isPlaying = false;
+  audio.pause();
+  audio.src = '';
+  // Update footer
+  document.querySelector('.footer').textContent = `What I'm listening to · Last updated ${allPlaylists[index].date}`;
+  // Update subtitle
+  document.querySelector('.page-subtitle').textContent = allPlaylists[index].date === allPlaylists[0].date ? 'Recent top songs' : `${allPlaylists[index].date}`;
+  // Update menu header with playlist date
+  const headerTitle = document.getElementById('menuHeaderTitle');
+  headerTitle.textContent = index === 0 ? 'mPod' : allPlaylists[index].date;
+  renderMenu();
+  document.querySelectorAll('.menu-item').forEach(item => item.classList.add('loaded'));
+  showView('menu');
 }
 
 function updateStreamingLinks(title, artist) {
@@ -1048,15 +1217,19 @@ document.getElementById('btnMenu').addEventListener('click', () => {
   if (currentView === 'nowplaying') {
     showView('menu');
     renderMenu();
-    // Immediately show items (no cascade after boot)
     document.querySelectorAll('.menu-item').forEach(item => item.classList.add('loaded'));
+  } else if (currentView === 'menu') {
+    selectedPlaylistIndex = currentPlaylistIndex;
+    renderPlaylistSelector();
+    showView('playlists');
   }
 });
 
 document.getElementById('btnSelect').addEventListener('click', () => {
-  if (currentView === 'menu') {
+  if (currentView === 'playlists') {
+    switchPlaylist(selectedPlaylistIndex);
+  } else if (currentView === 'menu') {
     if (selectedIndex === currentIndex && isPlaying) {
-      // Same song already playing — just go back to now playing screen
       showView('nowplaying');
     } else {
       loadAndPlay(selectedIndex);
@@ -1072,15 +1245,24 @@ document.getElementById('btnRew').addEventListener('click', prevTrack);
 
 // Scroll wheel for menu navigation
 wheel.addEventListener('wheel', (e) => {
-  if (currentView !== 'menu') return;
-  e.preventDefault();
-  if (e.deltaY > 0) {
-    selectedIndex = Math.min(selectedIndex + 1, playlist.length - 1);
-  } else {
-    selectedIndex = Math.max(selectedIndex - 1, 0);
+  if (currentView === 'menu') {
+    e.preventDefault();
+    if (e.deltaY > 0) {
+      selectedIndex = Math.min(selectedIndex + 1, playlist.length - 1);
+    } else {
+      selectedIndex = Math.max(selectedIndex - 1, 0);
+    }
+    renderMenu();
+    document.querySelectorAll('.menu-item').forEach(item => item.classList.add('loaded'));
+  } else if (currentView === 'playlists') {
+    e.preventDefault();
+    if (e.deltaY > 0) {
+      selectedPlaylistIndex = Math.min(selectedPlaylistIndex + 1, allPlaylists.length - 1);
+    } else {
+      selectedPlaylistIndex = Math.max(selectedPlaylistIndex - 1, 0);
+    }
+    updatePlaylistSelection();
   }
-  renderMenu();
-  document.querySelectorAll('.menu-item').forEach(item => item.classList.add('loaded'));
 }, { passive: false });
 
 // Keyboard
@@ -1088,20 +1270,33 @@ document.addEventListener('keydown', (e) => {
   if (e.code === 'Space') { e.preventDefault(); togglePlay(); }
   if (e.code === 'ArrowRight') nextTrack();
   if (e.code === 'ArrowLeft') prevTrack();
-  if (e.code === 'ArrowDown' && currentView === 'menu') {
-    selectedIndex = Math.min(selectedIndex + 1, playlist.length - 1);
-    renderMenu();
+  if (e.code === 'ArrowDown') {
+    if (currentView === 'menu') {
+      selectedIndex = Math.min(selectedIndex + 1, playlist.length - 1);
+      renderMenu();
+    } else if (currentView === 'playlists') {
+      selectedPlaylistIndex = Math.min(selectedPlaylistIndex + 1, allPlaylists.length - 1);
+      updatePlaylistSelection();
+    }
   }
-  if (e.code === 'ArrowUp' && currentView === 'menu') {
-    selectedIndex = Math.max(selectedIndex - 1, 0);
-    renderMenu();
+  if (e.code === 'ArrowUp') {
+    if (currentView === 'menu') {
+      selectedIndex = Math.max(selectedIndex - 1, 0);
+      renderMenu();
+    } else if (currentView === 'playlists') {
+      selectedPlaylistIndex = Math.max(selectedPlaylistIndex - 1, 0);
+      updatePlaylistSelection();
+    }
   }
   if (e.code === 'Enter') {
-    if (currentView === 'menu') loadAndPlay(selectedIndex);
+    if (currentView === 'playlists') switchPlaylist(selectedPlaylistIndex);
+    else if (currentView === 'menu') loadAndPlay(selectedIndex);
     else togglePlay();
   }
   if (e.code === 'Escape' || e.code === 'Backspace') {
-    if (currentView === 'nowplaying') { showView('menu'); renderMenu(); }
+    if (currentView === 'nowplaying') { showView('menu'); renderMenu(); document.querySelectorAll('.menu-item').forEach(item => item.classList.add('loaded')); }
+    else if (currentView === 'menu') { selectedPlaylistIndex = currentPlaylistIndex; renderPlaylistSelector(); showView('playlists'); }
+    else if (currentView === 'playlists') { showView('menu'); renderMenu(); document.querySelectorAll('.menu-item').forEach(item => item.classList.add('loaded')); }
   }
 });
 
