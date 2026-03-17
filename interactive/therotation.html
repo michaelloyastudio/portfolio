@@ -745,8 +745,8 @@
   }
 
   .playlist-quad {
-    width: 50px;
-    height: 50px;
+    width: 26px;
+    height: 26px;
     border-radius: 4px;
     overflow: hidden;
     display: grid;
@@ -832,7 +832,7 @@
     <!-- Menu View (Track List) -->
     <div class="screen-view" id="menuView">
       <div class="screen-header">
-        <span>mPod</span>
+        <span id="menuHeaderLabel">mPod</span>
       </div>
       <div class="menu-list" id="menuList"></div>
     </div>
@@ -896,7 +896,7 @@
   <span class="color-label">Color</span>
 </div>
 
-<div class="footer" id="footer">What I'm listening to · Last updated March 15</div>
+<div class="footer">What I'm listening to · Updated biweekly</div>
 
 <audio id="audio" preload="auto"></audio>
 
@@ -985,11 +985,7 @@ function getPlaylist() {
   return playlists[currentPlaylistIndex].tracks;
 }
 
-// ── UPDATE FOOTER ──
-function updateFooter() {
-  const footerEl = document.getElementById('footer');
-  footerEl.textContent = 'What I\'m listening to · Last updated ' + playlists[currentPlaylistIndex].date;
-}
+
 
 // ── RENDER PLAYLISTS VIEW ──
 function renderPlaylists() {
@@ -1093,7 +1089,7 @@ function selectPlaylist(index) {
   currentPlaylistIndex = index;
   currentIndex = 0;
   selectedIndex = 0;
-  updateFooter();
+  document.getElementById('menuHeaderLabel').textContent = playlists[index].date;
   renderMenu();
   showView('menu');
   // Cascade menu items in
@@ -1342,7 +1338,6 @@ colors.forEach((c, i) => {
 
 // ── BOOT SEQUENCE ──
 renderPlaylists();
-updateFooter();
 
 setTimeout(() => {
   const boot = document.getElementById('bootScreen');
