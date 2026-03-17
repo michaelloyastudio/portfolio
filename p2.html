@@ -6,7 +6,10 @@
 <title>Michael Loya Studio</title>
 <link rel="icon" type="image/svg+xml" href="logo.svg">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Instrument+Serif&display=swap');
+    /* Prevent blue tap highlights on mobile (via Sonny Cirasuolo / prof K) */
+    * { -webkit-tap-highlight-color: transparent; }
+
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -428,7 +431,8 @@
   }
 
   .p2-title span {
-    font-style: italic;
+    font-style: normal !important;
+    font-family: 'Instrument Serif', serif;
     color: #8a8580;
   }
 
@@ -513,7 +517,7 @@
     margin: 0 0 0.6rem;
     color: #1a1a1a;
   }
-  .p2-about-text h1 em { font-style: italic; color: #8a8580; }
+  .p2-about-text h1 .accent { color: #8a8580; }
   .p2-about-text p {
     font-family: 'Space Grotesk', sans-serif;
     color: #3d2b1f;
@@ -593,7 +597,7 @@
     color: #1a1a1a;
     margin-bottom: 1rem;
   }
-  .p2-contact-content h1 em { font-style: italic; color: #8a8580; }
+  .p2-contact-content h1 .accent { color: #8a8580; }
   .p2-contact-content > p {
     font-family: 'Space Grotesk', sans-serif;
     color: #8a8580;
@@ -912,7 +916,7 @@
         <div class="p2-about-hero">
           <img class="p2-about-portrait" src="mike-portrait.jpg" alt="Michael Loya">
           <div class="p2-about-text">
-            <h1>About <em>me</em></h1>
+            <h1>About me</h1>
             <p>I'm a designer who works at the intersection of music, technology, and visual storytelling. Currently studying at Syracuse University, I split my time between design direction for University Union, personal creative projects, and working with AI and emerging tech — staying on top of new tools as they drop and always integrating them into my process.</p>
             <p>My work ranges from brand identity and editorial design to AR experiences, UI/UX, and music production. I adapt quickly, experiment across mediums, and believe the best creative work comes from genuine curiosity.</p>
           </div>
@@ -980,7 +984,7 @@
   <!-- P2 Contact layer (behind the scene) -->
   <div class="p2-contact" id="p2Contact">
     <div class="p2-contact-content">
-      <h1>Let's <em>connect</em></h1>
+      <h1>Let's connect</h1>
       <p>Always open to new projects, collaborations, and conversations.</p>
       <div class="p2-contact-links">
         <a href="https://instagram.com/michaelloyastudio" target="_blank">Instagram</a>
@@ -993,7 +997,7 @@
   <!-- Floating scene (on top) -->
   <div class="p2-scene" id="p2Scene">
     <div class="p2-title">
-      <img src="logo.svg" style="height:44px;width:auto;filter:brightness(0);margin-right:0.5rem;vertical-align:middle;position:relative;top:-6px;">Michael Loya <span>Studio</span>
+      <img src="logo.svg" style="height:44px;width:auto;filter:brightness(0);margin-right:0.5rem;vertical-align:middle;position:relative;top:-6px;">Michael Loya Studio
       <div class="p2-nav">
         <a onclick="p2ShowAbout()">About</a>
         <a onclick="p2ShowContact()">Contact</a>

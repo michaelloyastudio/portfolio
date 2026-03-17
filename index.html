@@ -22,6 +22,9 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
 <link rel="icon" type="image/svg+xml" href="logo.svg">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap');
+    /* Prevent blue tap highlights on mobile (via Sonny Cirasuolo / prof K) */
+    * { -webkit-tap-highlight-color: transparent; }
+
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -447,7 +450,6 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   }
 
   .p2-title-line span {
-    font-style: italic;
     color: #8a8580;
   }
   /* Title mask slider */
@@ -596,7 +598,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     margin: 0 0 0.6rem;
     color: #1a1a1a;
   }
-  .p2-about-text h1 em { font-style: italic; color: #8a8580; }
+  .p2-about-text h1 em { color: #8a8580; }
   .p2-about-text p {
     font-family: 'Space Grotesk', sans-serif;
     color: #3d2b1f;
@@ -676,7 +678,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     color: #1a1a1a;
     margin-bottom: 1rem;
   }
-  .p2-contact-content h1 em { font-style: italic; color: #8a8580; }
+  .p2-contact-content h1 em { color: #8a8580; }
   .p2-contact-content > p {
     font-family: 'Space Grotesk', sans-serif;
     color: #8a8580;
@@ -958,10 +960,61 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     opacity: 0;
     transform: translateY(10px);
     transition: opacity 0.4s ease, transform 0.4s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .p2-project-counter {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.85rem;
+    color: #8a8580;
+    letter-spacing: 0.02em;
   }
   .p2-project-back-row.visible {
     opacity: 1;
     transform: translateY(0);
+  }
+  .p2-project-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    padding: 2.5rem 0 1.5rem;
+    margin-top: 1.5rem;
+    border-top: 1px solid rgba(0,0,0,0.08);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+  .p2-project-nav.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .p2-project-skip {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #8a8580;
+    transition: color 0.2s ease, transform 0.15s ease;
+    user-select: none;
+  }
+  .p2-project-skip:hover {
+    color: #1a1a1a;
+    transform: scale(1.1);
+  }
+  .p2-project-skip svg {
+    width: 22px;
+    height: 22px;
+    fill: currentColor;
+  }
+  .p2-project-nav-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.85rem;
+    color: #8a8580;
+    letter-spacing: 0.02em;
   }
   .p2-project-body {
     font-family: 'Space Grotesk', sans-serif;
@@ -1164,7 +1217,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
             <a href="https://www.mctvisual.com/" target="_blank" style="display:block;margin-top:0.4rem;font-family:'Space Grotesk',sans-serif;font-size:0.7rem;color:#8a8580;text-decoration:none;letter-spacing:0.05em;transition:color 0.3s;">📷 <span style="transition:color 0.3s;" onmouseover="this.style.color='#ff8e3d'" onmouseout="this.style.color='#8a8580'">Malcolm Taylor</span></a>
           </div>
           <div class="p2-about-text">
-            <h1>About <em>me</em></h1>
+            <h1>About <span style="color:#8a8580">me</span></h1>
             <p>I'm a designer who works at the intersection of music, technology, and visual storytelling. Currently studying at Syracuse University, I split my time between design direction for University Union, personal creative projects, and working with AI and emerging tech — staying on top of new tools as they drop and always integrating them into my process.</p>
             <p>My work ranges from brand identity and editorial design to UI/UX, music production, and AI-driven creative tools. I adapt quickly, experiment across mediums, and actively integrate AI into my process — using it to build, prototype, and push ideas further than I could alone.</p>
           </div>
@@ -1212,6 +1265,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
       <div class="p2-project-content">
         <div class="p2-project-back-row" id="p2ProjectBackRow">
           <a class="p2-about-back" onclick="p2CloseProject()"><span>← Back</span></a>
+          <span class="p2-project-counter" id="p2ProjectCounter"></span>
         </div>
         <div class="p2-project-top" id="p2ProjectTop">
           <div class="p2-project-hero" id="p2ProjectHero">
@@ -1230,6 +1284,15 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
           </div>
         </div>
         <div class="p2-project-body" id="p2ProjectBody"></div>
+        <div class="p2-project-nav" id="p2ProjectNav">
+          <a class="p2-project-skip" onclick="p2PrevProject()">
+            <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+          </a>
+          <span class="p2-project-nav-title" id="p2ProjectNavLabel"></span>
+          <a class="p2-project-skip" onclick="p2NextProject()">
+            <svg viewBox="0 0 24 24"><path d="M16 18h2V6h-2zM6 18l8.5-6L6 6z"/></svg>
+          </a>
+        </div>
       </div>
     </div>
   </div>
@@ -1237,7 +1300,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   <!-- P2 Contact layer (behind the scene) -->
   <div class="p2-contact" id="p2Contact">
     <div class="p2-contact-content">
-      <h1>Let's <em>connect</em></h1>
+      <h1>Let's <span style="color:#8a8580">connect</span></h1>
       <p>Always open to new projects, collaborations, and conversations.</p>
       <div class="p2-contact-links">
         <a href="https://instagram.com/michaelloyastudio" target="_blank">Instagram</a>
@@ -1252,7 +1315,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     <div class="p2-title">
       <span class="p2-title-mask">
         <span class="p2-title-slider" id="p2TitleSlider">
-          <span class="p2-title-line"><img src="logo.svg" class="p2-logo" style="height:54px;width:auto;margin-right:0.6rem;">Michael Loya&nbsp;<span>Studio</span></span>
+          <span class="p2-title-line"><img src="logo.svg" class="p2-logo" style="height:54px;width:auto;margin-right:0.6rem;">Michael Loya&nbsp;<span style="color:#8a8580">Studio</span></span>
           <span class="p2-title-line p2-app-name" id="p2AppName"></span>
         </span>
       </span>
@@ -1346,7 +1409,7 @@ const projects = [
 
 <h3 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:1.4rem;margin:2.5rem 0 0.5rem;">Juice Jam 2025</h3>
 <p style="margin-bottom:1rem;">Full visual identity for Syracuse's annual outdoor music festival featuring Ashe & Jordan Ward. Designed the main poster, digital signage, and large-format print materials. Retro risograph aesthetic with bold gold typography.</p>
-<div class="project-img project-img-video" style="margin-bottom:0;"><video src="img/all/jj_timelapse.mp4" autoplay loop muted playsinline style="width:100%;height:auto;object-fit:contain;border-radius:8px;"></video></div>
+<div class="project-img project-img-video" style="margin-bottom:0;overflow:hidden;border-radius:8px;"><video src="img/all/jj_timelapse.mp4" autoplay loop muted playsinline style="width:100%;height:auto;object-fit:cover;border-radius:8px;transform:scale(1.03);transform-origin:center bottom;"></video></div>
 <div class="img-grid-3" style="margin:0.6rem 0 0 0;margin-bottom:0;">
 <div class="project-img"><img src="img/all/jj_78507.jpg" alt="Juice Jam - vertical kiosk" loading="lazy"></div>
 <div class="project-img"><img src="img/all/jj_merch.jpg" alt="Juice Jam - merch mockup" loading="lazy"></div>
@@ -1567,7 +1630,7 @@ function p2ShowInteractive() {
 
     // Swap title to "Interactive Lab"
     var titleLine = document.querySelector('.p2-title-line');
-    if (titleLine) titleLine.innerHTML = '<img src="logo-cream.svg" class="p2-logo" style="height:54px;width:auto;margin-right:0.6rem;">Interactive\u00a0<span style="font-style:italic;color:#8a8580">Lab</span>';
+    if (titleLine) titleLine.innerHTML = '<img src="logo-cream.svg" class="p2-logo" style="height:54px;width:auto;margin-right:0.6rem;">Interactive\u00a0<span style="color:#8a8580">Lab</span>';
 
     // Change nav text: "Interactive" → "Work"
     var navLinks = document.querySelectorAll('.p2-nav a');
@@ -1713,7 +1776,7 @@ function p2ShowWork() {
 
     // Restore title to "Michael Loya Studio"
     var titleLine = document.querySelector('.p2-title-line');
-    if (titleLine) titleLine.innerHTML = '<img src="logo.svg" class="p2-logo" style="height:54px;width:auto;margin-right:0.6rem;">Michael Loya\u00a0<span>Studio</span>';
+    if (titleLine) titleLine.innerHTML = '<img src="logo.svg" class="p2-logo" style="height:54px;width:auto;margin-right:0.6rem;">Michael Loya\u00a0<span style="color:#8a8580">Studio</span>';
     var mask = document.querySelector('.p2-title-mask');
     if (mask) mask.classList.remove('slid');
 
@@ -1757,6 +1820,7 @@ function p2ShowWork() {
 
 // ── P2 project state ──
 var _p2ProjectOpen = false;
+var _p2CurrentProjectIndex = -1;
 
 /* Wire lightbox clicks for images/videos inside the project body */
 // Project open/close with fall/float animations
@@ -1769,6 +1833,7 @@ var _p2PendingProject = null;
 function p2ShowProject(index, el) {
   const p = projects[index];
   if (!p || _p2ProjectOpen || _p2ProjectFalling) return;
+  _p2CurrentProjectIndex = index;
   _p2ProjectFloatingBack = false;
 
   // Populate content immediately (hidden)
@@ -1788,6 +1853,7 @@ function p2ShowProject(index, el) {
   document.getElementById('p2ProjectHeader').classList.remove('visible');
   document.getElementById('p2ProjectBody').classList.remove('visible');
   document.getElementById('p2ProjectBackRow').classList.remove('visible');
+  document.getElementById('p2ProjectNav').classList.remove('visible');
 
   // Start fall-down animation
   _p2ProjectFalling = true;
@@ -1813,10 +1879,96 @@ function p2ShowProject(index, el) {
     setTimeout(() => { document.getElementById('p2ProjectHeader').classList.add('visible'); }, 220);
     setTimeout(() => {
       document.getElementById('p2ProjectBody').classList.add('visible');
+      document.getElementById('p2ProjectNav').classList.add('visible');
+      document.getElementById('p2ProjectNavLabel').textContent = (_p2CurrentProjectIndex + 1) + ' / ' + projects.length;
+      document.getElementById('p2ProjectCounter').textContent = (_p2CurrentProjectIndex + 1) + ' / ' + projects.length;
       initSongPlayer();
       p2WireProjectLightbox();
     }, 320);
   }, 700);
+}
+
+var _p2Swapping = false;
+function p2SwapProject(newIndex) {
+  const p = projects[newIndex];
+  if (!p || _p2Swapping) return;
+  _p2Swapping = true;
+  _p2CurrentProjectIndex = newIndex;
+  
+  const overlay = document.getElementById('p2Project');
+  const scrollEl = overlay.querySelector('.p2-project-scroll');
+  
+  const hero = document.getElementById('p2ProjectHero');
+  const backRow = document.getElementById('p2ProjectBackRow');
+  const header = document.getElementById('p2ProjectHeader');
+  const body = document.getElementById('p2ProjectBody');
+  const nav = document.getElementById('p2ProjectNav');
+  
+  // CASCADE OUT — bottom elements disappear first, top elements last
+  setTimeout(() => { nav.classList.remove('visible'); }, 0);
+  setTimeout(() => { body.classList.remove('visible'); }, 60);
+  setTimeout(() => { header.classList.remove('visible'); }, 130);
+  setTimeout(() => { hero.classList.remove('visible'); }, 200);
+  // Keep backRow visible (← Back stays)
+  
+  // After cascade out completes, swap content and cascade in
+  setTimeout(() => {
+    // Swap content while invisible
+    document.getElementById('p2ProjectTitle').textContent = p.title;
+    document.getElementById('p2ProjectCategory').textContent = p.category;
+    document.getElementById('p2ProjectTools').textContent = p.tools;
+    document.getElementById('p2ProjectYear').textContent = p.year;
+    document.getElementById('p2ProjectBody').innerHTML = p.content;
+    document.getElementById('p2ProjectNavLabel').textContent = (newIndex + 1) + ' / ' + projects.length;
+    document.getElementById('p2ProjectCounter').textContent = (newIndex + 1) + ' / ' + projects.length;
+    
+    // Preload hero image before showing
+    const heroImg = document.getElementById('p2ProjectHeroImg');
+    heroImg.style.opacity = '0';
+    heroImg.alt = p.title;
+    
+    const onReady = () => {
+      // Scroll to top instantly while invisible
+      scrollEl.scrollTop = 0;
+      
+      // CASCADE IN — same stagger as initial open (top first, bottom last)
+      setTimeout(() => { hero.classList.add('visible'); heroImg.style.opacity = ''; }, 80);
+      setTimeout(() => { header.classList.add('visible'); }, 180);
+      setTimeout(() => {
+        body.classList.add('visible');
+        nav.classList.add('visible');
+        initSongPlayer();
+        p2WireProjectLightbox();
+        _p2Swapping = false;
+      }, 280);
+    };
+    
+    if (heroImg.src === p.cover || !p.cover) {
+      heroImg.src = p.cover;
+      onReady();
+    } else {
+      const preload = new Image();
+      preload.onload = () => { heroImg.src = p.cover; onReady(); };
+      preload.onerror = () => { heroImg.src = p.cover; onReady(); };
+      preload.src = p.cover;
+    }
+  }, 500);
+}
+
+function p2PrevProject() {
+  if (_p2CurrentProjectIndex <= 0) {
+    p2SwapProject(projects.length - 1);
+  } else {
+    p2SwapProject(_p2CurrentProjectIndex - 1);
+  }
+}
+
+function p2NextProject() {
+  if (_p2CurrentProjectIndex >= projects.length - 1) {
+    p2SwapProject(0);
+  } else {
+    p2SwapProject(_p2CurrentProjectIndex + 1);
+  }
 }
 
 function p2CloseProject() {
@@ -1859,12 +2011,13 @@ function showLightboxItem(idx) {
   lightboxVideo.style.display = 'none';
   lightboxVideo.pause();
 
-  if (vid && item.classList.contains('project-img-video')) {
+  if (vid && (item.classList.contains('project-img-video') || item.classList.contains('project-video'))) {
     lightboxVideo.src = vid.src;
     lightboxVideo.currentTime = 0;
-    lightboxVideo.muted = !item.hasAttribute('data-video-sound');
-    lightboxVideo.loop = !item.hasAttribute('data-video-sound');
-    lightboxVideo.controls = item.hasAttribute('data-video-sound');
+    const hasSound = item.hasAttribute('data-video-sound') || item.classList.contains('project-video');
+    lightboxVideo.muted = !hasSound;
+    lightboxVideo.loop = !hasSound;
+    lightboxVideo.controls = hasSound;
     lightboxVideo.play();
     lightboxVideo.style.display = 'block';
   } else if (img) {
@@ -1888,7 +2041,7 @@ document.addEventListener('click', function(e) {
     if (!heroImg) return;
     /* Build lightbox list: hero first, then all body images */
     const body = document.getElementById('p2ProjectBody');
-    const bodyItems = body ? Array.from(body.querySelectorAll('.project-img')) : [];
+    const bodyItems = body ? Array.from(body.querySelectorAll('.project-img, .project-video')) : [];
     lbItems = [hero].concat(bodyItems);
     lbIndex = 0;
     /* Show hero in lightbox */
@@ -1901,8 +2054,8 @@ document.addEventListener('click', function(e) {
     return;
   }
 
-  /* Check if click is on a project-img inside the body */
-  const imgEl = e.target.closest('.project-img');
+  /* Check if click is on a project-img or project-video inside the body */
+  const imgEl = e.target.closest('.project-img, .project-video');
   if (!imgEl) return;
   const body = document.getElementById('p2ProjectBody');
   if (!body || !body.contains(imgEl)) return;
@@ -1910,7 +2063,7 @@ document.addEventListener('click', function(e) {
   e.preventDefault();
   e.stopPropagation();
 
-  const bodyItems = Array.from(body.querySelectorAll('.project-img'));
+  const bodyItems = Array.from(body.querySelectorAll('.project-img, .project-video'));
   lbItems = [hero].concat(bodyItems);
   lbIndex = lbItems.indexOf(imgEl);
   if (lbIndex === -1) { lbItems = bodyItems; lbIndex = bodyItems.indexOf(imgEl); }
@@ -1992,10 +2145,18 @@ document.addEventListener('keydown', (e) => {
     // P2 overlays
     if (_p2ProjectOpen) { p2CloseProject(); return; }
     if (document.getElementById('p2About').classList.contains('visible')) { p2CloseAbout(); return; }
-    if (_p2InteractiveMode) { p2ShowWork(); return; }
+    if (_p2InteractiveMode) { return; }
     if (document.getElementById('p2Contact').classList.contains('visible')) { p2CloseContact(); return; }
     if (document.getElementById('p2ComingSoon').classList.contains('active')) { document.getElementById('p2ComingSoon').classList.remove('active'); return; }
   }
+});
+
+/* Project skip arrow keys (only when project open & lightbox closed) */
+document.addEventListener('keydown', (e) => {
+  if (!_p2ProjectOpen || _p2Swapping) return;
+  if (lightbox.classList.contains('open')) return;
+  if (e.key === 'ArrowRight') { e.preventDefault(); p2NextProject(); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); p2PrevProject(); }
 });
 
 /* Lightbox arrow keys */
