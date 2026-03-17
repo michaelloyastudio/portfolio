@@ -138,7 +138,6 @@
     border-radius: 8px;
     overflow: hidden;
     position: relative;
-    position: relative;
     box-shadow:
       0 1px 0 rgba(255,255,255,0.1) inset,
       0 2px 8px rgba(0,0,0,0.4);
@@ -228,8 +227,6 @@
   }
   .menu-list::-webkit-scrollbar { display: none; }
 
-  /* removed */
-
   .menu-item {
     display: flex;
     align-items: center;
@@ -300,7 +297,6 @@
     color: #0a0a0a;
   }
 
-  /* ── STREAMING LINKS ── */
   /* ── NOW PLAYING VIEW ── */
   .np-view {
     display: flex;
@@ -749,14 +745,16 @@
   }
 
   .playlist-quad {
-    width: 36px;
-    height: 36px;
+    width: 50px;
+    height: 50px;
     border-radius: 4px;
     overflow: hidden;
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
+    gap: 1px;
     flex-shrink: 0;
+    background: rgba(0,0,0,0.3);
   }
   .playlist-quad img {
     width: 100%;
@@ -823,20 +821,20 @@
       <div class="battery"><div class="battery-fill"></div></div>
     </div>
 
-    <!-- Menu View -->
-    <div class="screen-view" id="menuView">
-      <div class="screen-header">
-        <span id="menuHeaderTitle">mPod</span>
-      </div>
-      <div class="menu-list" id="menuList"></div>
-    </div>
-
-    <!-- Playlist Selector View -->
-    <div class="screen-view" id="playlistView">
+    <!-- Playlists View -->
+    <div class="screen-view" id="playlistsView">
       <div class="screen-header">
         <span>Playlists</span>
       </div>
       <div class="playlist-list" id="playlistList"></div>
+    </div>
+
+    <!-- Menu View (Track List) -->
+    <div class="screen-view" id="menuView">
+      <div class="screen-header">
+        <span>mPod</span>
+      </div>
+      <div class="menu-list" id="menuList"></div>
     </div>
 
     <!-- Now Playing View -->
@@ -898,17 +896,17 @@
   <span class="color-label">Color</span>
 </div>
 
-<div class="footer">What I'm listening to · Last updated March 15</div>
+<div class="footer" id="footer">What I'm listening to · Last updated March 15</div>
 
 <audio id="audio" preload="auto"></audio>
 
 <script>
 const isMobile = window.matchMedia('(max-width: 480px)').matches;
 
-// ── ALL PLAYLISTS ──
-const allPlaylists = [
+// ── PLAYLISTS ──
+const playlists = [
   {
-    name: 'The Rotation',
+    name: 'Mar 15',
     date: 'March 15',
     tracks: [
       { title: 'Just The Way You Are', artist: 'Milky', src: '../img/all/Milky_JustTheWayYouAre.mp3', cover: '../img/all/Milky_JustTheWayYouAre_cover.jpg', updates: 2 },
@@ -924,13 +922,13 @@ const allPlaylists = [
     ]
   },
   {
-    name: 'The Rotation',
+    name: 'Mar 1',
     date: 'March 1',
     tracks: [
-      { title: 'Dead Ringers', artist: 'Surf Curse', src: '../img/all/SurfCurse_DeadRingers.mp3', cover: '../img/all/SurfCurse_DeadRingers_cover.jpg' },
+      { title: 'Dead Ringers', artist: 'Surf Curse', src: '../img/all/SurfCurse_DeadRingers.mp3', cover: '../img/all/SurfCurse_DeadRingers_cover.jpg', updates: 2 },
       { title: 'Just The Way You Are', artist: 'Milky', src: '../img/all/Milky_JustTheWayYouAre.mp3', cover: '../img/all/Milky_JustTheWayYouAre_cover.jpg' },
-      { title: 'like you', artist: 'Silo, heygwuapo', src: '../img/all/Silo_LikeYou.mp3', cover: '../img/all/Silo_LikeYou_cover.jpg' },
-      { title: 'Not Fair', artist: 'iann dior', src: '../img/all/IannDior_NotFair.mp3', cover: '../img/all/IannDior_NotFair_cover.jpg' },
+      { title: 'like you', artist: 'Silo, heygwuapo', src: '../img/all/Silo_LikeYou.mp3', cover: '../img/all/Silo_LikeYou_cover.jpg', explicit: true },
+      { title: 'Not Fair', artist: 'iann dior', src: '../img/all/IannDior_NotFair.mp3', cover: '../img/all/IannDior_NotFair_cover.jpg', explicit: true },
       { title: 'Here & Now', artist: 'Yot Club', src: '../img/all/YotClub_HereAndNow.mp3', cover: '../img/all/YotClub_HereAndNow_cover.jpg' },
       { title: 'does anybody love me', artist: 'NESYA', src: '../img/all/NESYA_DoesAnybodyLoveMe.mp3', cover: '../img/all/NESYA_DoesAnybodyLoveMe_cover.jpg' },
       { title: 'Mouthful of Diamonds', artist: 'Phantogram', src: '../img/all/Phantogram_MouthfulOfDiamonds.mp3', cover: '../img/all/Phantogram_MouthfulOfDiamonds_cover.jpg' },
@@ -940,7 +938,7 @@ const allPlaylists = [
     ]
   },
   {
-    name: 'The Rotation',
+    name: 'Feb 22',
     date: 'February 22',
     tracks: [
       { title: 'Dave Brubeck', artist: 'Vacations', src: '../img/all/Vacations_DaveBrubeck.mp3', cover: '../img/all/Vacations_DaveBrubeck_cover.jpg' },
@@ -957,9 +955,6 @@ const allPlaylists = [
   }
 ];
 
-let currentPlaylistIndex = 0;
-let playlist = allPlaylists[currentPlaylistIndex].tracks;
-
 // ── iPOD COLORS ──
 const colors = [
   { name: 'Parchment', body: '#E8E0D4', wheel: 'linear-gradient(145deg, #d4ccc0, #bfb7ab)', center: 'linear-gradient(145deg, #e8e0d4, #d4ccc0)' },
@@ -971,46 +966,89 @@ const colors = [
 ];
 
 // ── STATE ──
+let currentPlaylistIndex = 0; // Mar 15 (newest, default)
+let selectedPlaylistIndex = 0;
 let currentIndex = 0;
 let selectedIndex = 0;
 let isPlaying = false;
-let currentView = 'menu'; // 'menu' | 'nowplaying' | 'playlists'
-let selectedPlaylistIndex = 0;
+let currentView = 'playlists'; // 'playlists' | 'menu' | 'nowplaying'
 
 const audio = document.getElementById('audio');
 const ipod = document.getElementById('ipod');
 const wheel = document.getElementById('wheel');
+const playlistsView = document.getElementById('playlistsView');
 const menuView = document.getElementById('menuView');
 const npView = document.getElementById('npView');
-const playlistView = document.getElementById('playlistView');
+
+// Helper to get active playlist tracks
+function getPlaylist() {
+  return playlists[currentPlaylistIndex].tracks;
+}
+
+// ── UPDATE FOOTER ──
+function updateFooter() {
+  const footerEl = document.getElementById('footer');
+  footerEl.textContent = 'What I\'m listening to · Last updated ' + playlists[currentPlaylistIndex].date;
+}
+
+// ── RENDER PLAYLISTS VIEW ──
+function renderPlaylists() {
+  const list = document.getElementById('playlistList');
+  list.innerHTML = '';
+  playlists.forEach((pl, i) => {
+    const el = document.createElement('div');
+    el.className = 'playlist-item' + (i === selectedPlaylistIndex ? ' selected' : '');
+    // Quad cover: first 4 track covers
+    const covers = pl.tracks.slice(0, 4).map(t => t.cover);
+    el.innerHTML = `
+      <div class="playlist-quad">
+        ${covers.map(c => `<img src="${c}" alt="">`).join('')}
+      </div>
+      <div class="playlist-item-info">
+        <div class="playlist-item-name">${pl.name}</div>
+        <div class="playlist-item-meta">${pl.tracks.length} songs</div>
+      </div>
+    `;
+    el.addEventListener('click', () => {
+      selectedPlaylistIndex = i;
+      updatePlaylistSelection();
+    });
+    list.appendChild(el);
+  });
+}
+
+function updatePlaylistSelection() {
+  const items = document.querySelectorAll('.playlist-item');
+  items.forEach((item, i) => {
+    item.classList.toggle('selected', i === selectedPlaylistIndex);
+  });
+  const selected = document.querySelector('.playlist-item.selected');
+  if (selected) selected.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+}
 
 // ── RENDER MENU ──
 function renderMenu() {
   const list = document.getElementById('menuList');
-  // Rebuild DOM if playlist changed or items don't match
-  if (list.children.length !== playlist.length || list.dataset.playlistIndex !== String(currentPlaylistIndex)) {
-    list.innerHTML = '';
-    list.dataset.playlistIndex = currentPlaylistIndex;
-    playlist.forEach((track, i) => {
-      const el = document.createElement('div');
-      el.className = 'menu-item';
-      const badgeHtml = track.updates ? `<div class="weeks-badge">${track.updates}x</div>` : '';
-      const explicitHtml = track.explicit ? `<div class="explicit-badge">E</div>` : '';
-      el.innerHTML = `
-        <img class="menu-item-thumb" src="${track.cover}" alt="">
-        <div class="menu-item-info">
-          <div class="menu-item-title">${track.title}${track.explicit ? ' <span class="explicit-badge" style="display:inline-flex;vertical-align:middle;margin-left:3px;">E</span>' : ''}</div>
-          <div class="menu-item-artist">${track.artist}</div>
-        </div>
-        ${badgeHtml}
-      `;
-      el.addEventListener('click', () => {
-        selectedIndex = i;
-        updateMenuSelection();
-      });
-      list.appendChild(el);
+  const playlist = getPlaylist();
+  list.innerHTML = '';
+  playlist.forEach((track, i) => {
+    const el = document.createElement('div');
+    el.className = 'menu-item';
+    const badgeHtml = track.updates ? `<div class="weeks-badge">${track.updates}x</div>` : '';
+    el.innerHTML = `
+      <img class="menu-item-thumb" src="${track.cover}" alt="">
+      <div class="menu-item-info">
+        <div class="menu-item-title">${track.title}${track.explicit ? ' <span class="explicit-badge" style="display:inline-flex;vertical-align:middle;margin-left:3px;">E</span>' : ''}</div>
+        <div class="menu-item-artist">${track.artist}</div>
+      </div>
+      ${badgeHtml}
+    `;
+    el.addEventListener('click', () => {
+      selectedIndex = i;
+      updateMenuSelection();
     });
-  }
+    list.appendChild(el);
+  });
   updateMenuSelection();
 }
 
@@ -1025,6 +1063,7 @@ function updateMenuSelection() {
 
 // ── RENDER NOW PLAYING ──
 function renderNowPlaying() {
+  const playlist = getPlaylist();
   const track = playlist[currentIndex];
   document.getElementById('npCover').src = track.cover;
   document.getElementById('npTitle').innerHTML = track.title + (track.explicit ? ' <span class="explicit-badge" style="display:inline-flex;vertical-align:middle;margin-left:3px;">E</span>' : '');
@@ -1037,66 +1076,31 @@ function renderNowPlaying() {
 // ── SWITCH VIEW ──
 function showView(view) {
   currentView = view;
+  playlistsView.classList.toggle('active', view === 'playlists');
   menuView.classList.toggle('active', view === 'menu');
   npView.classList.toggle('active', view === 'nowplaying');
-  playlistView.classList.toggle('active', view === 'playlists');
 }
 
-// ── PLAYLIST SELECTOR ──
-function renderPlaylistSelector() {
-  const list = document.getElementById('playlistList');
-  list.innerHTML = '';
-  allPlaylists.forEach((pl, i) => {
-    const el = document.createElement('div');
-    el.className = 'playlist-item' + (i === selectedPlaylistIndex ? ' selected' : '');
-    // Quad cover from first 4 tracks
-    const covers = pl.tracks.slice(0, 4).map(t => t.cover);
-    const quadHtml = covers.map(c => `<img src="${c}" alt="">`).join('');
-    const currentLabel = i === currentPlaylistIndex ? ' · Now Playing' : '';
-    el.innerHTML = `
-      <div class="playlist-quad">${quadHtml}</div>
-      <div class="playlist-item-info">
-        <div class="playlist-item-name">${pl.name}</div>
-        <div class="playlist-item-meta">${pl.date} · ${pl.tracks.length} songs${currentLabel}</div>
-      </div>
-    `;
-    el.addEventListener('click', () => {
-      selectedPlaylistIndex = i;
-      updatePlaylistSelection();
-    });
-    list.appendChild(el);
-  });
-  // Cascade in
-  setTimeout(() => {
-    document.querySelectorAll('.playlist-item').forEach((item, i) => {
-      setTimeout(() => item.classList.add('loaded'), i * 100);
-    });
-  }, 50);
-}
+// ── SELECT PLAYLIST & ENTER TRACK LIST ──
+function selectPlaylist(index) {
+  // Stop any current playback
+  if (isPlaying) {
+    audio.pause();
+    isPlaying = false;
+  }
+  audio.src = '';
 
-function updatePlaylistSelection() {
-  const items = document.querySelectorAll('.playlist-item');
-  items.forEach((item, i) => item.classList.toggle('selected', i === selectedPlaylistIndex));
-}
-
-function switchPlaylist(index) {
   currentPlaylistIndex = index;
-  playlist = allPlaylists[index].tracks;
   currentIndex = 0;
   selectedIndex = 0;
-  isPlaying = false;
-  audio.pause();
-  audio.src = '';
-  // Update footer
-  document.querySelector('.footer').textContent = `What I'm listening to · Last updated ${allPlaylists[index].date}`;
-  // Update subtitle
-  document.querySelector('.page-subtitle').textContent = allPlaylists[index].date === allPlaylists[0].date ? 'Recent top songs' : `${allPlaylists[index].date}`;
-  // Update menu header with playlist date
-  const headerTitle = document.getElementById('menuHeaderTitle');
-  headerTitle.textContent = index === 0 ? 'mPod' : allPlaylists[index].date;
+  updateFooter();
   renderMenu();
-  document.querySelectorAll('.menu-item').forEach(item => item.classList.add('loaded'));
   showView('menu');
+  // Cascade menu items in
+  const items = document.querySelectorAll('.menu-item');
+  items.forEach((item, i) => {
+    setTimeout(() => item.classList.add('loaded'), i * 80);
+  });
 }
 
 function updateStreamingLinks(title, artist) {
@@ -1117,7 +1121,7 @@ function togglePlay() {
     isPlaying = false;
     document.getElementById('npEq').classList.remove('playing');
   } else {
-    if (!audio.src || audio.src === '') {
+    if (!audio.src || audio.src === '' || audio.src === window.location.href) {
       loadAndPlay(currentIndex);
       return;
     }
@@ -1128,6 +1132,7 @@ function togglePlay() {
 }
 
 function loadAndPlay(index) {
+  const playlist = getPlaylist();
   currentIndex = index;
   const track = playlist[index];
   renderNowPlaying();
@@ -1141,6 +1146,7 @@ function loadAndPlay(index) {
 }
 
 function nextTrack() {
+  const playlist = getPlaylist();
   currentIndex = (currentIndex + 1) % playlist.length;
   selectedIndex = currentIndex;
   loadAndPlay(currentIndex);
@@ -1148,6 +1154,7 @@ function nextTrack() {
 }
 
 function prevTrack() {
+  const playlist = getPlaylist();
   if (audio.currentTime > 3) { audio.currentTime = 0; return; }
   currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
   selectedIndex = currentIndex;
@@ -1205,12 +1212,9 @@ barWrap.addEventListener('click', (e) => {
   } else {
     audio.currentTime = newTime;
   }
-  // Update fill immediately
   barFill.style.width = (pct * 100) + '%';
   document.getElementById('npTimeCur').textContent = fmt(newTime);
 });
-
-// Debug: detect any unexpected src changes
 
 // ── WHEEL CONTROLS ──
 document.getElementById('btnMenu').addEventListener('click', () => {
@@ -1219,15 +1223,16 @@ document.getElementById('btnMenu').addEventListener('click', () => {
     renderMenu();
     document.querySelectorAll('.menu-item').forEach(item => item.classList.add('loaded'));
   } else if (currentView === 'menu') {
-    selectedPlaylistIndex = currentPlaylistIndex;
-    renderPlaylistSelector();
     showView('playlists');
+    renderPlaylists();
+    document.querySelectorAll('.playlist-item').forEach(item => item.classList.add('loaded'));
   }
+  // playlists view is top level — MENU does nothing
 });
 
 document.getElementById('btnSelect').addEventListener('click', () => {
   if (currentView === 'playlists') {
-    switchPlaylist(selectedPlaylistIndex);
+    selectPlaylist(selectedPlaylistIndex);
   } else if (currentView === 'menu') {
     if (selectedIndex === currentIndex && isPlaying) {
       showView('nowplaying');
@@ -1243,10 +1248,18 @@ document.getElementById('btnPlayPause').addEventListener('click', togglePlay);
 document.getElementById('btnFwd').addEventListener('click', nextTrack);
 document.getElementById('btnRew').addEventListener('click', prevTrack);
 
-// Scroll wheel for menu navigation
+// Scroll wheel for navigation
 wheel.addEventListener('wheel', (e) => {
-  if (currentView === 'menu') {
-    e.preventDefault();
+  e.preventDefault();
+  if (currentView === 'playlists') {
+    if (e.deltaY > 0) {
+      selectedPlaylistIndex = Math.min(selectedPlaylistIndex + 1, playlists.length - 1);
+    } else {
+      selectedPlaylistIndex = Math.max(selectedPlaylistIndex - 1, 0);
+    }
+    updatePlaylistSelection();
+  } else if (currentView === 'menu') {
+    const playlist = getPlaylist();
     if (e.deltaY > 0) {
       selectedIndex = Math.min(selectedIndex + 1, playlist.length - 1);
     } else {
@@ -1254,14 +1267,6 @@ wheel.addEventListener('wheel', (e) => {
     }
     renderMenu();
     document.querySelectorAll('.menu-item').forEach(item => item.classList.add('loaded'));
-  } else if (currentView === 'playlists') {
-    e.preventDefault();
-    if (e.deltaY > 0) {
-      selectedPlaylistIndex = Math.min(selectedPlaylistIndex + 1, allPlaylists.length - 1);
-    } else {
-      selectedPlaylistIndex = Math.max(selectedPlaylistIndex - 1, 0);
-    }
-    updatePlaylistSelection();
   }
 }, { passive: false });
 
@@ -1270,33 +1275,46 @@ document.addEventListener('keydown', (e) => {
   if (e.code === 'Space') { e.preventDefault(); togglePlay(); }
   if (e.code === 'ArrowRight') nextTrack();
   if (e.code === 'ArrowLeft') prevTrack();
+
   if (e.code === 'ArrowDown') {
-    if (currentView === 'menu') {
+    if (currentView === 'playlists') {
+      selectedPlaylistIndex = Math.min(selectedPlaylistIndex + 1, playlists.length - 1);
+      updatePlaylistSelection();
+    } else if (currentView === 'menu') {
+      const playlist = getPlaylist();
       selectedIndex = Math.min(selectedIndex + 1, playlist.length - 1);
       renderMenu();
-    } else if (currentView === 'playlists') {
-      selectedPlaylistIndex = Math.min(selectedPlaylistIndex + 1, allPlaylists.length - 1);
-      updatePlaylistSelection();
     }
   }
   if (e.code === 'ArrowUp') {
-    if (currentView === 'menu') {
-      selectedIndex = Math.max(selectedIndex - 1, 0);
-      renderMenu();
-    } else if (currentView === 'playlists') {
+    if (currentView === 'playlists') {
       selectedPlaylistIndex = Math.max(selectedPlaylistIndex - 1, 0);
       updatePlaylistSelection();
+    } else if (currentView === 'menu') {
+      selectedIndex = Math.max(selectedIndex - 1, 0);
+      renderMenu();
     }
   }
+
   if (e.code === 'Enter') {
-    if (currentView === 'playlists') switchPlaylist(selectedPlaylistIndex);
-    else if (currentView === 'menu') loadAndPlay(selectedIndex);
-    else togglePlay();
+    if (currentView === 'playlists') {
+      selectPlaylist(selectedPlaylistIndex);
+    } else if (currentView === 'menu') {
+      loadAndPlay(selectedIndex);
+    } else {
+      togglePlay();
+    }
   }
   if (e.code === 'Escape' || e.code === 'Backspace') {
-    if (currentView === 'nowplaying') { showView('menu'); renderMenu(); document.querySelectorAll('.menu-item').forEach(item => item.classList.add('loaded')); }
-    else if (currentView === 'menu') { selectedPlaylistIndex = currentPlaylistIndex; renderPlaylistSelector(); showView('playlists'); }
-    else if (currentView === 'playlists') { showView('menu'); renderMenu(); document.querySelectorAll('.menu-item').forEach(item => item.classList.add('loaded')); }
+    if (currentView === 'nowplaying') {
+      showView('menu');
+      renderMenu();
+      document.querySelectorAll('.menu-item').forEach(item => item.classList.add('loaded'));
+    } else if (currentView === 'menu') {
+      showView('playlists');
+      renderPlaylists();
+      document.querySelectorAll('.playlist-item').forEach(item => item.classList.add('loaded'));
+    }
   }
 });
 
@@ -1314,7 +1332,6 @@ colors.forEach((c, i) => {
     wheel.style.background = c.wheel;
     document.querySelector('.wheel-center').style.background = c.center;
 
-    // Adjust text color for dark iPods
     const isDark = c.name === 'Space Black' || c.name === 'Product Red';
     document.querySelectorAll('.wheel-btn').forEach(b => {
       b.style.color = isDark ? 'rgba(255,255,255,0.5)' : '#5a534c';
@@ -1324,7 +1341,8 @@ colors.forEach((c, i) => {
 });
 
 // ── BOOT SEQUENCE ──
-renderMenu();
+renderPlaylists();
+updateFooter();
 
 setTimeout(() => {
   const boot = document.getElementById('bootScreen');
@@ -1332,13 +1350,13 @@ setTimeout(() => {
   boot.style.opacity = '0';
   setTimeout(() => {
     boot.style.display = 'none';
-    menuView.classList.add('active');
+    playlistsView.classList.add('active');
     document.querySelector('.screen-battery').classList.add('visible');
     document.querySelector('.header-logo-link').classList.add('loaded');
     document.getElementById('titleRow').classList.add('loaded');
     wheel.classList.remove('locked');
-    // Cascade menu items in
-    const items = document.querySelectorAll('.menu-item');
+    // Cascade playlist items in
+    const items = document.querySelectorAll('.playlist-item');
     items.forEach((item, i) => {
       setTimeout(() => item.classList.add('loaded'), i * 120);
     });
@@ -1369,7 +1387,6 @@ if (backSpan) {
     logoLink.addEventListener('click', function(e) {
       e.preventDefault();
       const href = this.href;
-      // Fade audio out
       const audio = document.querySelector('audio');
       if (audio && !audio.paused) {
         let vol = audio.volume;
