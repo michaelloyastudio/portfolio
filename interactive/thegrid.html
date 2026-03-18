@@ -35,7 +35,7 @@ body {
   cursor: url('cursor.svg') 16 8, default;
 }
 
-a, button, .clickable, input, select, input[type="range"], label, [onclick], .step, .row-mute, .row-solo, .mute-all-btn, .group-mute-btn, .transport-btn, .action-btn, .drum-pad { cursor: url('crosshair.svg') 8 10, pointer !important; }
+a, button, .clickable, input, select, input[type="range"], label, [onclick], .step, .row-mute, .row-solo, .mute-all-btn, .group-mute-btn, .transport-btn, .action-btn { cursor: url('crosshair.svg') 8 10, pointer !important; }
 input[type="range"]::-webkit-slider-thumb { cursor: url('crosshair.svg') 8 10, pointer !important; }
 h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
 
@@ -208,36 +208,6 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
   border-radius: 50%;
   background: var(--text-muted);
   cursor: pointer;
-}
-
-/* ── MODE SWITCHER ── */
-.mode-switcher {
-  display: flex;
-  background: rgba(255,255,255,0.03);
-  border-radius: 6px;
-  padding: 2px;
-  gap: 2px;
-}
-
-.mode-btn {
-  padding: 5px 12px;
-  border-radius: 5px;
-  border: none;
-  background: transparent;
-  color: var(--text-muted);
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 0.6rem;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  transition: all 0.2s;
-  white-space: nowrap;
-}
-
-.mode-btn:hover { color: var(--text); }
-
-.mode-btn.active {
-  background: rgba(255,142,61,0.15);
-  color: var(--accent);
 }
 
 /* ── GRID ── */
@@ -689,6 +659,8 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
   box-shadow: 0 0 8px rgba(255,142,61,0.15);
 }
 
+/* bg-pulse removed */
+
 /* ── TOGGLE POP ── */
 .step.pop .step-bg {
   animation: cellPop 0.25s ease;
@@ -710,130 +682,6 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
   100% { transform: scale(1); }
 }
 
-/* ═══════════════════════════════════════════════════ */
-/* DRUM PAD MODE                                      */
-/* ═══════════════════════════════════════════════════ */
-
-.drumpad-wrapper {
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-  user-select: none;
-}
-
-.drumpad-wrapper.visible {
-  display: flex;
-}
-
-.drumpad-bank-label {
-  font-size: 0.55rem;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-}
-
-.drumpad-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-  max-width: 380px;
-  width: 100%;
-}
-
-.drum-pad {
-  position: relative;
-  width: 86px;
-  height: 86px;
-  border-radius: 8px;
-  background: #111;
-  border: 2px solid;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  transition: transform 0.08s ease, background 0.12s ease, box-shadow 0.12s ease;
-  overflow: hidden;
-  -webkit-user-select: none;
-  user-select: none;
-  touch-action: none;
-}
-
-.drum-pad .pad-name {
-  font-size: 0.55rem;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  pointer-events: none;
-  z-index: 2;
-  transition: color 0.1s;
-}
-
-.drum-pad .pad-key {
-  font-size: 0.5rem;
-  color: #444;
-  font-family: 'Space Grotesk', monospace;
-  pointer-events: none;
-  z-index: 2;
-  transition: color 0.1s;
-}
-
-.drum-pad.empty {
-  border-color: #1a1a1a;
-  background: #0d0d0d;
-  cursor: default !important;
-}
-
-.drum-pad.empty .pad-name,
-.drum-pad.empty .pad-key {
-  color: #1a1a1a;
-}
-
-/* Pad hit state */
-.drum-pad.hit {
-  transform: scale(0.93);
-}
-
-.drum-pad.hit .pad-name {
-  color: #fff;
-}
-
-.drum-pad.hit .pad-key {
-  color: rgba(255,255,255,0.6);
-}
-
-/* Pad ripple */
-.drum-pad .pad-ripple {
-  position: absolute;
-  inset: 0;
-  border-radius: 6px;
-  opacity: 0;
-  pointer-events: none;
-  z-index: 1;
-}
-
-@keyframes padPulse {
-  0% { opacity: 0.5; transform: scale(1); }
-  100% { opacity: 0; transform: scale(1.15); }
-}
-
-.drum-pad .pad-ripple.active {
-  animation: padPulse 0.35s ease-out forwards;
-}
-
-/* Drumpad entrance animation */
-.drum-pad {
-  opacity: 0;
-  transform: scale(0) rotate(5deg);
-}
-
-.drum-pad.entered {
-  opacity: 1;
-  transform: scale(1) rotate(0deg);
-  transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
 /* ── RESPONSIVE ── */
 @media (max-width: 768px) {
   .step { width: 31px; height: 31px; }
@@ -841,29 +689,6 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
   .row-label { height: 31px; }
   .transport { flex-wrap: wrap; justify-content: center; }
   .row-name { min-width: 45px; font-size: 0.55rem; }
-
-  .drumpad-grid {
-    max-width: 300px;
-    gap: 8px;
-  }
-  .drum-pad {
-    width: 68px;
-    height: 68px;
-    border-radius: 6px;
-  }
-  .drum-pad .pad-name { font-size: 0.48rem; }
-  .drum-pad .pad-key { font-size: 0.42rem; }
-}
-
-@media (max-width: 420px) {
-  .drumpad-grid {
-    max-width: 260px;
-    gap: 6px;
-  }
-  .drum-pad {
-    width: 58px;
-    height: 58px;
-  }
 }
 </style>
 </head>
@@ -875,6 +700,8 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
   <div class="boot-text">Loading instruments...</div>
 </div>
 
+<!-- bg-pulse removed -->
+
 <header class="header">
   <a href="../index.html" class="header-logo-link clickable">
     <img src="logo-gray.svg" alt="ML" class="header-logo logo-default">
@@ -885,7 +712,7 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
 <div class="main">
   <div class="title-row">
     <div class="title">The Grid</div>
-    <div class="subtitle-text" id="subtitleText" style="font-size:0.85rem;color:#8a8580;letter-spacing:0.15em;text-transform:uppercase;font-family:'Space Grotesk',sans-serif;">Beat maker</div>
+    <div style="font-size:0.85rem;color:#8a8580;letter-spacing:0.15em;text-transform:uppercase;font-family:'Space Grotesk',sans-serif;">Beat maker</div>
   </div>
 
   <!-- Transport -->
@@ -903,29 +730,19 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
       <span class="bpm-label">Reverb</span>
       <input type="range" class="swing-slider clickable" id="reverbSlider" min="0" max="100" value="0">
     </div>
-    <div class="transport-divider"></div>
-    <div class="mode-switcher">
-      <button class="mode-btn clickable active" id="modeSeqBtn" data-mode="sequencer">Sequencer</button>
-      <button class="mode-btn clickable" id="modePadBtn" data-mode="drumpad">Drum Pad</button>
-    </div>
+    <!-- kit selector removed -->
   </div>
 
-  <!-- Sequencer Grid -->
-  <div class="grid-wrapper" id="sequencerView">
+  <!-- Grid -->
+  <div class="grid-wrapper">
     <div class="mute-all-row"><button class="mute-all-btn clickable" id="muteAllBtn" title="Mute All (M)">Mute All</button></div>
     <div class="beat-numbers" id="beatNumbers"></div>
     <div class="row-labels" id="rowLabels"></div>
     <div class="grid" id="grid"><div class="ripple-overlay" id="rippleOverlay"></div></div>
   </div>
 
-  <!-- Drum Pad View -->
-  <div class="drumpad-wrapper" id="drumpadView">
-    <div class="drumpad-bank-label">Bank A · 12 Instruments</div>
-    <div class="drumpad-grid" id="drumpadGrid"></div>
-  </div>
-
   <!-- Group Mutes -->
-  <div class="group-mute-row" id="groupMuteRow">
+  <div class="group-mute-row">
     <button class="group-mute-btn clickable" id="muteDrumsBtn" title="Mute Drums">Mute Drums</button>
     <button class="group-mute-btn clickable" id="muteVocalsBtn" title="Mute Vocals">Mute Vocals</button>
   </div>
@@ -937,7 +754,7 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
   </div>
 
   <!-- Actions -->
-  <div class="actions" id="seqActions">
+  <div class="actions">
     <button class="action-btn clickable" id="clearBtn">Clear All</button>
     <button class="action-btn clickable" id="randomBtn">Random</button>
     <button class="action-btn clickable" id="presetBtn">Preset: Boom Bap</button>
@@ -950,6 +767,7 @@ h1, h2, h3 { font-family: 'Instrument Serif', serif; font-weight: 400; }
 // ═══════════════════════════════════════════════════
 // INSTRUMENTS
 // ═══════════════════════════════════════════════════
+// Sound kits — each kit has 8 instruments with different synth params
 const INSTRUMENTS = [
   { id: 'kick',    name: 'Kick',     color: '#FF4466', type: 'kick',    p: { start: 150, end: 30, decay: 0.3 } },
   { id: 'snare',   name: 'Snare',    color: '#FFD700', type: 'snare',   p: { tone: 180, noiseDecay: 0.12 } },
@@ -970,7 +788,7 @@ const STEPS = 16;
 // ═══════════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════════
-let grid = [];
+let grid = []; // [row][step] = true/false
 let muted = new Array(INSTRUMENTS.length).fill(false);
 let soloed = new Array(INSTRUMENTS.length).fill(false);
 let bpm = 120;
@@ -982,8 +800,8 @@ let playing = false;
 let currentStep = 0;
 let intervalId = null;
 let audioCtx = null;
-let currentMode = 'sequencer'; // 'sequencer' or 'drumpad'
 
+// Init grid
 INSTRUMENTS.forEach(() => {
   grid.push(new Array(STEPS).fill(false));
 });
@@ -994,6 +812,7 @@ INSTRUMENTS.forEach(() => {
 function initAudio() {
   if (!audioCtx) {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    // Create reverb
     const sampleRate = audioCtx.sampleRate;
     const length = sampleRate * 2;
     const impulse = audioCtx.createBuffer(2, length, sampleRate);
@@ -1005,6 +824,7 @@ function initAudio() {
     }
     reverbNode = audioCtx.createConvolver();
     reverbNode.buffer = impulse;
+    // Low-pass on reverb to tame harsh high end
     const reverbLP = audioCtx.createBiquadFilter();
     reverbLP.type = 'lowpass';
     reverbLP.frequency.value = 2800;
@@ -1021,6 +841,7 @@ function initAudio() {
 }
 
 function getOutput() {
+  // Returns a node to connect sounds to (splits to dry + reverb)
   const merger = audioCtx.createGain();
   merger.connect(dryGain);
   merger.connect(reverbNode);
@@ -1134,16 +955,22 @@ function playSound(inst) {
       break;
     }
     case 'vocal': {
+      // Formant synthesis — creates vowel-like sounds via bandpass-filtered oscillators
       const dur = p.decay || 0.2;
       const pitch = p.pitch || 340;
       const formants = [p.f1 || 800, p.f2 || 1200, p.f3 || 2800];
       const formantQ = [12, 10, 8];
       const formantGain = [0.28, 0.18, 0.08];
       const out = getOutput();
+      
+      // Base oscillator (rich harmonics)
       const osc = audioCtx.createOscillator();
       osc.type = p.wave || 'sawtooth';
       osc.frequency.setValueAtTime(pitch, t);
+      // Slight pitch drop for natural feel
       osc.frequency.exponentialRampToValueAtTime(pitch * 0.97, t + dur);
+      
+      // Route through formant filters
       formants.forEach((freq, i) => {
         const bp = audioCtx.createBiquadFilter();
         bp.type = 'bandpass';
@@ -1155,6 +982,8 @@ function playSound(inst) {
         g.gain.exponentialRampToValueAtTime(0.001, t + dur);
         osc.connect(bp).connect(g).connect(out);
       });
+      
+      // Add breathy noise layer
       const noiseDur = dur * 0.6;
       const nBuf = audioCtx.createBuffer(1, audioCtx.sampleRate * noiseDur, audioCtx.sampleRate);
       const nData = nBuf.getChannelData(0);
@@ -1167,6 +996,7 @@ function playSound(inst) {
       nBp.type = 'bandpass'; nBp.frequency.value = formants[1]; nBp.Q.value = 3;
       nSrc.connect(nBp).connect(nGain).connect(out);
       nSrc.start(t); nSrc.stop(t + noiseDur + 0.01);
+      
       osc.start(t); osc.stop(t + dur + 0.01);
       break;
     }
@@ -1177,13 +1007,18 @@ function playSound(inst) {
 // SEQUENCER
 // ═══════════════════════════════════════════════════
 function getStepInterval() {
+  // 16th notes: (60 / bpm) / 4 * 1000ms
   return (60 / bpm) / 4 * 1000;
 }
 
 function tick() {
+  // Clear previous
   document.querySelectorAll('.step.current').forEach(s => s.classList.remove('current'));
+  
+  // Highlight current column
   document.querySelectorAll(`.step[data-step="${currentStep}"]`).forEach(s => s.classList.add('current'));
   
+  // Play active sounds
   INSTRUMENTS.forEach((inst, row) => {
     const anySolo = soloed.some(s => s);
     const canPlay = anySolo ? soloed[row] && !muted[row] : !muted[row];
@@ -1192,6 +1027,7 @@ function tick() {
     }
   });
   
+  // Advance
   currentStep = (currentStep + 1) % STEPS;
   
   if (playing) {
@@ -1219,6 +1055,7 @@ function stop() {
   pause();
   currentStep = 0;
   document.querySelectorAll('.step.current').forEach(s => s.classList.remove('current'));
+  // reset
 }
 
 // ═══════════════════════════════════════════════════
@@ -1229,6 +1066,7 @@ function buildGrid() {
   const gridEl = document.getElementById('grid');
   const beatNumsEl = document.getElementById('beatNumbers');
   
+  // Beat numbers
   for (let s = 0; s < STEPS; s++) {
     const num = document.createElement('div');
     num.className = `beat-num ${s % 4 === 0 ? 'downbeat' : ''}`;
@@ -1237,6 +1075,7 @@ function buildGrid() {
   }
   
   INSTRUMENTS.forEach((inst, row) => {
+    // Label
     const label = document.createElement('div');
     label.className = 'row-label';
     
@@ -1272,6 +1111,7 @@ function buildGrid() {
     label.appendChild(colorDot);
     labelsEl.appendChild(label);
     
+    // Row
     const rowEl = document.createElement('div');
     rowEl.className = 'grid-row';
     
@@ -1294,6 +1134,7 @@ function buildGrid() {
         initAudio();
         grid[row][s] = !grid[row][s];
         step.classList.toggle('active', grid[row][s]);
+        // Drag mode
         step.dataset.dragMode = grid[row][s] ? 'on' : 'off';
         isDragging = true;
         dragMode = grid[row][s];
@@ -1319,177 +1160,6 @@ let dragMode = false;
 let dragRow = -1;
 
 document.addEventListener('mouseup', () => { isDragging = false; });
-
-// ═══════════════════════════════════════════════════
-// DRUM PAD MODE
-// ═══════════════════════════════════════════════════
-// Keyboard mapping: 4x4 grid
-// Row 1: Q W E R
-// Row 2: A S D F
-// Row 3: Z X C V
-// Row 4: 1 2 3 4
-const PAD_KEYS = [
-  'q', 'w', 'e', 'r',
-  'a', 's', 'd', 'f',
-  'z', 'x', 'c', 'v',
-  '1', '2', '3', '4'
-];
-
-const PAD_KEY_LABELS = [
-  'Q', 'W', 'E', 'R',
-  'A', 'S', 'D', 'F',
-  'Z', 'X', 'C', 'V',
-  '1', '2', '3', '4'
-];
-
-// Map 16 pads: first 12 = instruments, last 4 = empty
-const PAD_MAP = [];
-for (let i = 0; i < 16; i++) {
-  PAD_MAP.push(i < INSTRUMENTS.length ? i : -1);
-}
-
-let padElements = [];
-
-function buildDrumPads() {
-  const container = document.getElementById('drumpadGrid');
-  
-  for (let i = 0; i < 16; i++) {
-    const pad = document.createElement('div');
-    const instIdx = PAD_MAP[i];
-    const inst = instIdx >= 0 ? INSTRUMENTS[instIdx] : null;
-    const color = inst ? inst.color : '#1a1a1a';
-    
-    pad.className = `drum-pad clickable${inst ? '' : ' empty'}`;
-    pad.dataset.padIndex = i;
-    
-    if (inst) {
-      pad.style.borderColor = color;
-      pad.style.boxShadow = `0 0 12px ${color}33, inset 0 0 8px ${color}11`;
-    }
-    
-    // Ripple element
-    const ripple = document.createElement('div');
-    ripple.className = 'pad-ripple';
-    if (inst) ripple.style.background = color;
-    pad.appendChild(ripple);
-    
-    // Name label
-    const nameEl = document.createElement('div');
-    nameEl.className = 'pad-name';
-    nameEl.textContent = inst ? inst.name : '';
-    pad.appendChild(nameEl);
-    
-    // Key label
-    const keyEl = document.createElement('div');
-    keyEl.className = 'pad-key';
-    keyEl.textContent = PAD_KEY_LABELS[i];
-    pad.appendChild(keyEl);
-    
-    // Touch/mouse events
-    if (inst) {
-      const triggerPad = (e) => {
-        e.preventDefault();
-        initAudio();
-        playSound(inst);
-        hitPad(i);
-      };
-      
-      const releasePad = (e) => {
-        e.preventDefault();
-        pad.classList.remove('hit');
-      };
-      
-      pad.addEventListener('mousedown', triggerPad);
-      pad.addEventListener('mouseup', releasePad);
-      pad.addEventListener('mouseleave', releasePad);
-      pad.addEventListener('touchstart', triggerPad, { passive: false });
-      pad.addEventListener('touchend', releasePad, { passive: false });
-      pad.addEventListener('touchcancel', releasePad, { passive: false });
-    }
-    
-    container.appendChild(pad);
-    padElements.push(pad);
-  }
-}
-
-function hitPad(index) {
-  const pad = padElements[index];
-  if (!pad || pad.classList.contains('empty')) return;
-  
-  const instIdx = PAD_MAP[index];
-  const inst = instIdx >= 0 ? INSTRUMENTS[instIdx] : null;
-  if (!inst) return;
-  
-  const color = inst.color;
-  
-  // Hit visual
-  pad.classList.add('hit');
-  pad.style.background = color;
-  pad.style.boxShadow = `0 0 30px ${color}88, 0 0 60px ${color}44, inset 0 0 20px ${color}44`;
-  
-  // Ripple
-  const ripple = pad.querySelector('.pad-ripple');
-  ripple.classList.remove('active');
-  void ripple.offsetWidth;
-  ripple.classList.add('active');
-  
-  // Release after short duration
-  setTimeout(() => {
-    pad.classList.remove('hit');
-    pad.style.background = '#111';
-    pad.style.boxShadow = `0 0 12px ${color}33, inset 0 0 8px ${color}11`;
-  }, 120);
-  
-  setTimeout(() => {
-    ripple.classList.remove('active');
-  }, 350);
-}
-
-// ═══════════════════════════════════════════════════
-// MODE SWITCHING
-// ═══════════════════════════════════════════════════
-function switchMode(mode) {
-  if (mode === currentMode) return;
-  currentMode = mode;
-  
-  const seqView = document.getElementById('sequencerView');
-  const padView = document.getElementById('drumpadView');
-  const seqActions = document.getElementById('seqActions');
-  const groupMutes = document.getElementById('groupMuteRow');
-  const subtitleText = document.getElementById('subtitleText');
-  const modeSeqBtn = document.getElementById('modeSeqBtn');
-  const modePadBtn = document.getElementById('modePadBtn');
-  
-  if (mode === 'sequencer') {
-    seqView.style.display = '';
-    padView.classList.remove('visible');
-    seqActions.style.display = '';
-    groupMutes.style.display = '';
-    subtitleText.textContent = 'Beat maker';
-    modeSeqBtn.classList.add('active');
-    modePadBtn.classList.remove('active');
-  } else {
-    seqView.style.display = 'none';
-    padView.classList.add('visible');
-    seqActions.style.display = 'none';
-    groupMutes.style.display = 'none';
-    subtitleText.textContent = 'Drum pad';
-    modeSeqBtn.classList.remove('active');
-    modePadBtn.classList.add('active');
-    
-    // Entrance animation for pads
-    padElements.forEach((pad, i) => {
-      pad.classList.remove('entered');
-      const row = Math.floor(i / 4);
-      const col = i % 4;
-      const delay = row * 40 + col * 30;
-      setTimeout(() => pad.classList.add('entered'), delay);
-    });
-  }
-}
-
-document.getElementById('modeSeqBtn').addEventListener('click', () => switchMode('sequencer'));
-document.getElementById('modePadBtn').addEventListener('click', () => switchMode('drumpad'));
 
 // ═══════════════════════════════════════════════════
 // PRESETS
@@ -1593,6 +1263,8 @@ function loadPreset(name) {
   updateGridUI();
 }
 
+// kit selector removed — single instrument set
+
 function clearGrid() {
   grid.forEach(row => row.fill(false));
   updateGridUI();
@@ -1625,6 +1297,7 @@ document.getElementById('playBtn').addEventListener('click', () => {
 
 document.getElementById('stopBtn').addEventListener('click', stop);
 
+// Prevent arrow keys from adjusting sliders (reserved for reverb)
 document.querySelectorAll('input[type="range"]').forEach(slider => {
   slider.addEventListener('keydown', (e) => {
     if (e.key.startsWith('Arrow')) { e.preventDefault(); }
@@ -1643,6 +1316,8 @@ document.getElementById('reverbSlider').addEventListener('input', (e) => {
 document.getElementById('clearBtn').addEventListener('click', clearGrid);
 document.getElementById('randomBtn').addEventListener('click', () => { initAudio(); randomize(); });
 
+// kit selector removed
+
 document.getElementById('presetBtn').addEventListener('click', () => {
   initAudio();
   loadPreset(presetNames[presetIndex]);
@@ -1650,7 +1325,8 @@ document.getElementById('presetBtn').addEventListener('click', () => {
   presetIndex = (presetIndex + 1) % presetNames.length;
 });
 
-// Mute All
+// Keyboard: space = play/pause
+// Mute All toggle — lets sounds decay naturally, just stops new triggers
 let allMuted = false;
 function toggleMuteAll() {
   allMuted = !allMuted;
@@ -1728,36 +1404,14 @@ function toggleGroupMute(type) {
 document.getElementById('muteDrumsBtn').addEventListener('click', () => toggleGroupMute('drums'));
 document.getElementById('muteVocalsBtn').addEventListener('click', () => toggleGroupMute('vocals'));
 
-// Track which pad keys are currently held (prevent repeat triggers)
-const padKeysHeld = new Set();
-
 document.addEventListener('keydown', (e) => {
-  // Drum pad keyboard triggering
-  if (currentMode === 'drumpad' && !e.metaKey && !e.ctrlKey && !e.altKey) {
-    const key = e.key.toLowerCase();
-    const padIndex = PAD_KEYS.indexOf(key);
-    if (padIndex >= 0 && PAD_MAP[padIndex] >= 0 && !padKeysHeld.has(key)) {
-      e.preventDefault();
-      padKeysHeld.add(key);
-      initAudio();
-      playSound(INSTRUMENTS[PAD_MAP[padIndex]]);
-      hitPad(padIndex);
-      return;
-    }
-  }
-
   if (e.code === 'Space') { e.preventDefault(); playing ? pause() : play(); }
-  
-  // Only process sequencer-specific shortcuts in sequencer mode
-  if (currentMode === 'sequencer') {
-    if (e.key === 'm' || e.key === 'M') { e.preventDefault(); toggleMuteAll(); }
-    if (e.key === 's' || e.key === 'S') { e.preventDefault(); soloed.fill(false); document.querySelectorAll('.row-solo').forEach(b => b.classList.remove('soloed')); }
-    if (e.key === 'd' || e.key === 'D') { e.preventDefault(); toggleGroupMute('drums'); }
-    if (e.key === 'v' || e.key === 'V') { e.preventDefault(); toggleGroupMute('vocals'); }
-    if ((e.key === 'r' || e.key === 'R') && !e.metaKey && !e.ctrlKey) { e.preventDefault(); setReverb(0, 3.5); updateReverbHud(); setTimeout(hideReverbHud, 3500); }
-  }
-  
-  // Arrow keys for reverb (both modes)
+  if (e.key === 'm' || e.key === 'M') { e.preventDefault(); toggleMuteAll(); }
+  if (e.key === 's' || e.key === 'S') { e.preventDefault(); soloed.fill(false); document.querySelectorAll('.row-solo').forEach(b => b.classList.remove('soloed')); }
+  if (e.key === 'd' || e.key === 'D') { e.preventDefault(); toggleGroupMute('drums'); }
+  if (e.key === 'v' || e.key === 'V') { e.preventDefault(); toggleGroupMute('vocals'); }
+  if ((e.key === 'r' || e.key === 'R') && !e.metaKey && !e.ctrlKey) { e.preventDefault(); setReverb(0, 3.5); updateReverbHud(); setTimeout(hideReverbHud, 3500); }
+  // Arrow keys for reverb
   if ((e.key === 'ArrowUp' || e.key === 'ArrowDown') && !e.repeat) {
     e.preventDefault();
     const dir = e.key === 'ArrowUp' ? 1 : -1;
@@ -1768,10 +1422,6 @@ document.addEventListener('keydown', (e) => {
 });
 
 document.addEventListener('keyup', (e) => {
-  // Release pad key tracking
-  const key = e.key.toLowerCase();
-  padKeysHeld.delete(key);
-  
   if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
     arrowHeld = null;
     clearInterval(arrowReverbInterval);
@@ -1784,6 +1434,7 @@ document.addEventListener('keyup', (e) => {
 // BOOT + LOAD-IN SEQUENCE
 // ═══════════════════════════════════════════════════
 
+// Generate waveform bars
 const waveformEl = document.getElementById('bootWaveform');
 for (let i = 0; i < 16; i++) {
   const bar = document.createElement('div');
@@ -1794,7 +1445,6 @@ for (let i = 0; i < 16; i++) {
 }
 
 buildGrid();
-buildDrumPads();
 loadPreset(presetNames[0]);
 presetIndex = 1;
 
@@ -1803,6 +1453,7 @@ setTimeout(() => {
   const boot = document.getElementById('bootScreen');
   boot.classList.add('fade-out');
   
+  // Start main fade-in while boot is still fading out (overlap)
   const main = document.querySelector('.main');
   setTimeout(() => { main.classList.add('loaded'); }, 300);
   
@@ -1814,6 +1465,7 @@ setTimeout(() => {
     setTimeout(() => {
       document.querySelector('.grid-wrapper').classList.add('loaded');
       
+      // Stagger cells
       const steps = document.querySelectorAll('.step');
       steps.forEach((step, i) => {
         const row = parseInt(step.dataset.row);
@@ -1822,6 +1474,7 @@ setTimeout(() => {
         setTimeout(() => step.classList.add('entered'), delay);
       });
       
+      // Stagger labels
       document.querySelectorAll('.row-label').forEach((label, i) => {
         setTimeout(() => label.classList.add('entered'), i * 40);
       });
@@ -1834,16 +1487,25 @@ setTimeout(() => {
 }, 2000);
 
 // ═══════════════════════════════════════════════════
-// HIT RIPPLE + TRIGGERED BOUNCE
+// HIT RIPPLE + BG PULSE + TRIGGERED BOUNCE
 // ═══════════════════════════════════════════════════
+// bg pulse removed
+
+// Override tick to add visual effects
 const _origTick = tick;
+
+// Patch into the playSound calls in tick — add ripple to active+current cells
 const origTickRef = tick;
 function enhancedTick() {
+  // Call original tick logic inline (we can't wrap easily since tick uses setTimeout)
+  // Instead, observe after tick: add effects to .step.active.current
   requestAnimationFrame(() => {
     document.querySelectorAll('.step.active.current').forEach(step => {
+      // Bounce
       step.classList.add('triggered');
       setTimeout(() => step.classList.remove('triggered'), 200);
       
+      // Ripple — positioned in overlay so it renders above all cells
       const overlay = document.getElementById('rippleOverlay');
       const grid = document.getElementById('grid');
       const ripple = document.createElement('div');
@@ -1859,9 +1521,12 @@ function enhancedTick() {
       overlay.appendChild(ripple);
       setTimeout(() => ripple.remove(), 400);
     });
+    
+    // bg pulse removed
   });
 }
 
+// Monkey-patch: wrap tick
 const _realTick = tick;
 tick = function() {
   _realTick();
@@ -1875,7 +1540,7 @@ document.querySelector('.grid').addEventListener('mousedown', (e) => {
   const step = e.target.closest('.step');
   if (!step) return;
   step.classList.remove('pop');
-  void step.offsetWidth;
+  void step.offsetWidth; // force reflow
   step.classList.add('pop');
   setTimeout(() => step.classList.remove('pop'), 250);
 }, true);
@@ -1891,7 +1556,9 @@ document.querySelector('.grid').addEventListener('mousedown', (e) => {
     opacity: '1', transition: 'opacity 0.4s ease', pointerEvents: 'none'
   });
   document.body.appendChild(overlay);
+  // Fade in on load
   requestAnimationFrame(() => { overlay.style.opacity = '0'; });
+  // Fade out on back navigation (logo click)
   document.querySelector('.header-logo-link').addEventListener('click', function(e) {
     e.preventDefault();
     const href = this.href;
