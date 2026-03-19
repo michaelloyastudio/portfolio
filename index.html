@@ -2364,7 +2364,22 @@ function splashChoose(choice) {
         if (a.textContent.trim() === 'Playground') {
           a.setAttribute('onclick', 'p2ShowWork()');
           var span = a.querySelector('span');
-          if (span) span.textContent = 'Work';
+          if (span) {
+            span.innerHTML = 'Work'.split('').map(function(ch) { return '<span class="nav-letter">' + ch + '</span>'; }).join('');
+          }
+          var letters = a.querySelectorAll('.nav-letter');
+          var waveTimer = null, waveIndex = 0;
+          a.onmouseenter = function() {
+            waveIndex = 0; clearInterval(waveTimer);
+            waveTimer = setInterval(function() {
+              if (waveIndex >= letters.length) { clearInterval(waveTimer); return; }
+              var letter = letters[waveIndex];
+              letter.style.animation = 'none'; letter.offsetHeight;
+              letter.style.animation = 'navWave 0.4s ease forwards';
+              waveIndex++;
+            }, 50);
+          };
+          a.onmouseleave = function() { clearInterval(waveTimer); };
         }
       });
       _p2CreateLabCards();
