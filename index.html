@@ -476,6 +476,56 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     transform: translateY(-90px);
   }
 
+  /* ── SPLASH SCREEN ── */
+  .p2-splash {
+    position: absolute;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    pointer-events: auto;
+  }
+  .p2-splash.hidden {
+    pointer-events: none;
+  }
+  .p2-splash-question {
+    font-family: 'Instrument Serif', serif;
+    font-size: 4rem;
+    font-weight: 400;
+    color: #1a1a1a;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+  }
+  .p2-splash-answers {
+    display: flex;
+    gap: 2.5rem;
+    margin-top: 1.5rem;
+  }
+  .p2-splash-btn {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    background: none;
+    border: none;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    padding: 0.5rem 1rem;
+    color: #8a8580;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .p2-splash-btn .nav-letter {
+    display: inline-block;
+    transition: color 0.3s;
+  }
+  .p2-splash-btn:hover .nav-letter {
+    color: #ff8e3d;
+  }
+
   .p2-nav {
     display: flex;
     gap: 2rem;
@@ -1312,7 +1362,16 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   </div>
   <!-- Floating scene (on top) -->
   <div class="p2-scene" id="p2Scene">
-    <div class="p2-title">
+    <!-- Splash chooser -->
+    <div class="p2-splash" id="p2Splash">
+      <div class="p2-splash-question" id="p2SplashQ">Got a minute?</div>
+      <div class="p2-splash-answers">
+        <button class="p2-splash-btn btn-no" id="splashNo" onclick="splashChoose('work')">No</button>
+        <button class="p2-splash-btn btn-yes" id="splashYes" onclick="splashChoose('apps')">Yes</button>
+      </div>
+    </div>
+    <!-- Main title (hidden during splash) -->
+    <div class="p2-title" style="display:none;">
       <span class="p2-title-mask">
         <span class="p2-title-slider" id="p2TitleSlider">
           <span class="p2-title-line"><img src="logo.svg" class="p2-logo" style="height:54px;width:auto;margin-right:0.6rem;">Michael Loya&nbsp;<span style="color:#8a8580">Studio</span></span>
@@ -1321,7 +1380,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
       </span>
       <div class="p2-nav">
         <a onclick="p2ShowAbout()"><span>About</span></a>
-        <a onclick="p2ShowInteractive()"><span>Interactive</span></a>
+        <a onclick="p2ShowInteractive()"><span>Playground</span></a>
         <a onclick="p2ShowContact()"><span>Contact</span></a>
       </div>
     </div>
@@ -1343,8 +1402,8 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
 <script>
 const projects = [
   {
-    title: "Sound & Vision",
-    overlayTitle: "Sound<br>& Vision",
+    title: "Music Visuals",
+    overlayTitle: "Music<br>Visuals",
     category: "Cover Art / Motion / Music",
     tools: "Illustrator, Photoshop, After Effects, Blender, AI",
     year: "2023–Present",
@@ -1626,17 +1685,15 @@ function p2ShowInteractive() {
     document.getElementById('p2Scene').classList.add('dark-mode-scene');
     document.body.style.cursor = "url('interactive/cursor.svg') 16 8, default";
     document.getElementById('p2Scene').style.cursor = "url('interactive/cursor.svg') 16 8, default";
-    document.querySelector('.p2-title img').src = 'logo-cream.svg';
-
-    // Swap title to "Interactive Lab"
+    // Swap title to "The Playground"
     var titleLine = document.querySelector('.p2-title-line');
-    if (titleLine) titleLine.innerHTML = '<img src="logo-cream.svg" class="p2-logo" style="height:54px;width:auto;margin-right:0.6rem;">Interactive\u00a0<span style="color:#8a8580">Lab</span>';
+    if (titleLine) titleLine.innerHTML = 'The Playground';
 
-    // Change nav text: "Interactive" → "Work"
+    // Change nav text: "Playground" → "Work"
     var navLinks = document.querySelectorAll('.p2-nav a');
     navLinks.forEach(a => {
       var text = a.textContent.trim();
-      if (text === 'Interactive') {
+      if (text === 'Playground') {
         a.setAttribute('onclick', 'p2ShowWork()');
         var span = a.querySelector('span');
         if (span) {
@@ -1780,7 +1837,7 @@ function p2ShowWork() {
     var mask = document.querySelector('.p2-title-mask');
     if (mask) mask.classList.remove('slid');
 
-    // Change nav text: "Work" → "Interactive"
+    // Change nav text: "Work" → "Playground"
     var navLinks = document.querySelectorAll('.p2-nav a');
     navLinks.forEach(function(a) {
       var text = a.textContent.trim();
@@ -1788,7 +1845,7 @@ function p2ShowWork() {
         a.setAttribute('onclick', 'p2ShowInteractive()');
         var span = a.querySelector('span');
         if (span) {
-          span.innerHTML = 'Interactive'.split('').map(function(ch) { return '<span class="nav-letter">' + ch + '</span>'; }).join('');
+          span.innerHTML = 'Playground'.split('').map(function(ch) { return '<span class="nav-letter">' + ch + '</span>'; }).join('');
         }
         var letters = a.querySelectorAll('.nav-letter');
         var waveTimer = null, waveIndex = 0;
@@ -2226,10 +2283,105 @@ function initSongPlayer() {
 }
 
 /* ── P2: FLOATING PORTFOLIO — AUTO-INIT ── */
+// ═══════════════════════════════════════════════════
+// SPLASH SCREEN
+// ═══════════════════════════════════════════════════
+var _splashActive = true;
+var _splashChoice = null;
+
+(function initSplash() {
+  const q = document.getElementById('p2SplashQ');
+  const no = document.getElementById('splashNo');
+  const yes = document.getElementById('splashYes');
+
+  // Split button text into letters for wave animation
+  [no, yes].forEach(btn => {
+    const text = btn.textContent;
+    btn.innerHTML = text.split('').map(ch =>
+      ch === ' ' ? ' ' : '<span class="nav-letter">' + ch + '</span>'
+    ).join('');
+
+    let waveTimer = null, waveIndex = 0;
+    const letters = btn.querySelectorAll('.nav-letter');
+    btn.addEventListener('mouseenter', () => {
+      waveIndex = 0; clearInterval(waveTimer);
+      waveTimer = setInterval(() => {
+        if (waveIndex >= letters.length) { clearInterval(waveTimer); return; }
+        const letter = letters[waveIndex];
+        letter.style.animation = 'none'; letter.offsetHeight;
+        letter.style.animation = 'navWave 0.4s ease forwards';
+        waveIndex++;
+      }, 50);
+    });
+    btn.addEventListener('mouseleave', () => { clearInterval(waveTimer); });
+  });
+
+  setTimeout(() => { q.style.opacity = '1'; }, 300);
+  setTimeout(() => { no.style.opacity = '1'; }, 1000);
+  setTimeout(() => { yes.style.opacity = '1'; }, 1200);
+})();
+
+function splashChoose(choice) {
+  if (!_splashActive) return;
+  _splashActive = false;
+  _splashChoice = choice;
+
+  const splash = document.getElementById('p2Splash');
+  const q = document.getElementById('p2SplashQ');
+  const no = document.getElementById('splashNo');
+  const yes = document.getElementById('splashYes');
+
+  // Fade everything out
+  q.style.transition = 'opacity 0.4s ease';
+  no.style.transition = 'opacity 0.3s ease';
+  yes.style.transition = 'opacity 0.3s ease';
+  q.style.opacity = '0';
+  no.style.opacity = '0';
+  yes.style.opacity = '0';
+
+  setTimeout(() => {
+    splash.classList.add('hidden');
+    splash.style.display = 'none';
+
+    // Show main title + nav
+    const mainTitle = document.querySelector('.p2-title');
+    mainTitle.style.display = '';
+
+    if (choice === 'apps') {
+      // Init items but keep them hidden, go straight to interactive
+      initP2({ skipFloatIn: true });
+      // Hide work items immediately, enter interactive mode directly
+      window.p2Items.forEach(item => { item.el.style.display = 'none'; });
+      _p2InteractiveMode = true;
+      document.getElementById('p2Wrap').classList.add('dark-mode');
+      document.getElementById('p2Scene').classList.add('dark-mode-scene');
+      document.body.style.cursor = "url('interactive/cursor.svg') 16 8, default";
+      document.getElementById('p2Scene').style.cursor = "url('interactive/cursor.svg') 16 8, default";
+      var titleLine = document.querySelector('.p2-title-line');
+      if (titleLine) titleLine.innerHTML = 'The Playground';
+      // Swap nav
+      var navLinks = document.querySelectorAll('.p2-nav a');
+      navLinks.forEach(function(a) {
+        if (a.textContent.trim() === 'Playground') {
+          a.setAttribute('onclick', 'p2ShowWork()');
+          var span = a.querySelector('span');
+          if (span) span.textContent = 'Work';
+        }
+      });
+      _p2CreateLabCards();
+      window._p2ResetStart = performance.now();
+    } else {
+      // Normal work mode
+      initP2();
+    }
+  }, 700);
+}
+
 let p2Initialized = false;
-(function initP2() {
+function initP2(opts) {
   if (p2Initialized) return;
   p2Initialized = true;
+  var skipFloatIn = opts && opts.skipFloatIn;
 
   const scene = document.getElementById('p2Scene');
   const w = window.innerWidth;
@@ -2238,7 +2390,7 @@ let p2Initialized = false;
   window.p2Items = window.p2Items || [];
   const p2Items = window.p2Items;
   const positions = [
-    { x: 0.50, y: 0.16, z: -70,  s: 185 },  // Sound & Vision — FIXED
+    { x: 0.50, y: 0.16, z: -70,  s: 185 },  // Music Visuals — FIXED
     { x: 0.78, y: 0.42, z: -110, s: 170 },  // BODYARMOR — FIXED
     { x: 0.30, y: 0.78, z: -30,  s: 180 },  // University Union — FIXED
     { x: 0.10, y: 0.58, z: -50,  s: 185 },  // AI Song
@@ -2431,7 +2583,7 @@ let p2Initialized = false;
   }
 
   requestAnimationFrame(tick);
-})();
+}
 
 // Split nav links into individual letters for waveform animation
 document.querySelectorAll('.p2-nav a, .resume-link').forEach(link => {

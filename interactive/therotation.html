@@ -720,14 +720,109 @@
     flex: 1;
     overflow-y: auto;
     scrollbar-width: none;
+    padding: 4px 0;
   }
   .playlist-list::-webkit-scrollbar { display: none; }
 
+  /* Current playlist — featured card */
+  .playlist-current {
+    padding: 8px;
+    margin: 0 6px 4px;
+    border-radius: 6px;
+    cursor: url('crosshair.svg') 8 10, pointer;
+    transition: background 0.15s, opacity 0.4s ease, transform 0.4s ease;
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  .playlist-current.loaded {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .playlist-current.selected {
+    background: var(--accent);
+  }
+  .playlist-current-inner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .playlist-current-quad {
+    width: 48px;
+    height: 48px;
+    border-radius: 6px;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 1px;
+    flex-shrink: 0;
+    background: rgba(0,0,0,0.3);
+  }
+  .playlist-current-quad img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .playlist-current-info { flex: 1; min-width: 0; }
+  .playlist-current-label {
+    font-size: 0.55rem;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    opacity: 0.5;
+    margin-bottom: 1px;
+  }
+  .playlist-current.selected .playlist-current-label { opacity: 0.7; }
+  .playlist-current-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #c8c0b8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .playlist-current.selected .playlist-current-name { color: #0a0a0a; }
+  .playlist-current-meta {
+    font-size: 0.6rem;
+    opacity: 0.5;
+    color: #c8c0b8;
+  }
+  .playlist-current.selected .playlist-current-meta { opacity: 0.7; color: #0a0a0a; }
+
+  /* Section divider */
+  .playlist-divider {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px 4px;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+  .playlist-divider.loaded {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .playlist-divider-text {
+    font-size: 0.55rem;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #c8c0b8;
+    opacity: 0.35;
+    white-space: nowrap;
+  }
+  .playlist-divider-line {
+    flex: 1;
+    height: 1px;
+    background: rgba(200,192,184,0.12);
+  }
+
+  /* Past playlist items */
   .playlist-item {
     display: flex;
     align-items: center;
     gap: 10px;
     padding: 6px 8px;
+    margin: 0 4px;
     border-radius: 4px;
     color: #c8c0b8;
     transition: background 0.15s, color 0.15s, opacity 0.4s ease, transform 0.4s ease;
@@ -774,7 +869,7 @@
     font-size: 0.65rem;
     opacity: 0.6;
   }
-  .playlist-item.selected .playlist-item-meta { opacity: 0.8; }
+  .playlist-item.selected .playlist-item-meta { opacity: 0.8; color: #0a0a0a; }
 
   /* ── RESPONSIVE ── */
   @media (max-width: 480px) {
@@ -991,10 +1086,48 @@ function getPlaylist() {
 function renderPlaylists() {
   const list = document.getElementById('playlistList');
   list.innerHTML = '';
-  playlists.forEach((pl, i) => {
+  
+  // Current playlist (index 0) — featured card
+  const current = playlists[0];
+  const currentCovers = current.tracks.slice(0, 4).map(t => t.cover);
+  const currentEl = document.createElement('div');
+  currentEl.className = 'playlist-current' + (selectedPlaylistIndex === 0 ? ' selected' : '');
+  currentEl.dataset.index = 0;
+  currentEl.innerHTML = `
+    <div class="playlist-current-inner">
+      <div class="playlist-current-quad">
+        ${currentCovers.map(c => `<img src="${c}" alt="">`).join('')}
+      </div>
+      <div class="playlist-current-info">
+        <div class="playlist-current-label">Current</div>
+        <div class="playlist-current-name">${current.name}</div>
+        <div class="playlist-current-meta">${current.tracks.length} songs</div>
+      </div>
+    </div>
+  `;
+  currentEl.addEventListener('click', () => {
+    selectedPlaylistIndex = 0;
+    updatePlaylistSelection();
+  });
+  list.appendChild(currentEl);
+  
+  // Divider
+  if (playlists.length > 1) {
+    const divider = document.createElement('div');
+    divider.className = 'playlist-divider';
+    divider.innerHTML = `
+      <span class="playlist-divider-text">Past</span>
+      <div class="playlist-divider-line"></div>
+    `;
+    list.appendChild(divider);
+  }
+  
+  // Past playlists (index 1+)
+  for (let i = 1; i < playlists.length; i++) {
+    const pl = playlists[i];
     const el = document.createElement('div');
     el.className = 'playlist-item' + (i === selectedPlaylistIndex ? ' selected' : '');
-    // Quad cover: first 4 track covers
+    el.dataset.index = i;
     const covers = pl.tracks.slice(0, 4).map(t => t.cover);
     el.innerHTML = `
       <div class="playlist-quad">
@@ -1010,15 +1143,22 @@ function renderPlaylists() {
       updatePlaylistSelection();
     });
     list.appendChild(el);
-  });
+  }
 }
 
 function updatePlaylistSelection() {
+  // Update current card
+  const currentCard = document.querySelector('.playlist-current');
+  if (currentCard) currentCard.classList.toggle('selected', selectedPlaylistIndex === 0);
+  
+  // Update past items
   const items = document.querySelectorAll('.playlist-item');
-  items.forEach((item, i) => {
-    item.classList.toggle('selected', i === selectedPlaylistIndex);
+  items.forEach(item => {
+    const idx = parseInt(item.dataset.index);
+    item.classList.toggle('selected', idx === selectedPlaylistIndex);
   });
-  const selected = document.querySelector('.playlist-item.selected');
+  
+  const selected = document.querySelector('.playlist-current.selected, .playlist-item.selected');
   if (selected) selected.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
 }
 
@@ -1079,16 +1219,18 @@ function showView(view) {
 
 // ── SELECT PLAYLIST & ENTER TRACK LIST ──
 function selectPlaylist(index) {
-  // Stop any current playback
-  if (isPlaying) {
-    audio.pause();
-    isPlaying = false;
+  // Keep current playback going if same playlist
+  if (index !== currentPlaylistIndex) {
+    if (isPlaying) {
+      audio.pause();
+      isPlaying = false;
+    }
+    audio.src = '';
+    currentIndex = 0;
+    selectedIndex = 0;
   }
-  audio.src = '';
 
   currentPlaylistIndex = index;
-  currentIndex = 0;
-  selectedIndex = 0;
   document.getElementById('menuHeaderLabel').textContent = playlists[index].date;
   renderMenu();
   showView('menu');
@@ -1221,7 +1363,7 @@ document.getElementById('btnMenu').addEventListener('click', () => {
   } else if (currentView === 'menu') {
     showView('playlists');
     renderPlaylists();
-    document.querySelectorAll('.playlist-item').forEach(item => item.classList.add('loaded'));
+    animatePlaylistEntrance();
   }
   // playlists view is top level — MENU does nothing
 });
@@ -1309,7 +1451,7 @@ document.addEventListener('keydown', (e) => {
     } else if (currentView === 'menu') {
       showView('playlists');
       renderPlaylists();
-      document.querySelectorAll('.playlist-item').forEach(item => item.classList.add('loaded'));
+      animatePlaylistEntrance();
     }
   }
 });
@@ -1336,6 +1478,19 @@ colors.forEach((c, i) => {
   picker.appendChild(swatch);
 });
 
+// Helper to animate all playlist elements in
+function animatePlaylistEntrance() {
+  const current = document.querySelector('.playlist-current');
+  const divider = document.querySelector('.playlist-divider');
+  const items = document.querySelectorAll('.playlist-item');
+  let delay = 0;
+  if (current) { setTimeout(() => current.classList.add('loaded'), delay); delay += 120; }
+  if (divider) { setTimeout(() => divider.classList.add('loaded'), delay); delay += 80; }
+  items.forEach((item, i) => {
+    setTimeout(() => item.classList.add('loaded'), delay + i * 120);
+  });
+}
+
 // ── BOOT SEQUENCE ──
 renderPlaylists();
 
@@ -1350,11 +1505,8 @@ setTimeout(() => {
     document.querySelector('.header-logo-link').classList.add('loaded');
     document.getElementById('titleRow').classList.add('loaded');
     wheel.classList.remove('locked');
-    // Cascade playlist items in
-    const items = document.querySelectorAll('.playlist-item');
-    items.forEach((item, i) => {
-      setTimeout(() => item.classList.add('loaded'), i * 120);
-    });
+    // Cascade playlist entrance
+    animatePlaylistEntrance();
   }, 400);
 }, 4000);
 
