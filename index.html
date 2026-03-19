@@ -1829,9 +1829,8 @@ function p2ShowWork() {
     document.getElementById('p2Scene').classList.remove('dark-mode-scene');
     document.body.style.cursor = "url('cursor.svg') 16 8, default";
     document.getElementById('p2Scene').style.cursor = '';
-    document.querySelector('.p2-title img').src = 'logo.svg';
 
-    // Restore title to "Michael Loya Studio"
+    // Restore title to "Michael Loya Studio" with logo
     var titleLine = document.querySelector('.p2-title-line');
     if (titleLine) titleLine.innerHTML = '<img src="logo.svg" class="p2-logo" style="height:54px;width:auto;margin-right:0.6rem;">Michael Loya\u00a0<span style="color:#8a8580">Studio</span>';
     var mask = document.querySelector('.p2-title-mask');
