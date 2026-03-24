@@ -3076,7 +3076,7 @@ document.querySelector('.grid').addEventListener('mousedown', (e) => {
   function initTrimPaths(btn, strokeColor, activeClass) {
     const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
     Object.assign(svg.style, {
-      position:'absolute', top:'0', left:'0', pointerEvents:'none', overflow:'visible'
+      position:'absolute', top:'0', left:'0', pointerEvents:'none', overflow:'visible' /* adjusted in measure() */
     });
     const rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
     rect.setAttribute('fill','none');
@@ -3095,9 +3095,13 @@ document.querySelector('.grid').addEventListener('mousedown', (e) => {
     let rafId = null, lastTime = 0;
 
     function measure() {
+      const cs = getComputedStyle(btn);
+      const bw = parseFloat(cs.borderLeftWidth) || 1;
       const w = btn.offsetWidth, h = btn.offsetHeight;
+      svg.style.top = (-bw) + 'px';
+      svg.style.left = (-bw) + 'px';
       svg.setAttribute('width', w); svg.setAttribute('height', h);
-      const rx = parseFloat(getComputedStyle(btn).borderRadius) || 6;
+      const rx = parseFloat(cs.borderRadius) || 6;
       rect.setAttribute('x','0.5'); rect.setAttribute('y','0.5');
       rect.setAttribute('width', w - 1); rect.setAttribute('height', h - 1);
       rect.setAttribute('rx', rx); rect.setAttribute('ry', rx);

@@ -1241,11 +1241,15 @@ document.addEventListener('keydown', e => {
     let lastTime = 0;
 
     function measure() {
+      const cs = getComputedStyle(btn);
+      const bw = parseFloat(cs.borderLeftWidth) || 1;
       const w = btn.offsetWidth;
       const h = btn.offsetHeight;
+      svg.style.top = (-bw) + 'px';
+      svg.style.left = (-bw) + 'px';
       svg.setAttribute('width', w);
       svg.setAttribute('height', h);
-      const rx = parseFloat(getComputedStyle(btn).borderRadius) || 6;
+      const rx = parseFloat(cs.borderRadius) || 6;
       rect.setAttribute('x','0.5'); rect.setAttribute('y','0.5');
       rect.setAttribute('width', w - 1); rect.setAttribute('height', h - 1);
       rect.setAttribute('rx', rx); rect.setAttribute('ry', rx);
