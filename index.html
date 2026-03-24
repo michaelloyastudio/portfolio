@@ -1725,7 +1725,7 @@ function p2ShowInteractive() {
 }
 
 // ── QUEUED TITLE SLIDE ──
-var _p2TitleQueue = null;      // next name to show (or null = hide)
+var _p2TitleQueue = undefined;  // undefined = no pending request, null = slide to default, string = slide to app
 var _p2TitleAnimating = false; // mid-transition
 var _p2TitleCurrent = null;    // currently displayed name (null = default title)
 
@@ -1781,13 +1781,13 @@ function _p2RunTitleSlide(name) {
     _p2TitleCurrent = name;
     _p2TitleAnimating = false;
 
-    // Process queue
-    if (_p2TitleQueue !== undefined && _p2TitleQueue !== name) {
+    // Process queue — only if something was explicitly queued
+    if (_p2TitleQueue !== undefined) {
       var next = _p2TitleQueue;
-      _p2TitleQueue = null;
-      _p2QueueTitleSlide(next);
-    } else {
-      _p2TitleQueue = null;
+      _p2TitleQueue = undefined;
+      if (next !== name) {
+        _p2QueueTitleSlide(next);
+      }
     }
   }
 
