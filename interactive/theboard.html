@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Board — Michael Loya Studio</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { -webkit-tap-highlight-color: transparent; }
+:root {
+  --bg: #0a0a0a;
+  --text: #E8E0D4;
+  --text-muted: #8a8580;
+  --accent: #ff8e3d;
+  --panel: #131313;
+  --card: #161616;
+  --card-border: #1e1e1e;
+}
+a, button, .pad { cursor: url('crosshair.svg') 8 10, pointer !important; }
+html, body { margin: 0; padding: 0; height: 100%; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Space Grotesk', sans-serif;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── HEADER ── */
+.header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3rem 2.5rem;
+  z-index: 100;
+}
+.header-logo-link {
+  position: absolute;
+  left: 50%; transform: translateX(-50%);
+  display: block; height: 32px;
+}
+.header-logo { height: 32px; transition: opacity 0.2s ease; }
+.header-logo-link .logo-hover { position: absolute; top: 0; left: 0; opacity: 0; }
+.header-logo-link:hover .logo-default { opacity: 0; }
+.header-logo-link:hover .logo-hover { opacity: 1; }
+
+/* ── TITLE ── */
+.title-section {
+  text-align: center;
+  padding-top: 8rem;
+  margin-bottom: 2rem;
+}
+.title-section h1 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 3rem;
+  font-weight: 400;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+.title-section p {
+  color: var(--text-muted);
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-top: 0.5rem;
+}
+
+/* ── BOARD GRID ── */
+.board {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 0 2rem 4rem;
+  flex: 1;
+}
+
+/* ── PAD ── */
+.pad {
+  position: relative;
+  aspect-ratio: 1;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: transform 0.1s, border-color 0.2s;
+  overflow: hidden;
+}
+.pad:active {
+  transform: scale(0.95);
+}
+.pad.hit {
+  border-color: var(--accent);
+}
+.pad.hit .pad-ring {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.pad-emoji {
+  font-size: 2rem;
+  line-height: 1;
+  pointer-events: none;
+}
+.pad-label {
+  font-size: 0.55rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  pointer-events: none;
+  text-align: center;
+}
+.pad-key {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  font-size: 0.5rem;
+  color: #333;
+  letter-spacing: 0.05em;
+  pointer-events: none;
+}
+
+/* Hit ripple */
+.pad-ring {
+  position: absolute;
+  inset: -1px;
+  border-radius: 10px;
+  border: 2px solid var(--accent);
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.15s, transform 0.15s;
+  pointer-events: none;
+}
+
+/* Waveform flash */
+.pad-wave {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 40%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.pad.hit .pad-wave { opacity: 0.3; }
+
+/* ── VOLUME ── */
+.volume-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 0 2rem 1.5rem;
+}
+.volume-label {
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.volume-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 120px;
+  height: 3px;
+  background: var(--card-border);
+  border-radius: 2px;
+  outline: none;
+}
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: url('crosshair.svg') 8 10, pointer;
+}
+
+/* ── FOOTER ── */
+.footer {
+  text-align: center;
+  padding: 1.5rem;
+  font-size: 0.55rem;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+.footer.loaded { opacity: 1; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  .board { grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 0 1.2rem 3rem; }
+  .title-section h1 { font-size: 2.2rem; }
+  .title-section { padding-top: 6rem; margin-bottom: 1.5rem; }
+  .pad-emoji { font-size: 1.5rem; }
+  .pad-label { font-size: 0.45rem; }
+  .header { padding: 2rem 1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a href="../index.html" class="header-logo-link">
+    <img src="logo-gray.svg" alt="ML" class="header-logo logo-default">
+    <img src="logo-orange.svg" alt="ML" class="header-logo logo-hover">
+  </a>
+</header>
+
+<div class="title-section">
+  <h1>The Board</h1>
+  <p>Tap a pad · Press a key · Annoy your friends</p>
+</div>
+
+<div class="board" id="board"></div>
+
+<div class="volume-section">
+  <span class="volume-label">Vol</span>
+  <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.01" value="0.8">
+</div>
+
+<div class="footer">Hit something · 16 iconic SFX</div>
+
+<script>
+/* ═══════════════════════════════════════════
+   THE BOARD — Soundboard
+   Real SFX loaded from sounds/ directory
+   ═══════════════════════════════════════════ */
+
+const PADS = [
+  { id: 'bruh',        emoji: '😐', label: 'Bruh',          key: '1' },
+  { id: 'fah',         emoji: '💨', label: 'Sheesh',        key: '2' },
+  { id: 'vine-boom',   emoji: '💥', label: 'Vine Boom',     key: '3' },
+  { id: 'oof',         emoji: '😩', label: 'Oof',           key: '4' },
+  { id: 'rizz',        emoji: '😏', label: 'Rizz',          key: 'Q' },
+  { id: 'airhorn',     emoji: '📯', label: 'Air Horn',      key: 'W' },
+  { id: 'sad-trombone',emoji: '🎺', label: 'Sad Trombone',  key: 'E' },
+  { id: 'fart',        emoji: '💀', label: 'Brap',          key: 'R' },
+  { id: 'metal-pipe',  emoji: '🔧', label: 'Metal Pipe',    key: 'A' },
+  { id: 'bonk',        emoji: '🔨', label: 'Bonk',          key: 'S' },
+  { id: 'sus',         emoji: '📮', label: 'Sus',           key: 'D' },
+  { id: 'wow',         emoji: '🤩', label: 'Wow',           key: 'F' },
+  { id: 'nope',        emoji: '🚫', label: 'Nope',          key: 'Z' },
+  { id: 'cash',        emoji: '💰', label: 'Cash',          key: 'X' },
+  { id: 'yeet',        emoji: '🫳', label: 'Yeet',          key: 'C' },
+  { id: 'goofy-ahh',   emoji: '🤡', label: 'Goofy Ahh',    key: 'V' },
+];
+
+let ctx;
+let masterGain;
+const audioBuffers = {};
+
+function getCtx() {
+  if (!ctx) {
+    ctx = new (window.AudioContext || window.webkitAudioContext)();
+    masterGain = ctx.createGain();
+    masterGain.gain.value = 0.8;
+    masterGain.connect(ctx.destination);
+  }
+  if (ctx.state === 'suspended') ctx.resume();
+  return ctx;
+}
+
+/* ── PRELOAD ALL SOUNDS ── */
+async function preloadSounds() {
+  const c = getCtx();
+  const promises = PADS.map(async (pad) => {
+    try {
+      const resp = await fetch(`sounds/${pad.id}.mp3`);
+      const arrayBuf = await resp.arrayBuffer();
+      audioBuffers[pad.id] = await c.decodeAudioData(arrayBuf);
+    } catch (e) {
+      console.warn(`Failed to load sound: ${pad.id}`, e);
+    }
+  });
+  await Promise.all(promises);
+  console.log(`Loaded ${Object.keys(audioBuffers).length}/${PADS.length} sounds`);
+}
+
+function playSound(id) {
+  const c = getCtx();
+  const buffer = audioBuffers[id];
+  if (!buffer) return;
+  const src = c.createBufferSource();
+  src.buffer = buffer;
+  src.connect(masterGain);
+  src.start();
+}
+
+// Start preloading immediately
+preloadSounds();
+
+/* ── BUILD PADS ── */
+const board = document.getElementById('board');
+const padEls = {};
+
+PADS.forEach(p => {
+  const el = document.createElement('div');
+  el.className = 'pad';
+  el.dataset.id = p.id;
+  el.innerHTML = `
+    <div class="pad-ring"></div>
+    <div class="pad-emoji">${p.emoji}</div>
+    <div class="pad-label">${p.label}</div>
+    <div class="pad-key">${p.key}</div>
+  `;
+
+  el.addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    triggerPad(p.id, el);
+  });
+
+  board.appendChild(el);
+  padEls[p.id] = el;
+});
+
+function triggerPad(id, el) {
+  // Visual hit
+  el.classList.remove('hit');
+  void el.offsetWidth; // force reflow
+  el.classList.add('hit');
+  setTimeout(() => el.classList.remove('hit'), 300);
+
+  // Emoji bounce
+  const emoji = el.querySelector('.pad-emoji');
+  emoji.style.transform = 'scale(1.3)';
+  setTimeout(() => emoji.style.transform = 'scale(1)', 150);
+
+  // Play sound
+  playSound(id);
+}
+
+/* ── KEYBOARD ── */
+const keyMap = {};
+PADS.forEach(p => { keyMap[p.key.toLowerCase()] = p; });
+
+document.addEventListener('keydown', (e) => {
+  if (e.repeat) return;
+  const pad = keyMap[e.key.toLowerCase()];
+  if (pad) {
+    const el = padEls[pad.id];
+    triggerPad(pad.id, el);
+  }
+});
+
+/* ── VOLUME ── */
+document.getElementById('volumeSlider').addEventListener('input', function() {
+  if (masterGain) masterGain.gain.value = parseFloat(this.value);
+});
+
+/* ── FOOTER FADE ── */
+setTimeout(() => document.querySelector('.footer').classList.add('loaded'), 500);
+
+/* ── HEADER CLOSE TAB ── */
+document.querySelector('.header-logo-link').addEventListener('click', function(e) {
+  e.preventDefault();
+  if (window.history.length > 1 && document.referrer) {
+    window.history.back();
+  } else {
+    window.location.href = '../index.html';
+  }
+});
+</script>
+</body>
+</html>
