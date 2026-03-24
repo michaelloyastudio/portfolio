@@ -251,10 +251,10 @@ main.loaded { opacity: 1; transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1)
   border: 1px solid var(--card-border);
   border-radius: 6px;
   color: var(--text-muted);
-  transition: all 0.2s;
+  transition: color 0.2s;
+  position: relative;
 }
 .filter-btn:hover {
-  border-color: var(--text);
   color: var(--text);
 }
 .filter-btn.active {
@@ -1211,6 +1211,146 @@ document.addEventListener('keydown', e => {
     openDetail(filtered[nextIdx].id);
   }
 });
+</script>
+<script>
+/* ── TRIM PATHS HOVER ── */
+(function(){
+  const DURATION = 400;
+  const EASE = t => t < 0.5 ? 2*t*t : -1+(4-2*t)*t; // ease-in-out quad
+
+  function initTrimPaths(btn, strokeColor, activeClass) {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+    Object.assign(svg.style, {
+      position:'absolute', top:'-1px', left:'-1px', pointerEvents:'none', overflow:'visible'
+    });
+    const rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+    rect.setAttribute('fill','none');
+    rect.setAttribute('stroke', strokeColor);
+    rect.setAttribute('stroke-width','1');
+    rect.setAttribute('stroke-linecap','round');
+    rect.setAttribute('stroke-linejoin','round');
+    svg.appendChild(rect);
+    btn.style.position = btn.style.position || 'relative';
+    btn.appendChild(svg);
+
+    let perim = 0;
+    // State machine: 'idle' | 'drawing-in' | 'drawn' | 'drawing-out'
+    let state = 'idle';
+    let progress = 0; // 0 = hidden, 1 = fully drawn
+    let wantsOut = false; // queued exit when draw-in finishes
+    let rafId = null;
+    let lastTime = 0;
+
+    function measure() {
+      const w = btn.offsetWidth + 2;
+      const h = btn.offsetHeight + 2;
+      svg.setAttribute('width', w);
+      svg.setAttribute('height', h);
+      const rx = parseFloat(getComputedStyle(btn).borderRadius) || 6;
+      rect.setAttribute('x','0.5'); rect.setAttribute('y','0.5');
+      rect.setAttribute('width', w - 1); rect.setAttribute('height', h - 1);
+      rect.setAttribute('rx', rx); rect.setAttribute('ry', rx);
+      perim = rect.getTotalLength();
+      // Use dasharray slightly longer than perimeter to close the gap
+      rect.style.strokeDasharray = (perim + 1);
+      applyVisual();
+    }
+
+    function applyVisual() {
+      if (state === 'idle') {
+        rect.style.strokeDashoffset = perim + 1;
+      }
+    }
+
+    function tick(now) {
+      if (!lastTime) { lastTime = now; rafId = requestAnimationFrame(tick); return; }
+      const dt = now - lastTime;
+      lastTime = now;
+      const speed = 1 / DURATION;
+
+      if (state === 'drawing-in') {
+        progress = Math.min(1, progress + speed * dt);
+        rect.style.strokeDashoffset = (perim + 1) * (1 - EASE(progress));
+
+        if (progress >= 1) {
+          // Draw-in complete
+          if (wantsOut) {
+            // User already left — immediately start drawing out
+            wantsOut = false;
+            state = 'drawing-out';
+            progress = 1;
+          } else {
+            state = 'drawn';
+            rafId = null; lastTime = 0;
+            return;
+          }
+        }
+      }
+
+      if (state === 'drawing-out') {
+        progress = Math.max(0, progress - speed * dt);
+        // Forward exit: stroke continues forward off the shape
+        rect.style.strokeDashoffset = -(perim + 1) * (1 - EASE(progress));
+
+        if (progress <= 0) {
+          state = 'idle';
+          rect.style.strokeDashoffset = perim + 1;
+          rafId = null; lastTime = 0;
+          return;
+        }
+      }
+
+      rafId = requestAnimationFrame(tick);
+    }
+
+    function startAnim() {
+      if (!rafId) {
+        lastTime = 0;
+        rafId = requestAnimationFrame(tick);
+      }
+    }
+
+    measure();
+    rect.style.strokeDashoffset = perim + 1;
+    new ResizeObserver(measure).observe(btn);
+
+    btn.addEventListener('mouseenter', function(){
+      if (activeClass && btn.classList.contains(activeClass)) return;
+      wantsOut = false;
+      if (state === 'idle') {
+        state = 'drawing-in';
+        progress = 0;
+        startAnim();
+      } else if (state === 'drawing-out') {
+        // Re-entering while drawing out: let it finish out, then we'll re-draw in on next enter
+        // Actually — just cancel the out and resume drawing in from current progress
+        state = 'drawing-in';
+        // progress is already partially drawn, just continue forward
+        startAnim();
+      } else if (state === 'drawn') {
+        // Already fully drawn, nothing to do
+      }
+      // if drawing-in, just cancel any queued out
+    });
+
+    btn.addEventListener('mouseleave', function(){
+      if (activeClass && btn.classList.contains(activeClass)) return;
+      if (state === 'drawing-in') {
+        // Let draw-in finish, then auto-play draw-out
+        wantsOut = true;
+      } else if (state === 'drawn') {
+        state = 'drawing-out';
+        progress = 1;
+        startAnim();
+      }
+      // if already drawing-out or idle, do nothing
+    });
+  }
+
+  document.querySelectorAll('.filter-btn').forEach(b =>
+    initTrimPaths(b, 'var(--text)', 'active')
+  );
+})();
 </script>
 </body>
 </html>
