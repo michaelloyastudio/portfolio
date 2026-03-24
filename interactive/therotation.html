@@ -145,20 +145,12 @@
     padding: 7px 16px 10px;
     display: flex;
     flex-direction: column;
-    transform: translateX(100%);
-    opacity: 0;
     pointer-events: none;
-    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s ease;
+    visibility: hidden;
   }
   .screen-view.active {
-    transform: translateX(0);
-    opacity: 1;
     pointer-events: all;
-  }
-  .screen-view.exit-right {
-    transform: translateX(100%);
-    opacity: 0;
-    pointer-events: none;
+    visibility: visible;
   }
 
   /* ── MENU VIEW ── */
@@ -919,7 +911,7 @@
     </div>
 
     <!-- Playlists View -->
-    <div class="screen-view" id="playlistsView" style="transform:translateX(0)">
+    <div class="screen-view" id="playlistsView">
       <div class="screen-header">
         <span>Playlists</span>
       </div>
@@ -1212,44 +1204,60 @@ function renderNowPlaying() {
 }
 
 // ── SWITCH VIEW ──
-// View depth: playlists (0) → menu (1) → nowplaying (2)
 const viewDepth = { playlists: 0, menu: 1, nowplaying: 2 };
 const viewEls = { playlists: playlistsView, menu: menuView, nowplaying: npView };
+const SLIDE_DUR = 300;
+const SLIDE_EASE = 'cubic-bezier(0.4, 0, 0.2, 1)';
 
 function showView(view) {
   const oldView = currentView;
+  if (view === oldView) return;
   currentView = view;
-  const goingDeeper = viewDepth[view] > viewDepth[oldView];
 
-  // All three view elements
+  const goingDeeper = viewDepth[view] > viewDepth[oldView];
+  const incoming = viewEls[view];
+  const outgoing = viewEls[oldView];
+
+  // Hide all others
   Object.entries(viewEls).forEach(([name, el]) => {
-    if (name === view) {
-      // Incoming: position off-screen first (right if going deeper, left if going back)
-      el.style.transition = 'none';
-      el.style.transform = goingDeeper ? 'translateX(100%)' : 'translateX(-30%)';
-      el.style.opacity = goingDeeper ? '1' : '0.6';
-      el.offsetWidth; // force reflow
+    if (name !== view && name !== oldView) {
+      el.classList.remove('active');
+      el.style.transform = '';
+      el.style.opacity = '';
       el.style.transition = '';
-      el.classList.add('active');
-      el.classList.remove('exit-right');
-    } else if (name === oldView) {
-      // Outgoing: slide out (right if going back, left if going deeper)
-      el.classList.remove('active');
-      if (!goingDeeper) {
-        // Going back: old view exits to the right
-        el.style.transform = 'translateX(100%)';
-        el.style.opacity = '0';
-      } else {
-        // Going deeper: old view shifts left slightly and fades
-        el.style.transform = 'translateX(-30%)';
-        el.style.opacity = '0';
-      }
-      el.style.pointerEvents = 'none';
-    } else {
-      el.classList.remove('active');
-      el.style.pointerEvents = 'none';
     }
   });
+
+  // Position incoming off-screen (no transition yet)
+  incoming.style.transition = 'none';
+  incoming.style.transform = goingDeeper ? 'translateX(100%)' : 'translateX(-30%)';
+  incoming.style.opacity = goingDeeper ? '1' : '0';
+  incoming.classList.add('active');
+  incoming.offsetWidth; // force reflow
+
+  // Animate outgoing out
+  outgoing.style.transition = `transform ${SLIDE_DUR}ms ${SLIDE_EASE}, opacity ${SLIDE_DUR}ms ease`;
+  if (goingDeeper) {
+    outgoing.style.transform = 'translateX(-30%)';
+    outgoing.style.opacity = '0';
+  } else {
+    outgoing.style.transform = 'translateX(100%)';
+    outgoing.style.opacity = '0';
+  }
+
+  // Animate incoming in
+  incoming.style.transition = `transform ${SLIDE_DUR}ms ${SLIDE_EASE}, opacity ${SLIDE_DUR}ms ease`;
+  incoming.style.transform = 'translateX(0)';
+  incoming.style.opacity = '1';
+
+  // Clean up after animation
+  setTimeout(() => {
+    outgoing.classList.remove('active');
+    outgoing.style.transform = '';
+    outgoing.style.opacity = '';
+    outgoing.style.transition = '';
+    incoming.style.transition = '';
+  }, SLIDE_DUR + 20);
 }
 
 // ── SELECT PLAYLIST & ENTER TRACK LIST ──

@@ -3076,7 +3076,7 @@ document.querySelector('.grid').addEventListener('mousedown', (e) => {
   function initTrimPaths(btn, strokeColor, activeClass) {
     const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
     Object.assign(svg.style, {
-      position:'absolute', top:'-1px', left:'-1px', pointerEvents:'none', overflow:'visible'
+      position:'absolute', top:'0', left:'0', pointerEvents:'none', overflow:'visible'
     });
     const rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
     rect.setAttribute('fill','none');
@@ -3089,13 +3089,13 @@ document.querySelector('.grid').addEventListener('mousedown', (e) => {
     btn.appendChild(svg);
 
     let perim = 0;
-    let state = 'idle'; // 'idle' | 'drawing-in' | 'drawn' | 'drawing-out'
+    let state = 'idle';
     let progress = 0;
     let wantsOut = false;
     let rafId = null, lastTime = 0;
 
     function measure() {
-      const w = btn.offsetWidth + 2, h = btn.offsetHeight + 2;
+      const w = btn.offsetWidth, h = btn.offsetHeight;
       svg.setAttribute('width', w); svg.setAttribute('height', h);
       const rx = parseFloat(getComputedStyle(btn).borderRadius) || 6;
       rect.setAttribute('x','0.5'); rect.setAttribute('y','0.5');
@@ -3148,6 +3148,13 @@ document.querySelector('.grid').addEventListener('mousedown', (e) => {
     rect.style.strokeDashoffset = perim + 1;
     new ResizeObserver(measure).observe(btn);
 
+    function hideStroke() {
+      state = 'idle'; progress = 0; wantsOut = false;
+      if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+      lastTime = 0;
+      rect.style.strokeDashoffset = perim + 1;
+    }
+
     btn.addEventListener('mouseenter', function(){
       if (activeClass && btn.classList.contains(activeClass)) return;
       wantsOut = false;
@@ -3159,6 +3166,14 @@ document.querySelector('.grid').addEventListener('mousedown', (e) => {
       if (state === 'drawing-in') { wantsOut = true; }
       else if (state === 'drawn') { state = 'drawing-out'; progress = 1; startAnim(); }
     });
+    btn.addEventListener('click', function(){
+      if (activeClass) hideStroke();
+    });
+    if (activeClass) {
+      new MutationObserver(function() {
+        if (btn.classList.contains(activeClass)) hideStroke();
+      }).observe(btn, { attributes: true, attributeFilter: ['class'] });
+    }
   }
 
   document.querySelectorAll('.action-btn').forEach(b => initTrimPaths(b, 'var(--text-muted)', null));

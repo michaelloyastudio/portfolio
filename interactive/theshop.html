@@ -1221,7 +1221,7 @@ document.addEventListener('keydown', e => {
   function initTrimPaths(btn, strokeColor, activeClass) {
     const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
     Object.assign(svg.style, {
-      position:'absolute', top:'-1px', left:'-1px', pointerEvents:'none', overflow:'visible'
+      position:'absolute', top:'0', left:'0', pointerEvents:'none', overflow:'visible'
     });
     const rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
     rect.setAttribute('fill','none');
@@ -1234,16 +1234,15 @@ document.addEventListener('keydown', e => {
     btn.appendChild(svg);
 
     let perim = 0;
-    // State machine: 'idle' | 'drawing-in' | 'drawn' | 'drawing-out'
     let state = 'idle';
-    let progress = 0; // 0 = hidden, 1 = fully drawn
-    let wantsOut = false; // queued exit when draw-in finishes
+    let progress = 0;
+    let wantsOut = false;
     let rafId = null;
     let lastTime = 0;
 
     function measure() {
-      const w = btn.offsetWidth + 2;
-      const h = btn.offsetHeight + 2;
+      const w = btn.offsetWidth;
+      const h = btn.offsetHeight;
       svg.setAttribute('width', w);
       svg.setAttribute('height', h);
       const rx = parseFloat(getComputedStyle(btn).borderRadius) || 6;
@@ -1251,15 +1250,8 @@ document.addEventListener('keydown', e => {
       rect.setAttribute('width', w - 1); rect.setAttribute('height', h - 1);
       rect.setAttribute('rx', rx); rect.setAttribute('ry', rx);
       perim = rect.getTotalLength();
-      // Use dasharray slightly longer than perimeter to close the gap
       rect.style.strokeDasharray = (perim + 1);
-      applyVisual();
-    }
-
-    function applyVisual() {
-      if (state === 'idle') {
-        rect.style.strokeDashoffset = perim + 1;
-      }
+      if (state === 'idle') rect.style.strokeDashoffset = perim + 1;
     }
 
     function tick(now) {
@@ -1314,6 +1306,16 @@ document.addEventListener('keydown', e => {
     rect.style.strokeDashoffset = perim + 1;
     new ResizeObserver(measure).observe(btn);
 
+    // Hide stroke immediately when button becomes active
+    function hideStroke() {
+      state = 'idle';
+      progress = 0;
+      wantsOut = false;
+      if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+      lastTime = 0;
+      rect.style.strokeDashoffset = perim + 1;
+    }
+
     btn.addEventListener('mouseenter', function(){
       if (activeClass && btn.classList.contains(activeClass)) return;
       wantsOut = false;
@@ -1322,29 +1324,33 @@ document.addEventListener('keydown', e => {
         progress = 0;
         startAnim();
       } else if (state === 'drawing-out') {
-        // Re-entering while drawing out: let it finish out, then we'll re-draw in on next enter
-        // Actually — just cancel the out and resume drawing in from current progress
         state = 'drawing-in';
-        // progress is already partially drawn, just continue forward
         startAnim();
-      } else if (state === 'drawn') {
-        // Already fully drawn, nothing to do
       }
-      // if drawing-in, just cancel any queued out
     });
 
     btn.addEventListener('mouseleave', function(){
       if (activeClass && btn.classList.contains(activeClass)) return;
       if (state === 'drawing-in') {
-        // Let draw-in finish, then auto-play draw-out
         wantsOut = true;
       } else if (state === 'drawn') {
         state = 'drawing-out';
         progress = 1;
         startAnim();
       }
-      // if already drawing-out or idle, do nothing
     });
+
+    // When clicked (becoming active), kill the stroke instantly
+    btn.addEventListener('click', function(){
+      if (activeClass) hideStroke();
+    });
+
+    // Also observe class changes to hide stroke when active is added externally
+    if (activeClass) {
+      new MutationObserver(function() {
+        if (btn.classList.contains(activeClass)) hideStroke();
+      }).observe(btn, { attributes: true, attributeFilter: ['class'] });
+    }
   }
 
   document.querySelectorAll('.filter-btn').forEach(b =>
