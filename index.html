@@ -1724,6 +1724,76 @@ function p2ShowInteractive() {
   }, 700);
 }
 
+// ── QUEUED TITLE SLIDE ──
+var _p2TitleQueue = null;      // next name to show (or null = hide)
+var _p2TitleAnimating = false; // mid-transition
+var _p2TitleCurrent = null;    // currently displayed name (null = default title)
+
+function _p2QueueTitleSlide(name) {
+  var mask = document.querySelector('.p2-title-mask');
+  var slider = document.getElementById('p2TitleSlider');
+  var appNameEl = document.getElementById('p2AppName');
+  if (!mask || !slider || !appNameEl) return;
+
+  // If we're mid-animation, queue the request
+  if (_p2TitleAnimating) {
+    _p2TitleQueue = name;
+    return;
+  }
+
+  // Same state — nothing to do
+  if (name === _p2TitleCurrent) return;
+
+  // If currently showing an app name and want to show a different one,
+  // first slide back to default, then on completion slide to new name
+  if (_p2TitleCurrent !== null && name !== null) {
+    _p2TitleQueue = name;
+    _p2RunTitleSlide(null);
+    return;
+  }
+
+  _p2RunTitleSlide(name);
+}
+
+function _p2RunTitleSlide(name) {
+  var mask = document.querySelector('.p2-title-mask');
+  var slider = document.getElementById('p2TitleSlider');
+  var appNameEl = document.getElementById('p2AppName');
+
+  _p2TitleAnimating = true;
+
+  if (name !== null) {
+    // Slide to app name
+    appNameEl.textContent = name;
+    mask.classList.add('slid');
+  } else {
+    // Slide back to default
+    mask.classList.remove('slid');
+  }
+
+  function onDone() {
+    slider.removeEventListener('transitionend', onDone);
+    _p2TitleCurrent = name;
+    _p2TitleAnimating = false;
+
+    // Process queue
+    if (_p2TitleQueue !== undefined && _p2TitleQueue !== name) {
+      var next = _p2TitleQueue;
+      _p2TitleQueue = null;
+      _p2QueueTitleSlide(next);
+    } else {
+      _p2TitleQueue = null;
+    }
+  }
+
+  slider.addEventListener('transitionend', onDone);
+
+  // Safety timeout in case transitionend doesn't fire
+  setTimeout(function() {
+    if (_p2TitleAnimating) onDone();
+  }, 500);
+}
+
 function _p2CreateLabCards() {
   var scene = document.getElementById('p2Scene');
   var w = window.innerWidth;
@@ -1768,16 +1838,12 @@ function _p2CreateLabCards() {
         otherItem.el.style.filter = 'blur(0px)';
       });
     });
-    // Slide title mask to show app name on hover
+    // Slide title mask to show app name on hover (queued transitions)
     el.addEventListener('mouseenter', function() {
-      var appNameEl = document.getElementById('p2AppName');
-      var mask = document.querySelector('.p2-title-mask');
-      if (appNameEl) appNameEl.textContent = app.name;
-      if (mask) mask.classList.add('slid');
+      _p2QueueTitleSlide(app.name);
     });
     el.addEventListener('mouseleave', function() {
-      var mask = document.querySelector('.p2-title-mask');
-      if (mask) mask.classList.remove('slid');
+      _p2QueueTitleSlide(null);
     });
     el.addEventListener('click', function() {
       var overlay = document.getElementById('pageTransition');
