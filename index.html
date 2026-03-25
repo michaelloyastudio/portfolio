@@ -457,7 +457,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   .p2-title-mask {
     display: block;
     position: relative;
-    height: 90px;
+    height: 100px;
     overflow: hidden;
     clip-path: inset(0);
     -webkit-clip-path: inset(0);
@@ -471,10 +471,10 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     align-items: center;
     justify-content: center;
     white-space: nowrap;
-    height: 90px;
+    height: 100px;
   }
   .p2-title-mask.slid .p2-title-slider {
-    transform: translateY(-90px);
+    transform: translateY(-100px);
   }
 
   /* ── SPLASH SCREEN ── */
@@ -1371,7 +1371,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     <div class="p2-title" style="display:none;">
       <span class="p2-title-mask">
         <span class="p2-title-slider" id="p2TitleSlider">
-          <span class="p2-title-line"><img src="logo-wordmark.svg" class="p2-logo" style="height:54px;width:auto;"></span>
+          <span class="p2-title-line"><img src="logo-wordmark.svg" class="p2-logo" style="height:80px;width:auto;"></span>
           <span class="p2-title-line p2-app-name" id="p2AppName"></span>
         </span>
       </span>
@@ -1900,7 +1900,7 @@ function p2ShowWork() {
 
     // Restore title to logo+wordmark SVG
     var titleLine = document.querySelector('.p2-title-line');
-    if (titleLine) titleLine.innerHTML = '<img src="logo-wordmark.svg" class="p2-logo" style="height:54px;width:auto;">';
+    if (titleLine) titleLine.innerHTML = '<img src="logo-wordmark.svg" class="p2-logo" style="height:80px;width:auto;">';
     var mask = document.querySelector('.p2-title-mask');
     if (mask) mask.classList.remove('slid');
 
