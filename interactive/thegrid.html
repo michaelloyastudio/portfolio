@@ -1316,9 +1316,7 @@ h1, h2, h3 { font-family: 'din-2014-rounded-variable', sans-serif; word-spacing:
     <button class="action-btn clickable" id="clearBtn">Clear All</button>
     <button class="action-btn clickable" id="randomBtn">Random</button>
     <button class="action-btn clickable" id="presetBtn">Preset: Boom Bap</button>
-    <span class="action-divider" style="width:1px;height:16px;background:#333;margin:0 4px;"></span>
-    <button class="action-btn clickable" id="saveBtn">Save</button>
-    <button class="action-btn clickable" id="loadBtn">Load</button>
+
   </div>
 </div>
 
@@ -2730,103 +2728,6 @@ document.getElementById('presetBtn').addEventListener('click', () => {
   document.getElementById('presetBtn').textContent = `Preset: ${presetNames[presetIndex]}`;
   presetIndex = (presetIndex + 1) % presetNames.length;
 });
-
-// SAVE / LOAD (localStorage, survives refresh)
-const SAVE_KEY = 'thegrid_songs';
-
-function getSaves() {
-  try { return JSON.parse(localStorage.getItem(SAVE_KEY)) || []; }
-  catch { return []; }
-}
-
-function saveSong() {
-  const saves = getSaves();
-  const name = prompt('Name this beat:', 'Beat ' + (saves.length + 1));
-  if (!name) return;
-  saves.push({
-    name,
-    bpm,
-    steps: STEPS,
-    grid: grid.map(r => [...r]),
-    muted: [...muted],
-    soloed: [...soloed],
-    loops: loops.map(l => ({ state: l.state, hits: l.hits, muted: l.muted, soloed: l.soloed })),
-    timestamp: Date.now()
-  });
-  localStorage.setItem(SAVE_KEY, JSON.stringify(saves));
-  document.getElementById('saveBtn').textContent = '✓ Saved';
-  setTimeout(() => document.getElementById('saveBtn').textContent = 'Save', 1500);
-}
-
-function loadSong() {
-  const saves = getSaves();
-  if (saves.length === 0) { alert('No saved beats yet!'); return; }
-  const list = saves.map((s, i) => `${i + 1}. ${s.name} (${s.bpm} BPM, ${s.steps} steps)`).join('\n');
-  const choice = prompt('Pick a beat to load:\n\n' + list + '\n\nOr type "delete [number]" to remove one.');
-  if (!choice) return;
-
-  if (choice.toLowerCase().startsWith('delete')) {
-    const idx = parseInt(choice.split(/\s+/)[1]) - 1;
-    if (idx >= 0 && idx < saves.length) {
-      saves.splice(idx, 1);
-      localStorage.setItem(SAVE_KEY, JSON.stringify(saves));
-      alert('Deleted.');
-    }
-    return;
-  }
-
-  const idx = parseInt(choice) - 1;
-  if (idx < 0 || idx >= saves.length) return;
-  const save = saves[idx];
-
-  // Restore BPM
-  bpm = save.bpm || 120;
-  document.getElementById('bpmSlider').value = bpm;
-  document.getElementById('bpmValue').textContent = bpm;
-
-  // Restore steps
-  if (save.steps !== STEPS) toggleSteps();
-
-  // Restore grid
-  save.grid.forEach((row, r) => {
-    if (r < grid.length) {
-      for (let s = 0; s < STEPS; s++) grid[r][s] = !!row[s];
-    }
-  });
-
-  // Restore mutes/solos
-  if (save.muted) save.muted.forEach((m, i) => { if (i < muted.length) muted[i] = m; });
-  if (save.soloed) save.soloed.forEach((s, i) => { if (i < soloed.length) soloed[i] = s; });
-
-  // Restore loop data
-  if (save.loops) {
-    save.loops.forEach((sl, i) => {
-      if (i < loops.length) {
-        loops[i].hits = sl.hits || [];
-        loops[i].muted = !!sl.muted;
-        loops[i].soloed = !!sl.soloed;
-        loops[i].muteBtn.classList.toggle('active', loops[i].muted);
-        loops[i].soloBtn.classList.toggle('active', loops[i].soloed);
-        if (sl.hits && sl.hits.length > 0) {
-          loops[i].state = 'has-data';
-          loops[i].el.className = 'loop-circle clickable has-data';
-        } else {
-          loops[i].state = 'idle';
-          loops[i].el.className = 'loop-circle clickable';
-        }
-      }
-    });
-  }
-
-  updateGridUI();
-  document.querySelectorAll('.row-mute').forEach((b, i) => b.classList.toggle('muted', muted[i]));
-  document.querySelectorAll('.row-solo').forEach((b, i) => b.classList.toggle('soloed', soloed[i]));
-  document.getElementById('loadBtn').textContent = '✓ Loaded';
-  setTimeout(() => document.getElementById('loadBtn').textContent = 'Load', 1500);
-}
-
-document.getElementById('saveBtn').addEventListener('click', saveSong);
-document.getElementById('loadBtn').addEventListener('click', loadSong);
 
 // Mute All
 let allMuted = false;
