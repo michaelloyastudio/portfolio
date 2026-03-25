@@ -3195,20 +3195,14 @@ document.querySelector('.grid').addEventListener('mousedown', (e) => {
     });
     btn.addEventListener('mouseleave', function(){
       if (activeClass && btn.classList.contains(activeClass)) return;
-      // Fade out AND draw out simultaneously
       [pathCW, pathCCW].forEach(p => { p.style.opacity = '0'; });
-      if (state === 'drawing-in') { wantsOut = true; }
-      else if (state === 'drawn') { state = 'drawing-out'; progress = 1; startAnim(); }
-      // Reset after fade completes
       setTimeout(function() {
-        if (state === 'idle' || state === 'drawing-out') {
-          state = 'idle'; progress = 0;
-          if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
-          lastTime = 0;
-          pathCW.style.strokeDashoffset = halfPerim + 1;
-          pathCCW.style.strokeDashoffset = halfPerim + 1;
-        }
-      }, 300);
+        state = 'idle'; progress = 0; wantsOut = false;
+        if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+        lastTime = 0;
+        pathCW.style.strokeDashoffset = halfPerim + 1;
+        pathCCW.style.strokeDashoffset = halfPerim + 1;
+      }, 500);
     });
     btn.addEventListener('click', function(){
       if (activeClass) hideStroke();
