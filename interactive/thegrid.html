@@ -1396,332 +1396,149 @@ function playSound(inst) {
 
   switch (inst.type) {
     case 'kick': {
-      // Layer 1: Sub oscillator with pitch sweep
-      const sub = audioCtx.createOscillator();
-      const subG = audioCtx.createGain();
-      sub.type = 'sine';
-      const startF = p.start || 150;
-      const endF = p.end || 30;
-      const decay = p.decay || 0.3;
-      sub.frequency.setValueAtTime(startF, t);
-      sub.frequency.exponentialRampToValueAtTime(startF * 0.6, t + 0.015);
-      sub.frequency.exponentialRampToValueAtTime(endF, t + 0.1);
-      subG.gain.setValueAtTime(1.0, t);
-      subG.gain.setValueAtTime(0.9, t + 0.01);
-      subG.gain.exponentialRampToValueAtTime(0.001, t + decay);
-      
-      // Layer 2: Click transient
-      const click = audioCtx.createOscillator();
-      const clickG = audioCtx.createGain();
-      click.type = 'square';
-      click.frequency.setValueAtTime(startF * 6, t);
-      click.frequency.exponentialRampToValueAtTime(startF, t + 0.005);
-      clickG.gain.setValueAtTime(0.6, t);
-      clickG.gain.exponentialRampToValueAtTime(0.001, t + 0.015);
-      
-      // Layer 3: Body harmonics
-      const body = audioCtx.createOscillator();
-      const bodyG = audioCtx.createGain();
-      body.type = 'triangle';
-      body.frequency.setValueAtTime(startF * 1.5, t);
-      body.frequency.exponentialRampToValueAtTime(endF * 1.2, t + 0.08);
-      bodyG.gain.setValueAtTime(0.3, t);
-      bodyG.gain.exponentialRampToValueAtTime(0.001, t + decay * 0.6);
-      
-      // Compressor for punch
-      const comp = audioCtx.createDynamicsCompressor();
-      comp.threshold.value = -12; comp.ratio.value = 8; comp.attack.value = 0.001; comp.release.value = 0.05;
-      
-      sub.connect(subG).connect(comp);
-      click.connect(clickG).connect(comp);
-      body.connect(bodyG).connect(comp);
-      comp.connect(out);
-      
-      sub.start(t); sub.stop(t + decay + 0.01);
-      click.start(t); click.stop(t + 0.02);
-      body.start(t); body.stop(t + decay * 0.6 + 0.01);
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(p.start || 150, t);
+      osc.frequency.exponentialRampToValueAtTime(p.end || 30, t + 0.12);
+      gain.gain.setValueAtTime(0.8, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + (p.decay || 0.3));
+      osc.connect(gain).connect(getOutput());
+      osc.start(t); osc.stop(t + (p.decay || 0.3) + 0.01);
       break;
     }
     case 'snare': {
-      const decay = p.noiseDecay || 0.15;
-      const tone = p.tone || 180;
-      
-      // Layer 1: Body — two detuned oscillators
-      const osc1 = audioCtx.createOscillator();
-      const osc2 = audioCtx.createOscillator();
-      const bodyG = audioCtx.createGain();
-      osc1.type = 'triangle'; osc1.frequency.value = tone;
-      osc2.type = 'sine'; osc2.frequency.value = tone * 1.5;
-      bodyG.gain.setValueAtTime(0.5, t);
-      bodyG.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
-      osc1.connect(bodyG); osc2.connect(bodyG);
-      
-      // Layer 2: Noise with bandpass shaping
-      const nBuf = makeNoise(decay);
-      const noise = audioCtx.createBufferSource(); noise.buffer = nBuf;
-      const noiseG = audioCtx.createGain();
-      noiseG.gain.setValueAtTime(0.55, t);
-      noiseG.gain.linearRampToValueAtTime(0.3, t + 0.02);
-      noiseG.gain.exponentialRampToValueAtTime(0.001, t + decay);
-      const hp = audioCtx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 800; hp.Q.value = 0.5;
-      const peak = audioCtx.createBiquadFilter(); peak.type = 'peaking'; peak.frequency.value = 3500; peak.Q.value = 1.5; peak.gain.value = 4;
-      
-      // Layer 3: Transient snap
-      const snap = audioCtx.createOscillator();
-      const snapG = audioCtx.createGain();
-      snap.type = 'square'; snap.frequency.setValueAtTime(tone * 8, t); snap.frequency.exponentialRampToValueAtTime(tone * 2, t + 0.005);
-      snapG.gain.setValueAtTime(0.3, t); snapG.gain.exponentialRampToValueAtTime(0.001, t + 0.01);
-      
-      bodyG.connect(out);
-      noise.connect(hp).connect(peak).connect(noiseG).connect(out);
-      snap.connect(snapG).connect(out);
-      
-      osc1.start(t); osc1.stop(t + 0.11);
-      osc2.start(t); osc2.stop(t + 0.11);
-      noise.start(t); noise.stop(t + decay + 0.01);
-      snap.start(t); snap.stop(t + 0.015);
+      const dur = p.noiseDecay || 0.12;
+      const buf = audioCtx.createBuffer(1, audioCtx.sampleRate * dur, audioCtx.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+      const noise = audioCtx.createBufferSource(); noise.buffer = buf;
+      const ng = audioCtx.createGain();
+      ng.gain.setValueAtTime(0.5, t); ng.gain.exponentialRampToValueAtTime(0.001, t + dur);
+      const hp = audioCtx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 1000;
+      noise.connect(hp).connect(ng).connect(getOutput());
+      noise.start(t); noise.stop(t + dur + 0.01);
+      const osc = audioCtx.createOscillator(); const og = audioCtx.createGain();
+      osc.type = 'triangle'; osc.frequency.value = p.tone || 180;
+      og.gain.setValueAtTime(0.4, t); og.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
+      osc.connect(og).connect(getOutput());
+      osc.start(t); osc.stop(t + 0.09);
       break;
     }
     case 'hihat': {
       const dur = p.decay || 0.04;
-      const hpFreq = p.hp || 7000;
-      
-      // Metallic oscillators (square waves at non-harmonic ratios for realism)
-      const freqs = [587, 845, 1303, 1508, 2109, 3244];
-      const metalG = audioCtx.createGain();
-      metalG.gain.setValueAtTime(0.12, t);
-      metalG.gain.exponentialRampToValueAtTime(0.001, t + dur);
-      freqs.forEach(f => {
-        const osc = audioCtx.createOscillator();
-        osc.type = 'square'; osc.frequency.value = f;
-        osc.connect(metalG);
-        osc.start(t); osc.stop(t + dur + 0.01);
-      });
-      
-      // Noise layer
-      const nBuf = makeNoise(dur);
-      const noise = audioCtx.createBufferSource(); noise.buffer = nBuf;
-      const noiseG = audioCtx.createGain();
-      noiseG.gain.setValueAtTime(0.25, t);
-      noiseG.gain.exponentialRampToValueAtTime(0.001, t + dur);
-      
-      const hp = audioCtx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = hpFreq; hp.Q.value = 1;
-      const lp = audioCtx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 14000;
-      
-      const mix = audioCtx.createGain();
-      metalG.connect(mix); noise.connect(mix);
-      mix.connect(hp).connect(lp).connect(noiseG).connect(out);
-      
-      noise.start(t); noise.stop(t + dur + 0.01);
+      const buf = audioCtx.createBuffer(1, audioCtx.sampleRate * dur, audioCtx.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+      const src = audioCtx.createBufferSource(); src.buffer = buf;
+      const gain = audioCtx.createGain();
+      gain.gain.setValueAtTime(0.3, t); gain.gain.exponentialRampToValueAtTime(0.001, t + dur);
+      const hp = audioCtx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = p.hp || 7000;
+      src.connect(hp).connect(gain).connect(getOutput());
+      src.start(t); src.stop(t + dur + 0.01);
       break;
     }
     case 'openhat': {
-      const dur = p.decay || 0.25;
-      const hpFreq = p.hp || 6000;
-      
-      // Layered metallic oscillators
-      const freqs = [587, 845, 1303, 1508, 2109, 3244];
-      const metalG = audioCtx.createGain();
-      metalG.gain.setValueAtTime(0.1, t);
-      metalG.gain.setValueAtTime(0.1, t + dur * 0.3);
-      metalG.gain.exponentialRampToValueAtTime(0.001, t + dur);
-      freqs.forEach(f => {
-        const osc = audioCtx.createOscillator();
-        osc.type = 'square'; osc.frequency.value = f;
-        osc.connect(metalG);
-        osc.start(t); osc.stop(t + dur + 0.01);
-      });
-      
-      // Sustained noise
-      const nBuf = makeNoise(dur);
-      const noise = audioCtx.createBufferSource(); noise.buffer = nBuf;
-      const noiseG = audioCtx.createGain();
-      noiseG.gain.setValueAtTime(0.22, t);
-      noiseG.gain.setValueAtTime(0.18, t + dur * 0.2);
-      noiseG.gain.exponentialRampToValueAtTime(0.001, t + dur);
-      
-      const hp = audioCtx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = hpFreq;
-      const peak = audioCtx.createBiquadFilter(); peak.type = 'peaking'; peak.frequency.value = 10000; peak.Q.value = 2; peak.gain.value = 3;
-      
-      const mix = audioCtx.createGain();
-      metalG.connect(mix); noise.connect(mix);
-      mix.connect(hp).connect(peak).connect(noiseG).connect(out);
-      
-      noise.start(t); noise.stop(t + dur + 0.02);
+      const dur = p.decay || 0.2;
+      const buf = audioCtx.createBuffer(1, audioCtx.sampleRate * dur, audioCtx.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+      const src = audioCtx.createBufferSource(); src.buffer = buf;
+      const gain = audioCtx.createGain();
+      gain.gain.setValueAtTime(0.25, t); gain.gain.exponentialRampToValueAtTime(0.001, t + dur);
+      const hp = audioCtx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = p.hp || 6000;
+      src.connect(hp).connect(gain).connect(getOutput());
+      src.start(t); src.stop(t + dur + 0.02);
       break;
     }
     case 'clap': {
-      // Multiple layered bursts with reverb tail
-      const layers = 5;
-      for (let n = 0; n < layers; n++) {
-        const off = n * 0.008 + Math.random() * 0.004;
-        const nBuf = makeNoise(0.025);
-        const src = audioCtx.createBufferSource(); src.buffer = nBuf;
-        const g = audioCtx.createGain();
-        g.gain.setValueAtTime(0.35 * (1 - n * 0.08), t + off);
-        g.gain.exponentialRampToValueAtTime(0.001, t + off + 0.03);
-        const bp = audioCtx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 1500 + n * 200; bp.Q.value = 1.5;
-        src.connect(bp).connect(g).connect(out);
+      for (let n = 0; n < 3; n++) {
+        const buf = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.02, audioCtx.sampleRate);
+        const data = buf.getChannelData(0);
+        for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+        const src = audioCtx.createBufferSource(); src.buffer = buf;
+        const gain = audioCtx.createGain(); const off = n * 0.012;
+        gain.gain.setValueAtTime(0.4, t + off); gain.gain.exponentialRampToValueAtTime(0.001, t + off + 0.03);
+        const bp = audioCtx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 2000;
+        src.connect(bp).connect(gain).connect(getOutput());
         src.start(t + off); src.stop(t + off + 0.04);
       }
-      // Tail
-      const tailBuf = makeNoise(0.15);
-      const tail = audioCtx.createBufferSource(); tail.buffer = tailBuf;
-      const tailG = audioCtx.createGain();
-      tailG.gain.setValueAtTime(0.15, t + 0.04);
-      tailG.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
-      const tailBp = audioCtx.createBiquadFilter(); tailBp.type = 'bandpass'; tailBp.frequency.value = 2200; tailBp.Q.value = 0.8;
-      tail.connect(tailBp).connect(tailG).connect(out);
-      tail.start(t + 0.03); tail.stop(t + 0.2);
       break;
     }
     case 'tom': {
-      const startF = p.start || 200;
-      const endF = p.end || 80;
-      const decay = p.decay || 0.2;
-      
-      // Fundamental
-      const osc = audioCtx.createOscillator();
-      const oscG = audioCtx.createGain();
+      const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(startF, t);
-      osc.frequency.exponentialRampToValueAtTime(endF, t + decay * 0.4);
-      oscG.gain.setValueAtTime(0.6, t);
-      oscG.gain.exponentialRampToValueAtTime(0.001, t + decay);
-      
-      // Harmonic
-      const osc2 = audioCtx.createOscillator();
-      const osc2G = audioCtx.createGain();
-      osc2.type = 'triangle';
-      osc2.frequency.setValueAtTime(startF * 1.6, t);
-      osc2.frequency.exponentialRampToValueAtTime(endF * 1.4, t + decay * 0.3);
-      osc2G.gain.setValueAtTime(0.2, t);
-      osc2G.gain.exponentialRampToValueAtTime(0.001, t + decay * 0.5);
-      
-      // Attack noise
-      const nBuf = makeNoise(0.02);
-      const noise = audioCtx.createBufferSource(); noise.buffer = nBuf;
-      const nG = audioCtx.createGain();
-      nG.gain.setValueAtTime(0.2, t);
-      nG.gain.exponentialRampToValueAtTime(0.001, t + 0.02);
-      const bp = audioCtx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = startF * 3; bp.Q.value = 1;
-      
-      osc.connect(oscG).connect(out);
-      osc2.connect(osc2G).connect(out);
-      noise.connect(bp).connect(nG).connect(out);
-      
-      osc.start(t); osc.stop(t + decay + 0.01);
-      osc2.start(t); osc2.stop(t + decay * 0.5 + 0.01);
-      noise.start(t); noise.stop(t + 0.025);
+      osc.frequency.setValueAtTime(p.start || 200, t);
+      osc.frequency.exponentialRampToValueAtTime(p.end || 80, t + (p.decay || 0.15));
+      gain.gain.setValueAtTime(0.5, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + (p.decay || 0.2));
+      osc.connect(gain).connect(getOutput());
+      osc.start(t); osc.stop(t + (p.decay || 0.2) + 0.01);
       break;
     }
     case 'rim': {
-      const freq = p.freq || 800;
-      
-      // Click
-      const osc = audioCtx.createOscillator();
-      const g = audioCtx.createGain();
-      osc.type = 'triangle'; osc.frequency.value = freq;
-      g.gain.setValueAtTime(0.4, t);
-      g.gain.exponentialRampToValueAtTime(0.001, t + 0.025);
-      
-      // Body resonance
-      const osc2 = audioCtx.createOscillator();
-      const g2 = audioCtx.createGain();
-      osc2.type = 'sine';
-      osc2.frequency.setValueAtTime(freq * 0.7, t);
-      osc2.frequency.exponentialRampToValueAtTime(freq * 0.3, t + 0.01);
-      g2.gain.setValueAtTime(0.3, t);
-      g2.gain.exponentialRampToValueAtTime(0.001, t + 0.02);
-      
-      // Noise transient
-      const nBuf = makeNoise(0.008);
-      const noise = audioCtx.createBufferSource(); noise.buffer = nBuf;
-      const nG = audioCtx.createGain();
-      nG.gain.setValueAtTime(0.25, t);
-      nG.gain.exponentialRampToValueAtTime(0.001, t + 0.008);
-      const hp = audioCtx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = freq;
-      
-      osc.connect(g).connect(out);
-      osc2.connect(g2).connect(out);
-      noise.connect(hp).connect(nG).connect(out);
-      
-      osc.start(t); osc.stop(t + 0.03);
-      osc2.start(t); osc2.stop(t + 0.025);
-      noise.start(t); noise.stop(t + 0.01);
+      const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+      osc.type = 'square'; osc.frequency.value = p.freq || 800;
+      gain.gain.setValueAtTime(0.3, t); gain.gain.exponentialRampToValueAtTime(0.001, t + 0.03);
+      osc.connect(gain).connect(getOutput());
+      osc.start(t); osc.stop(t + 0.04);
       break;
     }
     case 'perc': {
-      const startF = p.start || 3000;
-      const endF = p.end || 500;
-      const decay = p.decay || 0.06;
-      
-      // Main tone
-      const osc = audioCtx.createOscillator();
-      const g = audioCtx.createGain();
+      const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(startF, t);
-      osc.frequency.exponentialRampToValueAtTime(endF, t + 0.04);
-      g.gain.setValueAtTime(0.3, t);
-      g.gain.exponentialRampToValueAtTime(0.001, t + decay);
-      
-      // FM modulator for metallic quality
-      const mod = audioCtx.createOscillator();
-      const modG = audioCtx.createGain();
-      mod.frequency.value = startF * 1.414;
-      modG.gain.setValueAtTime(startF * 0.5, t);
-      modG.gain.exponentialRampToValueAtTime(10, t + decay);
-      mod.connect(modG).connect(osc.frequency);
-      
-      osc.connect(g).connect(out);
-      osc.start(t); osc.stop(t + decay + 0.01);
-      mod.start(t); mod.stop(t + decay + 0.01);
+      osc.frequency.setValueAtTime(p.start || 3000, t);
+      osc.frequency.exponentialRampToValueAtTime(p.end || 500, t + 0.05);
+      gain.gain.setValueAtTime(0.25, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + (p.decay || 0.06));
+      osc.connect(gain).connect(getOutput());
+      osc.start(t); osc.stop(t + (p.decay || 0.06) + 0.01);
       break;
     }
     case 'vocal': {
+      // Formant synthesis — creates vowel-like sounds via bandpass-filtered oscillators
       const dur = p.decay || 0.2;
       const pitch = p.pitch || 340;
       const formants = [p.f1 || 800, p.f2 || 1200, p.f3 || 2800];
       const formantQ = [12, 10, 8];
-      const formantGain = [0.3, 0.2, 0.1];
+      const formantGain = [0.28, 0.18, 0.08];
+      const out = getOutput();
       
-      // Dual oscillator source (richer)
-      const osc1 = audioCtx.createOscillator();
-      const osc2 = audioCtx.createOscillator();
-      osc1.type = p.wave || 'sawtooth';
-      osc2.type = 'sawtooth';
-      osc1.frequency.setValueAtTime(pitch, t);
-      osc1.frequency.exponentialRampToValueAtTime(pitch * 0.97, t + dur);
-      osc2.frequency.setValueAtTime(pitch * 1.003, t); // slight detune
-      osc2.frequency.exponentialRampToValueAtTime(pitch * 0.973, t + dur);
+      // Base oscillator (rich harmonics)
+      const osc = audioCtx.createOscillator();
+      osc.type = p.wave || 'sawtooth';
+      osc.frequency.setValueAtTime(pitch, t);
+      // Slight pitch drop for natural feel
+      osc.frequency.exponentialRampToValueAtTime(pitch * 0.97, t + dur);
       
-      const oscMix = audioCtx.createGain();
-      oscMix.gain.value = 0.5;
-      osc1.connect(oscMix); osc2.connect(oscMix);
-      
+      // Route through formant filters
       formants.forEach((freq, i) => {
         const bp = audioCtx.createBiquadFilter();
-        bp.type = 'bandpass'; bp.frequency.value = freq; bp.Q.value = formantQ[i];
+        bp.type = 'bandpass';
+        bp.frequency.value = freq;
+        bp.Q.value = formantQ[i];
         const g = audioCtx.createGain();
         g.gain.setValueAtTime(formantGain[i], t);
-        g.gain.setValueAtTime(formantGain[i], t + dur * 0.15);
+        g.gain.setValueAtTime(formantGain[i], t + dur * 0.1);
         g.gain.exponentialRampToValueAtTime(0.001, t + dur);
-        oscMix.connect(bp).connect(g).connect(out);
+        osc.connect(bp).connect(g).connect(out);
       });
       
-      // Breath noise
-      const nBuf = makeNoise(dur * 0.5);
+      // Add breathy noise layer
+      const noiseDur = dur * 0.6;
+      const nBuf = audioCtx.createBuffer(1, audioCtx.sampleRate * noiseDur, audioCtx.sampleRate);
+      const nData = nBuf.getChannelData(0);
+      for (let i = 0; i < nData.length; i++) nData[i] = Math.random() * 2 - 1;
       const nSrc = audioCtx.createBufferSource(); nSrc.buffer = nBuf;
-      const nG = audioCtx.createGain();
-      nG.gain.setValueAtTime(0.05, t);
-      nG.gain.exponentialRampToValueAtTime(0.001, t + dur * 0.5);
+      const nGain = audioCtx.createGain();
+      nGain.gain.setValueAtTime(0.04, t);
+      nGain.gain.exponentialRampToValueAtTime(0.001, t + noiseDur);
       const nBp = audioCtx.createBiquadFilter();
       nBp.type = 'bandpass'; nBp.frequency.value = formants[1]; nBp.Q.value = 3;
-      nSrc.connect(nBp).connect(nG).connect(out);
+      nSrc.connect(nBp).connect(nGain).connect(out);
+      nSrc.start(t); nSrc.stop(t + noiseDur + 0.01);
       
-      osc1.start(t); osc1.stop(t + dur + 0.01);
-      osc2.start(t); osc2.stop(t + dur + 0.01);
-      nSrc.start(t); nSrc.stop(t + dur * 0.5 + 0.01);
+      osc.start(t); osc.stop(t + dur + 0.01);
       break;
     }
     case 'crash': {
