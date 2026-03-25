@@ -1378,7 +1378,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     <div class="p2-title" style="display:none;">
       <span class="p2-title-mask">
         <span class="p2-title-slider" id="p2TitleSlider">
-          <span class="p2-title-line"><img src="logo-black.svg" class="p2-logo" style="height:62px;width:auto;margin-right:1rem;margin-top:6px;">Michael Loya&nbsp;<span style="color:#8a8580">Studio</span></span>
+          <span class="p2-title-line"><img src="logo-black.svg" class="p2-logo" style="height:62px;width:auto;margin-right:0.6rem;margin-top:6px;">Michael Loya&nbsp;<span style="color:#8a8580">Studio</span></span>
           <span class="p2-title-line p2-app-name" id="p2AppName"></span>
         </span>
       </span>
@@ -1912,7 +1912,7 @@ function p2ShowWork() {
 
     // Restore title to logo+wordmark SVG
     var titleLine = document.querySelector('.p2-title-line');
-    if (titleLine) titleLine.innerHTML = '<img src="logo-black.svg" class="p2-logo" style="height:62px;width:auto;margin-right:1rem;margin-top:6px;">Michael Loya\u00a0<span style="color:#8a8580">Studio</span>';
+    if (titleLine) titleLine.innerHTML = '<img src="logo-black.svg" class="p2-logo" style="height:62px;width:auto;margin-right:0.6rem;margin-top:6px;">Michael Loya\u00a0<span style="color:#8a8580">Studio</span>';
     var mask = document.querySelector('.p2-title-mask');
     if (mask) mask.classList.remove('slid');
 
