@@ -2280,6 +2280,7 @@ function handleLoopClick(index) {
     loop.el.className = 'loop-circle clickable';
     loop.el.style.borderColor = '';
     loop.el.style.boxShadow = '';
+    loop.el.style.background = '';
     clearTimeout(loop._pulseTimer);
     loop.countText.textContent = '';
     return;
@@ -2292,6 +2293,7 @@ function handleLoopClick(index) {
     loop.el.className = 'loop-circle clickable';
     loop.el.style.borderColor = '';
     loop.el.style.boxShadow = '';
+    loop.el.style.background = '';
     clearTimeout(loop._pulseTimer);
     loop.countText.textContent = '';
     return;
@@ -2393,12 +2395,14 @@ function loopTick() {
               hitPad(hit.padIndex);
               // Pulse the circle with instrument color
               loop.el.style.borderColor = inst.color;
-              loop.el.style.boxShadow = '0 0 16px ' + inst.color + '80';
+              loop.el.style.boxShadow = '0 0 24px ' + inst.color + ', 0 0 8px ' + inst.color;
+              loop.el.style.background = inst.color + '25';
               clearTimeout(loop._pulseTimer);
               loop._pulseTimer = setTimeout(() => {
                 if (loop.state === 'has-data') {
                   loop.el.style.borderColor = '';
                   loop.el.style.boxShadow = '';
+                  loop.el.style.background = '';
                 }
               }, 120);
             }
