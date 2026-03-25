@@ -3077,23 +3077,40 @@ document.querySelector('.grid').addEventListener('mousedown', (e) => {
   function initTrimPaths(btn, strokeColor, activeClass) {
     const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
     Object.assign(svg.style, {
-      position:'absolute', top:'0', left:'0', pointerEvents:'none', overflow:'visible' /* adjusted in measure() */
+      position:'absolute', top:'0', left:'0', pointerEvents:'none', overflow:'visible'
     });
-    const rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
-    rect.setAttribute('fill','none');
-    rect.setAttribute('stroke', strokeColor);
-    rect.setAttribute('stroke-width','1');
-    rect.setAttribute('stroke-linecap','round');
-    rect.setAttribute('stroke-linejoin','round');
-    svg.appendChild(rect);
+    // Two half-perimeter paths: one CW from left-middle, one CCW
+    const pathCW = document.createElementNS('http://www.w3.org/2000/svg','path');
+    const pathCCW = document.createElementNS('http://www.w3.org/2000/svg','path');
+    [pathCW, pathCCW].forEach(p => {
+      p.setAttribute('fill','none');
+      p.setAttribute('stroke', strokeColor);
+      p.setAttribute('stroke-width','1');
+      p.setAttribute('stroke-linecap','round');
+      p.setAttribute('stroke-linejoin','round');
+      svg.appendChild(p);
+    });
     btn.style.position = btn.style.position || 'relative';
     btn.appendChild(svg);
 
-    let perim = 0;
+    let halfPerim = 0;
     let state = 'idle';
     let progress = 0;
     let wantsOut = false;
     let rafId = null, lastTime = 0;
+
+    function buildHalfPath(w, h, rx, direction) {
+      // Start at left middle (0.5, h/2), go CW (up) or CCW (down) around half the rect
+      const x1 = 0.5, y1 = h / 2;
+      const r = Math.min(rx, w / 2, h / 2);
+      if (direction === 'cw') {
+        // Left-mid → top-left corner → top-right corner → right-mid
+        return `M${x1},${y1} L${x1},${0.5 + r} Q${x1},0.5 ${x1 + r},0.5 L${w - 0.5 - r},0.5 Q${w - 0.5},0.5 ${w - 0.5},${0.5 + r} L${w - 0.5},${y1}`;
+      } else {
+        // Left-mid → bottom-left corner → bottom-right corner → right-mid
+        return `M${x1},${y1} L${x1},${h - 0.5 - r} Q${x1},${h - 0.5} ${x1 + r},${h - 0.5} L${w - 0.5 - r},${h - 0.5} Q${w - 0.5},${h - 0.5} ${w - 0.5},${h - 0.5 - r} L${w - 0.5},${y1}`;
+      }
+    }
 
     function measure() {
       const cs = getComputedStyle(btn);
@@ -3103,12 +3120,13 @@ document.querySelector('.grid').addEventListener('mousedown', (e) => {
       svg.style.left = (-bw) + 'px';
       svg.setAttribute('width', w); svg.setAttribute('height', h);
       const rx = parseFloat(cs.borderRadius) || 6;
-      rect.setAttribute('x','0.5'); rect.setAttribute('y','0.5');
-      rect.setAttribute('width', w - 1); rect.setAttribute('height', h - 1);
-      rect.setAttribute('rx', rx); rect.setAttribute('ry', rx);
-      perim = rect.getTotalLength();
-      rect.style.strokeDasharray = (perim + 1);
-      if (state === 'idle') rect.style.strokeDashoffset = perim + 1;
+      pathCW.setAttribute('d', buildHalfPath(w, h, rx, 'cw'));
+      pathCCW.setAttribute('d', buildHalfPath(w, h, rx, 'ccw'));
+      halfPerim = pathCW.getTotalLength();
+      [pathCW, pathCCW].forEach(p => {
+        p.style.strokeDasharray = (halfPerim + 1);
+        if (state === 'idle') p.style.strokeDashoffset = halfPerim + 1;
+      });
     }
 
     function tick(now) {
@@ -3119,7 +3137,9 @@ document.querySelector('.grid').addEventListener('mousedown', (e) => {
 
       if (state === 'drawing-in') {
         progress = Math.min(1, progress + speed * dt);
-        rect.style.strokeDashoffset = (perim + 1) * (1 - EASE(progress));
+        const off = (halfPerim + 1) * (1 - EASE(progress));
+        pathCW.style.strokeDashoffset = off;
+        pathCCW.style.strokeDashoffset = off;
         if (progress >= 1) {
           if (wantsOut) {
             wantsOut = false;
@@ -3134,10 +3154,13 @@ document.querySelector('.grid').addEventListener('mousedown', (e) => {
 
       if (state === 'drawing-out') {
         progress = Math.max(0, progress - speed * dt);
-        rect.style.strokeDashoffset = -(perim + 1) * (1 - EASE(progress));
+        const off = -(halfPerim + 1) * (1 - EASE(progress));
+        pathCW.style.strokeDashoffset = off;
+        pathCCW.style.strokeDashoffset = off;
         if (progress <= 0) {
           state = 'idle';
-          rect.style.strokeDashoffset = perim + 1;
+          pathCW.style.strokeDashoffset = halfPerim + 1;
+          pathCCW.style.strokeDashoffset = halfPerim + 1;
           rafId = null; lastTime = 0; return;
         }
       }
@@ -3150,14 +3173,16 @@ document.querySelector('.grid').addEventListener('mousedown', (e) => {
     }
 
     measure();
-    rect.style.strokeDashoffset = perim + 1;
+    pathCW.style.strokeDashoffset = halfPerim + 1;
+    pathCCW.style.strokeDashoffset = halfPerim + 1;
     new ResizeObserver(measure).observe(btn);
 
     function hideStroke() {
       state = 'idle'; progress = 0; wantsOut = false;
       if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
       lastTime = 0;
-      rect.style.strokeDashoffset = perim + 1;
+      pathCW.style.strokeDashoffset = halfPerim + 1;
+      pathCCW.style.strokeDashoffset = halfPerim + 1;
     }
 
     btn.addEventListener('mouseenter', function(){

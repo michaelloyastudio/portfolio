@@ -1224,39 +1224,50 @@ document.addEventListener('keydown', e => {
     Object.assign(svg.style, {
       position:'absolute', top:'0', left:'0', pointerEvents:'none', overflow:'visible'
     });
-    const rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
-    rect.setAttribute('fill','none');
-    rect.setAttribute('stroke', strokeColor);
-    rect.setAttribute('stroke-width','1');
-    rect.setAttribute('stroke-linecap','round');
-    rect.setAttribute('stroke-linejoin','round');
-    svg.appendChild(rect);
+    const pathCW = document.createElementNS('http://www.w3.org/2000/svg','path');
+    const pathCCW = document.createElementNS('http://www.w3.org/2000/svg','path');
+    [pathCW, pathCCW].forEach(p => {
+      p.setAttribute('fill','none');
+      p.setAttribute('stroke', strokeColor);
+      p.setAttribute('stroke-width','1');
+      p.setAttribute('stroke-linecap','round');
+      p.setAttribute('stroke-linejoin','round');
+      svg.appendChild(p);
+    });
     btn.style.position = btn.style.position || 'relative';
     btn.appendChild(svg);
 
-    let perim = 0;
+    let halfPerim = 0;
     let state = 'idle';
     let progress = 0;
     let wantsOut = false;
-    let rafId = null;
-    let lastTime = 0;
+    let rafId = null, lastTime = 0;
+
+    function buildHalfPath(w, h, rx, direction) {
+      const x1 = 0.5, y1 = h / 2;
+      const r = Math.min(rx, w / 2, h / 2);
+      if (direction === 'cw') {
+        return `M${x1},${y1} L${x1},${0.5 + r} Q${x1},0.5 ${x1 + r},0.5 L${w - 0.5 - r},0.5 Q${w - 0.5},0.5 ${w - 0.5},${0.5 + r} L${w - 0.5},${y1}`;
+      } else {
+        return `M${x1},${y1} L${x1},${h - 0.5 - r} Q${x1},${h - 0.5} ${x1 + r},${h - 0.5} L${w - 0.5 - r},${h - 0.5} Q${w - 0.5},${h - 0.5} ${w - 0.5},${h - 0.5 - r} L${w - 0.5},${y1}`;
+      }
+    }
 
     function measure() {
       const cs = getComputedStyle(btn);
       const bw = parseFloat(cs.borderLeftWidth) || 1;
-      const w = btn.offsetWidth;
-      const h = btn.offsetHeight;
+      const w = btn.offsetWidth, h = btn.offsetHeight;
       svg.style.top = (-bw) + 'px';
       svg.style.left = (-bw) + 'px';
-      svg.setAttribute('width', w);
-      svg.setAttribute('height', h);
+      svg.setAttribute('width', w); svg.setAttribute('height', h);
       const rx = parseFloat(cs.borderRadius) || 6;
-      rect.setAttribute('x','0.5'); rect.setAttribute('y','0.5');
-      rect.setAttribute('width', w - 1); rect.setAttribute('height', h - 1);
-      rect.setAttribute('rx', rx); rect.setAttribute('ry', rx);
-      perim = rect.getTotalLength();
-      rect.style.strokeDasharray = (perim + 1);
-      if (state === 'idle') rect.style.strokeDashoffset = perim + 1;
+      pathCW.setAttribute('d', buildHalfPath(w, h, rx, 'cw'));
+      pathCCW.setAttribute('d', buildHalfPath(w, h, rx, 'ccw'));
+      halfPerim = pathCW.getTotalLength();
+      [pathCW, pathCCW].forEach(p => {
+        p.style.strokeDasharray = (halfPerim + 1);
+        if (state === 'idle') p.style.strokeDashoffset = halfPerim + 1;
+      });
     }
 
     function tick(now) {
@@ -1267,33 +1278,31 @@ document.addEventListener('keydown', e => {
 
       if (state === 'drawing-in') {
         progress = Math.min(1, progress + speed * dt);
-        rect.style.strokeDashoffset = (perim + 1) * (1 - EASE(progress));
-
+        const off = (halfPerim + 1) * (1 - EASE(progress));
+        pathCW.style.strokeDashoffset = off;
+        pathCCW.style.strokeDashoffset = off;
         if (progress >= 1) {
-          // Draw-in complete
           if (wantsOut) {
-            // User already left — immediately start drawing out
             wantsOut = false;
             state = 'drawing-out';
             progress = 1;
           } else {
             state = 'drawn';
-            rafId = null; lastTime = 0;
-            return;
+            rafId = null; lastTime = 0; return;
           }
         }
       }
 
       if (state === 'drawing-out') {
         progress = Math.max(0, progress - speed * dt);
-        // Forward exit: stroke continues forward off the shape
-        rect.style.strokeDashoffset = -(perim + 1) * (1 - EASE(progress));
-
+        const off = -(halfPerim + 1) * (1 - EASE(progress));
+        pathCW.style.strokeDashoffset = off;
+        pathCCW.style.strokeDashoffset = off;
         if (progress <= 0) {
           state = 'idle';
-          rect.style.strokeDashoffset = perim + 1;
-          rafId = null; lastTime = 0;
-          return;
+          pathCW.style.strokeDashoffset = halfPerim + 1;
+          pathCCW.style.strokeDashoffset = halfPerim + 1;
+          rafId = null; lastTime = 0; return;
         }
       }
 
@@ -1301,56 +1310,36 @@ document.addEventListener('keydown', e => {
     }
 
     function startAnim() {
-      if (!rafId) {
-        lastTime = 0;
-        rafId = requestAnimationFrame(tick);
-      }
+      if (!rafId) { lastTime = 0; rafId = requestAnimationFrame(tick); }
     }
 
     measure();
-    rect.style.strokeDashoffset = perim + 1;
+    pathCW.style.strokeDashoffset = halfPerim + 1;
+    pathCCW.style.strokeDashoffset = halfPerim + 1;
     new ResizeObserver(measure).observe(btn);
 
-    // Hide stroke immediately when button becomes active
     function hideStroke() {
-      state = 'idle';
-      progress = 0;
-      wantsOut = false;
+      state = 'idle'; progress = 0; wantsOut = false;
       if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
       lastTime = 0;
-      rect.style.strokeDashoffset = perim + 1;
+      pathCW.style.strokeDashoffset = halfPerim + 1;
+      pathCCW.style.strokeDashoffset = halfPerim + 1;
     }
 
     btn.addEventListener('mouseenter', function(){
       if (activeClass && btn.classList.contains(activeClass)) return;
       wantsOut = false;
-      if (state === 'idle') {
-        state = 'drawing-in';
-        progress = 0;
-        startAnim();
-      } else if (state === 'drawing-out') {
-        state = 'drawing-in';
-        startAnim();
-      }
+      if (state === 'idle') { state = 'drawing-in'; progress = 0; startAnim(); }
+      else if (state === 'drawing-out') { state = 'drawing-in'; startAnim(); }
     });
-
     btn.addEventListener('mouseleave', function(){
       if (activeClass && btn.classList.contains(activeClass)) return;
-      if (state === 'drawing-in') {
-        wantsOut = true;
-      } else if (state === 'drawn') {
-        state = 'drawing-out';
-        progress = 1;
-        startAnim();
-      }
+      if (state === 'drawing-in') { wantsOut = true; }
+      else if (state === 'drawn') { state = 'drawing-out'; progress = 1; startAnim(); }
     });
-
-    // When clicked (becoming active), kill the stroke instantly
     btn.addEventListener('click', function(){
       if (activeClass) hideStroke();
     });
-
-    // Also observe class changes to hide stroke when active is added externally
     if (activeClass) {
       new MutationObserver(function() {
         if (btn.classList.contains(activeClass)) hideStroke();
