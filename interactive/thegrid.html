@@ -2540,7 +2540,7 @@ function loadPreset(name) {
   if (!preset) return;
   preset.forEach((pattern, row) => {
     for (let s = 0; s < STEPS; s++) {
-      grid[row][s] = s < pattern.length ? !!pattern[s] : false;
+      grid[row][s] = !!pattern[s % pattern.length];
     }
   });
   updateGridUI();
