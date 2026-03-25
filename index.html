@@ -464,7 +464,6 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   }
   .p2-title-slider {
     display: block;
-    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
   .p2-title-slider .p2-title-line {
     display: flex;
@@ -473,9 +472,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     white-space: nowrap;
     height: 90px;
   }
-  .p2-title-mask.slid .p2-title-slider {
-    transform: translateY(-90px);
-  }
+
 
   /* ── SPLASH SCREEN ── */
   .p2-splash {
@@ -1722,78 +1719,83 @@ function p2ShowInteractive() {
 }
 
 // ── QUEUED TITLE SLIDE ──
-var _p2TitleQueue = undefined;  // undefined = no pending request, null = slide to default, string = slide to app
-var _p2TitleAnimating = false; // mid-transition
 var _p2TitleCurrent = null;    // currently displayed name (null = default title)
+var _p2TitleTarget = null;     // where we want to be
+var _p2TitleRaf = null;        // animation frame id
+var _p2TitleProgress = 0;      // 0 = default shown, 1 = app name shown
+var _p2TitleDuration = 400;    // ms for full slide
 
 function _p2QueueTitleSlide(name) {
-  var mask = document.querySelector('.p2-title-mask');
   var slider = document.getElementById('p2TitleSlider');
   var appNameEl = document.getElementById('p2AppName');
-  if (!mask || !slider || !appNameEl) return;
+  if (!slider || !appNameEl) return;
 
-  // If we're mid-animation, queue the request
-  if (_p2TitleAnimating) {
-    _p2TitleQueue = name;
+  // If switching between two different app names, need to slide back first
+  if (name !== null && _p2TitleCurrent !== null && _p2TitleCurrent !== name && _p2TitleProgress > 0.5) {
+    // We're mostly showing old name — slide back, then switch
+    _p2TitleTarget = null;
+    var _waitForDefault = function() {
+      if (_p2TitleProgress <= 0.01) {
+        appNameEl.textContent = name;
+        _p2TitleCurrent = null;
+        _p2QueueTitleSlide(name);
+        return;
+      }
+      requestAnimationFrame(_waitForDefault);
+    };
+    _startTitleAnim();
+    _waitForDefault();
     return;
   }
-
-  // Same state — nothing to do
-  if (name === _p2TitleCurrent) return;
-
-  // If currently showing an app name and want to show a different one,
-  // first slide back to default, then on completion slide to new name
-  if (_p2TitleCurrent !== null && name !== null) {
-    _p2TitleQueue = name;
-    _p2RunTitleSlide(null);
-    return;
-  }
-
-  _p2RunTitleSlide(name);
-}
-
-function _p2RunTitleSlide(name) {
-  var mask = document.querySelector('.p2-title-mask');
-  var slider = document.getElementById('p2TitleSlider');
-  var appNameEl = document.getElementById('p2AppName');
-
-  _p2TitleAnimating = true;
 
   if (name !== null) {
-    // Slide to app name
     appNameEl.textContent = name;
-    mask.classList.add('slid');
-  } else {
-    // Slide back to default
-    mask.classList.remove('slid');
-  }
-
-  var _settled = false;
-  function onDone(e) {
-    // Only react to the slider's own transform transition, not bubbled child events
-    if (e && (e.target !== slider || e.propertyName !== 'transform')) return;
-    if (_settled) return;
-    _settled = true;
-    slider.removeEventListener('transitionend', onDone);
     _p2TitleCurrent = name;
-    _p2TitleAnimating = false;
-
-    // Process queue — only if something was explicitly queued
-    if (_p2TitleQueue !== undefined) {
-      var next = _p2TitleQueue;
-      _p2TitleQueue = undefined;
-      if (next !== name) {
-        _p2QueueTitleSlide(next);
-      }
-    }
   }
 
-  slider.addEventListener('transitionend', onDone);
+  _p2TitleTarget = name;
+  _startTitleAnim();
+}
 
-  // Safety timeout in case transitionend doesn't fire
-  setTimeout(function() {
-    if (!_settled) onDone(null);
-  }, 500);
+var _p2TitleLastTime = null;
+function _startTitleAnim() {
+  _p2TitleLastTime = null;
+  if (_p2TitleRaf) cancelAnimationFrame(_p2TitleRaf);
+  _p2TitleRaf = requestAnimationFrame(_tickTitleAnim);
+}
+
+function _tickTitleAnim(ts) {
+  var slider = document.getElementById('p2TitleSlider');
+  if (!slider) return;
+
+  if (_p2TitleLastTime === null) _p2TitleLastTime = ts;
+  var dt = ts - _p2TitleLastTime;
+  _p2TitleLastTime = ts;
+
+  var goalProgress = (_p2TitleTarget !== null) ? 1 : 0;
+  var speed = dt / _p2TitleDuration;
+
+  if (goalProgress > _p2TitleProgress) {
+    _p2TitleProgress = Math.min(1, _p2TitleProgress + speed);
+  } else {
+    _p2TitleProgress = Math.max(0, _p2TitleProgress - speed);
+  }
+
+  // Ease
+  var eased = _p2TitleProgress < 0.5
+    ? 2 * _p2TitleProgress * _p2TitleProgress
+    : 1 - Math.pow(-2 * _p2TitleProgress + 2, 2) / 2;
+
+  slider.style.transform = 'translateY(' + (-90 * eased) + 'px)';
+
+  if (Math.abs(_p2TitleProgress - goalProgress) > 0.001) {
+    _p2TitleRaf = requestAnimationFrame(_tickTitleAnim);
+  } else {
+    _p2TitleProgress = goalProgress;
+    slider.style.transform = 'translateY(' + (-90 * goalProgress) + 'px)';
+    _p2TitleRaf = null;
+    if (goalProgress === 0) _p2TitleCurrent = null;
+  }
 }
 
 function _p2CreateLabCards() {
