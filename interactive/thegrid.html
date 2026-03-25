@@ -327,8 +327,8 @@ h1, h2, h3 { font-family: 'din-2014-rounded-variable', sans-serif; word-spacing:
   text-transform: uppercase;
   transition: all 0.15s;
 }
-.group-mute-btn:hover { border-color: var(--accent); color: var(--accent); }
-.group-mute-btn.active { background: rgba(255,142,61,0.15); border-color: var(--accent); color: var(--accent); }
+.group-mute-btn:hover { border-color: #ff4444; color: #ff4444; }
+.group-mute-btn.active { background: rgba(255,68,68,0.2); border-color: #ff4444; color: #ff4444; }
 
 .reverb-indicator {
   position: fixed;
@@ -1211,6 +1211,11 @@ h1, h2, h3 { font-family: 'din-2014-rounded-variable', sans-serif; word-spacing:
     <button class="transport-btn clickable" id="playBtn" title="Play/Pause">▶</button>
     <button class="transport-btn clickable" id="stopBtn" title="Stop"><span style="display:block;width:12px;height:12px;background:currentColor;border-radius:2px;"></span></button>
     <div class="transport-divider"></div>
+    <button class="steps-toggle clickable" id="addStepsBtn" title="Toggle 4/8 beats">
+      <span class="steps-label" id="stepsLabel">4</span>
+      <span class="steps-unit">beats</span>
+    </button>
+    <div class="transport-divider"></div>
     <div class="bpm-control">
       <span class="bpm-label">BPM</span>
       <input type="range" class="bpm-slider clickable" id="bpmSlider" min="60" max="200" value="120">
@@ -1227,11 +1232,6 @@ h1, h2, h3 { font-family: 'din-2014-rounded-variable', sans-serif; word-spacing:
       <button class="mode-btn clickable active" id="modeSeqBtn" data-mode="sequencer">Sequencer</button>
       <button class="mode-btn clickable" id="modePadBtn" data-mode="drumpad">Drum Pad</button>
     </div>
-    <div class="transport-divider" id="stepsDivider"></div>
-    <button class="steps-toggle clickable" id="addStepsBtn" title="Toggle 4/8 beats">
-      <span class="steps-label" id="stepsLabel">4</span>
-      <span class="steps-unit">beats</span>
-    </button>
   </div>
 
   <!-- Content Area (holds both views in same grid cell for stable layout) -->
@@ -2650,7 +2650,7 @@ function toggleMuteAll() {
   allMuted = !allMuted;
   const btn = document.getElementById('muteAllBtn');
   btn.classList.toggle('active', allMuted);
-  btn.textContent = allMuted ? 'Unmute' : 'Mute All';
+  btn.innerHTML = allMuted ? '<kbd>M</kbd> Unmute' : '<kbd>M</kbd> Mute All';
   muted.fill(allMuted);
   soloed.fill(false);
   document.querySelectorAll('.row-mute').forEach(b => b.classList.toggle('muted', allMuted));
@@ -2708,7 +2708,8 @@ function toggleGroupMute(type) {
   const active = isDrums ? drumsMuted : vocalsMuted;
   const btn = document.getElementById(isDrums ? 'muteDrumsBtn' : 'muteVocalsBtn');
   btn.classList.toggle('active', active);
-  btn.textContent = active ? (isDrums ? 'Unmute Drums' : 'Unmute Vocals') : (isDrums ? 'Mute Drums' : 'Mute Vocals');
+  const key = isDrums ? 'D' : 'V';
+  btn.innerHTML = active ? '<kbd>' + key + '</kbd> Unmute ' + (isDrums ? 'Drums' : 'Vocals') : '<kbd>' + key + '</kbd> Mute ' + (isDrums ? 'Drums' : 'Vocals');
   INSTRUMENTS.forEach((inst, i) => {
     const match = isDrums ? inst.type !== 'vocal' : inst.type === 'vocal';
     if (match) {
