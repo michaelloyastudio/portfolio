@@ -1126,33 +1126,24 @@ h1, h2, h3 { font-family: 'din-2014-rounded-variable', sans-serif; word-spacing:
 }
 
 /* ── ADD STEPS BUTTON ── */
-.add-steps-btn {
-  grid-column: 3;
-  grid-row: 2;
-  width: 28px;
-  align-self: stretch;
-  margin-left: 4px;
-  border-radius: 6px;
-  border: 1px dashed #333;
-  background: transparent;
-  color: #444;
-  font-size: 1.2rem;
-  font-family: 'Space Grotesk', sans-serif;
+.steps-toggle {
   display: flex;
   align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
+  gap: 3px;
+  background: transparent;
+  border: 1px solid #333;
+  border-radius: 4px;
+  padding: 2px 8px;
+  color: var(--text-muted);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  transition: all 0.15s;
 }
-
-.add-steps-btn:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: rgba(255,142,61,0.05);
-}
-
-.add-steps-btn:active {
-  transform: scale(0.95);
-}
+.steps-toggle:hover { border-color: var(--accent); color: var(--accent); }
+.steps-toggle .steps-label { font-weight: 600; }
+.steps-toggle .steps-unit { opacity: 0.7; }
 
 /* ── RESPONSIVE ── */
 @media (max-width: 768px) {
@@ -1236,6 +1227,11 @@ h1, h2, h3 { font-family: 'din-2014-rounded-variable', sans-serif; word-spacing:
       <button class="mode-btn clickable active" id="modeSeqBtn" data-mode="sequencer">Sequencer</button>
       <button class="mode-btn clickable" id="modePadBtn" data-mode="drumpad">Drum Pad</button>
     </div>
+    <div class="transport-divider" id="stepsDivider"></div>
+    <button class="steps-toggle clickable" id="addStepsBtn" title="Toggle 16/32 steps">
+      <span class="steps-label" id="stepsLabel">16</span>
+      <span class="steps-unit">steps</span>
+    </button>
   </div>
 
   <!-- Content Area (holds both views in same grid cell for stable layout) -->
@@ -1245,7 +1241,6 @@ h1, h2, h3 { font-family: 'din-2014-rounded-variable', sans-serif; word-spacing:
       <div class="beat-numbers" id="beatNumbers"></div>
       <div class="row-labels" id="rowLabels"></div>
       <div class="grid" id="grid"><div class="ripple-overlay" id="rippleOverlay"></div></div>
-      <button class="add-steps-btn clickable" id="addStepsBtn" title="Add 16 steps">+</button>
     </div>
 
     <!-- Drum Pad View -->
@@ -1923,8 +1918,8 @@ function toggleSteps() {
     const oldSteps = STEPS;
     STEPS = MAX_STEPS;
     expanded = true;
-    btn.textContent = '−';
-    btn.title = 'Remove 16 steps';
+    document.getElementById('stepsLabel').textContent = '32';
+    btn.title = 'Switch to 16 steps';
     
     // Extend grid arrays
     grid.forEach(row => {
@@ -1992,8 +1987,8 @@ function toggleSteps() {
     
     STEPS = 16;
     expanded = false;
-    btn.textContent = '+';
-    btn.title = 'Add 16 steps';
+    document.getElementById('stepsLabel').textContent = '16';
+    btn.title = 'Switch to 32 steps';
     
     // Trim grid arrays
     grid.forEach(row => row.length = 16);
