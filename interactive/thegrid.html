@@ -3189,20 +3189,26 @@ document.querySelector('.grid').addEventListener('mousedown', (e) => {
     btn.addEventListener('mouseenter', function(){
       if (activeClass && btn.classList.contains(activeClass)) return;
       [pathCW, pathCCW].forEach(p => { p.style.opacity = '1'; });
+      wantsOut = false;
       if (state === 'idle') { state = 'drawing-in'; progress = 0; startAnim(); }
+      else if (state === 'drawing-out') { state = 'drawing-in'; startAnim(); }
     });
     btn.addEventListener('mouseleave', function(){
       if (activeClass && btn.classList.contains(activeClass)) return;
-      // Fade out instead of drawing out
+      // Fade out AND draw out simultaneously
       [pathCW, pathCCW].forEach(p => { p.style.opacity = '0'; });
+      if (state === 'drawing-in') { wantsOut = true; }
+      else if (state === 'drawn') { state = 'drawing-out'; progress = 1; startAnim(); }
+      // Reset after fade completes
       setTimeout(function() {
-        // Reset after fade
-        state = 'idle'; progress = 0;
-        if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
-        lastTime = 0;
-        pathCW.style.strokeDashoffset = halfPerim + 1;
-        pathCCW.style.strokeDashoffset = halfPerim + 1;
-      }, 250);
+        if (state === 'idle' || state === 'drawing-out') {
+          state = 'idle'; progress = 0;
+          if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+          lastTime = 0;
+          pathCW.style.strokeDashoffset = halfPerim + 1;
+          pathCCW.style.strokeDashoffset = halfPerim + 1;
+        }
+      }, 300);
     });
     btn.addEventListener('click', function(){
       if (activeClass) hideStroke();
