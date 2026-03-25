@@ -1002,6 +1002,7 @@ const playlists = [
   {
     name: 'Mar 15',
     date: 'March 15',
+    runtime: '35 min',
     tracks: [
       { title: 'Just The Way You Are', artist: 'Milky', src: '../img/all/Milky_JustTheWayYouAre.mp3', cover: '../img/all/Milky_JustTheWayYouAre_cover.jpg', updates: 2 },
       { title: 'Sleepyhead', artist: 'Passion Pit', src: '../img/all/PassionPit_Sleepyhead.mp3', cover: '../img/all/PassionPit_Sleepyhead_cover.jpg' },
@@ -1018,6 +1019,7 @@ const playlists = [
   {
     name: 'Mar 1',
     date: 'March 1',
+    runtime: '32 min',
     tracks: [
       { title: 'Dead Ringers', artist: 'Surf Curse', src: '../img/all/SurfCurse_DeadRingers.mp3', cover: '../img/all/SurfCurse_DeadRingers_cover.jpg', updates: 2 },
       { title: 'Just The Way You Are', artist: 'Milky', src: '../img/all/Milky_JustTheWayYouAre.mp3', cover: '../img/all/Milky_JustTheWayYouAre_cover.jpg' },
@@ -1034,6 +1036,7 @@ const playlists = [
   {
     name: 'Feb 22',
     date: 'February 22',
+    runtime: '26 min',
     tracks: [
       { title: 'Dave Brubeck', artist: 'Vacations', src: '../img/all/Vacations_DaveBrubeck.mp3', cover: '../img/all/Vacations_DaveBrubeck_cover.jpg' },
       { title: 'Dræm Girl', artist: 'No Vacation', src: '../img/all/NoVacation_DreamGirl_vbr.mp3', cover: '../img/all/NoVacation_DreamGirl_cover.jpg' },
@@ -1100,7 +1103,7 @@ function renderPlaylists() {
       <div class="playlist-current-info">
         <div class="playlist-current-label">Current</div>
         <div class="playlist-current-name">${current.name}</div>
-        <div class="playlist-current-meta">${current.tracks.length} songs</div>
+        <div class="playlist-current-meta">${current.runtime}</div>
       </div>
     </div>
   `;
@@ -1134,7 +1137,7 @@ function renderPlaylists() {
       </div>
       <div class="playlist-item-info">
         <div class="playlist-item-name">${pl.name}</div>
-        <div class="playlist-item-meta">${pl.tracks.length} songs</div>
+        <div class="playlist-item-meta">${pl.runtime}</div>
       </div>
     `;
     el.addEventListener('click', () => {
