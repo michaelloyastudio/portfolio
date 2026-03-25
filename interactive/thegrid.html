@@ -2274,7 +2274,7 @@ function loopTick() {
       if (currentStep % 4 === 0) {
         loop.countVal++;
         loop.countText.textContent = loop.countVal;
-        playClick(loop.countVal === 4 ? 1200 : 900);
+        playClick(loop.countVal % 4 === 0 ? 1200 : 900);
       }
       // After 4 beats (16 steps of count), start recording
       if (loop.countVal >= 4 && currentStep === 0) {
