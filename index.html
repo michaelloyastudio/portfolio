@@ -846,11 +846,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     color: #ff8e3d;
   }
   .p2-title img.p2-logo {
-    filter: brightness(0);
     transition: filter 0.85s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  }
-  .p2-wrap.dark-mode .p2-title img.p2-logo {
-    filter: none;
   }
 
   /* ── DARK MODE: ABOUT ── */
@@ -1688,7 +1684,7 @@ function p2ShowInteractive() {
     document.getElementById('p2Scene').style.cursor = "url('interactive/cursor.svg') 16 8, default";
     // Swap title to "The Playground"
     var titleLine = document.querySelector('.p2-title-line');
-    if (titleLine) titleLine.innerHTML = 'The Playground';
+    if (titleLine) titleLine.innerHTML = '<span style="font-size:3rem;font-weight:300;color:#E8E0D4;">The Playground</span>';
 
     // Change nav text: "Playground" → "Work"
     var navLinks = document.querySelectorAll('.p2-nav a');
@@ -1902,9 +1898,9 @@ function p2ShowWork() {
     document.body.style.cursor = "url('cursor.svg') 16 8, default";
     document.getElementById('p2Scene').style.cursor = '';
 
-    // Restore title to "Michael Loya Studio" with logo
+    // Restore title to logo+wordmark SVG
     var titleLine = document.querySelector('.p2-title-line');
-    if (titleLine) titleLine.innerHTML = '<img src="logo.svg" class="p2-logo" style="height:54px;width:auto;margin-right:0.6rem;">Michael Loya\u00a0<span style="color:#8a8580">Studio</span>';
+    if (titleLine) titleLine.innerHTML = '<img src="logo-wordmark.svg" class="p2-logo" style="height:40px;width:auto;">';
     var mask = document.querySelector('.p2-title-mask');
     if (mask) mask.classList.remove('slid');
 
