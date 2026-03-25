@@ -259,7 +259,7 @@ h1, h2, h3 { font-family: 'din-2014-rounded-variable', sans-serif; word-spacing:
   white-space: nowrap;
   position: relative;
 }
-.mode-btn { transition: color 0.25s ease; }
+.mode-btn:hover { color: var(--text); }
 .mode-btn.active {
   background: rgba(255,142,61,0.15);
   color: var(--accent);
@@ -3240,7 +3240,7 @@ document.querySelector('.grid').addEventListener('mousedown', (e) => {
   }
 
   document.querySelectorAll('.action-btn').forEach(b => initTrimPaths(b, 'var(--text-muted)', null));
-  document.querySelectorAll('.mode-btn').forEach(b => initTrimPaths(b, 'var(--text-muted)', 'active'));
+
 })();
 </script>
 </body>
