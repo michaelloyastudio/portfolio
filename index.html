@@ -2556,13 +2556,13 @@ function initP2(opts) {
 
   // Periodic nudge on Music Visuals (first item) to draw attention
   if (p2Items.length > 0) {
-    var mvEl = p2Items[0].el;
-    setInterval(function() {
-      if (mvEl.matches(':hover')) return; // don't interrupt hover
-      mvEl.style.animation = 'nudge 0.6s ease';
-      mvEl.addEventListener('animationend', function handler() {
-        mvEl.style.animation = '';
-        mvEl.removeEventListener('animationend', handler);
+    var mvImg = p2Items[0].el.querySelector('img');
+    if (mvImg) setInterval(function() {
+      if (p2Items[0].el.matches(':hover')) return;
+      mvImg.style.animation = 'nudge 0.6s ease';
+      mvImg.addEventListener('animationend', function handler() {
+        mvImg.style.animation = '';
+        mvImg.removeEventListener('animationend', handler);
       });
     }, 5000);
   }
