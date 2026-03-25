@@ -2567,6 +2567,10 @@ function initP2(opts) {
           mvImg.removeEventListener('animationend', handler);
         });
       }, 5000);
+      // Cancel wiggle instantly on hover so it doesn't fight the scale transition
+      p2Items[0].el.addEventListener('mouseenter', function() {
+        mvImg.style.animation = 'none';
+      });
       p2Items[0].el.addEventListener('click', function() {
         clearInterval(nudgeInterval);
       });
