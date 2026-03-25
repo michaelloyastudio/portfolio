@@ -1232,6 +1232,7 @@ document.addEventListener('keydown', e => {
       p.setAttribute('stroke-width','1');
       p.setAttribute('stroke-linecap','round');
       p.setAttribute('stroke-linejoin','round');
+      p.style.transition = 'opacity 0.25s ease';
       svg.appendChild(p);
     });
     btn.style.position = btn.style.position || 'relative';
@@ -1328,14 +1329,19 @@ document.addEventListener('keydown', e => {
 
     btn.addEventListener('mouseenter', function(){
       if (activeClass && btn.classList.contains(activeClass)) return;
-      wantsOut = false;
+      [pathCW, pathCCW].forEach(p => { p.style.opacity = '1'; });
       if (state === 'idle') { state = 'drawing-in'; progress = 0; startAnim(); }
-      else if (state === 'drawing-out') { state = 'drawing-in'; startAnim(); }
     });
     btn.addEventListener('mouseleave', function(){
       if (activeClass && btn.classList.contains(activeClass)) return;
-      if (state === 'drawing-in') { wantsOut = true; }
-      else if (state === 'drawn') { state = 'drawing-out'; progress = 1; startAnim(); }
+      [pathCW, pathCCW].forEach(p => { p.style.opacity = '0'; });
+      setTimeout(function() {
+        state = 'idle'; progress = 0;
+        if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+        lastTime = 0;
+        pathCW.style.strokeDashoffset = halfPerim + 1;
+        pathCCW.style.strokeDashoffset = halfPerim + 1;
+      }, 250);
     });
     btn.addEventListener('click', function(){
       if (activeClass) hideStroke();
