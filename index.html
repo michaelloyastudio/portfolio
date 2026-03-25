@@ -1159,13 +1159,13 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   }
 
   @keyframes nudge {
-    0%, 100% { transform: rotate(0deg); }
-    15% { transform: rotate(-2deg); }
-    30% { transform: rotate(2.5deg); }
-    45% { transform: rotate(-1.5deg); }
-    60% { transform: rotate(1deg); }
-    75% { transform: rotate(-0.5deg); }
-    85% { transform: rotate(0deg); }
+    0%, 100% { rotate: 0deg; }
+    15% { rotate: -2deg; }
+    30% { rotate: 2.5deg; }
+    45% { rotate: -1.5deg; }
+    60% { rotate: 1deg; }
+    75% { rotate: -0.5deg; }
+    85% { rotate: 0deg; }
   }
   .p2-item {
     position: absolute;
@@ -2567,10 +2567,7 @@ function initP2(opts) {
           mvImg.removeEventListener('animationend', handler);
         });
       }, 5000);
-      // Cancel wiggle instantly on hover so it doesn't fight the scale transition
-      p2Items[0].el.addEventListener('mouseenter', function() {
-        mvImg.style.animation = 'none';
-      });
+
       p2Items[0].el.addEventListener('click', function() {
         clearInterval(nudgeInterval);
       });
