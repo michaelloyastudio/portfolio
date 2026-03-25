@@ -1327,24 +1327,44 @@ document.addEventListener('keydown', e => {
       pathCCW.style.strokeDashoffset = halfPerim + 1;
     }
 
-    var fadeTimer = null;
+    var isHovering = false;
+    var isFading = false;
+
+    function resetStrokes() {
+      state = 'idle'; progress = 0; wantsOut = false;
+      if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+      lastTime = 0;
+      pathCW.style.strokeDashoffset = halfPerim + 1;
+      pathCCW.style.strokeDashoffset = halfPerim + 1;
+    }
+
+    function onFadeEnd() {
+      isFading = false;
+      resetStrokes();
+      if (isHovering) {
+        [pathCW, pathCCW].forEach(p => { p.style.opacity = '1'; });
+        state = 'drawing-in'; progress = 0; startAnim();
+      }
+    }
+
+    [pathCW, pathCCW].forEach(p => {
+      p.addEventListener('transitionend', function(e) {
+        if (e.propertyName === 'opacity' && isFading) onFadeEnd();
+      });
+    });
+
     btn.addEventListener('mouseenter', function(){
       if (activeClass && btn.classList.contains(activeClass)) return;
-      if (fadeTimer) { clearTimeout(fadeTimer); fadeTimer = null; }
+      isHovering = true;
+      if (isFading) return;
       [pathCW, pathCCW].forEach(p => { p.style.opacity = '1'; });
       if (state === 'idle') { state = 'drawing-in'; progress = 0; startAnim(); }
     });
     btn.addEventListener('mouseleave', function(){
       if (activeClass && btn.classList.contains(activeClass)) return;
+      isHovering = false;
+      isFading = true;
       [pathCW, pathCCW].forEach(p => { p.style.opacity = '0'; });
-      fadeTimer = setTimeout(function() {
-        fadeTimer = null;
-        state = 'idle'; progress = 0; wantsOut = false;
-        if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
-        lastTime = 0;
-        pathCW.style.strokeDashoffset = halfPerim + 1;
-        pathCCW.style.strokeDashoffset = halfPerim + 1;
-      }, 500);
     });
     btn.addEventListener('click', function(){
       if (activeClass) hideStroke();
