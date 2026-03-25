@@ -1027,7 +1027,7 @@ h1, h2, h3 { font-family: 'din-2014-rounded-variable', sans-serif; word-spacing:
 .loop-controls {
   display: flex;
   flex-direction: row;
-  gap: 2px;
+  gap: 4px;
 }
 
 .loop-mute, .loop-solo {
@@ -2246,8 +2246,8 @@ function buildLoopCircles() {
     soloBtn.className = 'loop-solo clickable';
     soloBtn.textContent = 'S';
     soloBtn.title = 'Solo loop';
-    controls.appendChild(muteBtn);
     controls.appendChild(soloBtn);
+    controls.appendChild(muteBtn);
 
     item.appendChild(controls);
     item.appendChild(circle);
@@ -2278,6 +2278,9 @@ function handleLoopClick(index) {
     loop.hits = [];
     loop.state = 'idle';
     loop.el.className = 'loop-circle clickable';
+    loop.el.style.borderColor = '';
+    loop.el.style.boxShadow = '';
+    clearTimeout(loop._pulseTimer);
     loop.countText.textContent = '';
     return;
   }
@@ -2287,6 +2290,9 @@ function handleLoopClick(index) {
     loop.state = 'idle';
     loop.hits = [];
     loop.el.className = 'loop-circle clickable';
+    loop.el.style.borderColor = '';
+    loop.el.style.boxShadow = '';
+    clearTimeout(loop._pulseTimer);
     loop.countText.textContent = '';
     return;
   }
