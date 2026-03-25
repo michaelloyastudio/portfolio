@@ -1371,7 +1371,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     <div class="p2-title" style="display:none;">
       <span class="p2-title-mask">
         <span class="p2-title-slider" id="p2TitleSlider">
-          <span class="p2-title-line"><img src="logo-wordmark.svg" class="p2-logo" style="height:40px;width:auto;"></span>
+          <span class="p2-title-line"><img src="logo-wordmark.svg" class="p2-logo" style="height:54px;width:auto;"></span>
           <span class="p2-title-line p2-app-name" id="p2AppName"></span>
         </span>
       </span>
@@ -1684,7 +1684,7 @@ function p2ShowInteractive() {
     document.getElementById('p2Scene').style.cursor = "url('interactive/cursor.svg') 16 8, default";
     // Swap title to "The Playground"
     var titleLine = document.querySelector('.p2-title-line');
-    if (titleLine) titleLine.innerHTML = '<span style="font-size:3rem;font-weight:300;color:#E8E0D4;">The Playground</span>';
+    if (titleLine) titleLine.innerHTML = 'The Playground';
 
     // Change nav text: "Playground" → "Work"
     var navLinks = document.querySelectorAll('.p2-nav a');
@@ -1900,7 +1900,7 @@ function p2ShowWork() {
 
     // Restore title to logo+wordmark SVG
     var titleLine = document.querySelector('.p2-title-line');
-    if (titleLine) titleLine.innerHTML = '<img src="logo-wordmark.svg" class="p2-logo" style="height:40px;width:auto;">';
+    if (titleLine) titleLine.innerHTML = '<img src="logo-wordmark.svg" class="p2-logo" style="height:54px;width:auto;">';
     var mask = document.querySelector('.p2-title-mask');
     if (mask) mask.classList.remove('slid');
 
