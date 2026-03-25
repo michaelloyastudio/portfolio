@@ -27,7 +27,8 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     * { -webkit-tap-highlight-color: transparent; }
 
 
-  * { margin: 0; padding: 0; box-sizing: border-box; word-spacing: -0.05em; }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
   /* Hide scrollbar */
   ::-webkit-scrollbar { display: none; }
@@ -196,7 +197,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   .sp-play svg { width: 16px; height: 16px; fill: currentColor; }
   .sp-meta { flex-shrink: 0; min-width: 0; }
   .song-player .song-title {
-    font-family: 'din-2014-rounded-variable', sans-serif;
+    font-family: 'din-2014-rounded-variable', sans-serif; word-spacing: -0.05em;
     font-size: 1.1rem;
     line-height: 1.2;
   }
@@ -330,7 +331,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   .project-body p { margin-bottom: 1.5rem; }
   .project-body h3 {
     color: var(--text);
-    font-family: 'din-2014-rounded-variable', sans-serif;
+    font-family: 'din-2014-rounded-variable', sans-serif; word-spacing: -0.05em;
     font-size: 1.4rem;
     font-weight: 400;
     margin-top: 2.5rem;
@@ -439,7 +440,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) translateZ(0);
-    font-family: 'din-2014-rounded-variable', sans-serif;
+    font-family: 'din-2014-rounded-variable', sans-serif; word-spacing: -0.05em;
     font-size: 4.75rem;
     font-weight: 400;
     color: #1a1a1a;
@@ -489,7 +490,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     pointer-events: none;
   }
   .p2-splash-question {
-    font-family: 'din-2014-rounded-variable', sans-serif;
+    font-family: 'din-2014-rounded-variable', sans-serif; word-spacing: -0.05em;
     font-size: 4.75rem;
     font-weight: 400;
     color: #1a1a1a;
@@ -640,7 +641,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   }
   .p2-about-text { flex: 1; }
   .p2-about-text h1 {
-    font-family: 'din-2014-rounded-variable', sans-serif;
+    font-family: 'din-2014-rounded-variable', sans-serif; word-spacing: -0.05em;
     font-size: 2.4rem;
     font-weight: 400;
     margin: 0 0 0.6rem;
@@ -660,7 +661,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     border-top: 1px solid #c9c1b6;
   }
   .p2-experience h3 {
-    font-family: 'din-2014-rounded-variable', sans-serif;
+    font-family: 'din-2014-rounded-variable', sans-serif; word-spacing: -0.05em;
     font-size: 1.3rem;
     font-weight: 400;
     color: #1a1a1a;
@@ -720,7 +721,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   .p2-contact.visible { opacity: 1; pointer-events: all; }
   .p2-contact-content { text-align: center; }
   .p2-contact-content h1 {
-    font-family: 'din-2014-rounded-variable', sans-serif;
+    font-family: 'din-2014-rounded-variable', sans-serif; word-spacing: -0.05em;
     font-size: 3rem;
     font-weight: 400;
     color: #1a1a1a;
@@ -974,7 +975,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     transform: translateY(0);
   }
   .p2-project-header h1 {
-    font-family: 'din-2014-rounded-variable', sans-serif;
+    font-family: 'din-2014-rounded-variable', sans-serif; word-spacing: -0.05em;
     font-size: 2.8rem;
     font-weight: 400;
     color: #1a1a1a;
@@ -1075,7 +1076,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   }
   .p2-project-body p { margin-bottom: 1rem; }
   .p2-project-body h3 {
-    font-family: 'din-2014-rounded-variable', sans-serif;
+    font-family: 'din-2014-rounded-variable', sans-serif; word-spacing: -0.05em;
     font-size: 1.4rem;
     font-weight: 400;
     color: #1a1a1a;
@@ -1217,7 +1218,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   }
   .p2-coming-soon.active { opacity: 1; pointer-events: all; }
   .p2-coming-soon h2 {
-    font-family: 'din-2014-rounded-variable', sans-serif;
+    font-family: 'din-2014-rounded-variable', sans-serif; word-spacing: -0.05em;
     font-size: 3rem;
     font-weight: 400;
     color: #fff;
@@ -1460,7 +1461,7 @@ const projects = [
     images: [],
     content: `<p>Design work as Co-Director of Design Board for University Union — Syracuse University's largest programming organization. Responsible for concert posters, festival branding, large-format signage, and social media assets reaching 12,000+ Instagram followers.</p>
 
-<h3 style="font-family:'din-2014-rounded-variable',sans-serif;font-weight:400;font-size:1.4rem;margin:2.5rem 0 0.5rem;">Juice Jam 2025</h3>
+<h3 style="font-family:'din-2014-rounded-variable',sans-serif;word-spacing:-0.05em;font-weight:400;font-size:1.4rem;margin:2.5rem 0 0.5rem;">Juice Jam 2025</h3>
 <p style="margin-bottom:1rem;">Full visual identity for Syracuse's annual outdoor music festival featuring Ashe & Jordan Ward. Designed the main poster, digital signage, and large-format print materials. Retro risograph aesthetic with bold gold typography.</p>
 <div class="project-img project-img-video" style="margin-bottom:0;overflow:hidden;border-radius:8px;"><video src="img/all/jj_timelapse.mp4" autoplay loop muted playsinline style="width:100%;height:auto;object-fit:cover;border-radius:8px;transform:scale(1.03);transform-origin:center bottom;"></video></div>
 <div class="img-grid-3" style="margin:0.6rem 0 0 0;margin-bottom:0;">
@@ -1470,7 +1471,7 @@ const projects = [
 </div>
 <div class="project-img" style="margin:0.6rem 0 0 0;"><img src="img/all/jj_91185.jpg?v=2" alt="Juice Jam - social media post" loading="lazy"></div>
 
-<h3 style="font-family:'din-2014-rounded-variable',sans-serif;font-weight:400;font-size:1.4rem;margin:2.5rem 0 0.5rem;">Events & Shows</h3>
+<h3 style="font-family:'din-2014-rounded-variable',sans-serif;word-spacing:-0.05em;font-weight:400;font-size:1.4rem;margin:2.5rem 0 0.5rem;">Events & Shows</h3>
 <p style="margin-bottom:1rem;">Posters and promotional materials for concerts, comedy shows, and campus-wide events. As you can see, I really tried to get a version of that Block Party logo approved for two years. I love it — unfortunately, everybody else hates it.</p>
 <div class="img-grid-3" style="margin-bottom:0;">
 <div class="project-img"><img src="img/all/BlockParty_v7_web.jpg" alt="Block Party 2026" loading="lazy"></div>
