@@ -1606,10 +1606,10 @@ if (backSpan) {
 (function() {
   const notes = ['♪', '♫', '♩', '♬'];
   const pool = [];
-  const POOL_SIZE = 30;
+  const POOL_SIZE = 60;
   let lastX = 0, lastY = 0, lastSpawn = 0;
-  const SPAWN_INTERVAL = 80; // ms between notes
-  const MIN_DIST = 12; // px minimum movement to spawn
+  const SPAWN_INTERVAL = 35; // ms between notes
+  const MIN_DIST = 6; // px minimum movement to spawn
 
   // Pre-create note elements
   for (let i = 0; i < POOL_SIZE; i++) {
