@@ -3141,6 +3141,7 @@ document.querySelector('.grid').addEventListener('mousedown', (e) => {
         const off = (halfPerim + 1) * (1 - EASE(progress));
         pathCW.style.strokeDashoffset = off;
         pathCCW.style.strokeDashoffset = off;
+        if (waitForHalf && progress >= 0.5) { startFadeOut(); }
         if (progress >= 1) {
           if (wantsOut) {
             wantsOut = false;
@@ -3188,19 +3189,26 @@ document.querySelector('.grid').addEventListener('mousedown', (e) => {
 
     var isHovering = false;
     var isFading = false;
+    var waitForHalf = false;
 
     function resetStrokes() {
-      state = 'idle'; progress = 0; wantsOut = false;
+      state = 'idle'; progress = 0; wantsOut = false; waitForHalf = false;
       if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
       lastTime = 0;
       pathCW.style.strokeDashoffset = halfPerim + 1;
       pathCCW.style.strokeDashoffset = halfPerim + 1;
     }
 
+    function startFadeOut() {
+      isFading = true;
+      waitForHalf = false;
+      [pathCW, pathCCW].forEach(p => { p.style.opacity = '0'; });
+      btn.style.color = '';
+    }
+
     function onFadeEnd() {
       isFading = false;
       resetStrokes();
-      btn.style.color = '';
       if (isHovering) {
         [pathCW, pathCCW].forEach(p => { p.style.opacity = '1'; });
         btn.style.color = 'var(--text)';
@@ -3217,6 +3225,7 @@ document.querySelector('.grid').addEventListener('mousedown', (e) => {
     btn.addEventListener('mouseenter', function(){
       if (activeClass && btn.classList.contains(activeClass)) return;
       isHovering = true;
+      waitForHalf = false;
       if (isFading) return;
       [pathCW, pathCCW].forEach(p => { p.style.opacity = '1'; });
       btn.style.color = 'var(--text)';
@@ -3225,9 +3234,13 @@ document.querySelector('.grid').addEventListener('mousedown', (e) => {
     btn.addEventListener('mouseleave', function(){
       if (activeClass && btn.classList.contains(activeClass)) return;
       isHovering = false;
-      isFading = true;
-      [pathCW, pathCCW].forEach(p => { p.style.opacity = '0'; });
-      btn.style.color = '';
+      if (progress >= 0.5 || state === 'drawn') {
+        // Already past 50%, fade immediately
+        startFadeOut();
+      } else {
+        // Under 50%, let it draw to 50% first
+        waitForHalf = true;
+      }
     });
     btn.addEventListener('click', function(){
       if (activeClass) hideStroke();
