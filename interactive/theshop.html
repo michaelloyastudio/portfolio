@@ -256,7 +256,7 @@ main.loaded { opacity: 1; transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1)
   position: relative;
 }
 .filter-btn {
-  transition: color 0.5s ease;
+  transition: color 0.25s ease;
 }
 .filter-btn.active {
   background: var(--accent);
@@ -1232,7 +1232,7 @@ document.addEventListener('keydown', e => {
       p.setAttribute('stroke-width','1');
       p.setAttribute('stroke-linecap','round');
       p.setAttribute('stroke-linejoin','round');
-      p.style.transition = 'opacity 0.5s ease';
+      p.style.transition = 'opacity 0.25s ease';
       svg.appendChild(p);
     });
     btn.style.position = btn.style.position || 'relative';
