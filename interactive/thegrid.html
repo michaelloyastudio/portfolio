@@ -273,15 +273,6 @@ h1, h2, h3 { font-family: 'din-2014-rounded-variable', sans-serif; word-spacing:
   user-select: none;
 }
 
-.mute-all-row {
-  grid-column: 1;
-  grid-row: 1;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding-right: 10px;
-}
-
 /* Instrument labels */
 .row-labels {
   grid-column: 1;
@@ -301,11 +292,23 @@ h1, h2, h3 { font-family: 'din-2014-rounded-variable', sans-serif; word-spacing:
   letter-spacing: 0.5px;
   text-transform: uppercase;
   transition: all 0.15s;
-  align-self: flex-end;
   margin: 0;
 }
 .mute-all-btn:hover { border-color: #ff4444; color: #ff4444; }
 .mute-all-btn.active { background: rgba(255,68,68,0.2); border-color: #ff4444; color: #ff4444; }
+
+.group-mute-btn kbd, .mute-all-btn kbd {
+  display: inline-block;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.4rem;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid #444;
+  border-radius: 3px;
+  padding: 0px 3px;
+  margin-right: 3px;
+  line-height: 1.4;
+  vertical-align: middle;
+}
 
 .group-mute-row {
   display: flex;
@@ -1239,7 +1242,6 @@ h1, h2, h3 { font-family: 'din-2014-rounded-variable', sans-serif; word-spacing:
   <div class="content-area">
     <!-- Sequencer Grid -->
     <div class="grid-wrapper" id="sequencerView">
-      <div class="mute-all-row"><button class="mute-all-btn clickable" id="muteAllBtn" title="Mute All (M)">Mute All</button></div>
       <div class="beat-numbers" id="beatNumbers"></div>
       <div class="row-labels" id="rowLabels"></div>
       <div class="grid" id="grid"><div class="ripple-overlay" id="rippleOverlay"></div></div>
@@ -1265,8 +1267,9 @@ h1, h2, h3 { font-family: 'din-2014-rounded-variable', sans-serif; word-spacing:
 
   <!-- Group Mutes -->
   <div class="group-mute-row" id="groupMuteRow">
-    <button class="group-mute-btn clickable" id="muteDrumsBtn" title="Mute Drums">Mute Drums</button>
-    <button class="group-mute-btn clickable" id="muteVocalsBtn" title="Mute Vocals">Mute Vocals</button>
+    <button class="group-mute-btn clickable" id="muteDrumsBtn" title="Mute Drums"><kbd>D</kbd> Mute Drums</button>
+    <button class="group-mute-btn clickable" id="muteVocalsBtn" title="Mute Vocals"><kbd>V</kbd> Mute Vocals</button>
+    <button class="mute-all-btn clickable" id="muteAllBtn" title="Mute All (M)"><kbd>M</kbd> Mute All</button>
   </div>
 
   <!-- Reverb HUD -->
