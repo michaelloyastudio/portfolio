@@ -2898,7 +2898,7 @@ document.querySelector('.grid').addEventListener('mousedown', (e) => {
 })();
 </script>
 <script>
-/* ── TRIM PATHS HOVER ── */
+/* ── TRIM PATHS HOVER (entry-point aware) ── */
 (function(){
   const DURATION = 400;
   const EASE = t => t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
@@ -2908,7 +2908,7 @@ document.querySelector('.grid').addEventListener('mousedown', (e) => {
     Object.assign(svg.style, {
       position:'absolute', top:'0', left:'0', pointerEvents:'none', overflow:'visible'
     });
-    // Two half-perimeter paths: one CW from left-middle, one CCW
+    // Two paths that both start from the cursor entry point and go in opposite directions
     const pathCW = document.createElementNS('http://www.w3.org/2000/svg','path');
     const pathCCW = document.createElementNS('http://www.w3.org/2000/svg','path');
     [pathCW, pathCCW].forEach(p => {
@@ -2923,40 +2923,128 @@ document.querySelector('.grid').addEventListener('mousedown', (e) => {
     btn.style.position = btn.style.position || 'relative';
     btn.appendChild(svg);
 
-    let halfPerim = 0;
+    let fullPerim = 0, halfPerim = 0;
     let state = 'idle';
     let progress = 0;
     let wantsOut = false;
     let rafId = null, lastTime = 0;
+    let cachedW = 0, cachedH = 0, cachedR = 0;
 
-    function buildHalfPath(w, h, rx, direction) {
-      // Start at left middle (0.5, h/2), go CW (up) or CCW (down) around half the rect
-      const x1 = 0.5, y1 = h / 2;
-      const r = Math.min(rx, w / 2, h / 2);
-      if (direction === 'cw') {
-        // Left-mid → top-left corner → top-right corner → right-mid
-        return `M${x1},${y1} L${x1},${0.5 + r} Q${x1},0.5 ${x1 + r},0.5 L${w - 0.5 - r},0.5 Q${w - 0.5},0.5 ${w - 0.5},${0.5 + r} L${w - 0.5},${y1}`;
-      } else {
-        // Left-mid → bottom-left corner → bottom-right corner → right-mid
-        return `M${x1},${y1} L${x1},${h - 0.5 - r} Q${x1},${h - 0.5} ${x1 + r},${h - 0.5} L${w - 0.5 - r},${h - 0.5} Q${w - 0.5},${h - 0.5} ${w - 0.5},${h - 0.5 - r} L${w - 0.5},${y1}`;
+    // Build a full-perimeter rounded rect path starting from a given point on the perimeter
+    // Returns two paths: CW and CCW from that point, each covering half the perimeter
+    function perimPoint(t, w, h, r) {
+      // t is 0..totalPerim, going CW from top-left corner (after radius)
+      // Segments: top edge, TR corner, right edge, BR corner, bottom edge, BL corner, left edge, TL corner
+      const top = w - 2*r, right = h - 2*r, bot = w - 2*r, left = h - 2*r;
+      const qtr = Math.PI * r / 2; // quarter circle arc length
+      const segs = [top, qtr, right, qtr, bot, qtr, left, qtr];
+      let acc = 0;
+      for (let i = 0; i < segs.length; i++) {
+        if (t <= acc + segs[i]) {
+          const frac = (t - acc) / segs[i];
+          switch(i) {
+            case 0: return { x: 0.5 + r + frac * top, y: 0.5 }; // top edge
+            case 1: { const a = -Math.PI/2 + frac * Math.PI/2; return { x: w - 0.5 - r + Math.cos(a)*r, y: 0.5 + r + Math.sin(a)*r }; } // TR
+            case 2: return { x: w - 0.5, y: 0.5 + r + frac * right }; // right edge
+            case 3: { const a = frac * Math.PI/2; return { x: w - 0.5 - r + Math.cos(a)*r, y: h - 0.5 - r + Math.sin(a)*r }; } // BR
+            case 4: return { x: w - 0.5 - r - frac * bot, y: h - 0.5 }; // bottom edge
+            case 5: { const a = Math.PI/2 + frac * Math.PI/2; return { x: 0.5 + r + Math.cos(a)*r, y: h - 0.5 - r + Math.sin(a)*r }; } // BL
+            case 6: return { x: 0.5, y: h - 0.5 - r - frac * left }; // left edge
+            case 7: { const a = Math.PI + frac * Math.PI/2; return { x: 0.5 + r + Math.cos(a)*r, y: 0.5 + r + Math.sin(a)*r }; } // TL
+          }
+        }
+        acc += segs[i];
       }
+      return { x: 0.5 + r, y: 0.5 }; // fallback: start of top edge
     }
+
+    // Map a local (x, y) coordinate to the nearest point on the perimeter (returns t in 0..fullPerim)
+    function xyToPerimT(lx, ly, w, h, r) {
+      // Clamp to edges — find closest edge point
+      const edges = [
+        { side: 'top', x: Math.max(0.5+r, Math.min(w-0.5-r, lx)), y: 0.5 },
+        { side: 'right', x: w-0.5, y: Math.max(0.5+r, Math.min(h-0.5-r, ly)) },
+        { side: 'bottom', x: Math.max(0.5+r, Math.min(w-0.5-r, lx)), y: h-0.5 },
+        { side: 'left', x: 0.5, y: Math.max(0.5+r, Math.min(h-0.5-r, ly)) },
+      ];
+      // Also check corners (arcs)
+      const corners = [
+        { cx: 0.5+r, cy: 0.5+r },   // TL
+        { cx: w-0.5-r, cy: 0.5+r },  // TR
+        { cx: w-0.5-r, cy: h-0.5-r }, // BR
+        { cx: 0.5+r, cy: h-0.5-r },  // BL
+      ];
+      let best = null, bestDist = Infinity;
+      edges.forEach(e => {
+        const d = Math.hypot(lx - e.x, ly - e.y);
+        if (d < bestDist) { bestDist = d; best = e; }
+      });
+      // Check corner arcs
+      corners.forEach((c, ci) => {
+        const dx = lx - c.cx, dy = ly - c.cy;
+        const d = Math.hypot(dx, dy);
+        const px = c.cx + (dx/d)*r, py = c.cy + (dy/d)*r;
+        const pd = Math.hypot(lx - px, ly - py);
+        if (pd < bestDist) { bestDist = pd; best = { side: 'corner', ci, x: px, y: py, angle: Math.atan2(dy, dx) }; }
+      });
+
+      const top = w - 2*r, right = h - 2*r, bot = w - 2*r, left = h - 2*r;
+      const qtr = Math.PI * r / 2;
+
+      if (best.side === 'top') return (best.x - 0.5 - r);
+      if (best.side === 'corner' && best.ci === 1) { let a = best.angle + Math.PI/2; if (a < 0) a += 2*Math.PI; return top + (a / (Math.PI/2)) * qtr; }
+      if (best.side === 'right') return top + qtr + (best.y - 0.5 - r);
+      if (best.side === 'corner' && best.ci === 2) { let a = best.angle; if (a < 0) a += 2*Math.PI; return top + qtr + right + (a / (Math.PI/2)) * qtr; }
+      if (best.side === 'bottom') return top + qtr + right + qtr + (w - 0.5 - r - best.x);
+      if (best.side === 'corner' && best.ci === 3) { let a = best.angle - Math.PI/2; if (a < 0) a += 2*Math.PI; return top + qtr + right + qtr + bot + (a / (Math.PI/2)) * qtr; }
+      if (best.side === 'left') return top + qtr + right + qtr + bot + qtr + (h - 0.5 - r - best.y);
+      if (best.side === 'corner' && best.ci === 0) { let a = best.angle - Math.PI; if (a < 0) a += 2*Math.PI; return top + qtr + right + qtr + bot + qtr + left + (a / (Math.PI/2)) * qtr; }
+      return 0;
+    }
+
+    // Build a rounded rect path that starts from parameter t and goes in given direction for half the perimeter
+    function buildPathFromT(startT, w, h, r, direction) {
+      const steps = 48; // segments for smooth curves
+      const len = fullPerim / 2;
+      let d = '';
+      for (let i = 0; i <= steps; i++) {
+        const frac = i / steps;
+        let t = direction === 'cw'
+          ? (startT + frac * len) % fullPerim
+          : (startT - frac * len + fullPerim * 2) % fullPerim;
+        const pt = perimPoint(t, w, h, r);
+        d += (i === 0 ? 'M' : 'L') + pt.x.toFixed(2) + ',' + pt.y.toFixed(2);
+      }
+      return d;
+    }
+
+    var entryT = 0;
 
     function measure() {
       const cs = getComputedStyle(btn);
       const bw = parseFloat(cs.borderLeftWidth) || 1;
       const w = btn.offsetWidth, h = btn.offsetHeight;
+      cachedW = w; cachedH = h;
       svg.style.top = (-bw) + 'px';
       svg.style.left = (-bw) + 'px';
       svg.setAttribute('width', w); svg.setAttribute('height', h);
-      const rx = parseFloat(cs.borderRadius) || 6;
-      pathCW.setAttribute('d', buildHalfPath(w, h, rx, 'cw'));
-      pathCCW.setAttribute('d', buildHalfPath(w, h, rx, 'ccw'));
-      halfPerim = pathCW.getTotalLength();
+      cachedR = Math.min(parseFloat(cs.borderRadius) || 6, w/2, h/2);
+      const top = w - 2*cachedR, right = h - 2*cachedR;
+      const qtr = Math.PI * cachedR / 2;
+      fullPerim = 2*(top + right) + 4*qtr;
+      halfPerim = fullPerim / 2;
+    }
+
+    function rebuildPaths() {
+      const w = cachedW, h = cachedH, r = cachedR;
+      pathCW.setAttribute('d', buildPathFromT(entryT, w, h, r, 'cw'));
+      pathCCW.setAttribute('d', buildPathFromT(entryT, w, h, r, 'ccw'));
+      const len = pathCW.getTotalLength();
       [pathCW, pathCCW].forEach(p => {
-        p.style.strokeDasharray = (halfPerim + 1);
-        if (state === 'idle') p.style.strokeDashoffset = halfPerim + 1;
+        p.style.strokeDasharray = (len + 1);
+        if (state === 'idle') p.style.strokeDashoffset = len + 1;
       });
+      halfPerim = len;
     }
 
     function tick(now) {
@@ -3004,8 +3092,6 @@ document.querySelector('.grid').addEventListener('mousedown', (e) => {
     }
 
     measure();
-    pathCW.style.strokeDashoffset = halfPerim + 1;
-    pathCCW.style.strokeDashoffset = halfPerim + 1;
     new ResizeObserver(measure).observe(btn);
 
     function hideStroke() {
@@ -3041,6 +3127,7 @@ document.querySelector('.grid').addEventListener('mousedown', (e) => {
       if (isHovering) {
         [pathCW, pathCCW].forEach(p => { p.style.opacity = '1'; });
         btn.style.color = 'var(--text)';
+        rebuildPaths();
         state = 'drawing-in'; progress = 0; startAnim();
       }
     }
@@ -3051,11 +3138,17 @@ document.querySelector('.grid').addEventListener('mousedown', (e) => {
       });
     });
 
-    btn.addEventListener('mouseenter', function(){
+    btn.addEventListener('mouseenter', function(e){
       if (activeClass && btn.classList.contains(activeClass)) return;
       isHovering = true;
       waitForHalf = false;
       if (isFading) return;
+      // Calculate entry point on perimeter
+      const rect = btn.getBoundingClientRect();
+      const lx = e.clientX - rect.left;
+      const ly = e.clientY - rect.top;
+      entryT = xyToPerimT(lx, ly, cachedW, cachedH, cachedR);
+      rebuildPaths();
       [pathCW, pathCCW].forEach(p => { p.style.opacity = '1'; });
       btn.style.color = 'var(--text)';
       if (state === 'idle') { state = 'drawing-in'; progress = 0; startAnim(); }
@@ -3064,10 +3157,8 @@ document.querySelector('.grid').addEventListener('mousedown', (e) => {
       if (activeClass && btn.classList.contains(activeClass)) return;
       isHovering = false;
       if (progress >= 0.5 || state === 'drawn') {
-        // Already past 50%, fade immediately
         startFadeOut();
       } else {
-        // Under 50%, let it draw to 50% first
         waitForHalf = true;
       }
     });
