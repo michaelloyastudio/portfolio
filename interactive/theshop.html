@@ -255,8 +255,8 @@ main.loaded { opacity: 1; transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1)
   transition: color 0.2s;
   position: relative;
 }
-.filter-btn:hover {
-  color: var(--text);
+.filter-btn {
+  transition: color 0.5s ease;
 }
 .filter-btn.active {
   background: var(--accent);
@@ -1338,11 +1338,15 @@ document.addEventListener('keydown', e => {
       pathCCW.style.strokeDashoffset = halfPerim + 1;
     }
 
+    var defaultColor = getComputedStyle(btn).color;
+
     function onFadeEnd() {
       isFading = false;
       resetStrokes();
+      btn.style.color = '';
       if (isHovering) {
         [pathCW, pathCCW].forEach(p => { p.style.opacity = '1'; });
+        btn.style.color = 'var(--text)';
         state = 'drawing-in'; progress = 0; startAnim();
       }
     }
@@ -1358,6 +1362,7 @@ document.addEventListener('keydown', e => {
       isHovering = true;
       if (isFading) return;
       [pathCW, pathCCW].forEach(p => { p.style.opacity = '1'; });
+      btn.style.color = 'var(--text)';
       if (state === 'idle') { state = 'drawing-in'; progress = 0; startAnim(); }
     });
     btn.addEventListener('mouseleave', function(){
@@ -1365,6 +1370,7 @@ document.addEventListener('keydown', e => {
       isHovering = false;
       isFading = true;
       [pathCW, pathCCW].forEach(p => { p.style.opacity = '0'; });
+      btn.style.color = '';
     });
     btn.addEventListener('click', function(){
       if (activeClass) hideStroke();

@@ -259,7 +259,7 @@ h1, h2, h3 { font-family: 'din-2014-rounded-variable', sans-serif; word-spacing:
   white-space: nowrap;
   position: relative;
 }
-.mode-btn:hover { color: var(--text); }
+.mode-btn { transition: color 0.5s ease; }
 .mode-btn.active {
   background: rgba(255,142,61,0.15);
   color: var(--accent);
@@ -522,7 +522,7 @@ h1, h2, h3 { font-family: 'din-2014-rounded-variable', sans-serif; word-spacing:
   transition: color 0.15s;
   position: relative;
 }
-.action-btn:hover { color: var(--text); }
+.action-btn { transition: color 0.5s ease; }
 
 /* ── FOOTER ── */
 .footer {
@@ -3200,9 +3200,10 @@ document.querySelector('.grid').addEventListener('mousedown', (e) => {
     function onFadeEnd() {
       isFading = false;
       resetStrokes();
-      // If user is still hovering, restart fresh
+      btn.style.color = '';
       if (isHovering) {
         [pathCW, pathCCW].forEach(p => { p.style.opacity = '1'; });
+        btn.style.color = 'var(--text)';
         state = 'drawing-in'; progress = 0; startAnim();
       }
     }
@@ -3216,8 +3217,9 @@ document.querySelector('.grid').addEventListener('mousedown', (e) => {
     btn.addEventListener('mouseenter', function(){
       if (activeClass && btn.classList.contains(activeClass)) return;
       isHovering = true;
-      if (isFading) return; // let fade finish, onFadeEnd will restart
+      if (isFading) return;
       [pathCW, pathCCW].forEach(p => { p.style.opacity = '1'; });
+      btn.style.color = 'var(--text)';
       if (state === 'idle') { state = 'drawing-in'; progress = 0; startAnim(); }
     });
     btn.addEventListener('mouseleave', function(){
@@ -3225,6 +3227,7 @@ document.querySelector('.grid').addEventListener('mousedown', (e) => {
       isHovering = false;
       isFading = true;
       [pathCW, pathCCW].forEach(p => { p.style.opacity = '0'; });
+      btn.style.color = '';
     });
     btn.addEventListener('click', function(){
       if (activeClass) hideStroke();
