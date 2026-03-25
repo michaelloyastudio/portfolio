@@ -2288,10 +2288,10 @@ function loopTick() {
     
     // Recording: metronome + track duration
     if (loop.state === 'recording') {
-      // Metronome on every beat, emphasis on beat 4
+      // Metronome on every beat, emphasis on downbeat (beat 1 of each bar)
       if (currentStep % 4 === 0) {
         const beatNum = (currentStep / 4) % 4;
-        playClick(beatNum === 3 ? 1200 : 900);
+        playClick(beatNum === 0 ? 1200 : 900);
       }
       
       loop.recordedSteps++;
