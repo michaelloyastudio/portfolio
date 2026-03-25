@@ -1578,5 +1578,55 @@ setTimeout(() => {
 addParticles(5);
 </script>
 
+<script>
+// ── MUSIC NOTE CURSOR TRAIL ──
+(function() {
+  const notes = ['♪', '♫', '♩', '♬'];
+  const pool = [];
+  const POOL_SIZE = 60;
+  let lastX = 0, lastY = 0, lastSpawn = 0;
+  const SPAWN_INTERVAL = 35;
+  const MIN_DIST = 6;
+  for (let i = 0; i < POOL_SIZE; i++) {
+    const el = document.createElement('div');
+    el.style.cssText = 'position:fixed;pointer-events:none;z-index:9999;font-size:14px;opacity:0;transition:none;user-select:none;will-change:transform,opacity;';
+    el.style.color = '#8a8580';
+    document.body.appendChild(el);
+    pool.push({ el, active: false });
+  }
+  function spawn(x, y) {
+    const note = pool.find(n => !n.active);
+    if (!note) return;
+    note.active = true;
+    note.el.textContent = notes[Math.random() * notes.length | 0];
+    note.el.style.fontSize = (10 + Math.random() * 8) + 'px';
+    const offsetX = (Math.random() - 0.5) * 16;
+    note.el.style.left = (x + offsetX) + 'px';
+    note.el.style.top = y + 'px';
+    note.el.style.opacity = '0.7';
+    note.el.style.transform = 'translateY(0) rotate(' + ((Math.random() - 0.5) * 30) + 'deg)';
+    note.el.style.transition = 'none';
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const drift = (Math.random() - 0.5) * 20;
+        note.el.style.transition = 'transform 1s ease-out, opacity 1s ease-out';
+        note.el.style.transform = 'translateY(-' + (40 + Math.random() * 30) + 'px) rotate(' + ((Math.random() - 0.5) * 60) + 'deg) translateX(' + drift + 'px)';
+        note.el.style.opacity = '0';
+      });
+    });
+    setTimeout(() => { note.active = false; }, 1050);
+  }
+  document.addEventListener('mousemove', function(e) {
+    const now = Date.now();
+    const dx = e.clientX - lastX, dy = e.clientY - lastY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    if (now - lastSpawn > SPAWN_INTERVAL && dist > MIN_DIST) {
+      spawn(e.clientX, e.clientY);
+      lastX = e.clientX; lastY = e.clientY;
+      lastSpawn = now;
+    }
+  });
+})();
+</script>
 </body>
 </html>
