@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-<title>Michael Loya Studio — loya Post</title>
+<title>Michael Loya Studio — Juice Jam Post</title>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -110,7 +110,7 @@
     <svg class="ig-bookmark" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
   </div>
   <div class="ig-caption">
-    <strong>michaelloyastudio</strong> Some design work I've done for my brother @byeloya. Cover art, Spotify Canvas loops, logo, merch. We build together 💎<br>
+    <strong>michaelloyastudio</strong> Juice Jam 2025 — poster and campaign work I did for @universityunion last summer. Retro concert poster vibe, distressed paper, gold type. Fun project to work on. S/o @bk_visual for holding it down as co-director 🤝🧃<br>
     <span class="time">1 hour ago</span>
   </div>
 </div>
@@ -126,9 +126,9 @@ const logoBig = (stroke, size) => `<svg viewBox="0 0 375.83 292.72" xmlns="http:
 
 function progressBar(i, total, light) {
   const pct = ((i + 1) / total) * 100;
-  const track = light ? 'rgba(0,0,0,0.04)' : 'rgba(255,255,255,0.05)';
-  const fill = light ? 'rgba(0,0,0,0.15)' : 'rgba(255,255,255,0.15)';
-  const label = light ? 'rgba(0,0,0,0.15)' : 'rgba(255,255,255,0.2)';
+  const track = light ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.1)';
+  const fill = light ? '#0a0a0a' : '#E8E0D4';
+  const label = light ? 'rgba(0,0,0,0.25)' : 'rgba(255,255,255,0.35)';
   return `<div style="position:absolute;bottom:0;left:0;right:0;padding:16px 28px 20px;z-index:10;display:flex;align-items:center;gap:10px;">
     <div style="flex:1;height:2px;background:${track};border-radius:2px;overflow:hidden;">
       <div style="height:100%;width:${pct}%;background:${fill};border-radius:2px;"></div>
@@ -146,43 +146,55 @@ function arrow(light) {
 
 const slides = [
 
-  // 1 — Hero (EP cover only, clean)
-  `<div class="slide" style="background:#0a0a0a;justify-content:center;align-items:center;padding:40px;">
-    <img src="img/DnDFinal.jpeg" style="width:100%;height:auto;object-fit:contain;border-radius:4px;">
+  // 1 — Hero (main poster full bleed)
+  `<div class="slide" style="background:#0a0a0a;position:relative;">
+    <img src="img/all/jj_78507.jpg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.92;">
+    <div style="position:absolute;inset:0;background:linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.65) 100%);z-index:2;"></div>
+    <div style="position:relative;z-index:6;flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:36px;">
+      <span class="sans" style="font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.55);">University Union</span>
+      <h1 class="serif" style="font-size:40px;color:#fff;line-height:1;letter-spacing:-0.5px;margin-top:6px;">Juice Jam 2025</h1>
+      <p class="sans" style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:6px;">Poster & campaign design</p>
+    </div>
+    ${arrow(false)}
+    ${progressBar(0, TOTAL, false)}
   </div>`,
 
-  // 2 — About (context first, then the work)
-  `<div class="slide" style="background:#0a0a0a;padding:48px 36px;justify-content:center;">
-    <span class="sans" style="font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--brand);margin-bottom:20px;">About</span>
-    <h2 class="serif" style="font-size:26px;color:#E8E0D4;line-height:1.15;">Music by loya.<br>Design by Loya.</h2>
-    <p class="sans" style="font-size:12px;color:#8a8580;margin-top:18px;line-height:1.7;">loya has 40k+ monthly Spotify listeners<br>and 34k on Instagram. With an audience<br>like that, he knows the importance of<br>having professional design.</p>
-    <p class="sans" style="font-size:12px;color:#8a8580;margin-top:12px;line-height:1.7;">EP cover art, Spotify Canvas loops,<br>logo, merch; whatever he needs.<br>He's a capable designer himself,<br>but taps me in for the expertise.</p>
+  // 2 — Work spread (poster + merch)
+  `<div class="slide" style="background:#0a0a0a;padding:28px 24px;justify-content:center;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <div style="border-radius:6px;overflow:hidden;aspect-ratio:3/4;"><img src="img/all/jj_78506.jpg" style="width:100%;height:100%;object-fit:cover;"></div>
+      <div style="border-radius:6px;overflow:hidden;aspect-ratio:3/4;"><img src="img/all/jj_merch.jpg" style="width:100%;height:100%;object-fit:cover;"></div>
+    </div>
+    <div style="border-radius:6px;overflow:hidden;margin-top:8px;height:150px;"><img src="img/all/jj_91185.jpg" style="width:100%;height:100%;object-fit:cover;object-position:center top;"></div>
     ${arrow(false)}
     ${progressBar(1, TOTAL, false)}
   </div>`,
 
-  // 3 — Vinyl + hat (pushed up, away from progress bar)
-  `<div class="slide" style="background:#0a0a0a;padding:20px 32px 56px;justify-content:flex-start;padding-top:28px;">
-    <div style="border-radius:4px;height:240px;background:url(img/all/vinyl-cropped.jpg) center/cover no-repeat;background-size:cover;"></div>
-    <div style="border-radius:4px;margin-top:8px;height:210px;background:url(img/all/loya_hat_mockup.jpeg) center/cover no-repeat;background-size:cover;"></div>
+  // 3 — More work (other variations)
+  `<div class="slide" style="background:#0a0a0a;padding:28px 24px;justify-content:center;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <div style="border-radius:6px;overflow:hidden;aspect-ratio:3/4;"><img src="img/all/jj_78508.jpg" style="width:100%;height:100%;object-fit:cover;"></div>
+      <div style="border-radius:6px;overflow:hidden;aspect-ratio:3/4;"><img src="img/all/jj_91184.jpg" style="width:100%;height:100%;object-fit:cover;"></div>
+    </div>
     ${arrow(false)}
     ${progressBar(2, TOTAL, false)}
   </div>`,
 
-  // 4 — Canvas visuals (zoomed to show center loop properly)
-  `<div class="slide" style="background:#0a0a0a;padding:28px 32px 56px;justify-content:center;">
-    <span class="sans" style="font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:12px;text-align:center;">Spotify Canvas Loops</span>
-    <div style="border-radius:6px;overflow:hidden;height:400px;"><video src="img/all/canvas_center.mp4" autoplay loop muted playsinline style="width:100%;height:100%;object-fit:contain;"></video></div>
-    <p class="sans" style="font-size:11px;color:#8a8580;margin-top:12px;text-align:center;line-height:1.5;">Photoshop + After Effects</p>
+  // 4 — Context (dark, simple text)
+  `<div class="slide" style="background:#0a0a0a;padding:48px 36px;justify-content:center;">
+    <span class="sans" style="font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--brand);margin-bottom:20px;">About the project</span>
+    <h2 class="serif" style="font-size:26px;color:#E8E0D4;line-height:1.15;">Posters, merch, social,<br>signage — the whole<br>rollout for Syracuse's<br>outdoor music festival.</h2>
+    <p class="sans" style="font-size:12px;color:#8a8580;margin-top:18px;line-height:1.7;">Ashe & Jordan Ward. September 2025.<br>Went for a vintage concert poster feel<br>with distressed paper and gold type.</p>
     ${arrow(false)}
     ${progressBar(3, TOTAL, false)}
   </div>`,
 
-  // 5 — CTA (dark)
-  `<div class="slide" style="background:#0a0a0a;padding:48px 36px;justify-content:center;align-items:center;text-align:center;">
-    ${logoBig('#E8E0D4', 44)}
-    <h2 class="serif" style="font-size:24px;color:#E8E0D4;margin-top:24px;line-height:1.1;">See the full project.</h2>
+  // 5 — CTA (clean, no arrow)
+  `<div class="slide" style="background:#E8E0D4;padding:48px 36px;justify-content:center;align-items:center;text-align:center;">
+    ${logoBig('#0a0a0a', 44)}
+    <h2 class="serif" style="font-size:24px;color:#0a0a0a;margin-top:24px;line-height:1.1;">More work on the site.</h2>
     <p class="sans" style="font-size:12px;color:#8a8580;margin-top:10px;">michaelloya.studio</p>
+    ${progressBar(4, TOTAL, true)}
   </div>`,
 ];
 
@@ -215,31 +227,9 @@ viewport.addEventListener('touchend', e => { const d = e.changedTouches[0].clien
 async function exportAll() {
   const btn = document.getElementById('exportBtn');
   btn.disabled = true; btn.textContent = 'Exporting...';
-  // Preload all images
-  const imgUrls = ['img/DnDFinal.jpeg','img/all/vinyl-cover.jpeg','img/all/loya_hat_mockup.jpeg'];
-  await Promise.all(imgUrls.map(u => new Promise(r => { const img = new Image(); img.onload = r; img.onerror = r; img.src = u; })));
-  await new Promise(r => setTimeout(r, 500));
   const stage = document.getElementById('exportStage');
   const SCALE = 2160 / 420;
   for (let i = 0; i < slides.length; i++) {
-    // Slide 4 (index 3) — export as PNG without the video playing
-    if (i === 3) {
-      const w = document.createElement('div');
-      w.style.width = '420px'; w.style.height = '560px';
-      w.style.position = 'relative'; w.style.overflow = 'hidden';
-      w.innerHTML = slides[i].replace(/<video[^>]*>.*?<\/video>/gi, '');
-      stage.appendChild(w);
-      try {
-        const canvas = await html2canvas(w, { width: 420, height: 560, scale: SCALE, useCORS: true, backgroundColor: null });
-        const link = document.createElement('a');
-        link.download = 'loya-4-canvas.png';
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-        await new Promise(r => setTimeout(r, 400));
-      } catch(e) { console.error('Export failed for slide 4', e); }
-      stage.removeChild(w);
-      continue;
-    }
     const w = document.createElement('div');
     w.style.width = '420px'; w.style.height = '560px';
     w.style.position = 'relative'; w.style.overflow = 'hidden';
@@ -248,11 +238,11 @@ async function exportAll() {
     try {
       const canvas = await html2canvas(w, { width: 420, height: 560, scale: SCALE, useCORS: true, backgroundColor: null });
       const link = document.createElement('a');
-      link.download = `loya-${i + 1}.png`;
+      link.download = `juice-jam-${i + 1}.png`;
       link.href = canvas.toDataURL('image/png');
       link.click();
-      await new Promise(r => setTimeout(r, 800));
-    } catch(e) { console.error('Export failed for slide', i + 1, e); alert('Export failed for slide ' + (i+1) + ': ' + e.message); }
+      await new Promise(r => setTimeout(r, 400));
+    } catch(e) { console.error('Export failed for slide', i + 1, e); }
     stage.removeChild(w);
   }
   btn.disabled = false; btn.textContent = 'Download All Slides';
