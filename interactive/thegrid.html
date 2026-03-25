@@ -1501,7 +1501,7 @@ function playSound(inst) {
       const pitch = p.pitch || 340;
       const formants = [p.f1 || 800, p.f2 || 1200, p.f3 || 2800];
       const formantQ = [12, 10, 8];
-      const formantGain = [0.28, 0.18, 0.08];
+      const formantGain = [0.55, 0.35, 0.18];
       const out = getOutput();
       
       // Base oscillator (rich harmonics)
@@ -1531,7 +1531,7 @@ function playSound(inst) {
       for (let i = 0; i < nData.length; i++) nData[i] = Math.random() * 2 - 1;
       const nSrc = audioCtx.createBufferSource(); nSrc.buffer = nBuf;
       const nGain = audioCtx.createGain();
-      nGain.gain.setValueAtTime(0.04, t);
+      nGain.gain.setValueAtTime(0.08, t);
       nGain.gain.exponentialRampToValueAtTime(0.001, t + noiseDur);
       const nBp = audioCtx.createBiquadFilter();
       nBp.type = 'bandpass'; nBp.frequency.value = formants[1]; nBp.Q.value = 3;
