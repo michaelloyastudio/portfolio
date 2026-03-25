@@ -1282,7 +1282,7 @@ document.addEventListener('keydown', e => {
         const off = (halfPerim + 1) * (1 - EASE(progress));
         pathCW.style.strokeDashoffset = off;
         pathCCW.style.strokeDashoffset = off;
-        if (waitForHalf && progress >= 0.45) { startFadeOut(); }
+        if (waitForHalf && progress >= 0.75) { startFadeOut(); }
         if (progress >= 1) {
           if (wantsOut) {
             wantsOut = false;
@@ -1375,7 +1375,7 @@ document.addEventListener('keydown', e => {
     btn.addEventListener('mouseleave', function(){
       if (activeClass && btn.classList.contains(activeClass)) return;
       isHovering = false;
-      if (progress >= 0.45 || state === 'drawn') {
+      if (progress >= 0.75 || state === 'drawn') {
         startFadeOut();
       } else {
         waitForHalf = true;
