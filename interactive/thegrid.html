@@ -1228,9 +1228,9 @@ h1, h2, h3 { font-family: 'din-2014-rounded-variable', sans-serif; word-spacing:
       <button class="mode-btn clickable" id="modePadBtn" data-mode="drumpad">Drum Pad</button>
     </div>
     <div class="transport-divider" id="stepsDivider"></div>
-    <button class="steps-toggle clickable" id="addStepsBtn" title="Toggle 16/32 steps">
-      <span class="steps-label" id="stepsLabel">16</span>
-      <span class="steps-unit">steps</span>
+    <button class="steps-toggle clickable" id="addStepsBtn" title="Toggle 4/8 beats">
+      <span class="steps-label" id="stepsLabel">4</span>
+      <span class="steps-unit">beats</span>
     </button>
   </div>
 
@@ -1918,8 +1918,8 @@ function toggleSteps() {
     const oldSteps = STEPS;
     STEPS = MAX_STEPS;
     expanded = true;
-    document.getElementById('stepsLabel').textContent = '32';
-    btn.title = 'Switch to 16 steps';
+    document.getElementById('stepsLabel').textContent = '8';
+    btn.title = 'Switch to 4 beats';
     
     // Extend grid arrays
     grid.forEach(row => {
@@ -1987,8 +1987,8 @@ function toggleSteps() {
     
     STEPS = 16;
     expanded = false;
-    document.getElementById('stepsLabel').textContent = '16';
-    btn.title = 'Switch to 32 steps';
+    document.getElementById('stepsLabel').textContent = '4';
+    btn.title = 'Switch to 8 beats';
     
     // Trim grid arrays
     grid.forEach(row => row.length = 16);
