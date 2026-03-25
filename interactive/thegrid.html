@@ -1012,6 +1012,44 @@ h1, h2, h3 { font-family: 'din-2014-rounded-variable', sans-serif; word-spacing:
   box-shadow: 0 0 10px rgba(255,142,61,0.15);
 }
 
+.loop-circle.pulse {
+  transition: box-shadow 0.05s ease, border-color 0.05s ease;
+}
+
+.loop-track-item {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.loop-mute, .loop-solo {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  border: 1px solid #333;
+  background: transparent;
+  color: #555;
+  font-size: 0.35rem;
+  font-family: 'Space Grotesk', sans-serif;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  text-transform: uppercase;
+  letter-spacing: 0;
+}
+.loop-mute:hover { border-color: #ff4444; color: #ff4444; }
+.loop-mute.active { background: rgba(255,68,68,0.2); border-color: #ff4444; color: #ff4444; }
+.loop-solo:hover { border-color: #44ff66; color: #44ff66; }
+.loop-solo.active { background: rgba(68,255,102,0.2); border-color: #44ff66; color: #44ff66; }
+
+.loop-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
 /* ── KIT SELECTOR ── */
 .kit-selector {
   display: flex;
@@ -2187,16 +2225,47 @@ function playClick(freq) {
 function buildLoopCircles() {
   const col = document.getElementById('loopTrackCol');
   for (let i = 0; i < LOOP_COUNT; i++) {
+    const item = document.createElement('div');
+    item.className = 'loop-track-item';
+
     const circle = document.createElement('div');
     circle.className = 'loop-circle clickable';
     
     const countText = document.createElement('div');
     countText.className = 'loop-count-text';
     circle.appendChild(countText);
-    
-    col.appendChild(circle);
-    loops.push({ state: 'idle', hits: [], el: circle, countText: countText, countVal: 0, recordedSteps: 0 });
+
+    const controls = document.createElement('div');
+    controls.className = 'loop-controls';
+    const muteBtn = document.createElement('button');
+    muteBtn.className = 'loop-mute clickable';
+    muteBtn.textContent = 'M';
+    muteBtn.title = 'Mute loop';
+    const soloBtn = document.createElement('button');
+    soloBtn.className = 'loop-solo clickable';
+    soloBtn.textContent = 'S';
+    soloBtn.title = 'Solo loop';
+    controls.appendChild(muteBtn);
+    controls.appendChild(soloBtn);
+
+    item.appendChild(circle);
+    item.appendChild(controls);
+    col.appendChild(item);
+
+    const loop = { state: 'idle', hits: [], el: circle, countText: countText, countVal: 0, recordedSteps: 0, muted: false, soloed: false, muteBtn, soloBtn };
+    loops.push(loop);
     circle.addEventListener('click', () => handleLoopClick(i));
+
+    muteBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      loop.muted = !loop.muted;
+      muteBtn.classList.toggle('active', loop.muted);
+    });
+    soloBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      loop.soloed = !loop.soloed;
+      soloBtn.classList.toggle('active', loop.soloed);
+    });
   }
 }
 
@@ -2305,15 +2374,30 @@ function loopTick() {
     
     // Playback: fire hits synced to sequencer step
     if (loop.state === 'has-data') {
-      loop.hits.forEach(hit => {
-        if (hit.step === currentStep) {
-          const inst = PAD_INSTRUMENTS[hit.padIndex];
-          if (inst) {
-            playSound(inst);
-            hitPad(hit.padIndex);
+      // Respect mute/solo
+      const anySoloed = loops.some(l => l.soloed);
+      const canPlay = loop.muted ? false : (anySoloed ? loop.soloed : true);
+      if (canPlay) {
+        loop.hits.forEach(hit => {
+          if (hit.step === currentStep) {
+            const inst = PAD_INSTRUMENTS[hit.padIndex];
+            if (inst) {
+              playSound(inst);
+              hitPad(hit.padIndex);
+              // Pulse the circle with instrument color
+              loop.el.style.borderColor = inst.color;
+              loop.el.style.boxShadow = '0 0 16px ' + inst.color + '80';
+              clearTimeout(loop._pulseTimer);
+              loop._pulseTimer = setTimeout(() => {
+                if (loop.state === 'has-data') {
+                  loop.el.style.borderColor = '';
+                  loop.el.style.boxShadow = '';
+                }
+              }, 120);
+            }
           }
-        }
-      });
+        });
+      }
     }
   });
   
