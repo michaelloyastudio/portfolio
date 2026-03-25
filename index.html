@@ -21,7 +21,50 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
 <meta name="twitter:image" content="https://michaelloya.studio/img/DnDFinal.jpeg">
 <link rel="icon" type="image/svg+xml" href="logo.svg">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+  @font-face {
+    font-family: 'DIN 2014 Rounded';
+    src: url('fonts/fontspring-demo-din-2014-rounded-extra-light.woff2') format('woff2');
+    font-weight: 200;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'DIN 2014 Rounded';
+    src: url('fonts/fontspring-demo-din-2014-rounded-light.woff2') format('woff2');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'DIN 2014 Rounded';
+    src: url('fonts/fontspring-demo-din-2014-rounded-regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'DIN 2014 Rounded';
+    src: url('fonts/fontspring-demo-din-2014-rounded-demi.woff2') format('woff2');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'DIN 2014 Rounded';
+    src: url('fonts/fontspring-demo-din-2014-rounded-bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'DIN 2014 Rounded';
+    src: url('fonts/fontspring-demo-din-2014-rounded-extra-bold.woff2') format('woff2');
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+  }
     /* Prevent blue tap highlights on mobile (via Sonny Cirasuolo / prof K) */
     * { -webkit-tap-highlight-color: transparent; }
 
@@ -195,7 +238,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   .sp-play svg { width: 16px; height: 16px; fill: currentColor; }
   .sp-meta { flex-shrink: 0; min-width: 0; }
   .song-player .song-title {
-    font-family: 'Instrument Serif', serif;
+    font-family: 'DIN 2014 Rounded', sans-serif;
     font-size: 1.1rem;
     line-height: 1.2;
   }
@@ -329,7 +372,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   .project-body p { margin-bottom: 1.5rem; }
   .project-body h3 {
     color: var(--text);
-    font-family: 'Instrument Serif', serif;
+    font-family: 'DIN 2014 Rounded', sans-serif;
     font-size: 1.4rem;
     font-weight: 400;
     margin-top: 2.5rem;
@@ -438,7 +481,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) translateZ(0);
-    font-family: 'Instrument Serif', serif;
+    font-family: 'DIN 2014 Rounded', sans-serif;
     font-size: 5rem;
     font-weight: 400;
     color: #1a1a1a;
@@ -491,7 +534,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     pointer-events: none;
   }
   .p2-splash-question {
-    font-family: 'Instrument Serif', serif;
+    font-family: 'DIN 2014 Rounded', sans-serif;
     font-size: 4rem;
     font-weight: 400;
     color: #1a1a1a;
@@ -642,7 +685,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   }
   .p2-about-text { flex: 1; }
   .p2-about-text h1 {
-    font-family: 'Instrument Serif', serif;
+    font-family: 'DIN 2014 Rounded', sans-serif;
     font-size: 2.4rem;
     font-weight: 400;
     margin: 0 0 0.6rem;
@@ -662,7 +705,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     border-top: 1px solid #c9c1b6;
   }
   .p2-experience h3 {
-    font-family: 'Instrument Serif', serif;
+    font-family: 'DIN 2014 Rounded', sans-serif;
     font-size: 1.3rem;
     font-weight: 400;
     color: #1a1a1a;
@@ -722,7 +765,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   .p2-contact.visible { opacity: 1; pointer-events: all; }
   .p2-contact-content { text-align: center; }
   .p2-contact-content h1 {
-    font-family: 'Instrument Serif', serif;
+    font-family: 'DIN 2014 Rounded', sans-serif;
     font-size: 3rem;
     font-weight: 400;
     color: #1a1a1a;
@@ -980,7 +1023,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     transform: translateY(0);
   }
   .p2-project-header h1 {
-    font-family: 'Instrument Serif', serif;
+    font-family: 'DIN 2014 Rounded', sans-serif;
     font-size: 2.8rem;
     font-weight: 400;
     color: #1a1a1a;
@@ -1081,7 +1124,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   }
   .p2-project-body p { margin-bottom: 1rem; }
   .p2-project-body h3 {
-    font-family: 'Instrument Serif', serif;
+    font-family: 'DIN 2014 Rounded', sans-serif;
     font-size: 1.4rem;
     font-weight: 400;
     color: #1a1a1a;
@@ -1223,7 +1266,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   }
   .p2-coming-soon.active { opacity: 1; pointer-events: all; }
   .p2-coming-soon h2 {
-    font-family: 'Instrument Serif', serif;
+    font-family: 'DIN 2014 Rounded', sans-serif;
     font-size: 3rem;
     font-weight: 400;
     color: #fff;
@@ -1374,7 +1417,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     <div class="p2-title" style="display:none;">
       <span class="p2-title-mask">
         <span class="p2-title-slider" id="p2TitleSlider">
-          <span class="p2-title-line"><img src="logo.svg" class="p2-logo" style="height:54px;width:auto;margin-right:0.6rem;">Michael Loya&nbsp;<span style="color:#8a8580">Studio</span></span>
+          <span class="p2-title-line"><img src="logo-wordmark.svg" class="p2-logo" style="height:40px;width:auto;"></span>
           <span class="p2-title-line p2-app-name" id="p2AppName"></span>
         </span>
       </span>
@@ -1466,7 +1509,7 @@ const projects = [
     images: [],
     content: `<p>Design work as Co-Director of Design Board for University Union — Syracuse University's largest programming organization. Responsible for concert posters, festival branding, large-format signage, and social media assets reaching 12,000+ Instagram followers.</p>
 
-<h3 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:1.4rem;margin:2.5rem 0 0.5rem;">Juice Jam 2025</h3>
+<h3 style="font-family:'DIN 2014 Rounded',sans-serif;font-weight:400;font-size:1.4rem;margin:2.5rem 0 0.5rem;">Juice Jam 2025</h3>
 <p style="margin-bottom:1rem;">Full visual identity for Syracuse's annual outdoor music festival featuring Ashe & Jordan Ward. Designed the main poster, digital signage, and large-format print materials. Retro risograph aesthetic with bold gold typography.</p>
 <div class="project-img project-img-video" style="margin-bottom:0;overflow:hidden;border-radius:8px;"><video src="img/all/jj_timelapse.mp4" autoplay loop muted playsinline style="width:100%;height:auto;object-fit:cover;border-radius:8px;transform:scale(1.03);transform-origin:center bottom;"></video></div>
 <div class="img-grid-3" style="margin:0.6rem 0 0 0;margin-bottom:0;">
@@ -1476,7 +1519,7 @@ const projects = [
 </div>
 <div class="project-img" style="margin:0.6rem 0 0 0;"><img src="img/all/jj_91185.jpg?v=2" alt="Juice Jam - social media post" loading="lazy"></div>
 
-<h3 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:1.4rem;margin:2.5rem 0 0.5rem;">Events & Shows</h3>
+<h3 style="font-family:'DIN 2014 Rounded',sans-serif;font-weight:400;font-size:1.4rem;margin:2.5rem 0 0.5rem;">Events & Shows</h3>
 <p style="margin-bottom:1rem;">Posters and promotional materials for concerts, comedy shows, and campus-wide events. As you can see, I really tried to get a version of that Block Party logo approved for two years. I love it — unfortunately, everybody else hates it.</p>
 <div class="img-grid-3" style="margin-bottom:0;">
 <div class="project-img"><img src="img/all/BlockParty_v7_web.jpg" alt="Block Party 2026" loading="lazy"></div>
