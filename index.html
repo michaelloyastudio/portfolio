@@ -2554,17 +2554,23 @@ function initP2(opts) {
     });
   });
 
-  // Periodic nudge on Loya and Co. (first item) to draw attention
+  // Periodic nudge on Loya and Co. (first item) — stops after user clicks/views it
   if (p2Items.length > 0) {
     var mvImg = p2Items[0].el.querySelector('img');
-    if (mvImg) setInterval(function() {
-      if (p2Items[0].el.matches(':hover')) return;
-      mvImg.style.animation = 'nudge 0.6s ease';
-      mvImg.addEventListener('animationend', function handler() {
-        mvImg.style.animation = '';
-        mvImg.removeEventListener('animationend', handler);
+    var nudgeInterval;
+    if (mvImg) {
+      nudgeInterval = setInterval(function() {
+        if (p2Items[0].el.matches(':hover')) return;
+        mvImg.style.animation = 'nudge 0.6s ease';
+        mvImg.addEventListener('animationend', function handler() {
+          mvImg.style.animation = '';
+          mvImg.removeEventListener('animationend', handler);
+        });
+      }, 5000);
+      p2Items[0].el.addEventListener('click', function() {
+        clearInterval(nudgeInterval);
       });
-    }, 5000);
+    }
   }
 
   // Clear blur when mouse leaves the scene entirely
