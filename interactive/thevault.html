@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Vault</title>
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://use.typekit.net/vvj5gyy.css">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0a0a0a;
+  --surface: #111;
+  --border: #1a1a1a;
+  --text: #e8e0d4;
+  --text-muted: #8a8580;
+  --accent: #ff8e3d;
+  --red: #ff4444;
+  --locked: #2a2a2a;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Space Grotesk', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── HEADER ── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.2rem 2rem;
+  border-bottom: 1px solid var(--border);
+}
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.header-left a { text-decoration: none; }
+.header-logo { height: 24px; opacity: 0.5; transition: opacity 0.2s; }
+.header-logo:hover { opacity: 0.8; }
+.header-title {
+  font-family: 'din-2014-rounded-variable', sans-serif;
+  font-size: 1.1rem;
+  word-spacing: -0.05em;
+  color: var(--text);
+  letter-spacing: 0.02em;
+}
+.header-subtitle {
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+
+/* ── BOOT ── */
+.boot-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  transition: opacity 0.6s ease;
+}
+.boot-screen.hidden { opacity: 0; pointer-events: none; }
+.boot-lock {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+  animation: lockPulse 1.5s ease-in-out infinite;
+}
+@keyframes lockPulse {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.05); opacity: 1; }
+}
+.boot-text {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  animation: bootFade 1.5s ease-in-out infinite;
+}
+@keyframes bootFade {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.8; }
+}
+.boot-bar {
+  width: 200px;
+  height: 2px;
+  background: #1a1a1a;
+  border-radius: 1px;
+  margin-top: 1.5rem;
+  overflow: hidden;
+}
+.boot-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--accent);
+  border-radius: 1px;
+  transition: width 0.1s linear;
+}
+
+/* ── MAIN ── */
+.vault-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+}
+
+.vault-intro {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+.vault-intro h1 {
+  font-family: 'din-2014-rounded-variable', sans-serif;
+  font-size: 3.3rem;
+  word-spacing: -0.05em;
+  margin-bottom: 0.5rem;
+}
+.vault-intro p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  max-width: 500px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* ── TRACK CARDS ── */
+.track-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.track-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+.track-card:hover {
+  border-color: #333;
+  background: #141414;
+}
+.track-card.unlocked {
+  border-color: var(--accent);
+  box-shadow: 0 0 30px rgba(255, 142, 61, 0.05);
+}
+
+.track-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0;
+  transition: margin-bottom 0.3s ease;
+}
+.track-card.unlocked .track-top { margin-bottom: 1.2rem; }
+
+.track-info { display: flex; flex-direction: column; gap: 0.2rem; }
+.track-number {
+  font-size: 0.5rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+}
+.track-title {
+  font-family: 'din-2014-rounded-variable', sans-serif;
+  font-size: 1.6rem;
+  word-spacing: -0.05em;
+}
+.track-meta {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.2rem;
+}
+
+.track-lock {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--locked);
+  border: 1px solid #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+.track-lock:hover {
+  background: #333;
+  border-color: var(--accent);
+  transform: scale(1.05);
+}
+.track-card.unlocked .track-lock {
+  background: rgba(255, 142, 61, 0.15);
+  border-color: var(--accent);
+}
+
+/* ── PLAYER (inside card, revealed on unlock) ── */
+.track-player {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, opacity 0.3s ease;
+  opacity: 0;
+}
+.track-card.unlocked .track-player {
+  max-height: 200px;
+  opacity: 1;
+}
+
+.waveform-container {
+  width: 100%;
+  height: 60px;
+  position: relative;
+  cursor: pointer;
+  margin-bottom: 0.8rem;
+}
+.waveform-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.player-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.play-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.play-btn:hover { transform: scale(1.08); }
+.play-btn svg { fill: var(--bg); width: 14px; height: 14px; }
+
+.time-display {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  min-width: 80px;
+}
+
+.volume-slider {
+  -webkit-appearance: none;
+  width: 80px;
+  height: 3px;
+  background: #333;
+  border-radius: 2px;
+  outline: none;
+  margin-left: auto;
+}
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.volume-slider::-webkit-slider-thumb:hover { background: var(--text); }
+
+/* ── STATUS TAG ── */
+.status-tag {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  background: rgba(255, 68, 68, 0.1);
+  color: var(--red);
+  border: 1px solid rgba(255, 68, 68, 0.2);
+}
+
+/* ── FOOTER ── */
+.vault-footer {
+  text-align: center;
+  margin-top: 4rem;
+  padding: 2rem;
+  border-top: 1px solid var(--border);
+}
+.vault-footer p {
+  font-size: 0.6rem;
+  color: #333;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+}
+
+/* ── UNLOCK ANIMATION ── */
+@keyframes unlockShake {
+  0%, 100% { transform: rotate(0deg); }
+  20% { transform: rotate(-8deg); }
+  40% { transform: rotate(8deg); }
+  60% { transform: rotate(-4deg); }
+  80% { transform: rotate(4deg); }
+}
+.shake { animation: unlockShake 0.5s ease; }
+
+/* ── NOTE TRAIL (matches other apps) ── */
+.note { position: fixed; pointer-events: none; z-index: 9999; font-size: 14px; color: #8a8580; opacity: 0; transition: none; user-select: none; }
+</style>
+</head>
+<body>
+
+<!-- BOOT SCREEN -->
+<div class="boot-screen" id="bootScreen">
+  <div class="boot-lock">🔒</div>
+  <div class="boot-text">Accessing vault</div>
+  <div class="boot-bar"><div class="boot-fill" id="bootFill"></div></div>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <a href="../index.html"><img src="logo-gray.svg" class="header-logo" alt="ML"></a>
+    <div>
+      <div class="header-title">The Vault</div>
+      <div class="header-subtitle">Unreleased</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="vault-container" id="vaultContainer" style="opacity:0;">
+  <div class="vault-intro">
+    <h1>The Vault</h1>
+    <p>Unfinished ideas, rough drafts, and works in progress. Tracks that never made it out of the session but were too good to delete.</p>
+  </div>
+
+  <div class="track-list" id="trackList"></div>
+
+  <div class="vault-footer">
+    <p>Nothing leaves the vault</p>
+  </div>
+</div>
+
+<script>
+// ── TRACK DATA ──
+const tracks = [
+  {
+    title: 'COME HOME',
+    file: 'sounds/demos/come-home.mp3',
+    duration: '2:46',
+    status: 'Unfinished',
+    notes: 'Needs vocals, bridge section'
+  },
+  {
+    title: 'Ascent',
+    file: 'sounds/demos/ascent3.mp3',
+    duration: '2:31',
+    status: 'Unfinished',
+    notes: 'Third iteration'
+  },
+  {
+    title: 'Fleeting Moment',
+    file: 'sounds/demos/fleeting-moment.mp3',
+    duration: '1:47',
+    status: 'Unfinished',
+    notes: 'Demo v2'
+  }
+];
+
+// ── BOOT ──
+let bootProgress = 0;
+const bootFill = document.getElementById('bootFill');
+const bootInterval = setInterval(() => {
+  bootProgress += Math.random() * 15 + 5;
+  if (bootProgress >= 100) {
+    bootProgress = 100;
+    clearInterval(bootInterval);
+    setTimeout(() => {
+      document.getElementById('bootScreen').classList.add('hidden');
+      document.getElementById('vaultContainer').style.opacity = '1';
+      document.getElementById('vaultContainer').style.transition = 'opacity 0.6s ease';
+    }, 300);
+  }
+  bootFill.style.width = bootProgress + '%';
+}, 120);
+
+// ── BUILD TRACK CARDS ──
+const trackList = document.getElementById('trackList');
+const audioElements = [];
+let currentlyPlaying = -1;
+
+tracks.forEach((track, i) => {
+  const card = document.createElement('div');
+  card.className = 'track-card';
+  card.id = 'track' + i;
+  card.innerHTML = `
+    <div class="track-top">
+      <div class="track-info">
+        <div class="track-number">Track ${String(i + 1).padStart(2, '0')}</div>
+        <div class="track-title">${track.title}</div>
+        <div class="track-meta">
+          <span>${track.duration}</span>
+          <span class="status-tag">${track.status}</span>
+        </div>
+      </div>
+      <div class="track-lock" id="lock${i}" onclick="toggleUnlock(${i})">🔒</div>
+    </div>
+    <div class="track-player" id="player${i}">
+      <div class="waveform-container" id="waveContainer${i}" onclick="seekTrack(event, ${i})">
+        <canvas class="waveform-canvas" id="waveform${i}"></canvas>
+      </div>
+      <div class="player-controls">
+        <button class="play-btn" id="playBtn${i}" onclick="togglePlay(${i})">
+          <svg viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21" id="playIcon${i}"/></svg>
+        </button>
+        <div class="time-display" id="time${i}">0:00 / ${track.duration}</div>
+        <input type="range" class="volume-slider" id="vol${i}" min="0" max="1" step="0.01" value="0.8" oninput="setVolume(${i}, this.value)">
+      </div>
+    </div>
+  `;
+  trackList.appendChild(card);
+
+  // Create audio element
+  const audio = new Audio(track.file);
+  audio.volume = 0.8;
+  audio.addEventListener('timeupdate', () => updateProgress(i));
+  audio.addEventListener('ended', () => onTrackEnd(i));
+  audioElements.push(audio);
+});
+
+// ── UNLOCK ──
+function toggleUnlock(i) {
+  const card = document.getElementById('track' + i);
+  const lock = document.getElementById('lock' + i);
+
+  if (card.classList.contains('unlocked')) {
+    // Re-lock
+    if (currentlyPlaying === i) togglePlay(i);
+    card.classList.remove('unlocked');
+    lock.textContent = '🔒';
+    return;
+  }
+
+  // Unlock animation
+  lock.classList.add('shake');
+  setTimeout(() => {
+    lock.classList.remove('shake');
+    card.classList.add('unlocked');
+    lock.textContent = '🔓';
+    // Draw waveform
+    setTimeout(() => drawWaveform(i), 100);
+  }, 500);
+}
+
+// ── WAVEFORM ──
+function drawWaveform(i) {
+  const canvas = document.getElementById('waveform' + i);
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  ctx.scale(dpr, dpr);
+
+  const w = rect.width;
+  const h = rect.height;
+  const bars = Math.floor(w / 4);
+  const barW = 2;
+  const gap = 2;
+
+  // Generate pseudo-random waveform based on track index
+  const seed = i * 1000;
+  ctx.fillStyle = '#333';
+  for (let b = 0; b < bars; b++) {
+    const n = Math.sin(seed + b * 0.3) * Math.cos(seed + b * 0.7) * 0.5 + 0.5;
+    const amp = n * (h * 0.8) + h * 0.1;
+    const x = b * (barW + gap);
+    const y = (h - amp) / 2;
+    ctx.fillRect(x, y, barW, amp);
+  }
+
+  // Store bar data for progress overlay
+  canvas._bars = bars;
+  canvas._barW = barW;
+  canvas._gap = gap;
+  canvas._w = w;
+  canvas._h = h;
+  canvas._seed = seed;
+}
+
+function updateWaveformProgress(i, progress) {
+  const canvas = document.getElementById('waveform' + i);
+  if (!canvas._bars) return;
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const { _bars: bars, _barW: barW, _gap: gap, _w: w, _h: h, _seed: seed } = canvas;
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  for (let b = 0; b < bars; b++) {
+    const n = Math.sin(seed + b * 0.3) * Math.cos(seed + b * 0.7) * 0.5 + 0.5;
+    const amp = n * (h * 0.8) + h * 0.1;
+    const x = b * (barW + gap);
+    const y = (h - amp) / 2;
+    const pct = x / w;
+    ctx.fillStyle = pct < progress ? '#ff8e3d' : '#333';
+    ctx.fillRect(x, y, barW, amp);
+  }
+}
+
+// ── PLAYBACK ──
+function togglePlay(i) {
+  const audio = audioElements[i];
+  const icon = document.getElementById('playIcon' + i);
+
+  if (currentlyPlaying !== -1 && currentlyPlaying !== i) {
+    // Stop other track
+    audioElements[currentlyPlaying].pause();
+    document.getElementById('playIcon' + currentlyPlaying).setAttribute('points', '6,3 20,12 6,21');
+  }
+
+  if (audio.paused) {
+    audio.play();
+    icon.setAttribute('points', '6,4 10,4 10,20 6,20');
+    // Add pause second bar
+    icon.parentElement.innerHTML = '<svg viewBox="0 0 24 24"><rect x="5" y="4" width="4" height="16" fill="#0a0a0a"/><rect x="14" y="4" width="4" height="16" fill="#0a0a0a"/></svg>';
+    currentlyPlaying = i;
+  } else {
+    audio.pause();
+    icon.parentElement.innerHTML = '<svg viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21" fill="#0a0a0a"/></svg>';
+    currentlyPlaying = -1;
+  }
+}
+
+function updateProgress(i) {
+  const audio = audioElements[i];
+  const progress = audio.currentTime / audio.duration;
+  const time = document.getElementById('time' + i);
+  const cur = formatTime(audio.currentTime);
+  time.textContent = cur + ' / ' + tracks[i].duration;
+  updateWaveformProgress(i, progress);
+}
+
+function onTrackEnd(i) {
+  const btn = document.getElementById('playBtn' + i);
+  btn.innerHTML = '<svg viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21" fill="#0a0a0a"/></svg>';
+  currentlyPlaying = -1;
+  updateWaveformProgress(i, 0);
+}
+
+function seekTrack(e, i) {
+  const card = document.getElementById('track' + i);
+  if (!card.classList.contains('unlocked')) return;
+  const container = document.getElementById('waveContainer' + i);
+  const rect = container.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const pct = x / rect.width;
+  audioElements[i].currentTime = pct * audioElements[i].duration;
+}
+
+function setVolume(i, val) {
+  audioElements[i].volume = parseFloat(val);
+}
+
+function formatTime(s) {
+  const m = Math.floor(s / 60);
+  const sec = Math.floor(s % 60);
+  return m + ':' + String(sec).padStart(2, '0');
+}
+
+// ── NOTE TRAIL (same as other apps) ──
+const notePool = [];
+const POOL_SIZE = 60;
+const NOTES = ['\u266A', '\u266B', '\u266C', '\u2669'];
+for (let i = 0; i < POOL_SIZE; i++) {
+  const el = document.createElement('div');
+  el.className = 'note';
+  document.body.appendChild(el);
+  notePool.push({ el, active: false });
+}
+let lastNX = 0, lastNY = 0, noteTimer = 0;
+document.addEventListener('mousemove', e => {
+  const now = Date.now();
+  if (now - noteTimer < 35) return;
+  const dx = e.clientX - lastNX, dy = e.clientY - lastNY;
+  if (Math.sqrt(dx * dx + dy * dy) < 6) return;
+  lastNX = e.clientX; lastNY = e.clientY; noteTimer = now;
+  const n = notePool.find(n => !n.active);
+  if (!n) return;
+  n.active = true;
+  const el = n.el;
+  el.textContent = NOTES[Math.floor(Math.random() * NOTES.length)];
+  el.style.left = e.clientX + 'px';
+  el.style.top = e.clientY + 'px';
+  el.style.opacity = '0.7';
+  el.style.fontSize = (12 + Math.random() * 6) + 'px';
+  const rise = 40 + Math.random() * 30;
+  const drift = (Math.random() - 0.5) * 30;
+  let start = null;
+  function anim(ts) {
+    if (!start) start = ts;
+    const p = (ts - start) / 1000;
+    if (p >= 1) { el.style.opacity = '0'; n.active = false; return; }
+    el.style.transform = `translate(${drift * p}px, ${-rise * p}px)`;
+    el.style.opacity = String(0.7 * (1 - p));
+    requestAnimationFrame(anim);
+  }
+  requestAnimationFrame(anim);
+});
+</script>
+</body>
+</html>
