@@ -69,6 +69,7 @@
   .header-logo-link .logo-hover { position: absolute; top: 0; left: 0; opacity: 0; }
   .header-logo-link:hover .logo-default { opacity: 0; }
   .header-logo-link:hover .logo-hover { opacity: 1; }
+  .header-logo-link, .header-logo-link.loaded { display: none !important; }
 
   .header-back {
     font-size: 0.8rem;
@@ -888,10 +889,7 @@
 <body>
 
 <div class="header">
-  <a href="../index.html" class="header-logo-link">
-    <img src="logo-gray.svg" class="header-logo logo-default" alt="ML">
-    <img src="logo-orange.svg" class="header-logo logo-hover" alt="ML">
-  </a>
+  
 </div>
 
 <div class="title-row" id="titleRow">
@@ -1553,7 +1551,7 @@ setTimeout(() => {
     boot.style.display = 'none';
     playlistsView.classList.add('active');
     document.querySelector('.screen-battery').classList.add('visible');
-    document.querySelector('.header-logo-link').classList.add('loaded');
+    var _logoLinkEl = document.querySelector('.header-logo-link'); if (_logoLinkEl) _logoLinkEl.classList.add('loaded');
     document.getElementById('titleRow').classList.add('loaded');
     wheel.classList.remove('locked');
     // Cascade playlist entrance

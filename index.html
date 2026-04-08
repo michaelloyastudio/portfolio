@@ -55,7 +55,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   .p2-project .project-img, .p2-project .project-img img,
   .p2-project-hero, .p2-project-hero img,
   a, button, [onclick] {
-    cursor: url('crosshair.svg') 8 10, pointer !important;
+    cursor: url('play-cursor.svg') 8 10, pointer;
   }
 
   body {
@@ -474,6 +474,143 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     height: 90px;
   }
 
+  /* Top header bar */
+  .p2-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.1rem 2rem;
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity 0.4s ease;
+  }
+  .p2-header.hidden { opacity: 0; pointer-events: none !important; }
+  .p2-header.hidden > * { pointer-events: none !important; }
+  .p2-header > * { pointer-events: auto; }
+  .p2-header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+  }
+  .p2-header-left:hover { opacity: 0.7; }
+  .p2-header-left img {
+    height: 34px;
+    width: auto;
+    display: block;
+  }
+  .p2-header-logo {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 201;
+    display: flex;
+    align-items: center;
+    pointer-events: auto;
+    cursor: pointer;
+  }
+  .p2-header-logo img {
+    height: 32px;
+    width: auto;
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: opacity 0.2s ease;
+  }
+  .p2-header-logo img:first-child { position: relative; opacity: 1; }
+  .p2-header-logo img:last-child { opacity: 0; }
+  .p2-header-logo:hover img:first-child { opacity: 0; }
+  .p2-header-logo:hover img:last-child { opacity: 1; }
+  .p2-header-nav {
+    margin-top: 0;
+    gap: 1.15rem;
+  }
+  .p2-header-nav.p2-nav a {
+    font-family: 'din-2014-rounded-variable', sans-serif !important;
+    font-size: 1.15rem !important;
+    font-weight: 400;
+    letter-spacing: 0.16em;
+    color: #8a8580;
+  }
+  .p2-header-nav a.active span,
+  .p2-header-nav a.active .nav-letter {
+    color: #ff8e3d !important;
+  }
+  .p2-header-socials {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+  .p2-header-socials a {
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #8a8580;
+    transition: transform 0.2s ease, color 0.2s ease;
+  }
+  .p2-header-socials a:hover {
+    transform: translateY(-2px);
+    color: #ff8e3d;
+  }
+  .p2-header-socials svg {
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+  }
+  .p2-wrap.dark-mode .p2-header-socials a {
+    color: #8a8580;
+  }
+  .p2-wrap.dark-mode .p2-header-socials a:hover {
+    color: #ff8e3d;
+  }
+  @media (max-width: 700px) {
+    .p2-header { padding: 0.8rem 1rem; }
+    .p2-header-left img { height: 28px; }
+    .p2-header-nav { gap: 1.25rem; }
+    .p2-header-nav a { font-size: 0.7rem; letter-spacing: 0.14em; }
+    .p2-header-socials { gap: 0.7rem; }
+    .p2-header-socials a { width: 18px; height: 18px; }
+  }
+
+  /* Vision statement — "SOUND AND VISION" */
+  .p2-tagline {
+    display: block;
+    text-align: center;
+    margin-top: 0.9rem;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 400;
+    letter-spacing: 0.85em;
+    text-transform: uppercase;
+    color: #8a8580;
+    cursor: url('play-cursor.svg') 8 10, default;
+    user-select: none;
+    pointer-events: auto;
+    padding-left: 0.85em; /* visually center with the extra tracking */
+  }
+  .p2-tagline .tag-letter {
+    display: inline-block;
+    transition: color 0.3s;
+    cursor: url('play-cursor.svg') 8 10, default;
+  }
+  .p2-wrap.dark-mode .p2-tagline,
+  .p2-wrap.dark-mode .p2-tagline .tag-letter {
+    cursor: url('interactive/play-cursor-dark.svg') 8 10, default;
+  }
+  .p2-tagline.bouncing .tag-letter {
+    animation: navWave 0.5s ease forwards;
+  }
+  .p2-wrap.dark-mode .p2-tagline { color: #8a8580; }
+
 
   /* ── SPLASH SCREEN ── */
   .p2-splash {
@@ -577,11 +714,39 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     justify-content: center;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.5s ease 0.3s;
+    transition: opacity 0.5s ease 0.3s, background 0.5s ease;
     z-index: 1;
     overflow: hidden;
   }
   .p2-about.visible { opacity: 1; pointer-events: all; }
+  /* About load-in/out float animation */
+  .p2-about-hero,
+  .p2-experience,
+  .p2-about-content > div:last-child {
+    opacity: 0;
+    transform: translateY(80px);
+    transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .p2-about.loaded .p2-about-hero {
+    transition-delay: 0.15s; opacity: 1; transform: translateY(0);
+  }
+  .p2-about.loaded .p2-experience {
+    transition-delay: 0.30s; opacity: 1; transform: translateY(0);
+  }
+  .p2-about.loaded .p2-about-content > div:last-child {
+    transition-delay: 0.45s; opacity: 1; transform: translateY(0);
+  }
+  /* Float-out: push elements down as they fade (bottom first) */
+  .p2-about.leaving .p2-about-content > div:last-child {
+    transition-delay: 0s; opacity: 0; transform: translateY(80px);
+  }
+  .p2-about.leaving .p2-experience {
+    transition-delay: 0.08s; opacity: 0; transform: translateY(80px);
+  }
+  .p2-about.leaving .p2-about-hero {
+    transition-delay: 0.16s; opacity: 0; transform: translateY(80px);
+  }
   .p2-about-scroll {
     width: 100%;
     height: 100%;
@@ -589,6 +754,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    padding-top: 4rem;
   }
   .p2-about-content {
     max-width: 900px;
@@ -808,12 +974,15 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   .p2-wrap.dark-mode button,
   .p2-wrap.dark-mode button *,
   .p2-wrap.dark-mode [onclick],
+  .p2-wrap.dark-mode [onclick],
   .p2-wrap.dark-mode [onclick] *,
   .p2-wrap.dark-mode .p2-item,
   .p2-wrap.dark-mode .p2-item *,
   .p2-wrap.dark-mode .p2-nav a,
-  .p2-wrap.dark-mode .p2-nav a * {
-    cursor: url('interactive/crosshair.svg') 8 10, pointer !important;
+  .p2-wrap.dark-mode .p2-nav a *,
+  .p2-wrap.dark-mode a,
+  .p2-wrap.dark-mode button {
+    cursor: url('interactive/play-cursor-dark.svg') 8 10, pointer;
   }
 
   /* Dark mode transitions for interactive mode */
@@ -850,6 +1019,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   /* ── DARK MODE: ABOUT ── */
   .p2-wrap.dark-mode .p2-about {
     background: #0a0a0a;
+    transition: opacity 0.5s ease 0.3s, background 0.5s ease;
   }
   .p2-wrap.dark-mode .p2-about-text h1 {
     color: #E8E0D4;
@@ -919,10 +1089,30 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     overflow: hidden;
     transition: opacity 0.5s ease 0.3s;
   }
+  .p2-lab-overlay {
+    background: #0a0a0a;
+    z-index: 55;
+    display: flex;
+    flex-direction: column;
+  }
+  .p2-lab-overlay .p2-project-close {
+    position: fixed;
+    top: 1rem;
+    right: 1.2rem;
+    z-index: 60;
+    background: rgba(232,224,212,0.1);
+    border-color: rgba(232,224,212,0.2);
+    color: #E8E0D4;
+  }
+  .p2-lab-overlay .p2-project-close:hover {
+    background: rgba(232,224,212,0.18);
+    color: #ff8e3d;
+    border-color: #ff8e3d;
+  }
   .p2-project.visible { opacity: 1; pointer-events: all; }
   .p2-project-scroll {
-    width: 100%;
-    height: 100%;
+    position: absolute;
+    inset: 0;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
@@ -930,7 +1120,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     max-width: 900px;
     width: 100%;
     margin: 0 auto;
-    padding: 2rem 3rem 4rem;
+    padding: 5.5rem 3rem 4rem;
   }
   .p2-project-top {
     display: flex;
@@ -1006,14 +1196,49 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     transform: translateY(10px);
     transition: opacity 0.4s ease, transform 0.4s ease;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
+    gap: 0.9rem;
   }
   .p2-project-counter {
     font-family: 'Space Grotesk', sans-serif;
     font-size: 0.85rem;
     color: #8a8580;
     letter-spacing: 0.02em;
+  }
+  .p2-project-close {
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.95rem;
+    line-height: 1;
+    color: #8a8580;
+    background: rgba(232, 224, 212, 0.85);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 50%;
+    cursor: pointer;
+    text-decoration: none;
+    user-select: none;
+    transition: color 0.2s ease, transform 0.25s ease, background 0.2s ease;
+  }
+  .p2-project-close:hover {
+    color: #ff8e3d;
+    background: rgba(232, 224, 212, 1);
+    transform: rotate(90deg) scale(1.08);
+  }
+  .p2-wrap.dark-mode .p2-project-close {
+    background: rgba(26, 26, 26, 0.85);
+    border-color: rgba(255, 255, 255, 0.12);
+    color: #8a8580;
+  }
+  .p2-wrap.dark-mode .p2-project-close:hover {
+    background: rgba(26, 26, 26, 1);
+    color: #ff8e3d;
   }
   .p2-project-back-row.visible {
     opacity: 1;
@@ -1034,6 +1259,50 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   .p2-project-nav.visible {
     opacity: 1;
     transform: translateY(0);
+  }
+  /* Fixed edge skip buttons */
+  .p2-project-skip-edge {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #8a8580;
+    background: rgba(232, 224, 212, 0.85);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 50%;
+    transition: color 0.2s ease, transform 0.2s ease, background 0.2s ease, opacity 0.4s ease;
+    user-select: none;
+    z-index: 60;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .p2-project.visible .p2-project-skip-edge {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .p2-project-skip-edge.prev { left: 2rem; }
+  .p2-project-skip-edge.next { right: 2rem; }
+  .p2-project-skip-edge:hover {
+    color: #ff8e3d;
+    background: rgba(232, 224, 212, 1);
+    transform: translateY(-50%) scale(1.08);
+  }
+  .p2-project-skip-edge svg {
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+  }
+  @media (max-width: 700px) {
+    .p2-project-skip-edge { width: 44px; height: 44px; }
+    .p2-project-skip-edge.prev { left: 0.75rem; }
+    .p2-project-skip-edge.next { right: 0.75rem; }
   }
   .p2-project-skip {
     width: 40px;
@@ -1260,11 +1529,34 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
 
 <!-- P2: FLOATING PORTFOLIO -->
 <div class="p2-wrap" id="p2Wrap">
+  <!-- Top Header -->
+  <header class="p2-header" id="p2Header">
+    <div class="p2-header-logo" onclick="p2LogoNav()">
+      <img src="interactive/logo-gray.svg" alt="Michael Loya Studio">
+      <img src="interactive/logo-orange.svg" alt="Michael Loya Studio">
+    </div>
+    <nav class="p2-nav p2-header-nav" id="p2HeaderNav">
+      <a data-nav="work" onclick="p2NavGoWork()"><span>Studio</span></a>
+      <a data-nav="playground" onclick="p2NavGoPlayground()"><span>Playground</span></a>
+      <a data-nav="about" onclick="p2NavGoAbout()"><span>About</span></a>
+    </nav>
+    <div class="p2-header-socials">
+      <a href="https://instagram.com/michaelloya.studio" target="_blank" rel="noopener" aria-label="Instagram">
+        <svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.8.1 1.2.1 1.8.3 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.5.4 1.1.4 2.3.1 1.2.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 1.2-.3 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.5.2-1.1.4-2.2.4-1.2.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-1.2-.1-1.8-.3-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.5-.4-1.1-.4-2.2-.1-1.2-.1-1.6-.1-4.8s0-3.6.1-4.8c.1-1.2.3-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.5-.2 1.1-.4 2.2-.4 1.2-.1 1.6-.1 4.8-.1zm0-2.2C8.7 0 8.3 0 7.1.1c-1.3.1-2.2.3-3 .6-.8.3-1.5.7-2.1 1.4C1.3 2.7.9 3.4.6 4.2c-.3.8-.5 1.6-.6 3-.1 1.2-.1 1.6-.1 4.8s0 3.6.1 4.8c.1 1.3.3 2.2.6 3 .3.8.7 1.5 1.4 2.1.7.7 1.3 1.1 2.1 1.4.8.3 1.6.5 3 .6 1.2.1 1.6.1 4.8.1s3.6 0 4.8-.1c1.3-.1 2.2-.3 3-.6.8-.3 1.5-.7 2.1-1.4.7-.7 1.1-1.3 1.4-2.1.3-.8.5-1.6.6-3 .1-1.2.1-1.6.1-4.8s0-3.6-.1-4.8c-.1-1.3-.3-2.2-.6-3-.3-.8-.7-1.5-1.4-2.1-.7-.7-1.3-1.1-2.1-1.4-.8-.3-1.6-.5-3-.6C15.6 0 15.3 0 12 0zm0 5.8a6.2 6.2 0 1 0 0 12.4 6.2 6.2 0 0 0 0-12.4zm0 10.2a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm7.9-10.4a1.4 1.4 0 1 1-2.9 0 1.4 1.4 0 0 1 2.9 0z"/></svg>
+      </a>
+      <a href="https://www.linkedin.com/in/michael-loya/" target="_blank" rel="noopener" aria-label="LinkedIn">
+        <svg viewBox="1 1 22 22"><path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.2A1.7 1.7 0 116.5 4.8a1.7 1.7 0 010 3.4zM19 19h-3v-4.8c0-1.1 0-2.6-1.6-2.6S12.6 12.8 12.6 14V19h-3v-9h2.9v1.2a3.2 3.2 0 012.9-1.6c3.1 0 3.7 2 3.7 4.7z"/></svg>
+      </a>
+      <a href="mailto:hello@michaelloya.studio" aria-label="Email">
+        <svg viewBox="0 0 24 24"><path d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2zm0 4.2l-8 5-8-5V6l8 5 8-5z"/></svg>
+      </a>
+    </div>
+  </header>
+
   <!-- P2 About layer (behind the scene) -->
   <div class="p2-about" id="p2About">
     <div class="p2-about-scroll">
       <div class="p2-about-content">
-        <a class="p2-about-back" onclick="p2CloseAbout()"><span>← Back</span></a>
         <div class="p2-about-hero">
           <div style="position:relative;display:inline-block;">
             <img class="p2-about-portrait" src="mike-portrait.jpg" alt="Michael Loya" onclick="document.getElementById('lightboxImg').src=this.src;document.getElementById('lightboxImg').style.display='block';document.getElementById('lightboxVideo').style.display='none';document.getElementById('lightbox').classList.add('open')">
@@ -1314,12 +1606,23 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     </div>
   </div>
   <!-- P2 Project detail layer -->
+  <!-- Lab App Overlay (iframe) -->
+  <div class="p2-project p2-lab-overlay" id="p2LabOverlay">
+    <iframe id="p2LabFrame" src="" allowfullscreen style="width:100%;height:100%;border:none;display:block;"></iframe>
+  </div>
+
   <div class="p2-project" id="p2Project">
+    <a class="p2-project-skip-edge prev" onclick="p2PrevProject()" role="button" aria-label="Previous project">
+      <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+    </a>
+    <a class="p2-project-skip-edge next" onclick="p2NextProject()" role="button" aria-label="Next project">
+      <svg viewBox="0 0 24 24"><path d="M16 18h2V6h-2zM6 18l8.5-6L6 6z"/></svg>
+    </a>
     <div class="p2-project-scroll">
       <div class="p2-project-content">
         <div class="p2-project-back-row" id="p2ProjectBackRow">
-          <a class="p2-about-back" onclick="p2CloseProject()"><span>← Back</span></a>
           <span class="p2-project-counter" id="p2ProjectCounter"></span>
+
         </div>
         <div class="p2-project-top" id="p2ProjectTop">
           <div class="p2-project-hero" id="p2ProjectHero">
@@ -1339,13 +1642,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
         </div>
         <div class="p2-project-body" id="p2ProjectBody"></div>
         <div class="p2-project-nav" id="p2ProjectNav">
-          <a class="p2-project-skip" onclick="p2PrevProject()">
-            <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
-          </a>
           <span class="p2-project-nav-title" id="p2ProjectNavLabel"></span>
-          <a class="p2-project-skip" onclick="p2NextProject()">
-            <svg viewBox="0 0 24 24"><path d="M16 18h2V6h-2zM6 18l8.5-6L6 6z"/></svg>
-          </a>
         </div>
       </div>
     </div>
@@ -1382,11 +1679,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
           <span class="p2-title-line p2-app-name" id="p2AppName"></span>
         </span>
       </span>
-      <div class="p2-nav">
-        <a onclick="p2ShowAbout()"><span>About</span></a>
-        <a onclick="p2ShowInteractive()"><span>Playground</span></a>
-        <a onclick="p2ShowContact()"><span>Contact</span></a>
-      </div>
+      <div class="p2-tagline" id="p2Tagline">Sound and Vision</div>
     </div>
   </div>
 
@@ -1496,6 +1789,82 @@ const projects = [
 </div>`
   },
   {
+    title: "LYRC",
+    overlayTitle: "LYRC",
+    category: "Social Media / Advertising / Branding",
+    tools: "Photoshop, Illustrator, After Effects, Premiere",
+    year: "2025–Present",
+    cover: `img/LYRC.png`,
+    images: [],
+    content: `<p><a href="https://lyrc.studio" target="_blank">LYRC</a> is an AI-powered content creation platform for musicians that generates lyric videos, performance visuals, and social media content. I handle the social media design and advertising, creating Instagram carousels, video ads, and promotional graphics to drive user acquisition and communicate the product's value.</p>
+
+<h3>Logo Design</h3>
+<p>The wordmark uses bold sans-serif letterforms that reflect LYRC's core product: stylized typography and lyric videos. A play button sits in the negative space of the R, and the icon mark reads as both a video camera and a microphone; capturing the dual nature of a platform built for musicians and visual content.</p>
+<div class="project-img" style="margin:1.5rem 0;"><img src="img/all/lyrc/lyrc-logo-mockup.jpeg" alt="LYRC logo mockup" loading="lazy"></div>
+
+<h3>Social Content</h3>
+<p>Instagram ads, carousel posts, and video content designed to drive user acquisition. Click around the phone to browse everything.</p>
+<div style="display:flex;justify-content:center;margin:1.5rem 0;">
+<div id="lyrc-phone-embed" class="lyrc-phone-embed"></div>
+</div>
+
+<h3>Seedance 2.0</h3>
+<p>Seedance 2.0 is a newly released video generation model created by ByteDance, the former owner of TikTok. While loya works on integrating it into LYRC's core video pipeline, we've been experimenting with what it can do on the advertising side — the video below was generated with one prompt, in which we told an AI agent to pull assets from lyrc.studio and use them in the video. If this is where we're at now, I'm confident that there will be a generative video model that can perfectly replicate professional motion graphics in less than one year.</p>
+<div class="project-img-video" style="margin:1.5rem 0;cursor:pointer;">
+  <video src="img/all/lyrc/seedance2.mov" autoplay loop muted playsinline style="width:100%;border-radius:8px;display:block;"></video>
+</div>`
+  },
+  {
+    title: "Album Covers",
+    category: "Graphic Design / Photography",
+    tools: "Photoshop, Illustrator, Photography",
+    year: "2024",
+    cover: `img/whitenoise.jpg`,
+    images: [],
+    content: `<p>These are covers I did when I used to produce music. Each one was shot and designed from scratch using Photoshop and Illustrator.</p>
+<div class="img-grid-3">
+<div class="project-img"><img src="img/all/Loya-Passion-Update-05.jpg" alt="Album cover - Passion update" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Loya-Passion-4.jpg" alt="Album cover - Passion series 4" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Loya-Passion-6.jpg" alt="Album cover - Passion series 6" loading="lazy"></div>
+</div>
+<div class="img-grid-2 img-grid-match-above">
+<div class="project-img"><img src="img/all/scribbleboy.jpg" alt="Scribbleboy album cover" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Loya-Passion-1.jpg" alt="Album cover - Passion series 1" loading="lazy"></div>
+</div>
+<div class="img-grid-3" style="margin-top:0.6rem;">
+<div class="project-img"><img src="img/all/2022_Swim.jpg" alt="Swim cover" loading="lazy"></div>
+<div class="project-img"><img src="img/all/commercial_break.jpg" alt="Commercial Break cover" loading="lazy"></div>
+<div class="project-img"><img src="img/all/gettingloud2.jpg" alt="Getting Loud cover" loading="lazy"></div>
+</div>`
+  },
+  {
+    title: "Miscellaneous Projects",
+    overlayTitle: "Miscellaneous<br>Projects",
+    category: "Mixed / Passion Projects",
+    tools: "Various",
+    year: "2022–Present",
+    cover: `img/2023_Freshmen.jpg`,
+    images: [],
+    content: `<p>A mix of passion projects, school assignments, professional work, and collaborations. Not every concept made it to production, but each one shaped my process.</p>
+<div class="img-grid-tight">
+<div class="project-img" style="aspect-ratio:2/3;"><img src="img/all/LUSTv2.jpg" alt="LUST experimental design" loading="lazy"></div>
+<div class="project-img project-img-video" data-video-src="img/all/WebStoryFinal.mp4" style="aspect-ratio:2/3;"><video src="img/all/WebStoryFinal.mp4" autoplay loop muted playsinline style="width:100%;height:100%;object-fit:cover;"></video></div>
+<div class="project-img" style="aspect-ratio:2/3;"><img src="img/all/Screenshot_2025-01-29_at_3.07.56_PM.jpg" alt="Design project screenshot" loading="lazy"></div>
+<div class="project-img project-img-video" data-video-src="img/all/MLAnim2.mp4" style="grid-column:1/-1;"><video src="img/all/MLAnim2.mp4" autoplay loop muted playsinline style="width:100%;height:auto;object-fit:contain;"></video></div>
+<div class="project-img"><img src="img/all/2024VolleyballFinalFour.jpg" alt="2024 Volleyball Final Four design" loading="lazy"></div>
+<div class="project-img"><img src="img/all/logic.jpg" alt="Logic-inspired design" loading="lazy"></div>
+<div class="project-img"><img src="img/all/2023_MM_Print.jpg" alt="Mixtape Magazine - Artist or Rapper" loading="lazy" style="object-position:4% center;"></div>
+<div class="project-img project-img-video" data-video-src="img/all/TruckCircle.mp4" style="grid-column:1/-1;"><video src="img/all/TruckCircle.mp4" autoplay loop muted playsinline style="width:100%;height:auto;object-fit:contain;"></video></div>
+<div class="project-img"><img src="img/all/Screenshot_2024-12-05_at_8.09.22_PM.jpg" alt="Django Unchained poster" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Screenshot_2024-12-05_at_8.15.10_PM.png" alt="Steph Curry graphic" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Cartoon1-01.jpg" alt="Cartoon illustration" loading="lazy"></div>
+<div class="project-img"><img src="img/all/2023_Billboard.jpg" alt="2023 Billboard design" loading="lazy"></div>
+<div class="project-img"><img src="img/all/PlayIn.jpg" alt="Play-In tournament design" loading="lazy"></div>
+<div class="project-img"><img src="img/all/Screenshot_2024-12-05_at_7.15.19_PM.jpg" alt="Design project screenshot" loading="lazy"></div>
+<div class="project-img" style="grid-column:1/-1;"><img src="img/all/characters_sketchbook.jpeg" alt="Character sketchbook mockup" loading="lazy" style="object-fit:contain;"></div>
+</div>`
+  },
+  {
     title: "AI Song",
     category: "Music Production / AI / Design",
     tools: "FL Studio, ElevenLabs, Illustrator, ChatGPT",
@@ -1536,40 +1905,6 @@ const projects = [
 <p>This ain't my <span class="r7">last chance</span><br>I'm just doing this for Fucius, he a <span class="r7">mad man</span><br>He yelling "<span class="r7">Jack, man</span>, come and bring the <span class="r7">facts, man</span>"<br>Kentucky boy getting chicken, I'm a <span class="r7">fat man</span><br>Pick up the <span class="r9">girls</span> with the <span class="r9">curls</span>, I'm feeling <span class="r7">jacked, man</span><br>Came with the <span class="r9">pearls</span>, now your <span class="r9">girl</span> give me a <span class="r7">lap dance</span><br>Said she like surprises, I tell her come and <span class="r8">see</span><br>I'm Jack in the box, I'm popping out when she <span class="r8">need</span><br>And that's <span class="r8">frequently</span>, she loving the <span class="r8">secrecy</span><br>Frolic 'round the pad in her panties so <span class="r8">indecently</span><br>Give her love <span class="r8">peacefully</span>, I could bust <span class="r8">easily</span><br>Pussy so amazing got me thinking she a <span class="r8">deity</span><br>But I ain't ignorant, she got the <span class="r8">best of me</span><br>She just get what she wants and leave the <span class="r8">rest of me</span><br>I don't give a damn if the haters wanna <span class="r8">wrestle me</span><br>You can catch a ride in my wake, just leave the <span class="r8">rest to me</span><br>And fuck 'em if they <span class="r8">mess with me</span><br><span class="r8">Testing me</span>? That's a deadly <span class="r8">recipe</span><br>I chef the scene while you barely catching <span class="r8">breath to breathe</span><br>Tryna come and <span class="r8">flex on me</span>? Boy, that's just a <span class="r8">fantasy</span><br>I'm moving with a purpose while your crew just move <span class="r8">frantically</span><br>I been in the cut like a motherfucking <span class="r9">tendon</span><br>Grind so <span class="r10">relentless</span> I been losing all my <span class="r9">senses</span><br>Never need a gimmick, never needed no <span class="r9">amendment</span><br>Every bar has been <span class="r9">cemented</span>, every move is <span class="r9">independent</span><br>I return all my <span class="r9">investments</span>, every check has been a <span class="r9">blessing</span><br>I stand on business like <span class="r9">defendants</span><br>I make a <span class="r1">killing</span> when I <span class="r11">write</span>, so don't you ever <span class="r11">disrespect it</span><br>I'm the <span class="r1">illest</span> on the <span class="r11">mic</span>, so when I <span class="r11">pass it</span>, <span class="r11">disinfect it</span> (achoo)<br>I'm <span class="r6">sick</span> of the <span class="r6">bitching</span>, and <span class="r6">bitch</span>, I'm looking at <span class="r14">you</span><br>I'll <span class="r6">hit</span> what you're <span class="r6">pitching</span> and <span class="r6">switch it</span> back on <span class="r14">you</span><br>You claim you got a <span class="r6">vision</span> that can bring you to the <span class="r14">views</span><br>But you're stuck in the basement and pray to God that I <span class="r14">lose</span><br>You do <span class="r11">jack shit</span>, I do <span class="r11">Jack shit</span><br>Always on another level, you can't <span class="r11">match it</span><br>Talking 'bout the flows, then my breath is too <span class="r12">disgusting</span><br>If we talking 'bout the GOATs, then my name in the <span class="r12">discussion</span></p>
 </div>`
   },
-  /* Mobile UIs removed */
-  {
-    title: "LYRC",
-    overlayTitle: "LYRC",
-    category: "Coming Soon",
-    tools: "",
-    year: "",
-    cover: `img/LYRC.png`,
-    images: [],
-    content: `<p>Coming soon.</p>`
-  },
-  {
-    title: "Album Covers",
-    category: "Graphic Design / Photography",
-    tools: "Photoshop, Illustrator, Photography",
-    year: "2024",
-    cover: `img/whitenoise.jpg`,
-    images: [],
-    content: `<p>These are covers I did when I used to produce music. Each one was shot and designed from scratch using Photoshop and Illustrator.</p>
-<div class="img-grid-3">
-<div class="project-img"><img src="img/all/Loya-Passion-Update-05.jpg" alt="Album cover - Passion update" loading="lazy"></div>
-<div class="project-img"><img src="img/all/Loya-Passion-4.jpg" alt="Album cover - Passion series 4" loading="lazy"></div>
-<div class="project-img"><img src="img/all/Loya-Passion-6.jpg" alt="Album cover - Passion series 6" loading="lazy"></div>
-</div>
-<div class="img-grid-2 img-grid-match-above">
-<div class="project-img"><img src="img/all/scribbleboy.jpg" alt="Scribbleboy album cover" loading="lazy"></div>
-<div class="project-img"><img src="img/all/Loya-Passion-1.jpg" alt="Album cover - Passion series 1" loading="lazy"></div>
-</div>
-<div class="img-grid-3" style="margin-top:0.6rem;">
-<div class="project-img"><img src="img/all/2022_Swim.jpg" alt="Swim cover" loading="lazy"></div>
-<div class="project-img"><img src="img/all/commercial_break.jpg" alt="Commercial Break cover" loading="lazy"></div>
-<div class="project-img"><img src="img/all/gettingloud2.jpg" alt="Getting Loud cover" loading="lazy"></div>
-</div>`
-  },
   {
     title: "Photography Portfolio",
     overlayTitle: "Photography<br>Portfolio",
@@ -1591,46 +1926,57 @@ const projects = [
 <div class="project-img"><img src="img/all/20231014_VIS201_Loya_Portfolio_08.jpg" alt="B&W photograph 8" loading="lazy"></div>
 </div>`
   },
-  {
-    title: "Miscellaneous Projects",
-    overlayTitle: "Miscellaneous<br>Projects",
-    category: "Mixed / Passion Projects",
-    tools: "Various",
-    year: "2022–Present",
-    cover: `img/2023_Freshmen.jpg`,
-    images: [],
-    content: `<p>A mix of passion projects, school assignments, professional work, and collaborations. Not every concept made it to production, but each one shaped my process.</p>
-<div class="img-grid-tight">
-<div class="project-img" style="aspect-ratio:2/3;"><img src="img/all/LUSTv2.jpg" alt="LUST experimental design" loading="lazy"></div>
-<div class="project-img project-img-video" data-video-src="img/all/WebStoryFinal.mp4" style="aspect-ratio:2/3;"><video src="img/all/WebStoryFinal.mp4" autoplay loop muted playsinline style="width:100%;height:100%;object-fit:cover;"></video></div>
-<div class="project-img" style="aspect-ratio:2/3;"><img src="img/all/Screenshot_2025-01-29_at_3.07.56_PM.jpg" alt="Design project screenshot" loading="lazy"></div>
-<div class="project-img project-img-video" data-video-src="img/all/MLAnim2.mp4" style="grid-column:1/-1;"><video src="img/all/MLAnim2.mp4" autoplay loop muted playsinline style="width:100%;height:auto;object-fit:contain;"></video></div>
-<div class="project-img"><img src="img/all/2024VolleyballFinalFour.jpg" alt="2024 Volleyball Final Four design" loading="lazy"></div>
-<div class="project-img"><img src="img/all/logic.jpg" alt="Logic-inspired design" loading="lazy"></div>
-<div class="project-img"><img src="img/all/2023_MM_Print.jpg" alt="Mixtape Magazine - Artist or Rapper" loading="lazy" style="object-position:4% center;"></div>
-<div class="project-img project-img-video" data-video-src="img/all/TruckCircle.mp4" style="grid-column:1/-1;"><video src="img/all/TruckCircle.mp4" autoplay loop muted playsinline style="width:100%;height:auto;object-fit:contain;"></video></div>
-<div class="project-img"><img src="img/all/Screenshot_2024-12-05_at_8.09.22_PM.jpg" alt="Django Unchained poster" loading="lazy"></div>
-<div class="project-img"><img src="img/all/Screenshot_2024-12-05_at_8.15.10_PM.png" alt="Steph Curry graphic" loading="lazy"></div>
-<div class="project-img"><img src="img/all/Cartoon1-01.jpg" alt="Cartoon illustration" loading="lazy"></div>
-<div class="project-img"><img src="img/all/2023_Billboard.jpg" alt="2023 Billboard design" loading="lazy"></div>
-<div class="project-img"><img src="img/all/PlayIn.jpg" alt="Play-In tournament design" loading="lazy"></div>
-<div class="project-img"><img src="img/all/Screenshot_2024-12-05_at_7.15.19_PM.jpg" alt="Design project screenshot" loading="lazy"></div>
-<div class="project-img" style="grid-column:1/-1;"><img src="img/all/characters_sketchbook.jpeg" alt="Character sketchbook mockup" loading="lazy" style="object-fit:contain;"></div>
-</div>`
-  }
+
 ];
 
 /* ── P2 FUNCTIONS ── */
 
+var _p2AboutFalling = false;
+var _p2AboutFallStart = 0;
+var _p2AboutOpen = false;
+
 function p2ShowAbout() {
+  if (_p2AboutOpen || _p2AboutFalling || _p2ProjectFalling || _p2ProjectOpen || _p2InteractiveFalling) return;
   _p2ProjectFloatingBack = false;
-  document.getElementById('p2Scene').classList.add('zoomed-out');
-  document.getElementById('p2About').classList.add('visible');
+  _p2SetActiveNav('about');
+
+  // Snapshot current Y of the active item set
+  var activeSet = _p2InteractiveMode ? (window._p2LabItems || []) : (window.p2Items || []);
+  activeSet.forEach(function(item) {
+    var m = item.el.style.transform.match(/translate3d\(([^,]+)px,\s*([^,]+)px/);
+    item._aboutFallFromY = m ? parseFloat(m[2]) : item.restY;
+  });
+
+  _p2AboutFalling = true;
+  _p2AboutFallStart = performance.now();
+
+  setTimeout(function() {
+    _p2AboutFalling = false;
+    _p2AboutOpen = true;
+
+    var about = document.getElementById('p2About');
+    about.classList.add('visible');
+    about.classList.remove('leaving');
+    about.classList.remove('loaded');
+    void about.offsetWidth;
+    about.classList.add('loaded');
+  }, 700);
 }
 
 function p2CloseAbout() {
-  document.getElementById('p2Scene').classList.remove('zoomed-out');
-  document.getElementById('p2About').classList.remove('visible');
+  if (!_p2AboutOpen) return;
+  var about = document.getElementById('p2About');
+  about.classList.remove('loaded');
+  about.classList.add('leaving');
+  _p2SetActiveNav(_p2InteractiveMode ? 'playground' : 'work');
+
+  setTimeout(function() {
+    about.classList.remove('visible');
+    about.classList.remove('leaving');
+    _p2AboutOpen = false;
+    // Replay float-in for the active set
+    window._p2ResetStart = performance.now();
+  }, 600);
 }
 
 function p2ShowContact() {
@@ -1646,6 +1992,126 @@ function p2CloseContact() {
 
 // ── Interactive Mode State ──
 var _p2InteractiveMode = false;
+
+/* Header nav active state + wrapper callers */
+function _p2SetActiveNav(key) {
+  var nav = document.getElementById('p2HeaderNav');
+  if (!nav) return;
+  nav.querySelectorAll('a[data-nav]').forEach(function(a) {
+    if (a.getAttribute('data-nav') === key) a.classList.add('active');
+    else a.classList.remove('active');
+  });
+}
+/* Silently flip between work/playground while items are parked off-screen.
+   No fall animation — just swap mode + DOM so the next float-in is correct. */
+function _p2SilentSwapToWork() {
+  if (!_p2InteractiveMode) return;
+  // Remove lab cards
+  if (window._p2LabItems) {
+    window._p2LabItems.forEach(function(item) {
+      if (item.el.parentNode) item.el.parentNode.removeChild(item.el);
+    });
+    window._p2LabItems = [];
+  }
+  var titleLine = document.querySelector('.p2-title-line');
+  if (titleLine) titleLine.innerHTML = '<img src="logo-black.svg" class="p2-logo" style="height:62px;width:auto;margin-right:0.6rem;margin-top:6px;">Michael Loya\u00a0<span style="color:#8a8580">Studio</span>';
+  var mask = document.querySelector('.p2-title-mask');
+  if (mask) mask.classList.remove('slid');
+  _p2InteractiveMode = false;
+  if (window.p2Items) window.p2Items.forEach(function(item) { item.el.style.display = ''; });
+  // Delay light-mode class until about has faded out (600ms)
+  setTimeout(function() {
+    document.getElementById('p2Wrap').classList.remove('dark-mode');
+    document.getElementById('p2Scene').classList.remove('dark-mode-scene');
+    document.body.style.cursor = "url('cursor.svg') 16 8, default";
+    document.getElementById('p2Scene').style.cursor = '';
+  }, 600);
+}
+function _p2SilentSwapToPlayground() {
+  if (_p2InteractiveMode) return;
+  if (window.p2Items) window.p2Items.forEach(function(item) { item.el.style.display = 'none'; });
+  var titleLine = document.querySelector('.p2-title-line');
+  if (titleLine) titleLine.innerHTML = 'The Playground';
+  _p2InteractiveMode = true;
+  if (typeof _p2CreateLabCards === 'function') _p2CreateLabCards();
+  // Delay dark-mode class until about has faded out (600ms)
+  setTimeout(function() {
+    document.getElementById('p2Wrap').classList.add('dark-mode');
+    document.getElementById('p2Scene').classList.add('dark-mode-scene');
+    document.body.style.cursor = "url('interactive/cursor.svg') 16 8, default";
+    document.getElementById('p2Scene').style.cursor = "url('interactive/cursor.svg') 16 8, default";
+  }, 600);
+}
+
+function p2LogoNav() {
+  if (_p2LabOpen) { p2CloseLabApp({dest:'work'}); return; }
+  if (_p2ProjectOpen) { p2CloseProject(); return; }
+  if (_p2AboutOpen) { p2CloseAbout(); return; }
+  if (_p2InteractiveMode) { p2ShowWork(); return; }
+  // already on studio — do nothing
+}
+
+function p2NavGoWork() {
+  if (_p2LabOpen) { p2CloseLabApp({dest:'work'}); return; }
+  if (_p2ProjectOpen) { p2CloseProject(); setTimeout(function() { p2NavGoWork(); }, 550); return; }
+  if (_p2AboutOpen) {
+    if (_p2InteractiveMode) _p2SilentSwapToWork();
+    p2CloseAbout();
+    _p2SetActiveNav('work');
+    return;
+  }
+  if (_p2InteractiveMode) { p2ShowWork(); }
+  _p2SetActiveNav('work');
+}
+function p2NavGoPlayground() {
+  if (_p2LabOpen) { p2CloseLabApp({dest:'playground'}); return; }
+  if (_p2ProjectOpen) {
+    if (!_p2InteractiveMode) _p2SilentSwapToPlayground();
+    p2CloseProject();
+    setTimeout(function() { _p2SetActiveNav('playground'); }, 550);
+    return;
+  }
+  if (_p2AboutOpen) {
+    if (!_p2InteractiveMode) _p2SilentSwapToPlayground();
+    p2CloseAbout();
+    _p2SetActiveNav('playground');
+    return;
+  }
+  if (!_p2InteractiveMode) { p2ShowInteractive(); }
+  _p2SetActiveNav('playground');
+}
+function p2NavGoAbout() {
+  if (_p2LabOpen) {
+    // Fade the lab overlay to black/transparent, then open about
+    // The overlay bg is #0a0a0a so it fades to black — same as about bg in dark mode
+    var overlay = document.getElementById('p2LabOverlay');
+    overlay.classList.remove('visible');
+    // Park lab items offscreen silently
+    var h2 = window.innerHeight;
+    _p2LabItems.forEach(function(item, i) {
+      item.el.style.display = '';
+      item.el.style.transform = 'translate3d(' + item.restX + 'px,' + (h2 + 200 + i * 50) + 'px,0) scale(' + item.scaleAmt + ')';
+    });
+    setTimeout(function() {
+      _p2LabOpen = false;
+      overlay.style.display = 'none';
+      document.getElementById('p2LabFrame').src = '';
+      // Bypass p2ShowAbout fall animation — just show it directly
+      _p2AboutOpen = true;
+      _p2InteractiveFalling = false;
+      var about = document.getElementById('p2About');
+      about.classList.add('visible');
+      about.classList.remove('leaving');
+      about.classList.remove('loaded');
+      void about.offsetWidth;
+      about.classList.add('loaded');
+      _p2SetActiveNav('about');
+    }, 800);
+    return;
+  }
+  if (_p2ProjectOpen) { p2CloseProject(); setTimeout(function() { p2ShowAbout(); }, 550); return; }
+  p2ShowAbout();
+}
 var _p2InteractiveFalling = false;
 var _p2InteractiveFallStart = 0;
 var _p2LabItems = [];
@@ -1693,32 +2159,7 @@ function p2ShowInteractive() {
     var titleLine = document.querySelector('.p2-title-line');
     if (titleLine) titleLine.innerHTML = 'The Playground';
 
-    // Change nav text: "Playground" → "Work"
-    var navLinks = document.querySelectorAll('.p2-nav a');
-    navLinks.forEach(a => {
-      var text = a.textContent.trim();
-      if (text === 'Playground') {
-        a.setAttribute('onclick', 'p2ShowWork()');
-        var span = a.querySelector('span');
-        if (span) {
-          span.innerHTML = 'Work'.split('').map(ch => '<span class="nav-letter">' + ch + '</span>').join('');
-        }
-        // Re-wire wave animation
-        var letters = a.querySelectorAll('.nav-letter');
-        var waveTimer = null, waveIndex = 0;
-        a.onmouseenter = function() {
-          waveIndex = 0; clearInterval(waveTimer);
-          waveTimer = setInterval(function() {
-            if (waveIndex >= letters.length) { clearInterval(waveTimer); return; }
-            var letter = letters[waveIndex];
-            letter.style.animation = 'none'; letter.offsetHeight;
-            letter.style.animation = 'navWave 0.4s ease forwards';
-            waveIndex++;
-          }, 50);
-        };
-        a.onmouseleave = function() { clearInterval(waveTimer); };
-      }
-    });
+    _p2SetActiveNav('playground');
 
     // Create lab cards
     _p2CreateLabCards();
@@ -1813,7 +2254,7 @@ function _p2CreateLabCards() {
   var w = window.innerWidth;
   var h = window.innerHeight;
   var positions = [
-    { x: 0.50, y: 0.16, z: -70,  s: 185 },
+    { x: 0.44, y: 0.22, z: -70,  s: 185 },
     { x: 0.78, y: 0.42, z: -110, s: 170 },
     { x: 0.20, y: 0.58, z: -30,  s: 180 },
     { x: 0.58, y: 0.82, z: -90,  s: 175 },
@@ -1860,15 +2301,16 @@ function _p2CreateLabCards() {
       _p2QueueTitleSlide(null);
     });
     el.addEventListener('click', function() {
-      var overlay = document.getElementById('pageTransition');
-      if (overlay) { overlay.style.pointerEvents = 'all'; overlay.style.opacity = '1'; }
-      setTimeout(function() { window.open(app.href, '_blank'); if (overlay) { overlay.style.opacity = '0'; overlay.style.pointerEvents = 'none'; } }, 700);
+      p2OpenLabApp(app, i, el);
     });
-
-    scene.appendChild(el);
 
     var restX = pos.x * w - pos.s / 2;
     var restY = pos.y * h - pos.s / 2;
+
+    // Park off-screen immediately so there's no 0,0 flash before tick runs
+    el.style.transform = 'translate3d(' + restX + 'px,' + (h + 200 + i * 50) + 'px,0) scale(' + (0.7 + ((pos.z - (-150)) / 150) * 0.3) + ')';
+
+    scene.appendChild(el);
 
     _p2LabItems.push({
       el: el,
@@ -1916,31 +2358,7 @@ function p2ShowWork() {
     var mask = document.querySelector('.p2-title-mask');
     if (mask) mask.classList.remove('slid');
 
-    // Change nav text: "Work" → "Playground"
-    var navLinks = document.querySelectorAll('.p2-nav a');
-    navLinks.forEach(function(a) {
-      var text = a.textContent.trim();
-      if (text === 'Work') {
-        a.setAttribute('onclick', 'p2ShowInteractive()');
-        var span = a.querySelector('span');
-        if (span) {
-          span.innerHTML = 'Playground'.split('').map(function(ch) { return '<span class="nav-letter">' + ch + '</span>'; }).join('');
-        }
-        var letters = a.querySelectorAll('.nav-letter');
-        var waveTimer = null, waveIndex = 0;
-        a.onmouseenter = function() {
-          waveIndex = 0; clearInterval(waveTimer);
-          waveTimer = setInterval(function() {
-            if (waveIndex >= letters.length) { clearInterval(waveTimer); return; }
-            var letter = letters[waveIndex];
-            letter.style.animation = 'none'; letter.offsetHeight;
-            letter.style.animation = 'navWave 0.4s ease forwards';
-            waveIndex++;
-          }, 50);
-        };
-        a.onmouseleave = function() { clearInterval(waveTimer); };
-      }
-    });
+    _p2SetActiveNav('work');
 
     _p2InteractiveMode = false;
 
@@ -1975,14 +2393,29 @@ function p2ShowProject(index, el) {
   // Populate content immediately (hidden)
   const overlay = document.getElementById('p2Project');
   const scrollEl = overlay.querySelector('.p2-project-scroll');
+  scrollEl.style.overflowY = 'auto';
   document.getElementById('p2ProjectTitle').textContent = p.title;
   document.getElementById('p2ProjectCategory').textContent = p.category;
   document.getElementById('p2ProjectTools').textContent = p.tools;
   document.getElementById('p2ProjectYear').textContent = p.year;
   document.getElementById('p2ProjectBody').innerHTML = p.content;
+  if (typeof initLyrcPhone === 'function') initLyrcPhone();
   document.getElementById('p2ProjectHeroImg').src = p.cover;
   document.getElementById('p2ProjectHeroImg').alt = p.title;
   scrollEl.scrollTop = 0;
+
+  // Reset header state on each project open/swap
+  var hdrEl = document.getElementById('p2Header');
+  if (hdrEl) { hdrEl.style.opacity = ''; hdrEl.style.pointerEvents = 'none'; }
+
+  // Fade header on project scroll
+  scrollEl.onscroll = function() {
+    var hdr = document.getElementById('p2Header');
+    if (!hdr) return;
+    var t = Math.min(scrollEl.scrollTop / 80, 1);
+    hdr.style.opacity = 1 - t;
+    hdr.style.pointerEvents = 'none'; // always none while project open
+  };
 
   // Reset visibility
   document.getElementById('p2ProjectHero').classList.remove('visible');
@@ -2055,6 +2488,7 @@ function p2SwapProject(newIndex) {
     document.getElementById('p2ProjectTools').textContent = p.tools;
     document.getElementById('p2ProjectYear').textContent = p.year;
     document.getElementById('p2ProjectBody').innerHTML = p.content;
+    if (typeof initLyrcPhone === 'function') initLyrcPhone();
     document.getElementById('p2ProjectNavLabel').textContent = (newIndex + 1) + ' / ' + projects.length;
     document.getElementById('p2ProjectCounter').textContent = (newIndex + 1) + ' / ' + projects.length;
     
@@ -2107,8 +2541,130 @@ function p2NextProject() {
   }
 }
 
+var _p2LabOpen = false;
+
+function p2OpenLabApp(app, idx, clickedEl) {
+  if (_p2LabOpen) return;
+  // Restore overlay visibility in case it was hidden after previous close
+  document.getElementById('p2LabOverlay').style.display = '';
+
+  // Fall all lab cards — snapshot current Y so fall starts from wherever they are
+  _p2InteractiveFalling = true;
+  _p2InteractiveFallStart = performance.now();
+  _p2LabItems.forEach(function(item) {
+    var m = item.el.style.transform.match(/translate3d\(([^,]+)px,\s*([^,]+)px/);
+    item._projFallFromY = m ? parseFloat(m[2]) : item.restY;
+  });
+
+  // Show overlay after fall (500ms)
+  setTimeout(function() {
+    _p2InteractiveFalling = false;
+    _p2LabOpen = true;
+    _p2LabItems.forEach(function(item) { item.el.style.display = 'none'; });
+
+    var frame = document.getElementById('p2LabFrame');
+    frame.onload = function() {
+      try {
+        var doc = frame.contentDocument;
+        // Hide logo
+        var style = doc.createElement('style');
+        style.textContent = '.header-logo-link { display: none !important; }';
+        doc.head.appendChild(style);
+        // Neutralize any remaining logo links (thesynth etc)
+        doc.querySelectorAll('a').forEach(function(a) {
+          var href = a.getAttribute('href') || '';
+          if (href.indexOf('../') !== -1 || href.indexOf('index.html') !== -1) {
+            a.style.display = 'none';
+            a.addEventListener('click', function(e) { e.preventDefault(); });
+          }
+        });
+      } catch(e) {}
+    };
+    frame.src = app.href;
+    var overlay = document.getElementById('p2LabOverlay');
+    overlay.classList.add('visible');
+
+    // Restore header
+    var hdr = document.getElementById('p2Header');
+    if (hdr) { hdr.style.opacity = ''; hdr.style.pointerEvents = 'none'; }
+  }, 500);
+}
+
+function p2CloseLabApp(opts) {
+  if (!_p2LabOpen) return;
+  var dest = (opts && opts.dest) || 'playground'; // 'playground' | 'work' | 'about'
+
+  // Fade out overlay — keep _p2LabOpen=true so tick parks lab cards offscreen
+  var overlay = document.getElementById('p2LabOverlay');
+  overlay.classList.remove('visible');
+  // Ensure overlay can't intercept pointer events once fade starts
+  overlay.style.pointerEvents = 'none';
+  var hdr = document.getElementById('p2Header');
+  if (hdr) { hdr.style.opacity = ''; hdr.style.pointerEvents = ''; }
+
+  // After overlay fully fades (800ms)
+  setTimeout(function() {
+    _p2LabOpen = false;
+    overlay.style.pointerEvents = '';
+    overlay.style.display = 'none';
+    document.getElementById('p2LabFrame').src = '';
+
+    if (dest === 'playground') {
+      // Float lab cards back in
+      _p2LabItems.forEach(function(item) { item.el.style.display = ''; });
+      window._p2ResetStart = null;
+      window._p2LabResetStart = performance.now();
+      setTimeout(function() { window._p2LabResetStart = null; }, 3000);
+
+    } else if (dest === 'work') {
+      // Hard-swap to work mode then float work items in
+      _p2LabItems.forEach(function(item) { item.el.style.display = 'none'; });
+      // Switch mode flags without animation
+      _p2InteractiveMode = false;
+      document.getElementById('p2Wrap').classList.remove('dark-mode');
+      document.getElementById('p2Scene').classList.remove('dark-mode-scene');
+      document.body.style.cursor = "url('cursor.svg') 16 8, default";
+      document.getElementById('p2Scene').style.cursor = '';
+      var titleLine = document.querySelector('.p2-title-line');
+      if (titleLine) titleLine.innerHTML = '<img src="logo-black.svg" class="p2-logo" style="height:62px;width:auto;margin-right:0.6rem;margin-top:6px;">Michael Loya\u00a0<span style="color:#8a8580">Studio</span>';
+      var mask = document.querySelector('.p2-title-mask');
+      if (mask) mask.classList.remove('slid');
+      // Park work items offscreen then float in
+      if (window.p2Items) {
+        window.p2Items.forEach(function(item) {
+          item.el.style.display = '';
+        });
+      }
+      window._p2LabResetStart = null;
+      window._p2ResetStart = performance.now();
+      setTimeout(function() { window._p2ResetStart = null; }, 3000);
+      _p2SetActiveNav('work');
+
+    } else if (dest === 'about') {
+      // Stay in dark/playground mode, open dark about page
+      // Park lab items + hide title immediately so nothing flashes
+      var h2 = window.innerHeight;
+      _p2LabItems.forEach(function(item, i) {
+        item.el.style.display = '';
+        item.el.style.transform = 'translate3d(' + item.restX + 'px,' + (h2 + 200 + i * 50) + 'px,0) scale(' + item.scaleAmt + ')';
+      });
+      var titleEl2 = document.querySelector('.p2-title');
+      if (titleEl2) titleEl2.style.opacity = '0';
+      p2ShowAbout();
+    }
+  }, 800);
+}
+
 function p2CloseProject() {
   if (!_p2ProjectOpen) return;
+
+  // Restore header
+  var hdr = document.getElementById('p2Header');
+  if (hdr) { hdr.style.opacity = ''; hdr.style.pointerEvents = ''; }
+
+  // Remove scroll listener and re-enable scroll
+  var scrollEl = document.getElementById('p2Project').querySelector('.p2-project-scroll');
+  if (scrollEl) { scrollEl.onscroll = null; scrollEl.style.overflowY = ''; }
 
   // Hide overlay
   document.getElementById('p2Project').classList.remove('visible');
@@ -2117,7 +2673,6 @@ function p2CloseProject() {
   setTimeout(() => {
     _p2ProjectOpen = false;
     _p2ProjectFloatingBack = false;
-    // Reset startTime so the normal float-in replays from scratch
     window._p2ResetStart = performance.now();
   }, 500);
 }
@@ -2191,7 +2746,7 @@ document.addEventListener('click', function(e) {
   }
 
   /* Check if click is on a project-img or project-video inside the body */
-  const imgEl = e.target.closest('.project-img, .project-video');
+  const imgEl = e.target.closest('.project-img, .project-video, .project-img-video');
   if (!imgEl) return;
   const body = document.getElementById('p2ProjectBody');
   if (!body || !body.contains(imgEl)) return;
@@ -2199,7 +2754,7 @@ document.addEventListener('click', function(e) {
   e.preventDefault();
   e.stopPropagation();
 
-  const bodyItems = Array.from(body.querySelectorAll('.project-img, .project-video'));
+  const bodyItems = Array.from(body.querySelectorAll('.project-img, .project-video, .project-img-video'));
   lbItems = [hero].concat(bodyItems);
   lbIndex = lbItems.indexOf(imgEl);
   if (lbIndex === -1) { lbItems = bodyItems; lbIndex = bodyItems.indexOf(imgEl); }
@@ -2273,14 +2828,25 @@ lightboxClose.addEventListener('click', (e) => {
   closeLightbox();
 });
 
+/* LYRC phone keyboard capture: active once clicked, until user clicks outside */
+var _lyrcPhoneFocused = false;
+document.addEventListener('mousedown', function(e) {
+  var root = document.getElementById('lyrc-phone-embed');
+  if (!root) { _lyrcPhoneFocused = false; return; }
+  _lyrcPhoneFocused = root.contains(e.target);
+}, true);
+function _lyrcPhoneActive() { return _lyrcPhoneFocused; }
+
 /* ── ESC KEY HANDLER ── */
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
+    // LYRC phone takes priority when active
+    if (_lyrcPhoneActive()) return;
     // Lightbox first
     if (lightbox.classList.contains('open')) { closeLightbox(); return; }
     // P2 overlays
     if (_p2ProjectOpen) { p2CloseProject(); return; }
-    if (document.getElementById('p2About').classList.contains('visible')) { p2CloseAbout(); return; }
+    // About page ignores Escape (no back button, use nav instead)
     if (_p2InteractiveMode) { return; }
     if (document.getElementById('p2Contact').classList.contains('visible')) { p2CloseContact(); return; }
     if (document.getElementById('p2ComingSoon').classList.contains('active')) { document.getElementById('p2ComingSoon').classList.remove('active'); return; }
@@ -2291,6 +2857,7 @@ document.addEventListener('keydown', (e) => {
 document.addEventListener('keydown', (e) => {
   if (!_p2ProjectOpen || _p2Swapping) return;
   if (lightbox.classList.contains('open')) return;
+  if (_lyrcPhoneActive()) return;
   if (e.key === 'ArrowRight') { e.preventDefault(); p2NextProject(); }
   if (e.key === 'ArrowLeft') { e.preventDefault(); p2PrevProject(); }
 });
@@ -2369,6 +2936,10 @@ var _splashActive = true;
 var _splashChoice = null;
 
 (function initSplash() {
+  // Hide header during splash
+  var hdr = document.getElementById('p2Header');
+  if (hdr) hdr.classList.add('hidden');
+
   const q = document.getElementById('p2SplashQ');
   const no = document.getElementById('splashNo');
   const yes = document.getElementById('splashYes');
@@ -2422,6 +2993,46 @@ function splashChoose(choice) {
     splash.classList.add('hidden');
     splash.style.display = 'none';
 
+    // Show header
+    var hdr = document.getElementById('p2Header');
+    if (hdr) hdr.classList.remove('hidden');
+
+    // Animate vision statement letters with the bounce wave
+    var tagline = document.getElementById('p2Tagline');
+    if (tagline && !tagline._split) {
+      var raw = tagline.textContent;
+      tagline.innerHTML = raw.split('').map(function(ch) {
+        return ch === ' ' ? ' ' : '<span class="tag-letter">' + ch + '</span>';
+      }).join('');
+      tagline._split = true;
+    }
+    if (tagline) {
+      var letters = tagline.querySelectorAll('.tag-letter');
+      // Load-in bounce
+      letters.forEach(function(letter, i) {
+        letter.style.animation = 'none';
+        void letter.offsetWidth;
+        letter.style.animation = 'navWave 0.5s ease forwards';
+        letter.style.animationDelay = (i * 0.05) + 's';
+      });
+      // Per-letter drag hover — only fire if letter is idle
+      letters.forEach(function(letter) {
+        letter._tagAnimating = false;
+        letter.addEventListener('mouseenter', function() {
+          if (letter._tagAnimating) return;
+          letter._tagAnimating = true;
+          letter.style.animation = 'none';
+          void letter.offsetWidth;
+          letter.style.animation = 'navWave 0.4s ease forwards';
+          letter.style.animationDelay = '0s';
+          letter.addEventListener('animationend', function onEnd() {
+            letter._tagAnimating = false;
+            letter.removeEventListener('animationend', onEnd);
+          });
+        });
+      });
+    }
+
     // Show main title + nav
     const mainTitle = document.querySelector('.p2-title');
     mainTitle.style.display = '';
@@ -2438,35 +3049,13 @@ function splashChoose(choice) {
       document.getElementById('p2Scene').style.cursor = "url('interactive/cursor.svg') 16 8, default";
       var titleLine = document.querySelector('.p2-title-line');
       if (titleLine) titleLine.innerHTML = 'The Playground';
-      // Swap nav
-      var navLinks = document.querySelectorAll('.p2-nav a');
-      navLinks.forEach(function(a) {
-        if (a.textContent.trim() === 'Playground') {
-          a.setAttribute('onclick', 'p2ShowWork()');
-          var span = a.querySelector('span');
-          if (span) {
-            span.innerHTML = 'Work'.split('').map(function(ch) { return '<span class="nav-letter">' + ch + '</span>'; }).join('');
-          }
-          var letters = a.querySelectorAll('.nav-letter');
-          var waveTimer = null, waveIndex = 0;
-          a.onmouseenter = function() {
-            waveIndex = 0; clearInterval(waveTimer);
-            waveTimer = setInterval(function() {
-              if (waveIndex >= letters.length) { clearInterval(waveTimer); return; }
-              var letter = letters[waveIndex];
-              letter.style.animation = 'none'; letter.offsetHeight;
-              letter.style.animation = 'navWave 0.4s ease forwards';
-              waveIndex++;
-            }, 50);
-          };
-          a.onmouseleave = function() { clearInterval(waveTimer); };
-        }
-      });
+      _p2SetActiveNav('playground');
       _p2CreateLabCards();
       window._p2ResetStart = performance.now();
     } else {
       // Normal work mode
       initP2();
+      _p2SetActiveNav('work');
     }
   }, 700);
 }
@@ -2484,14 +3073,14 @@ function initP2(opts) {
   window.p2Items = window.p2Items || [];
   const p2Items = window.p2Items;
   const positions = [
-    { x: 0.50, y: 0.16, z: -70,  s: 185 },  // Loya and Co. — FIXED
-    { x: 0.82, y: 0.42, z: -110, s: 170 },  // BODYARMOR — FIXED
-    { x: 0.30, y: 0.78, z: -30,  s: 180 },  // University Union — FIXED
-    { x: 0.10, y: 0.58, z: -50,  s: 185 },  // AI Song
-    { x: 0.58, y: 0.82, z: -90,  s: 175 },  // LYRC
-    { x: 0.85, y: 0.72, z: -60,  s: 160 },  // Album Covers
-    { x: 0.88, y: 0.16, z: -120, s: 155 },  // Photography
-    { x: 0.20, y: 0.23, z: -80,  s: 195 },  // Misc
+    { x: 0.44, y: 0.22, z: -70,  s: 205 },  // Loya and Co.
+    { x: 0.70, y: 0.26, z: -110, s: 205 },  // BODYARMOR
+    { x: 0.30, y: 0.78, z: -30,  s: 205 },  // University Union
+    { x: 0.58, y: 0.82, z: -90,  s: 205 },  // LYRC
+    { x: 0.85, y: 0.72, z: -60,  s: 165 },  // Album Covers
+    { x: 0.17, y: 0.28, z: -80,  s: 175 },  // Misc
+    { x: 0.10, y: 0.58, z: -50,  s: 160 },  // AI Song
+    { x: 0.90, y: 0.38, z: -120, s: 175 },  // Photography
   ];
 
   projects.forEach((p, i) => {
@@ -2603,7 +3192,7 @@ function initP2(opts) {
 
   function tick(now) {
     // Use reset time if set (replay load-in after closing a project)
-    const effectiveStart = window._p2ResetStart || startTime;
+    const effectiveStart = window._p2LabResetStart || window._p2ResetStart || startTime;
     const elapsed = now - effectiveStart;
 
     // ── PROJECT FALL DOWN (opening a project) ──
@@ -2626,10 +3215,54 @@ function initP2(opts) {
       return;
     }
 
+    // ── ABOUT FALL DOWN (opening about) ──
+    if (_p2AboutFalling) {
+      const fallElapsed = now - _p2AboutFallStart;
+      const fallT = Math.min(fallElapsed / 700, 1);
+      const fallEase = easeInQuad(fallT);
+
+      titleEl.style.opacity = Math.max(1 - fallT * 5, 0);
+
+      const aboutActive = _p2InteractiveMode ? (window._p2LabItems || []) : p2Items;
+      aboutActive.forEach((item, i) => {
+        const si = staggerOrder[i] !== undefined ? staggerOrder[i] : i;
+        const fromY = item._aboutFallFromY != null ? item._aboutFallFromY : item.restY;
+        const targetY = window.innerHeight + 200 + si * 50;
+        const curY = fromY + (targetY - fromY) * fallEase;
+        item.el.style.transform = `translate3d(${item.restX}px, ${curY}px, 0) scale(${item.scaleAmt})`;
+      });
+
+      requestAnimationFrame(tick);
+      return;
+    }
+
+    // ── HOLD OFF-SCREEN WHILE ABOUT IS OPEN ──
+    if (_p2AboutOpen) {
+      const aboutActive = _p2InteractiveMode ? (window._p2LabItems || []) : p2Items;
+      aboutActive.forEach((item, i) => {
+        const si = staggerOrder[i] !== undefined ? staggerOrder[i] : i;
+        item.el.style.transform = `translate3d(${item.restX}px, ${window.innerHeight + 200 + si * 50}px, 0) scale(${item.scaleAmt})`;
+      });
+      titleEl.style.opacity = 0;
+      requestAnimationFrame(tick);
+      return;
+    }
+
     // ── HOLD OFF-SCREEN WHILE PROJECT IS OPEN ──
     if (_p2ProjectOpen) {
       // Keep everything parked below screen
       p2Items.forEach((item, i) => {
+        const si = staggerOrder[i] !== undefined ? staggerOrder[i] : i;
+        item.el.style.transform = `translate3d(${item.restX}px, ${window.innerHeight + 200 + si * 50}px, 0) scale(${item.scaleAmt})`;
+      });
+      titleEl.style.opacity = 0;
+      requestAnimationFrame(tick);
+      return;
+    }
+
+    // ── HOLD OFF-SCREEN WHILE LAB APP IS OPEN ──
+    if (_p2LabOpen) {
+      _p2LabItems.forEach((item, i) => {
         const si = staggerOrder[i] !== undefined ? staggerOrder[i] : i;
         item.el.style.transform = `translate3d(${item.restX}px, ${window.innerHeight + 200 + si * 50}px, 0) scale(${item.scaleAmt})`;
       });
@@ -2830,5 +3463,6 @@ document.querySelectorAll('.p2-about-back').forEach(link => {
   });
 })();
 </script>
+<script src="lyrc-phone.js"></script>
 </body>
 </html>

@@ -159,6 +159,7 @@ svg.goo-defs { position: absolute; width: 0; height: 0; }
 .header-logo-link .logo-hover { position: absolute; top: 0; left: 0; opacity: 0; }
 .header-logo-link:hover .logo-default { opacity: 0; }
 .header-logo-link:hover .logo-hover { opacity: 1; }
+  .header-logo-link, .header-logo-link.loaded { display: none !important; }
 /* ── CASCADE REVEAL ── */
 .cascade-in { opacity: 0; }
 .cascade-in.revealed { opacity: 1; }
@@ -213,10 +214,7 @@ svg.goo-defs { position: absolute; width: 0; height: 0; }
 
 <!-- Header -->
 <header class="header cascade-in" id="cascadeHeader">
-  <a href="../index.html" class="header-logo-link" id="headerLogo">
-    <img src="logo-gray.svg" alt="ML" class="header-logo logo-default">
-    <img src="logo-orange.svg" alt="ML" class="header-logo logo-hover">
-  </a>
+  
 </header>
 <!-- title row removed, lives in center watermark -->
 

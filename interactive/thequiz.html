@@ -65,6 +65,7 @@ h1, h2, h3 { font-family: 'din-2014-rounded-variable', sans-serif; word-spacing:
 .header-logo-link .logo-hover { position: absolute; top: 0; left: 0; opacity: 0; }
 .header-logo-link:hover .logo-default { opacity: 0; }
 .header-logo-link:hover .logo-hover { opacity: 1; }
+  .header-logo-link, .header-logo-link.loaded { display: none !important; }
 
 /* ── MAIN ── */
 .main {
@@ -550,10 +551,7 @@ h1, h2, h3 { font-family: 'din-2014-rounded-variable', sans-serif; word-spacing:
 <div class="green-flash" id="greenFlash"></div>
 
 <header class="header">
-  <a href="../index.html" class="header-logo-link">
-    <img src="logo-gray.svg" alt="ML" class="header-logo logo-default">
-    <img src="logo-orange.svg" alt="ML" class="header-logo logo-hover">
-  </a>
+  
 </header>
 
 <main class="main" id="main">

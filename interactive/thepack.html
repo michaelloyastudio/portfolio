@@ -69,6 +69,7 @@ h1, h2, h3 { font-family: 'din-2014-rounded-variable', sans-serif; word-spacing:
 .header-logo-link .logo-hover { position: absolute; top: 0; left: 0; opacity: 0; }
 .header-logo-link:hover .logo-default { opacity: 0; }
 .header-logo-link:hover .logo-hover { opacity: 1; }
+  .header-logo-link, .header-logo-link.loaded { display: none !important; }
 
 /* ── MAIN LAYOUT ── */
 .main {
@@ -855,10 +856,7 @@ h1, h2, h3 { font-family: 'din-2014-rounded-variable', sans-serif; word-spacing:
 
 <!-- HEADER (matches other apps) -->
 <div class="header">
-  <a href="../p2.html" class="header-logo-link">
-    <img src="logo-gray.svg" class="header-logo logo-default" alt="ML">
-    <img src="logo-orange.svg" class="header-logo logo-hover" alt="ML">
-  </a>
+  
 </div>
 
 <div class="main" id="mainArea">
