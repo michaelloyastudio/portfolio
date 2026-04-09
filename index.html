@@ -506,15 +506,14 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     display: block;
   }
   .p2-header-logo {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 201;
     display: flex;
     align-items: center;
     pointer-events: auto;
     cursor: pointer;
+    z-index: 201;
+    transition: transform 0.2s ease;
   }
+  .p2-header-logo:hover { transform: scale(1.1); }
   .p2-header-logo img {
     height: 32px;
     width: auto;
@@ -529,6 +528,9 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   .p2-header-logo:hover img:first-child { opacity: 0; }
   .p2-header-logo:hover img:last-child { opacity: 1; }
   .p2-header-nav {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
     margin-top: 0;
     gap: 1.15rem;
   }
@@ -2044,7 +2046,7 @@ function _p2SilentSwapToPlayground() {
 }
 
 function p2LogoNav() {
-  if (_p2LabOpen) { p2CloseLabApp({dest:'work'}); return; }
+  if (_p2LabOpen) { p2CloseLabApp({dest:'playground'}); return; }
   if (_p2ProjectOpen) { p2CloseProject(); return; }
   if (_p2AboutOpen) { p2CloseAbout(); return; }
   if (_p2InteractiveMode) { p2ShowWork(); return; }
@@ -2610,11 +2612,17 @@ function p2CloseLabApp(opts) {
     document.getElementById('p2LabFrame').src = '';
 
     if (dest === 'playground') {
-      // Float lab cards back in
-      _p2LabItems.forEach(function(item) { item.el.style.display = ''; });
+      // Re-park off-screen before showing, then float in
+      var h2 = window.innerHeight;
+      _p2LabItems.forEach(function(item, i) {
+        var si = i; // stagger matches tick
+        item.el.style.transform = 'translate3d(' + item.restX + 'px,' + (h2 + 200 + si * 50) + 'px,0) scale(' + item.scaleAmt + ')';
+        item.el.style.display = '';
+      });
       window._p2ResetStart = null;
       window._p2LabResetStart = performance.now();
-      setTimeout(function() { window._p2LabResetStart = null; }, 3000);
+      // After float-in completes, transfer to _p2ResetStart to maintain bob continuity
+      setTimeout(function() { if (window._p2LabResetStart) { window._p2ResetStart = window._p2LabResetStart; window._p2LabResetStart = null; } }, 3000);
 
     } else if (dest === 'work') {
       // Hard-swap to work mode then float work items in
@@ -2637,7 +2645,7 @@ function p2CloseLabApp(opts) {
       }
       window._p2LabResetStart = null;
       window._p2ResetStart = performance.now();
-      setTimeout(function() { window._p2ResetStart = null; }, 3000);
+      setTimeout(function() { window._p2ResetStart = null; }, 3500);
       _p2SetActiveNav('work');
 
     } else if (dest === 'about') {
