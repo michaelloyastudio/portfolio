@@ -13,7 +13,7 @@
     * { -webkit-tap-highlight-color: transparent; }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { background: #0a0a0a; overflow: hidden; height: 100vh; width: 100vw; cursor: url('cursor.svg') 16 8, default; }
+body { background: #0a0a0a; overflow: hidden; height: 100vh; width: 100vw; cursor: url('../assets/cursors/cursor-dark.svg') 16 8, default; }
 svg.goo-defs { position: absolute; width: 0; height: 0; }
 .lava-container { position: fixed; inset: 0; filter: url(#goo); opacity: 0; transition: opacity 1.5s ease; }
 .lava-container.loaded { opacity: 1; }
@@ -36,7 +36,7 @@ svg.goo-defs { position: absolute; width: 0; height: 0; }
   margin-top: 0.3rem;
   transition: color 0.3s;
 }
-.wm-sub.eject { cursor: url('crosshair.svg') 8 10, pointer; pointer-events: all; }
+.wm-sub.eject { cursor: url('../assets/cursors/crosshair-dark.svg') 8 10, pointer; pointer-events: all; }
 .wm-sub.eject:hover { color: #ff8e3d; }
 .wm-sub .eject-letter { display: inline-block; }
 @keyframes navWave {
@@ -117,7 +117,7 @@ svg.goo-defs { position: absolute; width: 0; height: 0; }
   border-radius: 12px;
   padding: 1.2rem 2.5rem;
   display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
-  cursor: url('crosshair.svg') 8 10, pointer;
+  cursor: url('../assets/cursors/crosshair-dark.svg') 8 10, pointer;
   transition: all 0.4s ease;
   opacity: 0;
 }
@@ -173,7 +173,7 @@ svg.goo-defs { position: absolute; width: 0; height: 0; }
 .footer.cascade-in.revealed { transform: translateY(0); }
 
 /* Play cursor for clickable items */
-.drop-module, .header-logo-link { cursor: url('crosshair.svg') 8 10, pointer !important; }
+.drop-module, .header-logo-link { cursor: url('../assets/cursors/crosshair-dark.svg') 8 10, pointer !important; }
 </style>
 </head>
 <body>
