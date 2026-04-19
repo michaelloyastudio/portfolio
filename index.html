@@ -55,7 +55,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   .p2-project .project-img, .p2-project .project-img img,
   .p2-project-hero, .p2-project-hero img,
   a, button, [onclick] {
-    cursor: url('play-cursor.svg') 8 10, pointer;
+    cursor: url('assets/cursors/play-cursor.svg') 8 10, pointer;
   }
 
   body {
@@ -67,7 +67,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     padding: 0;
     width: 100vw;
     height: 100vh;
-    cursor: url('cursor.svg') 16 8, default;
+    cursor: url('assets/cursors/cursor.svg') 16 8, default;
   }
 
   /* ── PROJECT INLINE IMAGES ── */
@@ -595,7 +595,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     letter-spacing: 0.85em;
     text-transform: uppercase;
     color: #8a8580;
-    cursor: url('play-cursor.svg') 8 10, default;
+    cursor: url('assets/cursors/play-cursor.svg') 8 10, default;
     user-select: none;
     pointer-events: auto;
     padding-left: 0.85em; /* visually center with the extra tracking */
@@ -603,11 +603,11 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   .p2-tagline .tag-letter {
     display: inline-block;
     transition: color 0.3s;
-    cursor: url('play-cursor.svg') 8 10, default;
+    cursor: url('assets/cursors/play-cursor.svg') 8 10, default;
   }
   .p2-wrap.dark-mode .p2-tagline,
   .p2-wrap.dark-mode .p2-tagline .tag-letter {
-    cursor: url('interactive/play-cursor-dark.svg') 8 10, default;
+    cursor: url('assets/cursors/play-cursor-dark.svg') 8 10, default;
   }
   .p2-tagline.bouncing .tag-letter {
     animation: navWave 0.5s ease forwards;
@@ -970,7 +970,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   /* Dark mode cursors — must override body rule */
   .p2-wrap.dark-mode,
   .p2-wrap.dark-mode * {
-    cursor: url('interactive/cursor.svg') 16 8, default;
+    cursor: url('assets/cursors/cursor-dark.svg') 16 8, default;
   }
   .p2-wrap.dark-mode a,
   .p2-wrap.dark-mode a *,
@@ -985,7 +985,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   .p2-wrap.dark-mode .p2-nav a *,
   .p2-wrap.dark-mode a,
   .p2-wrap.dark-mode button {
-    cursor: url('interactive/play-cursor-dark.svg') 8 10, pointer;
+    cursor: url('assets/cursors/play-cursor-dark.svg') 8 10, pointer;
   }
 
   /* Dark mode transitions for interactive mode */
@@ -1535,8 +1535,8 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   <!-- Top Header -->
   <header class="p2-header" id="p2Header">
     <div class="p2-header-logo" onclick="p2LogoNav()">
-      <img src="interactive/logo-gray.svg" alt="Michael Loya Studio">
-      <img src="interactive/logo-orange.svg" alt="Michael Loya Studio">
+      <img src="assets/brand/logo-gray.svg" alt="Michael Loya Studio">
+      <img src="assets/brand/logo-orange.svg" alt="Michael Loya Studio">
     </div>
     <nav class="p2-nav p2-header-nav" id="p2HeaderNav">
       <a data-nav="work" onclick="p2NavGoWork()"><span>Studio</span></a>
@@ -1562,7 +1562,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
       <div class="p2-about-content">
         <div class="p2-about-hero">
           <div style="position:relative;display:inline-block;">
-            <img class="p2-about-portrait" src="mike-portrait.jpg" alt="Michael Loya" onclick="document.getElementById('lightboxImg').src=this.src;document.getElementById('lightboxImg').style.display='block';document.getElementById('lightboxVideo').style.display='none';document.getElementById('lightbox').classList.add('open')">
+            <img class="p2-about-portrait" src="assets/site/mike-portrait.jpg" alt="Michael Loya" onclick="document.getElementById('lightboxImg').src=this.src;document.getElementById('lightboxImg').style.display='block';document.getElementById('lightboxVideo').style.display='none';document.getElementById('lightbox').classList.add('open')">
             <a href="https://www.mctvisual.com/" target="_blank" style="display:block;margin-top:0.4rem;font-family:'Space Grotesk',sans-serif;font-size:0.7rem;color:#8a8580;text-decoration:none;letter-spacing:0.05em;transition:color 0.3s;">Photo by <span style="text-decoration:underline;transition:color 0.3s;" onmouseover="this.style.color='#ff8e3d'" onmouseout="this.style.color='#8a8580'">Malcolm Taylor</span></a>
           </div>
           <div class="p2-about-text">
@@ -1603,7 +1603,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
         </div>
 
         <div style="text-align:center;margin:1rem 0 0.5rem;">
-          <a href="Resume_Loya.pdf" download class="resume-link p2-nav-wave" style="font-family:'Space Grotesk',sans-serif;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.12em;color:#8a8580;text-decoration:none;display:inline-block;padding:0.25rem 0;cursor:pointer;"><span>↓ Download Resume</span></a>
+          <a href="assets/site/resume.pdf" download class="resume-link p2-nav-wave" style="font-family:'Space Grotesk',sans-serif;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.12em;color:#8a8580;text-decoration:none;display:inline-block;padding:0.25rem 0;cursor:pointer;"><span>↓ Download Resume</span></a>
         </div>
       </div>
     </div>
@@ -1678,7 +1678,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     <div class="p2-title" style="display:none;">
       <span class="p2-title-mask">
         <span class="p2-title-slider" id="p2TitleSlider">
-          <span class="p2-title-line"><img src="logo-black.svg" class="p2-logo" style="height:62px;width:auto;margin-right:0.6rem;margin-top:6px;">Michael Loya&nbsp;<span style="color:#8a8580">Studio</span></span>
+          <span class="p2-title-line"><img src="assets/brand/logo-black.svg" class="p2-logo" style="height:62px;width:auto;margin-right:0.6rem;margin-top:6px;">Michael Loya&nbsp;<span style="color:#8a8580">Studio</span></span>
           <span class="p2-title-line p2-app-name" id="p2AppName"></span>
         </span>
       </span>
@@ -2017,7 +2017,7 @@ function _p2SilentSwapToWork() {
     window._p2LabItems = [];
   }
   var titleLine = document.querySelector('.p2-title-line');
-  if (titleLine) titleLine.innerHTML = '<img src="logo-black.svg" class="p2-logo" style="height:62px;width:auto;margin-right:0.6rem;margin-top:6px;">Michael Loya\u00a0<span style="color:#8a8580">Studio</span>';
+  if (titleLine) titleLine.innerHTML = '<img src="assets/brand/logo-black.svg" class="p2-logo" style="height:62px;width:auto;margin-right:0.6rem;margin-top:6px;">Michael Loya\u00a0<span style="color:#8a8580">Studio</span>';
   var mask = document.querySelector('.p2-title-mask');
   if (mask) mask.classList.remove('slid');
   _p2InteractiveMode = false;
@@ -2026,7 +2026,7 @@ function _p2SilentSwapToWork() {
   setTimeout(function() {
     document.getElementById('p2Wrap').classList.remove('dark-mode');
     document.getElementById('p2Scene').classList.remove('dark-mode-scene');
-    document.body.style.cursor = "url('cursor.svg') 16 8, default";
+    document.body.style.cursor = "url('assets/cursors/cursor.svg') 16 8, default";
     document.getElementById('p2Scene').style.cursor = '';
   }, 600);
 }
@@ -2041,8 +2041,8 @@ function _p2SilentSwapToPlayground() {
   setTimeout(function() {
     document.getElementById('p2Wrap').classList.add('dark-mode');
     document.getElementById('p2Scene').classList.add('dark-mode-scene');
-    document.body.style.cursor = "url('interactive/cursor.svg') 16 8, default";
-    document.getElementById('p2Scene').style.cursor = "url('interactive/cursor.svg') 16 8, default";
+    document.body.style.cursor = "url('assets/cursors/cursor-dark.svg') 16 8, default";
+    document.getElementById('p2Scene').style.cursor = "url('assets/cursors/cursor-dark.svg') 16 8, default";
   }, 600);
 }
 
@@ -2156,8 +2156,8 @@ function p2ShowInteractive() {
     // Dark mode
     document.getElementById('p2Wrap').classList.add('dark-mode');
     document.getElementById('p2Scene').classList.add('dark-mode-scene');
-    document.body.style.cursor = "url('interactive/cursor.svg') 16 8, default";
-    document.getElementById('p2Scene').style.cursor = "url('interactive/cursor.svg') 16 8, default";
+    document.body.style.cursor = "url('assets/cursors/cursor-dark.svg') 16 8, default";
+    document.getElementById('p2Scene').style.cursor = "url('assets/cursors/cursor-dark.svg') 16 8, default";
     // Swap title to "The Playground"
     var titleLine = document.querySelector('.p2-title-line');
     if (titleLine) titleLine.innerHTML = 'The Playground';
@@ -2352,12 +2352,12 @@ function p2ShowWork() {
     // Light mode
     document.getElementById('p2Wrap').classList.remove('dark-mode');
     document.getElementById('p2Scene').classList.remove('dark-mode-scene');
-    document.body.style.cursor = "url('cursor.svg') 16 8, default";
+    document.body.style.cursor = "url('assets/cursors/cursor.svg') 16 8, default";
     document.getElementById('p2Scene').style.cursor = '';
 
     // Restore title to logo+wordmark SVG
     var titleLine = document.querySelector('.p2-title-line');
-    if (titleLine) titleLine.innerHTML = '<img src="logo-black.svg" class="p2-logo" style="height:62px;width:auto;margin-right:0.6rem;margin-top:6px;">Michael Loya\u00a0<span style="color:#8a8580">Studio</span>';
+    if (titleLine) titleLine.innerHTML = '<img src="assets/brand/logo-black.svg" class="p2-logo" style="height:62px;width:auto;margin-right:0.6rem;margin-top:6px;">Michael Loya\u00a0<span style="color:#8a8580">Studio</span>';
     var mask = document.querySelector('.p2-title-mask');
     if (mask) mask.classList.remove('slid');
 
@@ -2632,10 +2632,10 @@ function p2CloseLabApp(opts) {
       _p2InteractiveMode = false;
       document.getElementById('p2Wrap').classList.remove('dark-mode');
       document.getElementById('p2Scene').classList.remove('dark-mode-scene');
-      document.body.style.cursor = "url('cursor.svg') 16 8, default";
+      document.body.style.cursor = "url('assets/cursors/cursor.svg') 16 8, default";
       document.getElementById('p2Scene').style.cursor = '';
       var titleLine = document.querySelector('.p2-title-line');
-      if (titleLine) titleLine.innerHTML = '<img src="logo-black.svg" class="p2-logo" style="height:62px;width:auto;margin-right:0.6rem;margin-top:6px;">Michael Loya\u00a0<span style="color:#8a8580">Studio</span>';
+      if (titleLine) titleLine.innerHTML = '<img src="assets/brand/logo-black.svg" class="p2-logo" style="height:62px;width:auto;margin-right:0.6rem;margin-top:6px;">Michael Loya\u00a0<span style="color:#8a8580">Studio</span>';
       var mask = document.querySelector('.p2-title-mask');
       if (mask) mask.classList.remove('slid');
       // Park work items offscreen then float in
@@ -3054,8 +3054,8 @@ function splashChoose(choice) {
       _p2InteractiveMode = true;
       document.getElementById('p2Wrap').classList.add('dark-mode');
       document.getElementById('p2Scene').classList.add('dark-mode-scene');
-      document.body.style.cursor = "url('interactive/cursor.svg') 16 8, default";
-      document.getElementById('p2Scene').style.cursor = "url('interactive/cursor.svg') 16 8, default";
+      document.body.style.cursor = "url('assets/cursors/cursor-dark.svg') 16 8, default";
+      document.getElementById('p2Scene').style.cursor = "url('assets/cursors/cursor-dark.svg') 16 8, default";
       var titleLine = document.querySelector('.p2-title-line');
       if (titleLine) titleLine.innerHTML = 'The Playground';
       _p2SetActiveNav('playground');
