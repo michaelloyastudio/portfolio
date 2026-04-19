@@ -9,7 +9,7 @@ function initLyrcPhone() {
   if (!root || root._lyrcInit) return;
   root._lyrcInit = true;
 
-  var IMG = 'img/all/lyrc/';
+  var IMG = 'projects/lyrc/';
 
   // ── Helper: query inside container ──
   function $(id) { return root.querySelector('#lyrc-' + id); }
