@@ -244,17 +244,17 @@ function initLyrcPhone() {
   (function() {
     // Posts Data
     var posts = [
-      {id:0, images:['Templates_Title.jpg','Templates_Slide1.jpg','Templates_Slide2.jpg','Templates_Slide3.jpg','Templates_Slide4.jpg'], caption:'Templates are here. Upload, transcribe, customize. It\'s that simple. \u2728', likes:374},
-      {id:1, images:['Performances_Title.jpg','Performances_Slide1.jpg','Performances_Slide2.jpg','Performances_Slide3.jpg','Performances_Slide4.jpg','Performances_Slide5.jpg','Performances_Slide6.jpg','Performances_Slide7.jpg'], caption:'Introducing Performances: A new way to promote your music.', likes:631}
+      {id:0, images:['templates-title.jpg','templates-slide-1.jpg','templates-slide-2.jpg','templates-slide-3.jpg','templates-slide-4.jpg'], caption:'Templates are here. Upload, transcribe, customize. It\'s that simple. \u2728', likes:374},
+      {id:1, images:['performances-title.jpg','performances-slide-1.jpg','performances-slide-2.jpg','performances-slide-3.jpg','performances-slide-4.jpg','performances-slide-5.jpg','performances-slide-6.jpg','performances-slide-7.jpg'], caption:'Introducing Performances: A new way to promote your music.', likes:631}
     ];
 
     // Stories Data
     var stories = [];
     for (var i = 1; i <= 11; i++) { if (i === 10 || i === 11) continue; stories.push({type:'image', src:'InstagramAds-' + String(i).padStart(2,'0') + '.jpg'}); }
-    stories.push({type:'image', src:'graphic3_v1.jpg'});
+    stories.push({type:'image', src:'graphic-3.jpg'});
 
-    stories.push({type:'video', src:'vid1_v1.mp4'});
-    stories.push({type:'video', src:'vid1_v2.mp4'});
+    stories.push({type:'video', src:'vid-1a.mp4'});
+    stories.push({type:'video', src:'vid-1b.mp4'});
 
     // Clock
     function updateClock() {
