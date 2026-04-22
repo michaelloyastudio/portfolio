@@ -49,13 +49,19 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   .lightbox, .lightbox-close,
   .nav-links a, .nav-links a *,
   [draggable="true"],
-  .p2-item, .p2-item img,
+  .p2-item, .p2-item *,
   .project-img, .project-img img, .project-img video,
-  .p2-nav a, .p2-about-back, .p2-contact-links a,
-  .p2-project .project-img, .p2-project .project-img img,
-  .p2-project-hero, .p2-project-hero img,
+  .p2-nav a, .p2-nav a *, .p2-about-back, .p2-about-back *,
+  .p2-contact-links a, .p2-contact-links a *,
+  .p2-project .project-img, .p2-project .project-img *,
+  .p2-project-hero, .p2-project-hero *,
+  .p2-header-left, .p2-header-left *,
+  .p2-header-logo, .p2-header-logo *,
+  .p2-splash-btn, .p2-splash-btn *,
+  .p2-about-portrait,
+  .p2-header-socials a, .p2-header-socials a *,
   a, button, [onclick] {
-    cursor: url('assets/cursors/play-cursor.svg') 8 10, pointer;
+    cursor: url('assets/cursors/play-cursor.svg') 8 10, pointer !important;
   }
 
   body {
@@ -490,7 +496,11 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     transition: opacity 0.4s ease;
   }
   .p2-header.hidden { opacity: 0; pointer-events: none !important; }
-  .p2-header.hidden > * { pointer-events: none !important; }
+  .p2-header.hidden > *,
+  .p2-header.hidden > * * { pointer-events: none !important; }
+  .p2-header.no-interact,
+  .p2-header.no-interact > *,
+  .p2-header.no-interact > * * { pointer-events: none !important; }
   .p2-header > * { pointer-events: auto; }
   .p2-header-left {
     display: flex;
@@ -2410,7 +2420,7 @@ function p2ShowProject(index, el) {
 
   // Reset header state on each project open/swap
   var hdrEl = document.getElementById('p2Header');
-  if (hdrEl) { hdrEl.style.opacity = ''; hdrEl.style.pointerEvents = 'none'; }
+  if (hdrEl) { hdrEl.style.opacity = ''; hdrEl.classList.add('no-interact'); }
 
   // Fade header on project scroll
   scrollEl.onscroll = function() {
@@ -2418,7 +2428,6 @@ function p2ShowProject(index, el) {
     if (!hdr) return;
     var t = Math.min(scrollEl.scrollTop / 80, 1);
     hdr.style.opacity = 1 - t;
-    hdr.style.pointerEvents = 'none'; // always none while project open
   };
 
   // Reset visibility
@@ -2590,7 +2599,7 @@ function p2OpenLabApp(app, idx, clickedEl) {
 
     // Restore header
     var hdr = document.getElementById('p2Header');
-    if (hdr) { hdr.style.opacity = ''; hdr.style.pointerEvents = 'none'; }
+    if (hdr) { hdr.style.opacity = ''; hdr.classList.add('no-interact'); }
   }, 500);
 }
 
@@ -2604,7 +2613,7 @@ function p2CloseLabApp(opts) {
   // Ensure overlay can't intercept pointer events once fade starts
   overlay.style.pointerEvents = 'none';
   var hdr = document.getElementById('p2Header');
-  if (hdr) { hdr.style.opacity = ''; hdr.style.pointerEvents = ''; }
+  if (hdr) { hdr.style.opacity = ''; hdr.classList.remove('no-interact'); }
 
   // After overlay fully fades (800ms)
   setTimeout(function() {
@@ -2670,7 +2679,7 @@ function p2CloseProject() {
 
   // Restore header
   var hdr = document.getElementById('p2Header');
-  if (hdr) { hdr.style.opacity = ''; hdr.style.pointerEvents = ''; }
+  if (hdr) { hdr.style.opacity = ''; hdr.classList.remove('no-interact'); }
 
   // Remove scroll listener and re-enable scroll
   var scrollEl = document.getElementById('p2Project').querySelector('.p2-project-scroll');
