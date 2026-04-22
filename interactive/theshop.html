@@ -483,14 +483,26 @@ main.loaded { opacity: 1; transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1)
   font-weight: 600;
   color: var(--accent);
 }
-.modal-purchase {
-  font-size: 0.6rem;
-  color: var(--text-muted);
-  letter-spacing: 0.04em;
-}
-.modal-purchase a {
-  color: var(--accent);
+.modal-buy-btn {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.65rem 1.1rem;
+  background: var(--accent);
+  color: #0a0a0a;
+  border: none;
+  border-radius: 6px;
   text-decoration: none;
+  font-weight: 600;
+  transition: background 0.15s ease, transform 0.1s ease;
+  cursor: url('../assets/cursors/crosshair-dark.svg') 8 10, pointer !important;
+}
+.modal-buy-btn:hover {
+  background: #ffa35c;
+}
+.modal-buy-btn:active {
+  transform: translateY(1px);
 }
 .modal-close {
   position: absolute;
@@ -1128,7 +1140,7 @@ function openDetail(id) {
         <div class="modal-price">${p.sold ? '<span style="color:var(--text-muted);font-size:0.8rem;">Sold</span>' : `$${p.price}`}</div>
         ${p.sold 
           ? '<div class="sold-label">Sold</div>' 
-          : '<div class="modal-purchase">Text <a href="sms:2039233280">203-923-3280</a> to buy</div>'}
+          : '<a class="modal-buy-btn" href="sms:2039233280">Contact Seller</a>'}
       </div>
     </div>
   `;
