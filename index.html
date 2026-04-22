@@ -3440,6 +3440,170 @@ document.querySelectorAll('.p2-about-back').forEach(link => {
     setTimeout(() => { window.open(href, '_blank'); overlay.style.opacity = '0'; overlay.style.pointerEvents = 'none'; }, 700);
   });
 })();
+
+// ═══════════════════════════════════════════════════
+// DEEP LINKING (hash routing)
+// Keeps URL in sync with the current view so refresh / share
+// lands the user back on the same scene. Logo still goes home.
+// ═══════════════════════════════════════════════════
+(function() {
+  var PROJECT_SLUGS = ['loya-and-co','bodyarmor-powerade','university-union','lyrc','album-covers','miscellaneous','ai-song','photography'];
+  var LAB_SLUGS = ['rotation','grid','shop','blob']; // order matches _p2LabApps
+
+  var _suppressHashChange = false;
+  function setHash(h) {
+    var target = h ? '#' + h : location.pathname + location.search;
+    var newHash = h ? '#' + h : '';
+    if (location.hash === newHash) return;
+    _suppressHashChange = true;
+    try { history.replaceState(null, '', target); } catch(e) {}
+    // In case some browsers still fire hashchange even with replaceState
+    setTimeout(function() { _suppressHashChange = false; }, 0);
+  }
+
+  function parseHash() {
+    var h = (location.hash || '').replace(/^#\/?/, '');
+    if (!h) return null;
+    if (h === 'work' || h === 'playground' || h === 'about' || h === 'contact') return { view: h };
+    var m = h.match(/^project\/(.+)$/);
+    if (m) {
+      var i = PROJECT_SLUGS.indexOf(m[1]);
+      if (i >= 0) return { view: 'project', index: i };
+    }
+    m = h.match(/^playground\/(.+)$/);
+    if (m) {
+      var j = LAB_SLUGS.indexOf(m[1]);
+      if (j >= 0) return { view: 'lab-app', index: j };
+    }
+    return null;
+  }
+
+  // Monkey-patch view transitions. Each wrapper updates the hash only if the
+  // underlying state actually changed, by snapshotting the relevant flags
+  // before delegating to the original function.
+  var origShowProject = window.p2ShowProject;
+  window.p2ShowProject = function(idx, el) {
+    var wasOpen = window._p2ProjectOpen || window._p2ProjectFalling;
+    var r = origShowProject.apply(this, arguments);
+    if (!wasOpen && idx != null && PROJECT_SLUGS[idx]) setHash('project/' + PROJECT_SLUGS[idx]);
+    return r;
+  };
+  var origCloseProject = window.p2CloseProject;
+  window.p2CloseProject = function() {
+    var wasOpen = window._p2ProjectOpen;
+    var r = origCloseProject.apply(this, arguments);
+    if (wasOpen) setHash(window._p2InteractiveMode ? 'playground' : 'work');
+    return r;
+  };
+  var origShowInteractive = window.p2ShowInteractive;
+  window.p2ShowInteractive = function() {
+    var wasInteractive = window._p2InteractiveMode;
+    var r = origShowInteractive.apply(this, arguments);
+    if (!wasInteractive) setHash('playground');
+    return r;
+  };
+  var origShowWork = window.p2ShowWork;
+  window.p2ShowWork = function() {
+    var wasInteractive = window._p2InteractiveMode;
+    var r = origShowWork.apply(this, arguments);
+    if (wasInteractive) setHash('work');
+    return r;
+  };
+  var origShowAbout = window.p2ShowAbout;
+  window.p2ShowAbout = function() {
+    var wasOpen = window._p2AboutOpen;
+    var r = origShowAbout.apply(this, arguments);
+    if (!wasOpen) setHash('about');
+    return r;
+  };
+  var origCloseAbout = window.p2CloseAbout;
+  window.p2CloseAbout = function() {
+    var wasOpen = window._p2AboutOpen;
+    var r = origCloseAbout.apply(this, arguments);
+    if (wasOpen) setHash(window._p2InteractiveMode ? 'playground' : 'work');
+    return r;
+  };
+  var origShowContact = window.p2ShowContact;
+  window.p2ShowContact = function() {
+    var r = origShowContact.apply(this, arguments);
+    setHash('contact');
+    return r;
+  };
+  var origCloseContact = window.p2CloseContact;
+  window.p2CloseContact = function() {
+    var r = origCloseContact.apply(this, arguments);
+    setHash(window._p2InteractiveMode ? 'playground' : 'work');
+    return r;
+  };
+  var origOpenLabApp = window.p2OpenLabApp;
+  window.p2OpenLabApp = function(app, idx, clickedEl) {
+    var wasOpen = window._p2LabOpen;
+    var r = origOpenLabApp.apply(this, arguments);
+    if (!wasOpen && idx != null && LAB_SLUGS[idx]) setHash('playground/' + LAB_SLUGS[idx]);
+    return r;
+  };
+  var origCloseLabApp = window.p2CloseLabApp;
+  window.p2CloseLabApp = function(opts) {
+    var wasOpen = window._p2LabOpen;
+    var r = origCloseLabApp.apply(this, arguments);
+    if (wasOpen) {
+      var dest = (opts && opts.dest) || 'playground';
+      if (dest === 'work') setHash('work');
+      else if (dest === 'about') setHash('about');
+      else setHash('playground');
+    }
+    return r;
+  };
+
+  // Initial restore: if URL has a hash, skip the splash and jump to that view.
+  function restoreInitial() {
+    var initial = parseHash();
+    if (!initial) return;
+    var usePlayground = (initial.view === 'playground' || initial.view === 'lab-app');
+    // Dismiss splash via its normal path (it handles scene init + header show).
+    // splashChoose early-exits if _splashActive is false, so this runs at most once.
+    if (typeof splashChoose === 'function') splashChoose(usePlayground ? 'apps' : 'yes');
+    // Wait for splash teardown (~700ms) + a beat for init to settle, then route.
+    setTimeout(function() {
+      switch (initial.view) {
+        case 'work':       break; // splashChoose('yes') already landed us here
+        case 'playground': break; // splashChoose('apps') already landed us here
+        case 'about':      p2ShowAbout(); break;
+        case 'contact':    p2ShowContact(); break;
+        case 'project':    p2ShowProject(initial.index); break;
+        case 'lab-app':
+          if (typeof p2OpenLabApp === 'function' && window._p2LabApps) {
+            p2OpenLabApp(window._p2LabApps[initial.index], initial.index);
+          }
+          break;
+      }
+    }, 900);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', restoreInitial);
+  } else {
+    restoreInitial();
+  }
+
+  // Browser back/forward support. Only react to user-driven hash changes.
+  window.addEventListener('hashchange', function() {
+    if (_suppressHashChange) return;
+    var s = parseHash();
+    // Don't try to navigate on forward-to-landing — that path requires a full reload.
+    // The logo already handles "go home" via its own onclick.
+    if (!s) return;
+    switch (s.view) {
+      case 'work':       if (!window._p2InteractiveMode) return; p2ShowWork(); break;
+      case 'playground': if (window._p2InteractiveMode) return; p2ShowInteractive(); break;
+      case 'about':      p2ShowAbout(); break;
+      case 'contact':    p2ShowContact(); break;
+      case 'project':    p2ShowProject(s.index); break;
+      case 'lab-app':
+        if (window._p2LabApps) p2OpenLabApp(window._p2LabApps[s.index], s.index);
+        break;
+    }
+  });
+})();
 </script>
 <script>
 // ── MUSIC NOTE CURSOR TRAIL ──
