@@ -167,7 +167,7 @@ function initLyrcPhone() {
 '          </div>',
 '          <div class="lp-profile-top">',
 '            <div class="lp-profile-pic-wrap" id="lyrc-profilePicBtn">',
-'              <div class="lp-story-ring"><div class="lp-story-ring-inner"><div class="lp-profile-pic" style="background-image:url(' + IMG + 'lyrc-propic.jpg)"></div></div></div>',
+'              <div class="lp-story-ring"><div class="lp-story-ring-inner"><div class="lp-profile-pic" style="background-image:url(' + IMG + 'propic.jpg)"></div></div></div>',
 '            </div>',
 '            <div class="lp-profile-stats">',
 '              <div class="lp-profile-stat"><div class="lp-num">2</div><div class="lp-label">posts</div></div>',
@@ -202,7 +202,7 @@ function initLyrcPhone() {
 '      <div class="lp-post-detail" id="lyrc-postDetail">',
 '        <div class="lp-post-detail-header">',
 '          <div class="lp-back" id="lyrc-postDetailBack"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></div>',
-'          <div class="lp-avatar" style="background-image:url(' + IMG + 'lyrc-propic.jpg);background-size:cover;background-position:center"></div>',
+'          <div class="lp-avatar" style="background-image:url(' + IMG + 'propic.jpg);background-size:cover;background-position:center"></div>',
 '          <div class="lp-uname">lyrc.ai</div>',
 '          <div class="lp-dots">\u2022\u2022\u2022</div>',
 '        </div>',
@@ -220,7 +220,7 @@ function initLyrcPhone() {
 '      <div class="lp-stories-content" id="lyrc-storiesContent">',
 '        <div class="lp-stories-progress" id="lyrc-storiesProgress"></div>',
 '        <div class="lp-stories-header">',
-'          <div class="lp-s-avatar" style="background-image:url(' + IMG + 'lyrc-propic.jpg);background-size:cover;background-position:center"></div>',
+'          <div class="lp-s-avatar" style="background-image:url(' + IMG + 'propic.jpg);background-size:cover;background-position:center"></div>',
 '          <div class="lp-s-uname">lyrc.ai</div>',
 '          <div class="lp-s-close" id="lyrc-storiesClose">\u2715</div>',
 '        </div>',
@@ -250,7 +250,7 @@ function initLyrcPhone() {
 
     // Stories Data
     var stories = [];
-    for (var i = 1; i <= 11; i++) { if (i === 10 || i === 11) continue; stories.push({type:'image', src:'InstagramAds-' + String(i).padStart(2,'0') + '.jpg'}); }
+    for (var i = 1; i <= 11; i++) { if (i === 10 || i === 11) continue; stories.push({type:'image', src:'instagram-ad-' + String(i).padStart(2,'0') + '.jpg'}); }
     stories.push({type:'image', src:'graphic-3.jpg'});
 
     stories.push({type:'video', src:'vid-1a.mp4'});
