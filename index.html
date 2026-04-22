@@ -3556,10 +3556,37 @@ document.querySelectorAll('.p2-about-back').forEach(link => {
   };
 
   // Initial restore: if URL has a hash, skip the splash and jump to that view.
+  // A full-screen cover sits on top of the page while the intermediate scene
+  // (work or playground) initializes behind it, then fades out once the
+  // target view is actually open — so the user never sees the transitional
+  // flash of the work/playground scene.
+  function addCover(isDark) {
+    var cover = document.createElement('div');
+    cover.id = 'p2DeepLinkCover';
+    cover.style.cssText = [
+      'position:fixed',
+      'inset:0',
+      'background:' + (isDark ? '#0a0a0a' : '#E8E0D4'),
+      'z-index:9999',
+      'opacity:1',
+      'transition:opacity 0.35s ease',
+      'pointer-events:none'
+    ].join(';');
+    document.body.appendChild(cover);
+    return cover;
+  }
+  function removeCover(cover) {
+    if (!cover) return;
+    cover.style.opacity = '0';
+    setTimeout(function() { try { cover.remove(); } catch(e) {} }, 400);
+  }
+
   function restoreInitial() {
     var initial = parseHash();
     if (!initial) return;
     var usePlayground = (initial.view === 'playground' || initial.view === 'lab-app');
+    var cover = addCover(usePlayground);
+
     // Dismiss splash via its normal path (it handles scene init + header show).
     // splashChoose early-exits if _splashActive is false, so this runs at most once.
     if (typeof splashChoose === 'function') splashChoose(usePlayground ? 'apps' : 'yes');
@@ -3577,6 +3604,10 @@ document.querySelectorAll('.p2-about-back').forEach(link => {
           }
           break;
       }
+      // Give the target view a beat to render before revealing.
+      // 400ms is enough for project overlays to start their open animation
+      // and for lab iframes to paint their first frame.
+      setTimeout(function() { removeCover(cover); }, 400);
     }, 900);
   }
   if (document.readyState === 'loading') {
