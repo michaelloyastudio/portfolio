@@ -617,7 +617,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   }
   .p2-wrap.dark-mode .p2-tagline,
   .p2-wrap.dark-mode .p2-tagline .tag-letter {
-    cursor: url('assets/cursors/play-cursor-dark.svg') 8 10, default;
+    cursor: url('assets/cursors/play-cursor-dark.svg') 8 10, default !important;
   }
   .p2-tagline.bouncing .tag-letter {
     animation: navWave 0.5s ease forwards;
@@ -987,15 +987,22 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   .p2-wrap.dark-mode button,
   .p2-wrap.dark-mode button *,
   .p2-wrap.dark-mode [onclick],
-  .p2-wrap.dark-mode [onclick],
   .p2-wrap.dark-mode [onclick] *,
   .p2-wrap.dark-mode .p2-item,
   .p2-wrap.dark-mode .p2-item *,
   .p2-wrap.dark-mode .p2-nav a,
   .p2-wrap.dark-mode .p2-nav a *,
-  .p2-wrap.dark-mode a,
-  .p2-wrap.dark-mode button {
-    cursor: url('assets/cursors/play-cursor-dark.svg') 8 10, pointer;
+  .p2-wrap.dark-mode .p2-header-left,
+  .p2-wrap.dark-mode .p2-header-left *,
+  .p2-wrap.dark-mode .p2-header-logo,
+  .p2-wrap.dark-mode .p2-header-logo *,
+  .p2-wrap.dark-mode .p2-header-socials a,
+  .p2-wrap.dark-mode .p2-header-socials a *,
+  .p2-wrap.dark-mode .p2-about-back,
+  .p2-wrap.dark-mode .p2-about-back *,
+  .p2-wrap.dark-mode .p2-contact-links a,
+  .p2-wrap.dark-mode .p2-contact-links a * {
+    cursor: url('assets/cursors/play-cursor-dark.svg') 8 10, pointer !important;
   }
 
   /* Dark mode transitions for interactive mode */
@@ -2418,16 +2425,18 @@ function p2ShowProject(index, el) {
   document.getElementById('p2ProjectHeroImg').alt = p.title;
   scrollEl.scrollTop = 0;
 
-  // Reset header state on each project open/swap
+  // Reset header state on each project open/swap — visible + clickable
   var hdrEl = document.getElementById('p2Header');
-  if (hdrEl) { hdrEl.style.opacity = ''; hdrEl.classList.add('no-interact'); }
+  if (hdrEl) { hdrEl.style.opacity = ''; hdrEl.classList.remove('no-interact'); }
 
-  // Fade header on project scroll
+  // Fade header on project scroll. Only disable interaction once fully faded.
   scrollEl.onscroll = function() {
     var hdr = document.getElementById('p2Header');
     if (!hdr) return;
     var t = Math.min(scrollEl.scrollTop / 80, 1);
     hdr.style.opacity = 1 - t;
+    if (t >= 1) hdr.classList.add('no-interact');
+    else hdr.classList.remove('no-interact');
   };
 
   // Reset visibility
@@ -2597,9 +2606,9 @@ function p2OpenLabApp(app, idx, clickedEl) {
     var overlay = document.getElementById('p2LabOverlay');
     overlay.classList.add('visible');
 
-    // Restore header
+    // Restore header — visible and clickable (user can navigate away from lab app)
     var hdr = document.getElementById('p2Header');
-    if (hdr) { hdr.style.opacity = ''; hdr.classList.add('no-interact'); }
+    if (hdr) { hdr.style.opacity = ''; hdr.classList.remove('no-interact'); }
   }, 500);
 }
 
