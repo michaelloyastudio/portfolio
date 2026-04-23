@@ -2270,10 +2270,18 @@ function _tickTitleAnim(ts) {
   }
 }
 
+// Responsive scale: 1.0 at a 1440x900-ish baseline, clamped so items never
+// get absurdly small on laptops or too big on 4K. Applied to pos.s (item size)
+// so the scene stays proportional to the viewport.
+function p2ComputeScale() {
+  return Math.max(0.70, Math.min(1.60, Math.min(window.innerWidth, window.innerHeight) / 900));
+}
+
 function _p2CreateLabCards() {
   var scene = document.getElementById('p2Scene');
   var w = window.innerWidth;
   var h = window.innerHeight;
+  var scale = p2ComputeScale();
   var positions = [
     { x: 0.44, y: 0.22, z: -70,  s: 185 },
     { x: 0.78, y: 0.42, z: -110, s: 170 },
@@ -2285,9 +2293,10 @@ function _p2CreateLabCards() {
 
   _p2LabApps.forEach(function(app, i) {
     var pos = positions[i];
+    var s = Math.round(pos.s * scale);
     var el = document.createElement('div');
     el.className = 'p2-item';
-    el.style.width = pos.s + 'px';
+    el.style.width = s + 'px';
     el.innerHTML = '<img src="' + app.cover + '" alt="' + app.name + '">';
 
     var maxZ = 0, minZ = -150;
@@ -2325,8 +2334,8 @@ function _p2CreateLabCards() {
       p2OpenLabApp(app, i, el);
     });
 
-    var restX = pos.x * w - pos.s / 2;
-    var restY = pos.y * h - pos.s / 2;
+    var restX = pos.x * w - s / 2;
+    var restY = pos.y * h - s / 2;
 
     // Park off-screen immediately so there's no 0,0 flash before tick runs
     el.style.transform = 'translate3d(' + restX + 'px,' + (h + 200 + i * 50) + 'px,0) scale(' + (0.7 + ((pos.z - (-150)) / 150) * 0.3) + ')';
@@ -2335,6 +2344,7 @@ function _p2CreateLabCards() {
 
     _p2LabItems.push({
       el: el,
+      _pos: pos,          // original (unscaled) position+size, for resize recalc
       restX: restX,
       restY: restY,
       scaleAmt: scaleAmt,
@@ -3097,6 +3107,7 @@ function initP2(opts) {
   const scene = document.getElementById('p2Scene');
   const w = window.innerWidth;
   const h = window.innerHeight;
+  const scale = p2ComputeScale();
 
   window.p2Items = window.p2Items || [];
   const p2Items = window.p2Items;
@@ -3113,18 +3124,19 @@ function initP2(opts) {
 
   projects.forEach((p, i) => {
     const pos = positions[i] || { x: Math.random() * 0.6 + 0.2, y: Math.random() * 0.6 + 0.2, z: -Math.random() * 100, s: 160 };
+    const s = Math.round(pos.s * scale);
     const el = document.createElement('div');
     el.className = 'p2-item';
-    el.style.width = pos.s + 'px';
+    el.style.width = s + 'px';
     el.innerHTML = `<img src="${p.cover}" alt="${p.title}">`;
 
     /* Photography: start square, expand to natural on hover */
     if (p.title === 'Photography Portfolio') {
       el.classList.add('p2-item-square');
-      el.style.setProperty('--p2-item-size', pos.s + 'px');
+      el.style.setProperty('--p2-item-size', s + 'px');
       const img = el.querySelector('img');
       img.addEventListener('load', () => {
-        const natural = (img.naturalHeight / img.naturalWidth) * pos.s;
+        const natural = (img.naturalHeight / img.naturalWidth) * s;
         el.style.setProperty('--p2-item-natural', natural + 'px');
       });
     }
@@ -3149,8 +3161,8 @@ function initP2(opts) {
     });
     scene.appendChild(el);
 
-    const restX = pos.x * w - pos.s / 2;
-    const restY = pos.y * h - pos.s / 2;
+    const restX = pos.x * w - s / 2;
+    const restY = pos.y * h - s / 2;
     const restZ = pos.z;
 
     const maxZ = 0, minZ = -150;
@@ -3165,6 +3177,7 @@ function initP2(opts) {
 
     p2Items.push({
       el, restX, restY, scaleAmt,
+      _pos: pos,   // original (unscaled) position+size, for resize recalc
       bobPhase: Math.random() * Math.PI * 2,
       bobSpeed: 0.3 + Math.random() * 0.3,
       bobAmp: 6 + Math.random() * 10,
@@ -3438,6 +3451,44 @@ document.querySelectorAll('.p2-about-back').forEach(link => {
     overlay.style.pointerEvents = 'all';
     overlay.style.opacity = '1';
     setTimeout(() => { window.open(href, '_blank'); overlay.style.opacity = '0'; overlay.style.pointerEvents = 'none'; }, 700);
+  });
+})();
+
+// ═══════════════════════════════════════════════════
+// RESPONSIVE LAYOUT
+// Items are positioned by ratio (x,y as 0..1 of viewport) so they
+// already reposition with resize, but sizes were fixed in px. On
+// resize (or monitor swap), recompute scale and reapply widths +
+// rest positions so the scene stays proportional to the viewport.
+// ═══════════════════════════════════════════════════
+(function() {
+  function applyResponsive() {
+    var w = window.innerWidth;
+    var h = window.innerHeight;
+    var scale = (typeof p2ComputeScale === 'function') ? p2ComputeScale() : 1;
+
+    function updateList(list) {
+      if (!list) return;
+      list.forEach(function(item) {
+        if (!item || !item._pos) return;
+        var pos = item._pos;
+        var s = Math.round(pos.s * scale);
+        item.el.style.width = s + 'px';
+        if (item.el.classList.contains('p2-item-square')) {
+          item.el.style.setProperty('--p2-item-size', s + 'px');
+        }
+        item.restX = pos.x * w - s / 2;
+        item.restY = pos.y * h - s / 2;
+      });
+    }
+    updateList(window.p2Items);
+    updateList(window._p2LabItems);
+  }
+  // Debounce so we don't thrash on drag-resize.
+  var _raf = null;
+  window.addEventListener('resize', function() {
+    if (_raf) cancelAnimationFrame(_raf);
+    _raf = requestAnimationFrame(applyResponsive);
   });
 })();
 
