@@ -25,11 +25,13 @@
 
 * { margin:0; padding:0; box-sizing:border-box; }
 
+html { height: 100%; }
 body {
   background: var(--bg);
   color: var(--text);
   font-family: 'Space Grotesk', sans-serif;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   cursor: url('../assets/cursors/cursor-dark.svg') 16 8, default;
@@ -41,9 +43,13 @@ a, button, .product-card, .size-btn, .filter-btn, .cart-toggle, .close-btn, .che
 
 h1, h2, h3 { font-family: 'din-2014-rounded-variable', sans-serif; word-spacing: -0.05em; font-weight: 400; }
 
+/* Product grid scrolls inside main, page itself never scrolls */
+main { flex: 1; overflow-y: auto; scrollbar-width: none; padding-top: 5rem; }
+main::-webkit-scrollbar { display: none; }
+
 /* ── SCROLLBAR ── */
 ::-webkit-scrollbar { display: none; }
-html { scrollbar-width: none; overflow-y: scroll; }
+html { scrollbar-width: none; }
 
 /* ── HEADER ── */
 .header {
