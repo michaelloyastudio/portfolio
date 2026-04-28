@@ -623,6 +623,19 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     animation: navWave 0.5s ease forwards;
   }
   .p2-wrap.dark-mode .p2-tagline { color: #8a8580; }
+  /* Tagline sits inside .p2-title (z-index 10) which stays above the
+     about/project/contact overlays. Even when title is at opacity 0, the
+     tagline's pointer-events: auto would intercept hover/clicks at the
+     center of the screen, showing the playhead cursor and blocking scroll.
+     Disable pointer-events on the tagline whenever an overlay is open. */
+  .p2-wrap:has(.p2-about.visible) .p2-tagline,
+  .p2-wrap:has(.p2-about.visible) .p2-tagline .tag-letter,
+  .p2-wrap:has(.p2-project.visible) .p2-tagline,
+  .p2-wrap:has(.p2-project.visible) .p2-tagline .tag-letter,
+  .p2-wrap:has(.p2-contact.visible) .p2-tagline,
+  .p2-wrap:has(.p2-contact.visible) .p2-tagline .tag-letter {
+    pointer-events: none;
+  }
 
 
   /* ── SPLASH SCREEN ── */
@@ -1230,6 +1243,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     background: transparent;
   }
   #p2HoverPopup.visible { opacity: 1; }
+  #p2HoverPopup.size-lg { width: 36px; height: 36px; }
   #p2HoverPopup img {
     width: 100%;
     height: 100%;
@@ -1815,7 +1829,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
             <div class="p2-exp-item">
               <div class="p2-exp-role">Top 5% of Rocket League players globally</div>
               <div class="p2-exp-date">2026</div>
-              <div class="p2-exp-desc"><span class="p2-hover-icon" data-hover-img="">Champion 2</span> in Doubles (top 4.999%) · <span class="p2-hover-icon" data-hover-img="">Champion 1</span> in Standard (top 4.112%) · <span class="p2-hover-icon" data-hover-img="">Diamond 1</span> in Solo (top 6.550%)</div>
+              <div class="p2-exp-desc"><span class="p2-hover-icon" data-hover-img="assets/about-icons/champion-2.png" data-hover-size="lg">Champion 2</span> in Doubles (top 4.999%) · <span class="p2-hover-icon" data-hover-img="assets/about-icons/champion-1.png" data-hover-size="lg">Champion 1</span> in Standard (top 4.112%) · <span class="p2-hover-icon" data-hover-img="assets/about-icons/diamond-1.png" data-hover-size="lg">Diamond 1</span> in Solo (top 6.550%)</div>
             </div>
           </div>
         </div>
@@ -2419,17 +2433,26 @@ function p2NavGoAbout() {
     about.classList.remove('leaving');
     about.classList.remove('loaded');
     void about.offsetWidth;
-    // Defer .loaded until project starts fading so sections cascade in as
-    // the project fades out (instead of cascading underneath an opaque
-    // project, then "appearing" all at once when project clears).
-    setTimeout(function() { about.classList.add('loaded'); }, 250);
     _p2SetActiveNav('about');
     _p2AboutOpen = true;
     // URL should reflect that we're on about, not the project we left.
     // setHash is IIFE-local; replaceState avoids triggering hashchange.
     try { history.replaceState(null, '', '#about'); } catch(e) {}
 
-    // Now fade out the project. Once it's gone, finalize project state.
+    // Cascade project's content OUT first so the content of two pages
+    // doesn't ghost through each other during the container crossfade.
+    // Each inner element has its own opacity transition (~0.4–0.5s).
+    document.getElementById('p2ProjectHero').classList.remove('visible');
+    document.getElementById('p2ProjectHeader').classList.remove('visible');
+    document.getElementById('p2ProjectBody').classList.remove('visible');
+    document.getElementById('p2ProjectBackRow').classList.remove('visible');
+    document.getElementById('p2ProjectNav').classList.remove('visible');
+
+    // Defer about's section cascade-in until project content has had time
+    // to fade out — about appears in a clean (empty-content) parchment.
+    setTimeout(function() { about.classList.add('loaded'); }, 500);
+
+    // Now fade out the project container. Once it's gone, finalize state.
     var hdr = document.getElementById('p2Header');
     if (hdr) { hdr.style.opacity = ''; hdr.classList.remove('no-interact'); }
     var scrollEl = document.getElementById('p2Project').querySelector('.p2-project-scroll');
@@ -4451,6 +4474,8 @@ document.querySelectorAll('.p2-about-back').forEach(link => {
     var src = el.getAttribute('data-hover-img');
     if (!src) return;
     popupImg.src = src;
+    if (el.getAttribute('data-hover-size') === 'lg') popup.classList.add('size-lg');
+    else popup.classList.remove('size-lg');
     place();
     popup.classList.add('visible'); // CSS transitions opacity 0 → 1
   });
