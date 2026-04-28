@@ -2419,9 +2419,15 @@ function p2NavGoAbout() {
     about.classList.remove('leaving');
     about.classList.remove('loaded');
     void about.offsetWidth;
-    about.classList.add('loaded');
+    // Defer .loaded until project starts fading so sections cascade in as
+    // the project fades out (instead of cascading underneath an opaque
+    // project, then "appearing" all at once when project clears).
+    setTimeout(function() { about.classList.add('loaded'); }, 250);
     _p2SetActiveNav('about');
     _p2AboutOpen = true;
+    // URL should reflect that we're on about, not the project we left.
+    // setHash is IIFE-local; replaceState avoids triggering hashchange.
+    try { history.replaceState(null, '', '#about'); } catch(e) {}
 
     // Now fade out the project. Once it's gone, finalize project state.
     var hdr = document.getElementById('p2Header');
@@ -3560,7 +3566,10 @@ function initP2(opts) {
       const fallT = Math.min(fallElapsed / 700, 1);
       const fallEase = easeInQuad(fallT);
 
-      titleEl.style.opacity = Math.max(1 - fallT * 5, 0);
+      // If about is still closing, title was already held at 0 by the
+      // about branch — don't snap it to 1 just because we entered the fall.
+      if (!_p2AboutOpen) titleEl.style.opacity = Math.max(1 - fallT * 5, 0);
+      else titleEl.style.opacity = 0;
 
       p2Items.forEach((item, i) => {
         const si = staggerOrder[i] !== undefined ? staggerOrder[i] : i;
