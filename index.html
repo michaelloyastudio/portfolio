@@ -3997,8 +3997,14 @@ document.querySelectorAll('.p2-about-back').forEach(link => {
       case 'playground': if (window._p2InteractiveMode) return; p2ShowInteractive(); break;
       case 'about':      p2ShowAbout(); break;
       case 'contact':    p2ShowContact(); break;
-      case 'project':    p2ShowProject(s.index); break;
+      case 'project':
+        // From about: close about first so it fades out cleanly and the
+        // active nav switches from "about" to "studio".
+        if (window._p2AboutOpen) p2CloseAbout();
+        p2ShowProject(s.index);
+        break;
       case 'lab-app':
+        if (window._p2AboutOpen) p2CloseAbout();
         if (window._p2LabApps) p2OpenLabApp(window._p2LabApps[s.index], s.index);
         break;
     }
