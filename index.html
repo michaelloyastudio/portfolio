@@ -733,46 +733,71 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   }
   .p2-about.visible { opacity: 1; pointer-events: all; }
   /* About load-in/out float animation */
+  /* Float-in animation uses `top` instead of `transform: translateY` —
+     transform creates a stacking context that isolates the text inside
+     these wrappers from backdrops outside them (like the cursor aura on
+     dark about), so mix-blend-mode: difference on the text wouldn't see
+     the orange glow. `top` with position: relative achieves the same
+     visual slide without making each wrapper its own stacking context. */
   .p2-about-hero,
+  .p2-education,
   .p2-experience,
+  .p2-skills,
   .p2-about-content > div:last-child {
+    position: relative;
     opacity: 0;
-    transform: translateY(80px);
+    top: 80px;
     transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
-                transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+                top 0.9s cubic-bezier(0.22, 1, 0.36, 1);
   }
   .p2-about.loaded .p2-about-hero {
-    transition-delay: 0.15s; opacity: 1; transform: translateY(0);
+    transition-delay: 0.15s; opacity: 1; top: 0;
+  }
+  .p2-about.loaded .p2-education {
+    transition-delay: 0.25s; opacity: 1; top: 0;
   }
   .p2-about.loaded .p2-experience {
-    transition-delay: 0.30s; opacity: 1; transform: translateY(0);
+    transition-delay: 0.35s; opacity: 1; top: 0;
+  }
+  .p2-about.loaded .p2-skills {
+    transition-delay: 0.45s; opacity: 1; top: 0;
   }
   .p2-about.loaded .p2-about-content > div:last-child {
-    transition-delay: 0.45s; opacity: 1; transform: translateY(0);
+    transition-delay: 0.55s; opacity: 1; top: 0;
   }
   /* Float-out: push elements down as they fade (bottom first) */
   .p2-about.leaving .p2-about-content > div:last-child {
-    transition-delay: 0s; opacity: 0; transform: translateY(80px);
+    transition-delay: 0s; opacity: 0; top: 80px;
+  }
+  .p2-about.leaving .p2-skills {
+    transition-delay: 0.06s; opacity: 0; top: 80px;
   }
   .p2-about.leaving .p2-experience {
-    transition-delay: 0.08s; opacity: 0; transform: translateY(80px);
+    transition-delay: 0.12s; opacity: 0; top: 80px;
+  }
+  .p2-about.leaving .p2-education {
+    transition-delay: 0.18s; opacity: 0; top: 80px;
   }
   .p2-about.leaving .p2-about-hero {
-    transition-delay: 0.16s; opacity: 0; transform: translateY(80px);
+    transition-delay: 0.24s; opacity: 0; top: 80px;
   }
   .p2-about-scroll {
     width: 100%;
     height: 100%;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
-    overflow: hidden;
-    padding-top: 4rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-top: 6rem;
+    padding-bottom: 1.5rem;
+    scrollbar-width: none;
   }
+  .p2-about-scroll::-webkit-scrollbar { display: none; }
   .p2-about-content {
     max-width: 900px;
     width: 100%;
-    padding: 2rem 3rem;
+    padding: 2rem 3rem 1.5rem;
   }
   .p2-about-back {
     display: inline-block;
@@ -807,7 +832,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   }
   .p2-about-portrait {
     flex-shrink: 0;
-    width: 220px;
+    width: 250px;
     border-radius: 8px;
     box-shadow: 0 12px 40px rgba(0,0,0,0.08);
     object-fit: cover;
@@ -821,67 +846,123 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   .p2-about-text { flex: 1; }
   .p2-about-text h1 {
     font-family: 'din-2014-rounded-variable', sans-serif; word-spacing: -0.05em;
-    font-size: 2.4rem;
+    font-size: 2.7rem;
     font-weight: 400;
-    margin: 0 0 0.6rem;
+    margin: 0 0 0.75rem;
     color: #1a1a1a;
   }
   .p2-about-text h1 em { color: #8a8580; }
   .p2-about-text p {
     font-family: 'Space Grotesk', sans-serif;
     color: #3d2b1f;
-    line-height: 1.65;
-    font-size: 0.92rem;
-    margin-bottom: 0.75rem;
+    line-height: 1.7;
+    font-size: 1.05rem;
+    margin-bottom: 0.9rem;
   }
-  .p2-experience {
-    margin-top: 1.75rem;
-    padding-top: 1.5rem;
+  .p2-experience,
+  .p2-education,
+  .p2-skills {
+    margin-top: 2.5rem;
+    padding-top: 2rem;
     border-top: 1px solid #c9c1b6;
   }
-  .p2-experience h3 {
+  .p2-experience h3,
+  .p2-education h3,
+  .p2-skills h3 {
     font-family: 'din-2014-rounded-variable', sans-serif; word-spacing: -0.05em;
-    font-size: 1.3rem;
+    font-size: 1.5rem;
     font-weight: 400;
     color: #1a1a1a;
-    margin: 0 0 1rem;
+    margin: 0 0 1.25rem;
+  }
+  .p2-edu-item { padding: 0.5rem 0 1rem; }
+  .p2-edu-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .p2-edu-school {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #1a1a1a;
+  }
+  .p2-edu-date {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.78rem;
+    color: #8a8580;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .p2-edu-block { margin-top: 1.1rem; }
+  .p2-edu-school-name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.98rem;
+    color: #1a1a1a;
+    font-weight: 500;
+    line-height: 1.55;
+  }
+  .p2-edu-degree {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.98rem;
+    color: #3d2b1f;
+    line-height: 1.55;
+    margin-top: 0.1rem;
+  }
+  .p2-skills-row {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.98rem;
+    color: #3d2b1f;
+    line-height: 1.65;
+    padding: 0.4rem 0;
+  }
+  .p2-skills-label {
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-right: 0.4em;
   }
   .p2-exp-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem 2.5rem;
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  @media (max-width: 720px) {
+    .p2-about-hero { flex-direction: column; gap: 1.5rem; align-items: center; }
+    .p2-about-text { text-align: center; }
   }
   .p2-exp-item {
-    padding: 0.75rem 0;
+    padding: 1rem 0;
     border-bottom: 1px solid #d4cdc3;
   }
-  .p2-exp-item:nth-last-child(-n+2) { border-bottom: none; }
+  .p2-exp-item:last-child { border-bottom: none; }
   .p2-exp-role {
     font-family: 'Space Grotesk', sans-serif;
     font-weight: 600;
-    font-size: 0.85rem;
+    font-size: 1rem;
     color: #1a1a1a;
-    margin-bottom: 0.15rem;
+    margin-bottom: 0.2rem;
   }
   .p2-exp-company {
     font-family: 'Space Grotesk', sans-serif;
-    font-size: 0.8rem;
+    font-size: 0.95rem;
     color: #3d2b1f;
   }
   .p2-exp-date {
     font-family: 'Space Grotesk', sans-serif;
-    font-size: 0.72rem;
+    font-size: 0.78rem;
     color: #8a8580;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.4rem;
   }
   .p2-exp-desc {
     font-family: 'Space Grotesk', sans-serif;
-    font-size: 0.82rem;
+    font-size: 0.98rem;
     color: #3d2b1f;
-    line-height: 1.55;
-    margin-top: 0.3rem;
+    line-height: 1.65;
+    margin-top: 0.4rem;
   }
 
   /* P2 Contact */
@@ -1004,6 +1085,43 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   .p2-wrap.dark-mode .p2-contact-links a * {
     cursor: url('assets/cursors/play-cursor-dark.svg') 8 10, pointer !important;
   }
+  /* When the cursor aura is active in playground, the orange glow makes
+     the dark cursors disappear. Swap to the light variants. */
+  .p2-wrap.dark-mode.p2-aura-active,
+  .p2-wrap.dark-mode.p2-aura-active * {
+    cursor: url('assets/cursors/cursor.svg') 16 8, default;
+  }
+  .p2-wrap.dark-mode.p2-aura-active a,
+  .p2-wrap.dark-mode.p2-aura-active a *,
+  .p2-wrap.dark-mode.p2-aura-active button,
+  .p2-wrap.dark-mode.p2-aura-active button *,
+  .p2-wrap.dark-mode.p2-aura-active [onclick],
+  .p2-wrap.dark-mode.p2-aura-active [onclick] *,
+  .p2-wrap.dark-mode.p2-aura-active .p2-nav a,
+  .p2-wrap.dark-mode.p2-aura-active .p2-nav a *,
+  .p2-wrap.dark-mode.p2-aura-active .p2-header-left,
+  .p2-wrap.dark-mode.p2-aura-active .p2-header-left *,
+  .p2-wrap.dark-mode.p2-aura-active .p2-header-logo,
+  .p2-wrap.dark-mode.p2-aura-active .p2-header-logo *,
+  .p2-wrap.dark-mode.p2-aura-active .p2-header-socials a,
+  .p2-wrap.dark-mode.p2-aura-active .p2-header-socials a *,
+  .p2-wrap.dark-mode.p2-aura-active .p2-about-back,
+  .p2-wrap.dark-mode.p2-aura-active .p2-about-back *,
+  .p2-wrap.dark-mode.p2-aura-active .p2-contact-links a,
+  .p2-wrap.dark-mode.p2-aura-active .p2-contact-links a * {
+    cursor: url('assets/cursors/play-cursor.svg') 8 10, pointer !important;
+  }
+  /* Lab app cards + about portrait always use the dark play cursor —
+     they're image surfaces and need a cursor that reads against them
+     regardless of aura state. */
+  .p2-wrap.dark-mode .p2-item,
+  .p2-wrap.dark-mode .p2-item *,
+  .p2-wrap.dark-mode.p2-aura-active .p2-item,
+  .p2-wrap.dark-mode.p2-aura-active .p2-item *,
+  .p2-wrap.dark-mode .p2-about-portrait,
+  .p2-wrap.dark-mode.p2-aura-active .p2-about-portrait {
+    cursor: url('assets/cursors/play-cursor-dark.svg') 8 10, pointer !important;
+  }
 
   /* Dark mode transitions for interactive mode */
   .p2-wrap {
@@ -1014,6 +1132,20 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   }
   .p2-wrap.dark-mode {
     background: #0a0a0a;
+  }
+  /* Text and header elements in playground sit over the cursor aura.
+     difference blend makes them react to the orange glow as it passes
+     underneath, mirroring theblob app. (About page intentionally excluded —
+     it uses music notes instead.) */
+  .p2-wrap.dark-mode .p2-title,
+  .p2-wrap.dark-mode .p2-title-line,
+  .p2-wrap.dark-mode .p2-tagline,
+  .p2-wrap.dark-mode .p2-item .p2-label,
+  .p2-wrap.dark-mode .p2-header-left,
+  .p2-wrap.dark-mode .p2-header-logo,
+  .p2-wrap.dark-mode .p2-header-nav,
+  .p2-wrap.dark-mode .p2-header-socials {
+    mix-blend-mode: difference;
   }
   .p2-wrap.dark-mode .p2-title {
     color: #E8E0D4;
@@ -1053,22 +1185,29 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   .p2-wrap.dark-mode .p2-about-portrait:hover {
     box-shadow: 0 16px 50px rgba(0,0,0,0.6);
   }
-  .p2-wrap.dark-mode .p2-experience {
+  .p2-wrap.dark-mode .p2-experience,
+  .p2-wrap.dark-mode .p2-education,
+  .p2-wrap.dark-mode .p2-skills {
     border-top-color: #2a2a2a;
   }
-  .p2-wrap.dark-mode .p2-experience h3 {
+  .p2-wrap.dark-mode .p2-experience h3,
+  .p2-wrap.dark-mode .p2-education h3,
+  .p2-wrap.dark-mode .p2-skills h3 {
     color: #E8E0D4;
   }
   .p2-wrap.dark-mode .p2-exp-item {
     border-bottom-color: #2a2a2a;
   }
-  .p2-wrap.dark-mode .p2-exp-role {
+  .p2-wrap.dark-mode .p2-exp-role,
+  .p2-wrap.dark-mode .p2-edu-school,
+  .p2-wrap.dark-mode .p2-edu-school-name,
+  .p2-wrap.dark-mode .p2-skills-label {
     color: #E8E0D4;
   }
-  .p2-wrap.dark-mode .p2-exp-company {
-    color: #b8b0a5;
-  }
-  .p2-wrap.dark-mode .p2-exp-desc {
+  .p2-wrap.dark-mode .p2-exp-company,
+  .p2-wrap.dark-mode .p2-exp-desc,
+  .p2-wrap.dark-mode .p2-edu-degree,
+  .p2-wrap.dark-mode .p2-skills-row {
     color: #b8b0a5;
   }
   .p2-wrap.dark-mode .p2-about-back {
@@ -1584,8 +1723,26 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
           </div>
           <div class="p2-about-text">
             <h1>About <span style="color:#8a8580">me</span></h1>
-            <p>I'm a designer who works at the intersection of music, technology, and visual storytelling. Currently studying at Syracuse University, I split my time between design direction for University Union, personal creative projects, and working with AI and emerging tech — staying on top of new tools as they drop and always integrating them into my process.</p>
-            <p>My work ranges from brand identity and editorial design to UI/UX, music production, and AI-driven creative tools. I adapt quickly, experiment across mediums, and actively integrate AI into my process — using it to build, prototype, and push ideas further than I could alone.</p>
+            <p>When I was a kid, everyone told me I'd be an engineer. I was big into DIY and tech, building cardboard phones, VR headsets, and whatever else I could imagine. That creative energy eventually channeled into video and photo editing, filming and cutting YouTube videos.</p>
+            <p>I found graphic design in the nick of time, taking my first class senior year of high school. Now, graduating from Newhouse at Syracuse with an award in motion design, I can say I made little Mike proud, and I'll keep doing so by staying on top of emerging tech and being the best creative I can be.</p>
+          </div>
+        </div>
+
+        <div class="p2-education">
+          <h3>Education</h3>
+          <div class="p2-edu-item">
+            <div class="p2-edu-row">
+              <div class="p2-edu-school">Syracuse University</div>
+              <div class="p2-edu-date">May 2026</div>
+            </div>
+            <div class="p2-edu-block">
+              <div class="p2-edu-school-name">S.I. Newhouse School of Public Communications</div>
+              <div class="p2-edu-degree">Bachelor of Science, Graphic Design</div>
+            </div>
+            <div class="p2-edu-block">
+              <div class="p2-edu-school-name">College of Visual and Performing Arts</div>
+              <div class="p2-edu-degree">Minor, Music Industry</div>
+            </div>
           </div>
         </div>
 
@@ -1594,7 +1751,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
           <div class="p2-exp-grid">
             <div class="p2-exp-item">
               <div class="p2-exp-role">Graphic Design & Video Intern</div>
-              <div class="p2-exp-company">BODYARMOR Sports Nutrition</div>
+              <div class="p2-exp-company">BODYARMOR SuperDrink</div>
               <div class="p2-exp-date">Jun — Aug 2025</div>
               <div class="p2-exp-desc">Designed POS ads deployed across hundreds of BODYARMOR and Powerade retail locations nationwide. Produced an original video ad for Powerade's fall football campaign. Led AI capstone project generating branded content, presented to C-suite executives.</div>
             </div>
@@ -1607,8 +1764,8 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
             <div class="p2-exp-item">
               <div class="p2-exp-role">Head of Design</div>
               <div class="p2-exp-company">20 Watts Magazine</div>
-              <div class="p2-exp-date">Sep 2024 — Present</div>
-              <div class="p2-exp-desc">Design graphics for events and promotional materials. Align design concepts with editorial goals across team meetings. Create onboarding tutorials for new members. Mentor and guide design team through projects.</div>
+              <div class="p2-exp-date">Sep — Dec 2024</div>
+              <div class="p2-exp-desc">Designed graphics for events and promotional materials. Aligned design concepts with editorial goals across team meetings. Created onboarding tutorials for new members. Mentored and guided design team through projects.</div>
             </div>
             <div class="p2-exp-item">
               <div class="p2-exp-role">Head of Design</div>
@@ -1619,7 +1776,14 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
           </div>
         </div>
 
-        <div style="text-align:center;margin:1rem 0 0.5rem;">
+        <div class="p2-skills">
+          <h3>Skills</h3>
+          <div class="p2-skills-row"><span class="p2-skills-label">Design</span> Photoshop, Illustrator, Premiere Pro, After Effects, InDesign, Figma</div>
+          <div class="p2-skills-row"><span class="p2-skills-label">AI &amp; Tech</span> Claude, OpenClaw, ChatGPT, Higgsfield AI, Freepik Suite, FL Studio</div>
+          <div class="p2-skills-row"><span class="p2-skills-label">Platforms</span> X, Instagram, Snapchat, YouTube, Microsoft Office</div>
+        </div>
+
+        <div style="text-align:center;margin:2.5rem 0 0;">
           <a href="assets/site/resume.pdf" download class="resume-link p2-nav-wave" style="font-family:'Space Grotesk',sans-serif;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.12em;color:#8a8580;text-decoration:none;display:inline-block;padding:0.25rem 0;cursor:pointer;"><span>↓ Download Resume</span></a>
         </div>
       </div>
@@ -1981,6 +2145,20 @@ function p2ShowAbout() {
     about.classList.remove('loaded');
     void about.offsetWidth;
     about.classList.add('loaded');
+
+    // Fade header on about scroll, mirroring project view behavior
+    var aboutScroll = about.querySelector('.p2-about-scroll');
+    if (aboutScroll) {
+      aboutScroll.scrollTop = 0;
+      aboutScroll.onscroll = function() {
+        var hdr = document.getElementById('p2Header');
+        if (!hdr) return;
+        var t = Math.min(aboutScroll.scrollTop / 80, 1);
+        hdr.style.opacity = 1 - t;
+        if (t >= 1) hdr.classList.add('no-interact');
+        else hdr.classList.remove('no-interact');
+      };
+    }
   }, 700);
 }
 
@@ -1990,6 +2168,12 @@ function p2CloseAbout() {
   about.classList.remove('loaded');
   about.classList.add('leaving');
   _p2SetActiveNav(_p2InteractiveMode ? 'playground' : 'work');
+
+  // Detach scroll handler and restore header
+  var aboutScroll = about.querySelector('.p2-about-scroll');
+  if (aboutScroll) aboutScroll.onscroll = null;
+  var hdr = document.getElementById('p2Header');
+  if (hdr) { hdr.style.opacity = ''; hdr.classList.remove('no-interact'); }
 
   setTimeout(function() {
     about.classList.remove('visible');
@@ -2130,7 +2314,45 @@ function p2NavGoAbout() {
     }, 800);
     return;
   }
-  if (_p2ProjectOpen) { p2CloseProject(); setTimeout(function() { p2ShowAbout(); }, 550); return; }
+  if (_p2ProjectOpen) {
+    // Open About underneath the fading project to avoid flashing the
+    // work scene during the gap. Project is z-index 50, about is z-index 1,
+    // so About sits behind the project and is revealed as project fades.
+    var about = document.getElementById('p2About');
+    about.classList.add('visible');
+    about.classList.remove('leaving');
+    about.classList.remove('loaded');
+    void about.offsetWidth;
+    about.classList.add('loaded');
+    _p2SetActiveNav('about');
+    _p2AboutOpen = true;
+
+    // Now fade out the project. Once it's gone, finalize project state.
+    var hdr = document.getElementById('p2Header');
+    if (hdr) { hdr.style.opacity = ''; hdr.classList.remove('no-interact'); }
+    var scrollEl = document.getElementById('p2Project').querySelector('.p2-project-scroll');
+    if (scrollEl) { scrollEl.onscroll = null; scrollEl.style.overflowY = ''; }
+    document.getElementById('p2Project').classList.remove('visible');
+    setTimeout(function() {
+      _p2ProjectOpen = false;
+      _p2ProjectFloatingBack = false;
+      window._p2ResetStart = performance.now();
+      // Wire about's scroll-fade header behavior (mirror p2ShowAbout)
+      var aboutScroll = about.querySelector('.p2-about-scroll');
+      if (aboutScroll) {
+        aboutScroll.scrollTop = 0;
+        aboutScroll.onscroll = function() {
+          var h = document.getElementById('p2Header');
+          if (!h) return;
+          var t = Math.min(aboutScroll.scrollTop / 80, 1);
+          h.style.opacity = 1 - t;
+          if (t >= 1) h.classList.add('no-interact');
+          else h.classList.remove('no-interact');
+        };
+      }
+    }, 500);
+    return;
+  }
   p2ShowAbout();
 }
 var _p2InteractiveFalling = false;
@@ -3688,7 +3910,261 @@ document.querySelectorAll('.p2-about-back').forEach(link => {
 })();
 </script>
 <script>
+// ── PLAYGROUND CURSOR AURA (paint emitter) ──
+// Particle emitter inspired by PavelDoGreat's WebGL fluid sim. The cursor
+// sprays small orange "paint" particles along its path; each particle
+// inherits a fraction of the cursor's velocity, drifts with drag, and fades
+// over its lifetime. An SVG goo filter merges overlapping particles into
+// liquid blobs that swirl and dissipate.
+// To revert: comment this IIFE out and uncomment the MUSIC NOTE TRAIL
+// block below.
+(function() {
+  var wrap = document.getElementById('p2Wrap');
+  if (!wrap) return;
+
+  // ─ goo filter ─
+  var defs = document.createElement('div');
+  defs.style.cssText = 'position:absolute;width:0;height:0;pointer-events:none';
+  defs.innerHTML = ''
+    + '<svg width="0" height="0" style="position:absolute">'
+    +   '<defs>'
+    +     '<filter id="p2-aura-goo" filterUnits="userSpaceOnUse" x="-50%" y="-50%" width="200%" height="200%">'
+    +       '<feGaussianBlur in="SourceGraphic" stdDeviation="14" result="blur"/>'
+    +       '<feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 36 -14" result="goo"/>'
+    +     '</filter>'
+    +   '</defs>'
+    + '</svg>';
+  document.body.appendChild(defs);
+
+  // ─ shared gradient stylesheet ─
+  // All particles share ONE radial gradient that's REFERENCED at the same
+  // viewport position by every particle. Each particle sets its own
+  // background-position per frame so the gradient appears anchored to the
+  // cursor regardless of where the particle is. New spawns can't recolor
+  // the merged mass — they just expand the visible area of the same gradient.
+  // Gradient is intentionally ~3x larger than typical particle drift radius
+  // so tail particles never fall outside it (which would render them as
+  // transparent and create the "disappearing chunks" glitch).
+  // background-color matches the gradient's final stop, so even an out-of-
+  // bounds particle shows the deep red fallback rather than going invisible.
+  var GRAD_SIZE = 1400;
+  var gradStyle = document.createElement('style');
+  gradStyle.textContent = ''
+    + '.p2-aura-particle {'
+    + '  position:absolute; top:0; left:0;'
+    + '  border-radius:50%;'
+    + '  background-color: rgb(150,50,20);'
+    + '  background-image: radial-gradient(circle,'
+    + '    rgb(255,190,110) 0%,'
+    + '    rgb(255,142,61) 30%,'
+    + '    rgb(235,85,40) 60%,'
+    + '    rgb(150,50,20) 100%);'
+    + '  background-size: ' + GRAD_SIZE + 'px ' + GRAD_SIZE + 'px;'
+    + '  background-repeat: no-repeat;'
+    + '  will-change: transform, opacity, background-position;'
+    + '  opacity: 0;'
+    + '}';
+  document.head.appendChild(gradStyle);
+
+  // ─ containers ─
+  // Two parallel containers — one in .p2-wrap (visible during playground/
+  // Single container in .p2-wrap. The aura only shows in playground (dark
+  // mode + about NOT visible). When about is open, its solid bg covers the
+  // wrap-level aura, and music notes take over.
+  var container = document.createElement('div');
+  container.id = 'p2CursorAura';
+  container.style.cssText = [
+    'position:absolute', 'inset:0',
+    'pointer-events:none',
+    'z-index:0',
+    'opacity:1',
+    'filter:url(#p2-aura-goo)',
+    'will-change:contents'
+  ].join(';');
+  wrap.insertBefore(container, wrap.firstChild);
+
+  // ─ particle pool ─
+  var POOL_SIZE = 100;
+  var pool = [];
+  for (var i = 0; i < POOL_SIZE; i++) {
+    var el = document.createElement('div');
+    el.className = 'p2-aura-particle';
+    container.appendChild(el);
+    pool.push({
+      el: el, active: false,
+      x: 0, y: 0, vx: 0, vy: 0,
+      age: 0, life: 0, size: 0
+    });
+  }
+
+  // ─ head particle ─
+  var HEAD_SIZE = 90;
+  var HEAD_BG = (HEAD_SIZE / 2 - GRAD_SIZE / 2);
+  var head = document.createElement('div');
+  head.className = 'p2-aura-particle';
+  head.style.width = HEAD_SIZE + 'px';
+  head.style.height = HEAD_SIZE + 'px';
+  head.style.backgroundPosition = HEAD_BG + 'px ' + HEAD_BG + 'px';
+  container.appendChild(head);
+  var headOp = 0;
+  var HEAD_FADE_DELAY = 220;
+
+  // ─ cursor tracking ─
+  var lastX = 0, lastY = 0;
+  var cursorX = window.innerWidth / 2;
+  var cursorY = window.innerHeight / 2;
+  var hasFirst = false;
+  function inPlayground() {
+    // Pure playground/lab only. Returns false when About is open (even
+    // from playground) so music notes take over there.
+    var w = document.getElementById('p2Wrap');
+    var about = document.getElementById('p2About');
+    var aboutOpen = !!(about && about.classList.contains('visible'));
+    return !!(w && w.classList.contains('dark-mode')) && !aboutOpen;
+  }
+
+  function spawnAt(x, y, vx, vy) {
+    var p = null;
+    for (var i = 0; i < pool.length; i++) {
+      if (!pool[i].active) { p = pool[i]; break; }
+    }
+    if (!p) return;
+    p.active = true;
+    p.x = x; p.y = y;
+    // Tighter velocity inheritance + minimal jitter so particles spawn
+    // along a clean cursor path rather than puffing out radially.
+    var jitterAng = Math.random() * Math.PI * 2;
+    var jitter = Math.random() * 0.4;
+    p.vx = vx * 0.32 + Math.cos(jitterAng) * jitter;
+    p.vy = vy * 0.32 + Math.sin(jitterAng) * jitter;
+    p.age = 0;
+    p.life = 60 + Math.random() * 30;
+    p.size = 65 + Math.random() * 25;
+    // Color comes from the shared cursor-anchored gradient via CSS — no
+    // per-particle background to set here.
+    p.el.style.width = p.size + 'px';
+    p.el.style.height = p.size + 'px';
+  }
+
+  // Throttle spawns so slow cursor movement doesn't keep flooding new
+  // short-lived particles into a tiny area (which made the merged shape
+  // visibly pulse as individuals aged). Combine a minimum-distance gate
+  // with a minimum-interval gate.
+  var lastSpawnT = 0;
+  var MIN_SPAWN_DIST = 6;     // px since last spawn
+  var MIN_SPAWN_INTERVAL = 28; // ms since last spawn
+
+  document.addEventListener('mousemove', function(e) {
+    var prevX = cursorX, prevY = cursorY;
+    cursorX = e.clientX;
+    cursorY = e.clientY;
+    var velX = cursorX - prevX;
+    var velY = cursorY - prevY;
+    var predictedX = cursorX + velX * 0.5;
+    var predictedY = cursorY + velY * 0.5;
+    head.style.transform =
+      'translate(' + (predictedX - HEAD_SIZE / 2) + 'px, ' + (predictedY - HEAD_SIZE / 2) + 'px)';
+    if (!inPlayground()) { hasFirst = false; return; }
+    if (!hasFirst) {
+      lastX = e.clientX; lastY = e.clientY;
+      hasFirst = true;
+      return;
+    }
+    var now = performance.now();
+    var dx = e.clientX - lastX;
+    var dy = e.clientY - lastY;
+    var dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist < MIN_SPAWN_DIST && now - lastSpawnT < MIN_SPAWN_INTERVAL) return;
+    // Spawn one particle per ~SPAWN_SPACING px of cursor travel, with the
+    // last one landing exactly at the cursor so the head never visibly
+    // detaches from the trail no matter how fast the user is moving.
+    var SPAWN_SPACING = 18;
+    var n = Math.min(14, Math.max(1, Math.ceil(dist / SPAWN_SPACING)));
+    for (var s = 1; s <= n; s++) {
+      var t = s / n; // ends at cursor (t=1)
+      spawnAt(lastX + dx * t, lastY + dy * t, dx, dy);
+    }
+    lastX = e.clientX;
+    lastY = e.clientY;
+    lastSpawnT = now;
+  });
+
+  document.addEventListener('mouseleave', function() { hasFirst = false; });
+
+  // ─ simulate ─
+  // Each frame: advance position, decay velocity, age, render scale = (1 - age/life).
+  var DRAG = 0.97;
+  function tick() {
+    var nowT = performance.now();
+    var idleFor = nowT - lastSpawnT;
+    var headTarget = (inPlayground() && idleFor < HEAD_FADE_DELAY) ? 1 : 0;
+    headOp += (headTarget - headOp) * (headTarget > headOp ? 0.30 : 0.10);
+    head.style.opacity = headOp.toFixed(3);
+    // Head's transform is set directly in the mousemove handler so it has
+    // zero frame-lag. This tick only handles its opacity envelope.
+
+    // Swap to light cursor variants while the orange aura is showing.
+    // Body and p2Scene have inline cursor styles set elsewhere (scene
+    // transitions, splash) that beat CSS rules — flip those inline too.
+    var DARK_CUR = "url('assets/cursors/cursor-dark.svg') 16 8, default";
+    var LIGHT_CUR = "url('assets/cursors/cursor.svg') 16 8, default";
+    if (headOp > 0.4 && !wrap.classList.contains('p2-aura-active')) {
+      wrap.classList.add('p2-aura-active');
+      if (inPlayground()) {
+        document.body.style.cursor = LIGHT_CUR;
+        var sceneEl = document.getElementById('p2Scene');
+        if (sceneEl) sceneEl.style.cursor = LIGHT_CUR;
+      }
+    } else if (headOp < 0.1 && wrap.classList.contains('p2-aura-active')) {
+      wrap.classList.remove('p2-aura-active');
+      if (inPlayground()) {
+        document.body.style.cursor = DARK_CUR;
+        var sceneEl2 = document.getElementById('p2Scene');
+        if (sceneEl2) sceneEl2.style.cursor = DARK_CUR;
+      }
+    }
+
+    for (var i = 0; i < pool.length; i++) {
+      var p = pool[i];
+      if (!p.active) continue;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vx *= DRAG;
+      p.vy *= DRAG;
+      p.age += 1;
+      var lifeRatio = p.age / p.life;
+      if (lifeRatio >= 1) {
+        p.active = false;
+        p.el.style.opacity = '0';
+        continue;
+      }
+      var scale, op;
+      if (lifeRatio < 0.30) {
+        var t = lifeRatio / 0.30;
+        var eased = t * (2 - t);
+        scale = eased;
+        op = eased;
+      } else {
+        var t2 = (lifeRatio - 0.30) / 0.70;
+        scale = 1 - t2 * t2 * 0.5 - t2 * 0.5;
+        op = 1;
+      }
+      p.el.style.opacity = op.toFixed(3);
+      p.el.style.transform =
+        'translate(' + (p.x - p.size / 2) + 'px, ' + (p.y - p.size / 2) + 'px)' +
+        ' scale(' + scale.toFixed(3) + ')';
+      var bgX = cursorX - (p.x - p.size / 2) - GRAD_SIZE / 2;
+      var bgY = cursorY - (p.y - p.size / 2) - GRAD_SIZE / 2;
+      p.el.style.backgroundPosition = bgX.toFixed(1) + 'px ' + bgY.toFixed(1) + 'px';
+    }
+    requestAnimationFrame(tick);
+  }
+  tick();
+})();
+
 // ── MUSIC NOTE CURSOR TRAIL ──
+// Active on light scenes (work, project, light-about, contact). Skipped in
+// playground / dark mode where the fluid aura takes over.
 (function() {
   const notes = ['♪', '♫', '♩', '♬'];
   const pool = [];
@@ -3696,6 +4172,14 @@ document.querySelectorAll('.p2-about-back').forEach(link => {
   let lastX = 0, lastY = 0, lastSpawn = 0;
   const SPAWN_INTERVAL = 35;
   const MIN_DIST = 6;
+  function inPlayground() {
+    // Pure playground/lab only. Returns false when About is open (even
+    // from playground) so music notes take over there.
+    var w = document.getElementById('p2Wrap');
+    var about = document.getElementById('p2About');
+    var aboutOpen = !!(about && about.classList.contains('visible'));
+    return !!(w && w.classList.contains('dark-mode')) && !aboutOpen;
+  }
   for (let i = 0; i < POOL_SIZE; i++) {
     const el = document.createElement('div');
     el.style.cssText = 'position:fixed;pointer-events:none;z-index:9999;font-size:14px;opacity:0;transition:none;user-select:none;will-change:transform,opacity;';
@@ -3726,6 +4210,7 @@ document.querySelectorAll('.p2-about-back').forEach(link => {
     setTimeout(() => { note.active = false; }, 1050);
   }
   document.addEventListener('mousemove', function(e) {
+    if (inPlayground()) return; // dark-mode scenes use the fluid aura
     const now = Date.now();
     const dx = e.clientX - lastX, dy = e.clientY - lastY;
     const dist = Math.sqrt(dx * dx + dy * dy);
