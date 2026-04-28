@@ -623,6 +623,19 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     animation: navWave 0.5s ease forwards;
   }
   .p2-wrap.dark-mode .p2-tagline { color: #8a8580; }
+  /* Tagline sits inside .p2-title (z-index 10) which stays above the
+     about/project/contact overlays. Even when title is at opacity 0, the
+     tagline's pointer-events: auto would intercept hover/clicks at the
+     center of the screen, showing the playhead cursor and blocking scroll.
+     Disable pointer-events on the tagline whenever an overlay is open. */
+  .p2-wrap:has(.p2-about.visible) .p2-tagline,
+  .p2-wrap:has(.p2-about.visible) .p2-tagline .tag-letter,
+  .p2-wrap:has(.p2-project.visible) .p2-tagline,
+  .p2-wrap:has(.p2-project.visible) .p2-tagline .tag-letter,
+  .p2-wrap:has(.p2-contact.visible) .p2-tagline,
+  .p2-wrap:has(.p2-contact.visible) .p2-tagline .tag-letter {
+    pointer-events: none;
+  }
 
 
   /* ── SPLASH SCREEN ── */
@@ -1230,6 +1243,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     background: transparent;
   }
   #p2HoverPopup.visible { opacity: 1; }
+  #p2HoverPopup.size-lg { width: 36px; height: 36px; }
   #p2HoverPopup img {
     width: 100%;
     height: 100%;
@@ -1815,7 +1829,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
             <div class="p2-exp-item">
               <div class="p2-exp-role">Top 5% of Rocket League players globally</div>
               <div class="p2-exp-date">2026</div>
-              <div class="p2-exp-desc"><span class="p2-hover-icon" data-hover-img="">Champion 2</span> in Doubles (top 4.999%) · <span class="p2-hover-icon" data-hover-img="">Champion 1</span> in Standard (top 4.112%) · <span class="p2-hover-icon" data-hover-img="">Diamond 1</span> in Solo (top 6.550%)</div>
+              <div class="p2-exp-desc"><span class="p2-hover-icon" data-hover-img="assets/about-icons/champion-2.png" data-hover-size="lg">Champion 2</span> in Doubles (top 4.999%) · <span class="p2-hover-icon" data-hover-img="assets/about-icons/champion-1.png" data-hover-size="lg">Champion 1</span> in Standard (top 4.112%) · <span class="p2-hover-icon" data-hover-img="assets/about-icons/diamond-1.png" data-hover-size="lg">Diamond 1</span> in Solo (top 6.550%)</div>
             </div>
           </div>
         </div>
@@ -2169,6 +2183,17 @@ var _p2AboutOpen = false;
 
 function p2ShowAbout() {
   if (_p2AboutOpen || _p2AboutFalling || _p2ProjectFalling || _p2ProjectOpen || _p2InteractiveFalling) return;
+
+  // About is light-only and uniform regardless of entry point. If we're
+  // in playground/dark mode, swap the cursor to light immediately so it
+  // reads as "entering about", and finalize the rest of the swap (dark-mode
+  // class, items, title) once the about overlay is opaque.
+  var demotePlayground = _p2InteractiveMode;
+  if (demotePlayground) {
+    document.body.style.cursor = "url('assets/cursors/cursor.svg') 16 8, default";
+    document.getElementById('p2Scene').style.cursor = '';
+  }
+
   _p2ProjectFloatingBack = false;
   _p2SetActiveNav('about');
 
@@ -2192,6 +2217,25 @@ function p2ShowAbout() {
     about.classList.remove('loaded');
     void about.offsetWidth;
     about.classList.add('loaded');
+
+    // Under cover of the about overlay, finalize swap to work mode so the
+    // scene behind is uniform — logo + studio nav return cleanly to work.
+    if (demotePlayground) {
+      if (window._p2LabItems) {
+        window._p2LabItems.forEach(function(item) {
+          if (item.el.parentNode) item.el.parentNode.removeChild(item.el);
+        });
+        window._p2LabItems = [];
+      }
+      var titleLine = document.querySelector('.p2-title-line');
+      if (titleLine) titleLine.innerHTML = '<img src="assets/brand/logo-black.svg" class="p2-logo" style="height:62px;width:auto;margin-right:0.6rem;margin-top:6px;">Michael Loya\u00a0<span style="color:#8a8580">Studio</span>';
+      var mask = document.querySelector('.p2-title-mask');
+      if (mask) mask.classList.remove('slid');
+      if (window.p2Items) window.p2Items.forEach(function(item) { item.el.style.display = ''; });
+      document.getElementById('p2Wrap').classList.remove('dark-mode');
+      document.getElementById('p2Scene').classList.remove('dark-mode-scene');
+      _p2InteractiveMode = false;
+    }
 
     // Fade header on about scroll, mirroring project view behavior
     var aboutScroll = about.querySelector('.p2-about-scroll');
@@ -2358,6 +2402,25 @@ function p2NavGoAbout() {
       void about.offsetWidth;
       about.classList.add('loaded');
       _p2SetActiveNav('about');
+
+      // About is uniform regardless of entry. Under cover of the about
+      // overlay, swap to work mode so logo + studio nav return cleanly.
+      if (window._p2LabItems) {
+        window._p2LabItems.forEach(function(item) {
+          if (item.el.parentNode) item.el.parentNode.removeChild(item.el);
+        });
+        window._p2LabItems = [];
+      }
+      var titleLine = document.querySelector('.p2-title-line');
+      if (titleLine) titleLine.innerHTML = '<img src="assets/brand/logo-black.svg" class="p2-logo" style="height:62px;width:auto;margin-right:0.6rem;margin-top:6px;">Michael Loya\u00a0<span style="color:#8a8580">Studio</span>';
+      var mask = document.querySelector('.p2-title-mask');
+      if (mask) mask.classList.remove('slid');
+      if (window.p2Items) window.p2Items.forEach(function(item) { item.el.style.display = ''; });
+      document.getElementById('p2Wrap').classList.remove('dark-mode');
+      document.getElementById('p2Scene').classList.remove('dark-mode-scene');
+      document.body.style.cursor = "url('assets/cursors/cursor.svg') 16 8, default";
+      document.getElementById('p2Scene').style.cursor = '';
+      _p2InteractiveMode = false;
     }, 800);
     return;
   }
@@ -2370,11 +2433,26 @@ function p2NavGoAbout() {
     about.classList.remove('leaving');
     about.classList.remove('loaded');
     void about.offsetWidth;
-    about.classList.add('loaded');
     _p2SetActiveNav('about');
     _p2AboutOpen = true;
+    // URL should reflect that we're on about, not the project we left.
+    // setHash is IIFE-local; replaceState avoids triggering hashchange.
+    try { history.replaceState(null, '', '#about'); } catch(e) {}
 
-    // Now fade out the project. Once it's gone, finalize project state.
+    // Cascade project's content OUT first so the content of two pages
+    // doesn't ghost through each other during the container crossfade.
+    // Each inner element has its own opacity transition (~0.4–0.5s).
+    document.getElementById('p2ProjectHero').classList.remove('visible');
+    document.getElementById('p2ProjectHeader').classList.remove('visible');
+    document.getElementById('p2ProjectBody').classList.remove('visible');
+    document.getElementById('p2ProjectBackRow').classList.remove('visible');
+    document.getElementById('p2ProjectNav').classList.remove('visible');
+
+    // Defer about's section cascade-in until project content has had time
+    // to fade out — about appears in a clean (empty-content) parchment.
+    setTimeout(function() { about.classList.add('loaded'); }, 500);
+
+    // Now fade out the project container. Once it's gone, finalize state.
     var hdr = document.getElementById('p2Header');
     if (hdr) { hdr.style.opacity = ''; hdr.classList.remove('no-interact'); }
     var scrollEl = document.getElementById('p2Project').querySelector('.p2-project-scroll');
@@ -2465,17 +2543,26 @@ var _p2TitleTarget = null;     // where we want to be
 var _p2TitleRaf = null;        // animation frame id
 var _p2TitleProgress = 0;      // 0 = default shown, 1 = app name shown
 var _p2TitleDuration = 400;    // ms for full slide
+var _p2TitleIntent = null;     // latest user-requested name; the polling
+                               // wait-loop bails out if intent changed
+                               // (e.g. user moused off mid-slide-back).
 
 function _p2QueueTitleSlide(name) {
   var slider = document.getElementById('p2TitleSlider');
   var appNameEl = document.getElementById('p2AppName');
   if (!slider || !appNameEl) return;
 
+  _p2TitleIntent = name;
+
   // If switching between two different app names, need to slide back first
   if (name !== null && _p2TitleCurrent !== null && _p2TitleCurrent !== name && _p2TitleProgress > 0.5) {
     // We're mostly showing old name — slide back, then switch
     _p2TitleTarget = null;
     var _waitForDefault = function() {
+      // User's intent changed since we queued this switch — bail out.
+      // Without this check, mousing off the new app before the slide-back
+      // completes would still slide up to the (now-unwanted) name.
+      if (_p2TitleIntent !== name) return;
       if (_p2TitleProgress <= 0.01) {
         appNameEl.textContent = name;
         _p2TitleCurrent = null;
@@ -3511,7 +3598,10 @@ function initP2(opts) {
       const fallT = Math.min(fallElapsed / 700, 1);
       const fallEase = easeInQuad(fallT);
 
-      titleEl.style.opacity = Math.max(1 - fallT * 5, 0);
+      // If about is still closing, title was already held at 0 by the
+      // about branch — don't snap it to 1 just because we entered the fall.
+      if (!_p2AboutOpen) titleEl.style.opacity = Math.max(1 - fallT * 5, 0);
+      else titleEl.style.opacity = 0;
 
       p2Items.forEach((item, i) => {
         const si = staggerOrder[i] !== undefined ? staggerOrder[i] : i;
@@ -3948,8 +4038,14 @@ document.querySelectorAll('.p2-about-back').forEach(link => {
       case 'playground': if (window._p2InteractiveMode) return; p2ShowInteractive(); break;
       case 'about':      p2ShowAbout(); break;
       case 'contact':    p2ShowContact(); break;
-      case 'project':    p2ShowProject(s.index); break;
+      case 'project':
+        // From about: close about first so it fades out cleanly and the
+        // active nav switches from "about" to "studio".
+        if (window._p2AboutOpen) p2CloseAbout();
+        p2ShowProject(s.index);
+        break;
       case 'lab-app':
+        if (window._p2AboutOpen) p2CloseAbout();
         if (window._p2LabApps) p2OpenLabApp(window._p2LabApps[s.index], s.index);
         break;
     }
@@ -4387,6 +4483,8 @@ document.querySelectorAll('.p2-about-back').forEach(link => {
     var src = el.getAttribute('data-hover-img');
     if (!src) return;
     popupImg.src = src;
+    if (el.getAttribute('data-hover-size') === 'lg') popup.classList.add('size-lg');
+    else popup.classList.remove('size-lg');
     place();
     popup.classList.add('visible'); // CSS transitions opacity 0 → 1
   });
