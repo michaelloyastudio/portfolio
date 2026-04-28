@@ -2169,6 +2169,17 @@ var _p2AboutOpen = false;
 
 function p2ShowAbout() {
   if (_p2AboutOpen || _p2AboutFalling || _p2ProjectFalling || _p2ProjectOpen || _p2InteractiveFalling) return;
+
+  // About is light-only and uniform regardless of entry point. If we're
+  // in playground/dark mode, swap the cursor to light immediately so it
+  // reads as "entering about", and finalize the rest of the swap (dark-mode
+  // class, items, title) once the about overlay is opaque.
+  var demotePlayground = _p2InteractiveMode;
+  if (demotePlayground) {
+    document.body.style.cursor = "url('assets/cursors/cursor.svg') 16 8, default";
+    document.getElementById('p2Scene').style.cursor = '';
+  }
+
   _p2ProjectFloatingBack = false;
   _p2SetActiveNav('about');
 
@@ -2192,6 +2203,25 @@ function p2ShowAbout() {
     about.classList.remove('loaded');
     void about.offsetWidth;
     about.classList.add('loaded');
+
+    // Under cover of the about overlay, finalize swap to work mode so the
+    // scene behind is uniform — logo + studio nav return cleanly to work.
+    if (demotePlayground) {
+      if (window._p2LabItems) {
+        window._p2LabItems.forEach(function(item) {
+          if (item.el.parentNode) item.el.parentNode.removeChild(item.el);
+        });
+        window._p2LabItems = [];
+      }
+      var titleLine = document.querySelector('.p2-title-line');
+      if (titleLine) titleLine.innerHTML = '<img src="assets/brand/logo-black.svg" class="p2-logo" style="height:62px;width:auto;margin-right:0.6rem;margin-top:6px;">Michael Loya\u00a0<span style="color:#8a8580">Studio</span>';
+      var mask = document.querySelector('.p2-title-mask');
+      if (mask) mask.classList.remove('slid');
+      if (window.p2Items) window.p2Items.forEach(function(item) { item.el.style.display = ''; });
+      document.getElementById('p2Wrap').classList.remove('dark-mode');
+      document.getElementById('p2Scene').classList.remove('dark-mode-scene');
+      _p2InteractiveMode = false;
+    }
 
     // Fade header on about scroll, mirroring project view behavior
     var aboutScroll = about.querySelector('.p2-about-scroll');
@@ -2358,6 +2388,25 @@ function p2NavGoAbout() {
       void about.offsetWidth;
       about.classList.add('loaded');
       _p2SetActiveNav('about');
+
+      // About is uniform regardless of entry. Under cover of the about
+      // overlay, swap to work mode so logo + studio nav return cleanly.
+      if (window._p2LabItems) {
+        window._p2LabItems.forEach(function(item) {
+          if (item.el.parentNode) item.el.parentNode.removeChild(item.el);
+        });
+        window._p2LabItems = [];
+      }
+      var titleLine = document.querySelector('.p2-title-line');
+      if (titleLine) titleLine.innerHTML = '<img src="assets/brand/logo-black.svg" class="p2-logo" style="height:62px;width:auto;margin-right:0.6rem;margin-top:6px;">Michael Loya\u00a0<span style="color:#8a8580">Studio</span>';
+      var mask = document.querySelector('.p2-title-mask');
+      if (mask) mask.classList.remove('slid');
+      if (window.p2Items) window.p2Items.forEach(function(item) { item.el.style.display = ''; });
+      document.getElementById('p2Wrap').classList.remove('dark-mode');
+      document.getElementById('p2Scene').classList.remove('dark-mode-scene');
+      document.body.style.cursor = "url('assets/cursors/cursor.svg') 16 8, default";
+      document.getElementById('p2Scene').style.cursor = '';
+      _p2InteractiveMode = false;
     }, 800);
     return;
   }
