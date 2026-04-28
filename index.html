@@ -2543,17 +2543,26 @@ var _p2TitleTarget = null;     // where we want to be
 var _p2TitleRaf = null;        // animation frame id
 var _p2TitleProgress = 0;      // 0 = default shown, 1 = app name shown
 var _p2TitleDuration = 400;    // ms for full slide
+var _p2TitleIntent = null;     // latest user-requested name; the polling
+                               // wait-loop bails out if intent changed
+                               // (e.g. user moused off mid-slide-back).
 
 function _p2QueueTitleSlide(name) {
   var slider = document.getElementById('p2TitleSlider');
   var appNameEl = document.getElementById('p2AppName');
   if (!slider || !appNameEl) return;
 
+  _p2TitleIntent = name;
+
   // If switching between two different app names, need to slide back first
   if (name !== null && _p2TitleCurrent !== null && _p2TitleCurrent !== name && _p2TitleProgress > 0.5) {
     // We're mostly showing old name — slide back, then switch
     _p2TitleTarget = null;
     var _waitForDefault = function() {
+      // User's intent changed since we queued this switch — bail out.
+      // Without this check, mousing off the new app before the slide-back
+      // completes would still slide up to the (now-unwanted) name.
+      if (_p2TitleIntent !== name) return;
       if (_p2TitleProgress <= 0.01) {
         appNameEl.textContent = name;
         _p2TitleCurrent = null;
