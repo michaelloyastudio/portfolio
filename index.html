@@ -2728,6 +2728,7 @@ function _p2CreateLabCards() {
       _p2QueueTitleSlide(null);
     });
     el.addEventListener('click', function() {
+      if (!window._p2LoadDone) return;
       p2OpenLabApp(app, i, el);
     });
 
@@ -3547,6 +3548,9 @@ function initP2(opts) {
     }
 
     el.addEventListener('click', () => {
+      // Block until the load sequence finishes (header revealed). Otherwise
+      // opening a project mid-float leaves the header stuck hidden.
+      if (!window._p2LoadDone) return;
       p2ShowProject(i, el);
     });
     el.addEventListener('mouseenter', () => {
@@ -3780,10 +3784,15 @@ function initP2(opts) {
       item.el.style.transform = `translate3d(${item.restX}px, ${curY}px, 0) scale(${item.scaleAmt})`;
     });
 
-    // 3) Reveal header once items have all arrived.
+    // 3) Reveal header once items have all arrived. Then mark load done
+    //    so item clicks unlock (clicks before this point would fire a
+    //    project transition mid-load and leave the header stuck hidden).
     const hdr = document.getElementById('p2Header');
     if (hdr && hdr.classList.contains('hidden') && elapsed >= headerRevealDelay) {
       hdr.classList.remove('hidden');
+      // Wait for header's CSS opacity transition (0.4s) to finish before
+      // unlocking interaction.
+      setTimeout(function() { window._p2LoadDone = true; }, 450);
     }
 
     // If in interactive mode, keep work items parked off-screen
