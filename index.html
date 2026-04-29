@@ -1952,8 +1952,8 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
 <script>
 const projects = [
   {
-    title: "Music Visualizer",
-    overlayTitle: "Music<br>Visualizer",
+    title: "Senior Capstone",
+    overlayTitle: "Senior<br>Capstone",
     category: "Capstone / Motion / AI",
     tools: "Photoshop, After Effects, Magnific, Higgsfield AI",
     year: "2026",
@@ -3509,19 +3509,19 @@ function initP2(opts) {
 
   window.p2Items = window.p2Items || [];
   const p2Items = window.p2Items;
-  // Even 10-position ring around the center title. Angles step by 36°
-  // starting at 12 o'clock; rx≈0.4, ry≈0.32 of the viewport.
+  // Layout designed in studio-editor.html. Cards form a loose ring
+  // around the center title with size+depth variation for parallax.
   const positions = [
-    { x: 0.500, y: 0.180, z: -50,  s: 215 },  // 0  Capstone        (12 o'clock)
-    { x: 0.735, y: 0.241, z: -100, s: 205 },  // 1  Loya and Co.    ( 1-2)
-    { x: 0.880, y: 0.401, z: -70,  s: 175 },  // 2  BODYARMOR       ( 3-4)
-    { x: 0.880, y: 0.599, z: -30,  s: 205 },  // 3  University Union( 4-5)
-    { x: 0.735, y: 0.759, z: -90,  s: 205 },  // 4  LYRC            ( 5-6)
-    { x: 0.500, y: 0.850, z: -110, s: 165 },  // 5  Album Covers    ( 6 o'clock)
-    { x: 0.265, y: 0.759, z: -50,  s: 195 },  // 6  hardnbaflicks   ( 7-8)
-    { x: 0.120, y: 0.599, z: -80,  s: 175 },  // 7  Miscellaneous   ( 8-9)
-    { x: 0.120, y: 0.401, z: -120, s: 160 },  // 8  AI Song         ( 9-10)
-    { x: 0.265, y: 0.241, z: -60,  s: 180 },  // 9  Photography     (10-11)
+    { x: 0.418, y: 0.205, z: -50,  s: 200 },  // 0  Capstone
+    { x: 0.616, y: 0.214, z: -100, s: 195 },  // 1  Loya and Co.
+    { x: 0.802, y: 0.299, z: -70,  s: 190 },  // 2  BODYARMOR
+    { x: 0.879, y: 0.621, z: -30,  s: 185 },  // 3  University Union
+    { x: 0.709, y: 0.803, z: -90,  s: 180 },  // 4  LYRC
+    { x: 0.511, y: 0.845, z: -110, s: 175 },  // 5  Album Covers
+    { x: 0.333, y: 0.818, z: -50,  s: 170 },  // 6  hardnbaflicks
+    { x: 0.174, y: 0.690, z: -80,  s: 165 },  // 7  Miscellaneous
+    { x: 0.101, y: 0.435, z: -120, s: 160 },  // 8  AI Song
+    { x: 0.235, y: 0.239, z: -60,  s: 155 },  // 9  Photography
   ];
 
   projects.forEach((p, i) => {
@@ -3586,7 +3586,7 @@ function initP2(opts) {
     });
   });
 
-  // Periodic nudge on Loya and Co. (first item) — stops after user clicks/views it
+  // Periodic nudge on the first item (Capstone) — stops after user clicks/views it
   if (p2Items.length > 0) {
     var mvImg = p2Items[0].el.querySelector('img');
     var nudgeInterval;
