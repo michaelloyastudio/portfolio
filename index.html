@@ -3514,7 +3514,7 @@ var _splashChoice = null;
     // Grid-jitter placement: divide the column into GxR cells, drop one
     // sticker per cell with a random offset within. Guarantees full
     // coverage (no gaps) while still feeling chaotic.
-    var GRID_C = 5, GRID_R = 9;        // 45 cells
+    var GRID_C = 7, GRID_R = 12;       // 84 cells
     var TARGET = GRID_C * GRID_R;
     var cellW = 100 / GRID_C;
     var cellH = 100 / GRID_R;
@@ -3546,12 +3546,13 @@ var _splashChoice = null;
       sticker.alt = '';
       var cIdx = ci % GRID_C;
       var rIdx = Math.floor(ci / GRID_C);
-      // Cell center + jitter (±40% of cell to keep cells from overlapping
-      // their neighbors too aggressively yet still feel random).
-      var x = (cIdx + 0.5) * cellW + (Math.random() - 0.5) * cellW * 0.8;
-      var y = (rIdx + 0.5) * cellH + (Math.random() - 0.5) * cellH * 0.8;
+      // Cell center + small jitter (±30% of cell). Less drift means cells
+      // stay reliably covered; the larger sticker size handles overlap.
+      var x = (cIdx + 0.5) * cellW + (Math.random() - 0.5) * cellW * 0.6;
+      var y = (rIdx + 0.5) * cellH + (Math.random() - 0.5) * cellH * 0.6;
       var rot = (Math.random() - 0.5) * 50;              // -25° → 25°
-      var size = 90 + Math.random() * 70;                // 90–160 px
+      // Stickers larger than cells so neighbors always overlap → no white.
+      var size = 120 + Math.random() * 70;               // 120–190 px
       var order = revealOrder[ci];
       sticker.style.cssText =
         'left:' + x.toFixed(1) + '%;' +
