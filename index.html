@@ -3544,14 +3544,16 @@ var _splashChoice = null;
     var cellW = 100 / GRID_C;
     var cellH = 100 / GRID_R;
     // Carve a rectangular hole around the column center so the quote +
-    // label remain readable against the bomb. The hole is sized to the
-    // longest quote width: about 6 cols × 2 rows of cell space.
+    // label remain readable against the bomb. Half-extents are larger
+    // than the visible text bounds because stickers (120–190px) overflow
+    // their ~91×53px cells — neighbours need to be pushed far enough
+    // away that their edges don't reach the text zone.
     function isTextZone(c, r) {
       var midC = (GRID_C - 1) / 2;
       var midR = (GRID_R - 1) / 2;
-      // Half-extents: 3 cells horizontally (~43% of column),
-      //               1.0 cells vertically (~8% of column).
-      return Math.abs(c - midC) < 3.0 && Math.abs(r - midR) < 1.0;
+      // Half-extents: 3.5 cells horizontally (~50% of column),
+      //               2.5 cells vertically (~21% of column).
+      return Math.abs(c - midC) < 3.5 && Math.abs(r - midR) < 2.5;
     }
     var cells = [];
     for (var rr = 0; rr < GRID_R; rr++) {
@@ -3585,8 +3587,24 @@ var _splashChoice = null;
       sticker.alt = '';
       // Cell center + small jitter (±30% of cell). Less drift means cells
       // stay reliably covered; the larger sticker size handles overlap.
-      var x = (cell.c + 0.5) * cellW + (Math.random() - 0.5) * cellW * 0.6;
-      var y = (cell.r + 0.5) * cellH + (Math.random() - 0.5) * cellH * 0.6;
+      // For cells adjacent to the text zone, bias the jitter AWAY from
+      // center so the sticker's edge doesn't bleed into the cleared area.
+      var midC = (GRID_C - 1) / 2;
+      var midR = (GRID_R - 1) / 2;
+      var jitX = (Math.random() - 0.5) * cellW * 0.6;
+      var jitY = (Math.random() - 0.5) * cellH * 0.6;
+      // Adjacent = within 1 cell of the zone boundary.
+      var nearZoneH = Math.abs(cell.c - midC) < 4.5;
+      var nearZoneV = Math.abs(cell.r - midR) < 3.5;
+      if (nearZoneH && nearZoneV) {
+        // Sign jitter so sticker pushes away from center.
+        if (cell.c < midC && jitX > 0) jitX = -jitX;
+        if (cell.c > midC && jitX < 0) jitX = -jitX;
+        if (cell.r < midR && jitY > 0) jitY = -jitY;
+        if (cell.r > midR && jitY < 0) jitY = -jitY;
+      }
+      var x = (cell.c + 0.5) * cellW + jitX;
+      var y = (cell.r + 0.5) * cellH + jitY;
       var rot = (Math.random() - 0.5) * 50;              // -25° → 25°
       // Stickers larger than cells so neighbors always overlap → no white.
       var size = 120 + Math.random() * 70;               // 120–190 px
