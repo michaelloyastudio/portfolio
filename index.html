@@ -3667,6 +3667,15 @@ var _splashChoice = null;
     col.addEventListener('click', function() {
       if (!_splashActive) return;
       var choice = col.getAttribute('data-choice');
+      // For playground, flip the wrap to dark-mode immediately so its
+      // 0.6s background-color transition completes BEHIND the still-
+      // visible splash. Without this, the wrap was still parchment at
+      // the moment the splash hid, then transitioned dark visibly →
+      // read as a light flash before the playground rendered.
+      if (choice === 'apps') {
+        document.getElementById('p2Wrap').classList.add('dark-mode');
+        document.getElementById('p2Scene').classList.add('dark-mode-scene');
+      }
       // Click sequence: chosen col expands → stickers fall → text
       // fades → beat → route. Total ~1.9s (matches CSS delays + a
       // small pause before navigation).
