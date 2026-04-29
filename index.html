@@ -447,7 +447,9 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     left: 50%;
     transform: translate(-50%, -50%) translateZ(0);
     font-family: 'din-2014-rounded-variable', sans-serif; word-spacing: -0.05em;
-    font-size: 4.75rem;
+    /* Scales with viewport via --p2-scale (set by applyResponsive). Same
+       formula as the floating items so title and items shrink/grow together. */
+    font-size: calc(4.75rem * var(--p2-scale, 1));
     font-weight: 400;
     color: #1a1a1a;
     white-space: nowrap;
@@ -464,7 +466,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   .p2-title-mask {
     display: block;
     position: relative;
-    height: 90px;
+    height: calc(90px * var(--p2-scale, 1));
     overflow: hidden;
     clip-path: inset(0);
     -webkit-clip-path: inset(0);
@@ -477,7 +479,11 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     align-items: center;
     justify-content: center;
     white-space: nowrap;
-    height: 90px;
+    height: calc(90px * var(--p2-scale, 1));
+  }
+  .p2-title img.p2-logo {
+    height: calc(62px * var(--p2-scale, 1)) !important;
+    margin-top: calc(6px * var(--p2-scale, 1)) !important;
   }
 
   /* Top header bar */
@@ -1920,7 +1926,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     <div class="p2-title" style="display:none;">
       <span class="p2-title-mask">
         <span class="p2-title-slider" id="p2TitleSlider">
-          <span class="p2-title-line"><img src="assets/brand/logo-black.svg" class="p2-logo" style="height:62px;width:auto;margin-right:0.6rem;margin-top:6px;">Michael Loya&nbsp;<span style="color:#8a8580">Studio</span></span>
+          <span class="p2-title-line"><img src="assets/brand/logo-black.svg" class="p2-logo" style="width:auto;margin-right:0.6rem;">Michael Loya&nbsp;<span style="color:#8a8580">Studio</span></span>
           <span class="p2-title-line p2-app-name" id="p2AppName"></span>
         </span>
       </span>
@@ -2228,7 +2234,7 @@ function p2ShowAbout() {
         window._p2LabItems = [];
       }
       var titleLine = document.querySelector('.p2-title-line');
-      if (titleLine) titleLine.innerHTML = '<img src="assets/brand/logo-black.svg" class="p2-logo" style="height:62px;width:auto;margin-right:0.6rem;margin-top:6px;">Michael Loya\u00a0<span style="color:#8a8580">Studio</span>';
+      if (titleLine) titleLine.innerHTML = '<img src="assets/brand/logo-black.svg" class="p2-logo" style="width:auto;margin-right:0.6rem;">Michael Loya\u00a0<span style="color:#8a8580">Studio</span>';
       var mask = document.querySelector('.p2-title-mask');
       if (mask) mask.classList.remove('slid');
       if (window.p2Items) window.p2Items.forEach(function(item) { item.el.style.display = ''; });
@@ -2310,7 +2316,7 @@ function _p2SilentSwapToWork() {
     window._p2LabItems = [];
   }
   var titleLine = document.querySelector('.p2-title-line');
-  if (titleLine) titleLine.innerHTML = '<img src="assets/brand/logo-black.svg" class="p2-logo" style="height:62px;width:auto;margin-right:0.6rem;margin-top:6px;">Michael Loya\u00a0<span style="color:#8a8580">Studio</span>';
+  if (titleLine) titleLine.innerHTML = '<img src="assets/brand/logo-black.svg" class="p2-logo" style="width:auto;margin-right:0.6rem;">Michael Loya\u00a0<span style="color:#8a8580">Studio</span>';
   var mask = document.querySelector('.p2-title-mask');
   if (mask) mask.classList.remove('slid');
   _p2InteractiveMode = false;
@@ -2412,7 +2418,7 @@ function p2NavGoAbout() {
         window._p2LabItems = [];
       }
       var titleLine = document.querySelector('.p2-title-line');
-      if (titleLine) titleLine.innerHTML = '<img src="assets/brand/logo-black.svg" class="p2-logo" style="height:62px;width:auto;margin-right:0.6rem;margin-top:6px;">Michael Loya\u00a0<span style="color:#8a8580">Studio</span>';
+      if (titleLine) titleLine.innerHTML = '<img src="assets/brand/logo-black.svg" class="p2-logo" style="width:auto;margin-right:0.6rem;">Michael Loya\u00a0<span style="color:#8a8580">Studio</span>';
       var mask = document.querySelector('.p2-title-mask');
       if (mask) mask.classList.remove('slid');
       if (window.p2Items) window.p2Items.forEach(function(item) { item.el.style.display = ''; });
@@ -2614,13 +2620,17 @@ function _tickTitleAnim(ts) {
     ? 2 * _p2TitleProgress * _p2TitleProgress
     : 1 - Math.pow(-2 * _p2TitleProgress + 2, 2) / 2;
 
-  slider.style.transform = 'translateY(' + (-90 * eased) + 'px)';
+  // Slide distance = one line height. CSS scales this via --p2-scale,
+  // so read the actual rendered height instead of hardcoding 90.
+  var lineH = slider.querySelector('.p2-title-line');
+  var dist = lineH ? lineH.offsetHeight : 90;
+  slider.style.transform = 'translateY(' + (-dist * eased) + 'px)';
 
   if (Math.abs(_p2TitleProgress - goalProgress) > 0.001) {
     _p2TitleRaf = requestAnimationFrame(_tickTitleAnim);
   } else {
     _p2TitleProgress = goalProgress;
-    slider.style.transform = 'translateY(' + (-90 * goalProgress) + 'px)';
+    slider.style.transform = 'translateY(' + (-dist * goalProgress) + 'px)';
     _p2TitleRaf = null;
     if (goalProgress === 0) _p2TitleCurrent = null;
   }
@@ -2741,7 +2751,7 @@ function p2ShowWork() {
 
     // Restore title to logo+wordmark SVG
     var titleLine = document.querySelector('.p2-title-line');
-    if (titleLine) titleLine.innerHTML = '<img src="assets/brand/logo-black.svg" class="p2-logo" style="height:62px;width:auto;margin-right:0.6rem;margin-top:6px;">Michael Loya\u00a0<span style="color:#8a8580">Studio</span>';
+    if (titleLine) titleLine.innerHTML = '<img src="assets/brand/logo-black.svg" class="p2-logo" style="width:auto;margin-right:0.6rem;">Michael Loya\u00a0<span style="color:#8a8580">Studio</span>';
     var mask = document.querySelector('.p2-title-mask');
     if (mask) mask.classList.remove('slid');
 
@@ -3020,7 +3030,7 @@ function p2CloseLabApp(opts) {
       document.body.style.cursor = "url('assets/cursors/cursor.svg') 16 8, default";
       document.getElementById('p2Scene').style.cursor = '';
       var titleLine = document.querySelector('.p2-title-line');
-      if (titleLine) titleLine.innerHTML = '<img src="assets/brand/logo-black.svg" class="p2-logo" style="height:62px;width:auto;margin-right:0.6rem;margin-top:6px;">Michael Loya\u00a0<span style="color:#8a8580">Studio</span>';
+      if (titleLine) titleLine.innerHTML = '<img src="assets/brand/logo-black.svg" class="p2-logo" style="width:auto;margin-right:0.6rem;">Michael Loya\u00a0<span style="color:#8a8580">Studio</span>';
       var mask = document.querySelector('.p2-title-mask');
       if (mask) mask.classList.remove('slid');
       // Park work items offscreen then float in
@@ -3826,6 +3836,10 @@ document.querySelectorAll('.p2-about-back').forEach(link => {
     var h = window.innerHeight;
     var scale = (typeof p2ComputeScale === 'function') ? p2ComputeScale() : 1;
 
+    // Drive title font/mask/logo sizing via CSS so it stays in sync with items.
+    var wrap = document.getElementById('p2Wrap');
+    if (wrap) wrap.style.setProperty('--p2-scale', scale);
+
     function updateList(list) {
       if (!list) return;
       list.forEach(function(item) {
@@ -3843,6 +3857,10 @@ document.querySelectorAll('.p2-about-back').forEach(link => {
     updateList(window.p2Items);
     updateList(window._p2LabItems);
   }
+  // Apply once at boot so initial render uses the right scale (items'
+  // sizes are still set in initP2 via p2ComputeScale, but the title only
+  // gets its scale through this CSS variable).
+  applyResponsive();
   // Debounce so we don't thrash on drag-resize.
   var _raf = null;
   window.addEventListener('resize', function() {
