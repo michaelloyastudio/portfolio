@@ -3703,23 +3703,24 @@ var _splashChoice = null;
 
 // Splash column click → route. For 'work' (studio), delay the header
 // reveal until the float-in animation finishes. 'apps' (playground)
-// also has float-in so same treatment. 'about' jumps straight to the
-// about overlay so the header reveals immediately.
+// also has float-in but with fewer items so it completes faster.
+// 'about' jumps straight to the overlay so the header reveals immediately.
 function splashClick(choice) {
   if (choice === 'about') {
     splashChoose(choice, { fromSplash: true });
     return;
   }
   splashChoose(choice, { delayHeader: true, fromSplash: true });
-  // splash already played its full sequence (~1.5s), splash hides
-  // immediately, then initP2 starts.
-  // Items float: 350 (start delay) + 9*150 (last stagger) + 1500 (floatDur) = 3200ms.
+  // Items float-in time = imageStartDelay (350) + lastStagger + floatDur (1500).
+  // Studio:     350 + 9*150 + 1500 = 3200 → reveal at 3500ms (200ms beat)
+  // Playground: 350 + 3*150 + 1500 = 2300 → reveal at 2500ms (200ms beat)
+  var revealDelay = choice === 'apps' ? 2500 : 3500;
   setTimeout(function() {
     var hdr = document.getElementById('p2Header');
     if (hdr) hdr.classList.remove('hidden');
     // Wait for header's CSS opacity transition (0.4s) before unlocking clicks.
     setTimeout(function() { window._p2LoadDone = true; }, 450);
-  }, 3500);
+  }, revealDelay);
 }
 
 function splashChoose(choice, opts) {
