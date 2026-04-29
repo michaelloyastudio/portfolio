@@ -792,11 +792,14 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
                rotate(calc(var(--rot, 0deg) + var(--tumble, 40deg)));
     transition: transform 0.9s cubic-bezier(0.55, 0, 0.95, 0.4) 0.5s;
   }
-  /* Text snaps out quickly right as the falling stickers reach the
-     text zone — quote disappears like it was wiped away by them. */
+  /* Text snaps out quickly once the falling stickers are physically
+     covering the text zone — quote reads as wiped away by them.
+     Fall starts at 0.5s; with the cubic-bezier easing it takes about
+     0.5s for top-row stickers to reach the middle of the column, so
+     the wipe fires at +1.0s. */
   .p2-splash.exploding .p2-splash-col.chosen .p2-splash-inner {
     opacity: 0;
-    transition: opacity 0.18s ease 0.65s;
+    transition: opacity 0.15s ease 1.0s;
   }
   .p2-splash.exploding .p2-splash-col:not(.chosen) .p2-splash-inner {
     opacity: 0;
