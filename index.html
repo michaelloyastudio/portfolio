@@ -764,11 +764,11 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   }
   .p2-splash-label .nav-letter { display: inline-block; }
   /* When the chosen column targets a dark destination (playground),
-     match the splash's own bg so sub-pixel flex-layout gaps during the
-     column-collapse transition don't reveal parchment underneath. */
-  .p2-splash:has(.p2-splash-col[data-choice="apps"].chosen) {
-    background: #0a0a0a;
-  }
+     flip the splash's own bg + ALL non-chosen column bgs to dark so
+     any layout gap or sub-pixel collapsing-column residue stays dark
+     instead of revealing parchment underneath. */
+  .p2-splash.choosing-dark { background: #0a0a0a; }
+  .p2-splash.choosing-dark .p2-splash-col { background: #0a0a0a; }
   /* ── Click sequence ─────────────────────────────────────────────
      0.0–0.5s   chosen column expands to fill viewport; others collapse
      0.5–1.4s   stickers fall down off-screen with slight tumble +
@@ -3680,12 +3680,14 @@ var _splashChoice = null;
     col.addEventListener('click', function() {
       if (!_splashActive) return;
       var choice = col.getAttribute('data-choice');
-      // For playground, flip the wrap to dark-mode immediately so its
-      // 0.6s background-color transition completes BEHIND the still-
-      // visible splash. Without this, the wrap was still parchment at
-      // the moment the splash hid, then transitioned dark visibly →
-      // read as a light flash before the playground rendered.
+      // For playground (dark destination), prep dark bg layers BEFORE
+      // the splash starts dismissing so there's no parchment leak as
+      // the non-chosen columns collapse and the wrap transitions:
+      //   - .choosing-dark on splash flips splash + all column bgs dark
+      //   - .dark-mode on wrap so its 0.6s bg transition completes
+      //     behind the still-visible splash
       if (choice === 'apps') {
+        splash.classList.add('choosing-dark');
         document.getElementById('p2Wrap').classList.add('dark-mode');
         document.getElementById('p2Scene').classList.add('dark-mode-scene');
       }
