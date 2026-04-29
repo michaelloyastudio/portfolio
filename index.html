@@ -3781,6 +3781,7 @@ function splashChoose(choice, opts) {
       _p2SetActiveNav('playground');
       _p2CreateLabCards();
       window._p2ResetStart = performance.now();
+      try { history.replaceState(null, '', '#playground'); } catch(e) {}
     } else if (choice === 'about') {
       // Studio scene initializes underneath, then about overlay opens.
       initP2();
@@ -3818,6 +3819,7 @@ function splashChoose(choice, opts) {
       // Normal work mode
       initP2();
       _p2SetActiveNav('work');
+      try { history.replaceState(null, '', '#studio'); } catch(e) {}
     }
   }, fromSplash ? 0 : 700);
 }
@@ -4275,7 +4277,10 @@ document.querySelectorAll('.p2-about-back').forEach(link => {
   function parseHash() {
     var h = (location.hash || '').replace(/^#\/?/, '');
     if (!h) return null;
-    if (h === 'work' || h === 'playground' || h === 'about' || h === 'contact') return { view: h };
+    // 'studio' is the canonical URL slug for the studio scene; 'work' is
+    // kept as an alias so old links still resolve.
+    if (h === 'studio' || h === 'work') return { view: 'work' };
+    if (h === 'playground' || h === 'about' || h === 'contact') return { view: h };
     var m = h.match(/^project\/(.+)$/);
     if (m) {
       var i = PROJECT_SLUGS.indexOf(m[1]);
@@ -4303,7 +4308,7 @@ document.querySelectorAll('.p2-about-back').forEach(link => {
   window.p2CloseProject = function() {
     var wasOpen = window._p2ProjectOpen;
     var r = origCloseProject.apply(this, arguments);
-    if (wasOpen) setHash(window._p2InteractiveMode ? 'playground' : 'work');
+    if (wasOpen) setHash(window._p2InteractiveMode ? 'playground' : 'studio');
     return r;
   };
   var origShowInteractive = window.p2ShowInteractive;
@@ -4317,7 +4322,7 @@ document.querySelectorAll('.p2-about-back').forEach(link => {
   window.p2ShowWork = function() {
     var wasInteractive = window._p2InteractiveMode;
     var r = origShowWork.apply(this, arguments);
-    if (wasInteractive) setHash('work');
+    if (wasInteractive) setHash('studio');
     return r;
   };
   var origShowAbout = window.p2ShowAbout;
@@ -4331,7 +4336,7 @@ document.querySelectorAll('.p2-about-back').forEach(link => {
   window.p2CloseAbout = function() {
     var wasOpen = window._p2AboutOpen;
     var r = origCloseAbout.apply(this, arguments);
-    if (wasOpen) setHash(window._p2InteractiveMode ? 'playground' : 'work');
+    if (wasOpen) setHash(window._p2InteractiveMode ? 'playground' : 'studio');
     return r;
   };
   var origShowContact = window.p2ShowContact;
@@ -4343,7 +4348,7 @@ document.querySelectorAll('.p2-about-back').forEach(link => {
   var origCloseContact = window.p2CloseContact;
   window.p2CloseContact = function() {
     var r = origCloseContact.apply(this, arguments);
-    setHash(window._p2InteractiveMode ? 'playground' : 'work');
+    setHash(window._p2InteractiveMode ? 'playground' : 'studio');
     return r;
   };
   var origOpenLabApp = window.p2OpenLabApp;
@@ -4359,7 +4364,7 @@ document.querySelectorAll('.p2-about-back').forEach(link => {
     var r = origCloseLabApp.apply(this, arguments);
     if (wasOpen) {
       var dest = (opts && opts.dest) || 'playground';
-      if (dest === 'work') setHash('work');
+      if (dest === 'work') setHash('studio');
       else if (dest === 'about') setHash('about');
       else setHash('playground');
     }
