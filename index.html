@@ -2698,7 +2698,8 @@ function _p2CreateLabCards() {
     var maxZ = 0, minZ = -150;
     var zRange = maxZ - minZ;
     var zNorm = (pos.z - minZ) / zRange;
-    var scaleAmt = 0.7 + zNorm * 0.3;
+    // pos.s alone controls size (× p2ComputeScale). z is for blur + z-index.
+    var scaleAmt = 1;
     el.style.zIndex = Math.round(zNorm * 10);
     el._baseBlur = (1 - zNorm) * 2;
     el._scale = scaleAmt;
@@ -3571,7 +3572,9 @@ function initP2(opts) {
     const zRange = maxZ - minZ;
     const zNorm = (pos.z - minZ) / zRange;
     const blurAmt = (1 - zNorm) * 2;
-    const scaleAmt = 0.7 + zNorm * 0.3;
+    // Final size is driven by pos.s alone (× p2ComputeScale for viewport).
+    // z is used only for blur depth + z-index — no longer scales the card.
+    const scaleAmt = 1;
     el.style.filter = 'blur(0px)';
     el.style.zIndex = Math.round(zNorm * 10);
     el._baseBlur = blurAmt;
