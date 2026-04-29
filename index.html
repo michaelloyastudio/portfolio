@@ -2835,6 +2835,11 @@ function p2ShowProject(index, el) {
   document.getElementById('p2ProjectBody').innerHTML = p.content;
   if (typeof initLyrcPhone === 'function') initLyrcPhone();
   if (typeof initHardnbaflicksPhone === 'function') initHardnbaflicksPhone();
+  // Re-wire click-to-jiggle on the project's title h1 + any h3 in body.
+  if (typeof window.wireJiggleIn === 'function') {
+    window.wireJiggleIn(document.getElementById('p2ProjectTitle'));
+    window.wireJiggleIn(document.getElementById('p2ProjectBody'));
+  }
   document.getElementById('p2ProjectHeroImg').src = p.cover;
   document.getElementById('p2ProjectHeroImg').alt = p.title;
   scrollEl.scrollTop = 0;
@@ -2926,6 +2931,10 @@ function p2SwapProject(newIndex) {
     document.getElementById('p2ProjectBody').innerHTML = p.content;
     if (typeof initLyrcPhone === 'function') initLyrcPhone();
     if (typeof initHardnbaflicksPhone === 'function') initHardnbaflicksPhone();
+    if (typeof window.wireJiggleIn === 'function') {
+      window.wireJiggleIn(document.getElementById('p2ProjectTitle'));
+      window.wireJiggleIn(document.getElementById('p2ProjectBody'));
+    }
     document.getElementById('p2ProjectNavLabel').textContent = (newIndex + 1) + ' / ' + projects.length;
     document.getElementById('p2ProjectCounter').textContent = (newIndex + 1) + ' / ' + projects.length;
     
@@ -4486,8 +4495,8 @@ document.querySelectorAll('.p2-about-back').forEach(link => {
   var letterRecords = []; // { el, idx, parent, waves: [{t0, delay, dur, amp}] }
 
   function splitLettersInTextNodes(parent) {
-    if (parent._jiggleSplit) return;
-    parent._jiggleSplit = true;
+    // No-op if already split (keeps idempotency for re-wires).
+    if (parent.querySelector && parent.querySelector('.jiggle-letter')) return;
     var walker = document.createTreeWalker(parent, NodeFilter.SHOW_TEXT, null);
     var textNodes = [];
     var n; while ((n = walker.nextNode())) textNodes.push(n);
@@ -4503,11 +4512,6 @@ document.querySelectorAll('.p2-about-back').forEach(link => {
       }
       textNode.parentNode.replaceChild(frag, textNode);
     });
-    // Register each letter (left-to-right index per parent)
-    var letters = parent.querySelectorAll('.jiggle-letter');
-    Array.prototype.forEach.call(letters, function(el, i) {
-      letterRecords.push({ el: el, idx: i, parent: parent, waves: [] });
-    });
   }
 
   function spawnWave(parent) {
@@ -4518,16 +4522,46 @@ document.querySelectorAll('.p2-about-back').forEach(link => {
     });
   }
 
-  var headerSelectors = '.p2-about-text h1, .p2-education h3, .p2-experience h3, .p2-skills h3, .p2-achievements h3, .p2-interests h3';
-  document.querySelectorAll(headerSelectors).forEach(function(el) {
-    splitLettersInTextNodes(el);
-    el.addEventListener('click', function(e) {
-      // Only fire when the click landed on an actual letter, not whitespace
-      // around the heading (no broad clickable area).
-      if (!e.target || !e.target.classList || !e.target.classList.contains('jiggle-letter')) return;
-      spawnWave(el);
+  // Wire jiggle on every header inside `root` (or on root itself if it's
+  // a header). Used for the about page on init and re-called by
+  // p2ShowProject every time a new project's content is injected.
+  function wireJiggleIn(root) {
+    if (!root) return;
+    // Drop records whose elements are no longer in the document (orphaned
+    // by innerHTML/textContent resets — e.g. project content swaps).
+    letterRecords = letterRecords.filter(function(rec) { return rec.el.isConnected; });
+
+    var matches = (root.matches && root.matches('h1, h3'))
+      ? [root]
+      : Array.prototype.slice.call(root.querySelectorAll('h1, h3'));
+    matches.forEach(function(el) {
+      splitLettersInTextNodes(el);
+      // Register letters from current DOM state (handles re-wires after
+      // content swaps where prior letter spans were wiped).
+      var letters = el.querySelectorAll('.jiggle-letter');
+      // Avoid duplicate records for the same letter element.
+      var existing = new Set(letterRecords.filter(function(r) { return r.parent === el; }).map(function(r) { return r.el; }));
+      Array.prototype.forEach.call(letters, function(letterEl, i) {
+        if (existing.has(letterEl)) return;
+        letterRecords.push({ el: letterEl, idx: i, parent: el, waves: [] });
+      });
+      // Click handler — only attach once per parent.
+      if (!el._jiggleWired) {
+        el._jiggleWired = true;
+        el.addEventListener('click', function(e) {
+          if (!e.target || !e.target.classList || !e.target.classList.contains('jiggle-letter')) return;
+          spawnWave(el);
+        });
+      }
     });
-  });
+  }
+  // Expose for p2ShowProject / p2SwapProject to call after content swaps.
+  window.wireJiggleIn = wireJiggleIn;
+
+  // Initial wire: about page + project title h1 (project body h3s wire
+  // on each open since their content is injected dynamically).
+  var initialSelectors = '.p2-about-text h1, .p2-education h3, .p2-experience h3, .p2-skills h3, .p2-achievements h3, .p2-interests h3, #p2ProjectTitle';
+  document.querySelectorAll(initialSelectors).forEach(function(el) { wireJiggleIn(el); });
 
   function tickJiggle() {
     var now = performance.now();
