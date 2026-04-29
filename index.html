@@ -762,12 +762,22 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     left: 10%;
   }
   .p2-splash-label .nav-letter { display: inline-block; }
-  /* Click → chosen column expands, others collapse */
-  .p2-splash.choosing .p2-splash-col.chosen { flex-grow: 99; }
-  .p2-splash.choosing .p2-splash-col:not(.chosen) {
-    flex-grow: 0;
-    flex-basis: 0;
+  /* Click → stickers explode outwards, text fades, then route */
+  .p2-splash.exploding .p2-splash-inner {
     opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .p2-splash.exploding .p2-splash-sticker {
+    /* Each sticker has precomputed --exit-x / --exit-y (viewport units)
+       pointing radially outward from its column's center. */
+    transform: translate(-50%, -50%)
+               rotate(calc(var(--rot, 0deg) * 2.5))
+               translate(var(--exit-x, 0), var(--exit-y, 0))
+               scale(1.4);
+    opacity: 0;
+    transition: transform 0.65s cubic-bezier(0.5, 0, 0.75, 0.2),
+                opacity 0.55s ease;
+    transition-delay: 0s;
   }
 
   .p2-nav {
@@ -3554,12 +3564,21 @@ var _splashChoice = null;
       // Stickers larger than cells so neighbors always overlap → no white.
       var size = 120 + Math.random() * 70;               // 120–190 px
       var order = revealOrder[ci];
+      // Explosion vector: radial direction from column center, scaled to
+      // a magnitude big enough to fly past the viewport edge.
+      var dxNorm = (x - 50);
+      var dyNorm = (y - 50);
+      var len = Math.sqrt(dxNorm * dxNorm + dyNorm * dyNorm) || 1;
+      var exitX = (dxNorm / len) * 80; // vw
+      var exitY = (dyNorm / len) * 80; // vh
       sticker.style.cssText =
         'left:' + x.toFixed(1) + '%;' +
         'top:' + y.toFixed(1) + '%;' +
         'width:' + Math.round(size) + 'px;' +
         '--rot:' + rot.toFixed(1) + 'deg;' +
-        '--delay:' + (Math.min(order, 25) * 0.022).toFixed(3) + 's;';
+        '--delay:' + (Math.min(order, 25) * 0.022).toFixed(3) + 's;' +
+        '--exit-x:' + exitX.toFixed(0) + 'vw;' +
+        '--exit-y:' + exitY.toFixed(0) + 'vh;';
       container.appendChild(sticker);
     }
     col.insertBefore(container, col.firstChild);
@@ -3597,11 +3616,12 @@ var _splashChoice = null;
     col.addEventListener('click', function() {
       if (!_splashActive) return;
       var choice = col.getAttribute('data-choice');
-      // Click animation: chosen column expands, others collapse.
-      splash.classList.add('choosing');
+      // Trigger sticker explosion + text fade. Routing fires once the
+      // explosion has played out so the splash never visually overlaps
+      // the destination.
+      splash.classList.add('exploding');
       col.classList.add('chosen');
-      // Once the column-expand transition is mostly done, dispatch the route.
-      setTimeout(function() { splashClick(choice); }, 480);
+      setTimeout(function() { splashClick(choice); }, 600);
     });
   });
 })();
@@ -3612,20 +3632,18 @@ var _splashChoice = null;
 // about overlay so the header reveals immediately.
 function splashClick(choice) {
   if (choice === 'about') {
-    splashChoose(choice);
+    splashChoose(choice, { fromSplash: true });
     return;
   }
-  splashChoose(choice, { delayHeader: true });
-  // splashChoose's setTimeout(700) hides splash, then initP2 starts.
-  // Items finish floating: 350 (start delay) + 9*150 (last stagger) + 1500 (floatDur) = 3200ms.
-  // Plus the 700ms splash hide → ~3900ms after click. Round up to 4100ms
-  // for a beat of stillness, then reveal.
+  splashChoose(choice, { delayHeader: true, fromSplash: true });
+  // splash already exploded (~600ms), splash hides immediately, then initP2 starts.
+  // Items float: 350 (start delay) + 9*150 (last stagger) + 1500 (floatDur) = 3200ms.
   setTimeout(function() {
     var hdr = document.getElementById('p2Header');
     if (hdr) hdr.classList.remove('hidden');
     // Wait for header's CSS opacity transition (0.4s) before unlocking clicks.
     setTimeout(function() { window._p2LoadDone = true; }, 450);
-  }, 4100);
+  }, 3500);
 }
 
 function splashChoose(choice, opts) {
@@ -3636,6 +3654,10 @@ function splashChoose(choice, opts) {
   // button path). Deep-links / hashchange reloads should reveal it
   // immediately so the page never lands without nav available.
   var delayHeader = opts && opts.delayHeader;
+  // fromSplash=true means the explosion animation already played, so
+  // dismiss the splash immediately. Otherwise (deep-link), keep the
+  // legacy 700ms beat for a cleaner fade.
+  var fromSplash = opts && opts.fromSplash;
 
   const splash = document.getElementById('p2Splash');
 
@@ -3711,14 +3733,41 @@ function splashChoose(choice, opts) {
       // Studio scene initializes underneath, then about overlay opens.
       initP2();
       _p2SetActiveNav('about');
-      // Beat for studio init to settle, then show about.
-      setTimeout(function() { p2ShowAbout(); }, 100);
+      if (fromSplash) {
+        // Splash explosion already cleared the screen — open about
+        // directly so there's no studio-page flash before the overlay
+        // settles in.
+        var aboutEl = document.getElementById('p2About');
+        aboutEl.classList.add('visible');
+        aboutEl.classList.remove('leaving');
+        aboutEl.classList.remove('loaded');
+        void aboutEl.offsetWidth;
+        aboutEl.classList.add('loaded');
+        window._p2AboutOpen = true;
+        // Wire about's scroll-fade header behavior.
+        var aboutScroll = aboutEl.querySelector('.p2-about-scroll');
+        if (aboutScroll) {
+          aboutScroll.scrollTop = 0;
+          aboutScroll.onscroll = function() {
+            var h = document.getElementById('p2Header');
+            if (!h) return;
+            var t = Math.min(aboutScroll.scrollTop / 80, 1);
+            h.style.opacity = 1 - t;
+            if (t >= 1) h.classList.add('no-interact');
+            else h.classList.remove('no-interact');
+          };
+        }
+        try { history.replaceState(null, '', '#about'); } catch(e) {}
+      } else {
+        // Beat for studio init to settle, then show about (deep-link).
+        setTimeout(function() { p2ShowAbout(); }, 100);
+      }
     } else {
       // Normal work mode
       initP2();
       _p2SetActiveNav('work');
     }
-  }, 700);
+  }, fromSplash ? 0 : 700);
 }
 
 let p2Initialized = false;
