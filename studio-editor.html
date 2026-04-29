@@ -315,19 +315,28 @@ function buildCards() {
   wireDrag();
 }
 
+// p2ComputeScale (mirrors initP2). pos.s is a BASE size that gets
+// multiplied by this at render time, so the editor must do the same to
+// preview accurately.
+function computeScale() {
+  return Math.max(0.70, Math.min(1.60, Math.min(window.innerWidth, window.innerHeight) / 900));
+}
+
 // ── Apply position+size of one card from positions[i] ──
 function applyOne(i) {
   const card = cardEls[i];
   if (!card) return;
   const pos = positions[i];
   const w = window.innerWidth, h = window.innerHeight;
-  const left = pos.x * w - pos.s / 2;
-  const top  = pos.y * h - pos.s / 2;
+  const scale = computeScale();
+  const renderedS = Math.round(pos.s * scale);
+  const left = pos.x * w - renderedS / 2;
+  const top  = pos.y * h - renderedS / 2;
   card.style.transform = `translate3d(${left}px, ${top}px, 0)`;
-  card.style.width = pos.s + 'px';
-  card.style.height = pos.s + 'px';
+  card.style.width = renderedS + 'px';
+  card.style.height = renderedS + 'px';
   card.querySelector('.ed-readout').textContent =
-    `x:${pos.x.toFixed(3)}  y:${pos.y.toFixed(3)}  s:${pos.s}`;
+    `x:${pos.x.toFixed(3)}  y:${pos.y.toFixed(3)}  s:${pos.s} (×${scale.toFixed(2)} = ${renderedS}px)`;
 }
 function applyAll() { positions.forEach((_, i) => applyOne(i)); }
 
@@ -368,8 +377,10 @@ function wireDrag() {
       p.y = Math.round(p.y * 1000) / 1000;
     } else {
       // Resize: drag handle = expand uniformly. Use larger of dx/dy.
+      // Mouse delta is in rendered px; pos.s is the base, so divide by scale.
       const delta = Math.max(dx, dy);
-      p.s = Math.max(60, Math.round(active.startPos.s + delta));
+      const scale = computeScale();
+      p.s = Math.max(60, Math.round(active.startPos.s + delta / scale));
     }
     applyOne(active.idx);
   });
