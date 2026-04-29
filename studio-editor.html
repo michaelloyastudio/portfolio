@@ -315,11 +315,17 @@ function buildCards() {
   wireDrag();
 }
 
-// p2ComputeScale (mirrors initP2). pos.s is a BASE size that gets
-// multiplied by this at render time, so the editor must do the same to
-// preview accurately.
+// Mirrors initP2. Production multiplies pos.s by:
+//   1) viewport scale (computeScale) → grows/shrinks with monitor
+//   2) z-depth scale  (zScale)       → far cards (low z) shrink toward 0.7×
+// Final on-screen size = pos.s * computeScale * zScale.
 function computeScale() {
   return Math.max(0.70, Math.min(1.60, Math.min(window.innerWidth, window.innerHeight) / 900));
+}
+function zScale(z) {
+  // Same formula as initP2: maxZ=0, minZ=-150, scaleAmt = 0.7 + zNorm * 0.3
+  const zNorm = (z - (-150)) / 150;
+  return 0.7 + zNorm * 0.3;
 }
 
 // ── Apply position+size of one card from positions[i] ──
@@ -328,15 +334,16 @@ function applyOne(i) {
   if (!card) return;
   const pos = positions[i];
   const w = window.innerWidth, h = window.innerHeight;
-  const scale = computeScale();
-  const renderedS = Math.round(pos.s * scale);
+  const vScale = computeScale();
+  const zS = zScale(pos.z);
+  const renderedS = Math.round(pos.s * vScale * zS);
   const left = pos.x * w - renderedS / 2;
   const top  = pos.y * h - renderedS / 2;
   card.style.transform = `translate3d(${left}px, ${top}px, 0)`;
   card.style.width = renderedS + 'px';
   card.style.height = renderedS + 'px';
   card.querySelector('.ed-readout').textContent =
-    `x:${pos.x.toFixed(3)}  y:${pos.y.toFixed(3)}  s:${pos.s} (×${scale.toFixed(2)} = ${renderedS}px)`;
+    `s:${pos.s} z:${pos.z} → ${renderedS}px (vp×${vScale.toFixed(2)} z×${zS.toFixed(2)})`;
 }
 function applyAll() { positions.forEach((_, i) => applyOne(i)); }
 
@@ -377,10 +384,11 @@ function wireDrag() {
       p.y = Math.round(p.y * 1000) / 1000;
     } else {
       // Resize: drag handle = expand uniformly. Use larger of dx/dy.
-      // Mouse delta is in rendered px; pos.s is the base, so divide by scale.
+      // Mouse delta is in rendered px; pos.s is the base, so divide by
+      // viewport-scale × z-scale to convert back.
       const delta = Math.max(dx, dy);
-      const scale = computeScale();
-      p.s = Math.max(60, Math.round(active.startPos.s + delta / scale));
+      const factor = computeScale() * zScale(p.z);
+      p.s = Math.max(60, Math.round(active.startPos.s + delta / factor));
     }
     applyOne(active.idx);
   });
