@@ -756,6 +756,12 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     left: 10%;
   }
   .p2-splash-label .nav-letter { display: inline-block; }
+  /* When the chosen column targets a dark destination (playground),
+     match the splash's own bg so sub-pixel flex-layout gaps during the
+     column-collapse transition don't reveal parchment underneath. */
+  .p2-splash:has(.p2-splash-col[data-choice="apps"].chosen) {
+    background: #0a0a0a;
+  }
   /* ── Click sequence ─────────────────────────────────────────────
      0.0–0.5s   chosen column expands to fill viewport; others collapse
      0.5–1.4s   stickers fall down off-screen with slight tumble +
