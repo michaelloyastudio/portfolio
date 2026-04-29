@@ -652,48 +652,92 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     inset: 0;
     z-index: 50;
     display: flex;
-    flex-direction: column;
+    align-items: stretch;
+    pointer-events: auto;
+    background: #E8E0D4;
+  }
+  .p2-splash.hidden { pointer-events: none; }
+  .p2-splash-col {
+    flex: 1 1 0;
+    min-width: 0; /* allow flex shrink */
+    position: relative;
+    display: flex;
     align-items: center;
     justify-content: center;
-    pointer-events: auto;
+    cursor: url('assets/cursors/play-cursor.svg') 8 10, pointer;
+    border-right: 1px solid rgba(10,10,10,0.08);
+    background: #E8E0D4;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.6s ease, flex-grow 0.55s cubic-bezier(0.65, 0, 0.35, 1), background-color 0.4s ease;
   }
-  .p2-splash.hidden {
+  .p2-splash-col:last-child { border-right: none; }
+  .p2-splash-col::before {
+    /* subtle wash on hover that originates at the bottom and rises */
+    content: '';
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 0;
+    background: linear-gradient(to top, rgba(255,142,61,0.10), transparent);
+    transition: height 0.5s cubic-bezier(0.22, 1, 0.36, 1);
     pointer-events: none;
   }
-  .p2-splash-question {
+  .p2-splash-col:hover::before { height: 100%; }
+  .p2-splash-inner {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 0 2rem;
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .p2-splash-col:hover .p2-splash-inner { transform: translateY(-8px); }
+  .p2-splash-quote {
     font-family: 'din-2014-rounded-variable', sans-serif; word-spacing: -0.05em;
-    font-size: 4.75rem;
+    font-size: clamp(1.5rem, 2.4vw, 2.4rem);
+    line-height: 1.25;
+    color: #3d2b1f;
+    font-style: italic;
     font-weight: 400;
-    color: #1a1a1a;
-    opacity: 0;
-    transition: opacity 0.8s ease;
+    margin-bottom: 2rem;
+    transition: color 0.3s ease;
   }
-  .p2-splash-answers {
-    display: flex;
-    gap: 2.5rem;
-    margin-top: 1.5rem;
-  }
-  .p2-splash-btn {
+  .p2-splash-col:hover .p2-splash-quote { color: #0a0a0a; }
+  .p2-splash-label {
     font-family: 'Space Grotesk', sans-serif;
-    font-size: 1.2rem;
+    font-size: 0.78rem;
+    letter-spacing: 0.3em;
     text-transform: uppercase;
-    letter-spacing: 0.15em;
-    background: none;
-    border: none;
-    cursor: pointer;
-    opacity: 0;
-    transition: opacity 0.5s ease;
-    padding: 0.5rem 1rem;
     color: #8a8580;
-    text-decoration: none;
+    position: relative;
     display: inline-block;
+    padding-bottom: 6px;
+    transition: color 0.3s ease, letter-spacing 0.35s ease;
   }
-  .p2-splash-btn .nav-letter {
-    display: inline-block;
-    transition: color 0.3s;
+  .p2-splash-label::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 1px;
+    background: #ff8e3d;
+    transition: width 0.4s cubic-bezier(0.22,1,0.36,1), left 0.4s cubic-bezier(0.22,1,0.36,1);
   }
-  .p2-splash-btn:hover .nav-letter {
+  .p2-splash-col:hover .p2-splash-label {
     color: #ff8e3d;
+    letter-spacing: 0.45em;
+  }
+  .p2-splash-col:hover .p2-splash-label::after {
+    width: 80%;
+    left: 10%;
+  }
+  .p2-splash-label .nav-letter { display: inline-block; }
+  /* Click → chosen column expands, others collapse */
+  .p2-splash.choosing .p2-splash-col.chosen { flex-grow: 99; }
+  .p2-splash.choosing .p2-splash-col:not(.chosen) {
+    flex-grow: 0;
+    flex-basis: 0;
+    opacity: 0;
   }
 
   .p2-nav {
@@ -1921,12 +1965,25 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   </div>
   <!-- Floating scene (on top) -->
   <div class="p2-scene" id="p2Scene">
-    <!-- Splash chooser -->
+    <!-- Splash chooser: 3-column intent picker -->
     <div class="p2-splash" id="p2Splash">
-      <div class="p2-splash-question" id="p2SplashQ">Got a minute?</div>
-      <div class="p2-splash-answers">
-        <button class="p2-splash-btn btn-no" id="splashNo" onclick="splashClick('work')">No</button>
-        <button class="p2-splash-btn btn-yes" id="splashYes" onclick="splashClick('apps')">Yes</button>
+      <div class="p2-splash-col" data-choice="work">
+        <div class="p2-splash-inner">
+          <div class="p2-splash-quote">&ldquo;I want to see your work&rdquo;</div>
+          <div class="p2-splash-label">Studio</div>
+        </div>
+      </div>
+      <div class="p2-splash-col" data-choice="apps">
+        <div class="p2-splash-inner">
+          <div class="p2-splash-quote">&ldquo;I want to use your work&rdquo;</div>
+          <div class="p2-splash-label">Playground</div>
+        </div>
+      </div>
+      <div class="p2-splash-col" data-choice="about">
+        <div class="p2-splash-inner">
+          <div class="p2-splash-quote">&ldquo;I don&rsquo;t give a f*** about your work&rdquo;</div>
+          <div class="p2-splash-label">About</div>
+        </div>
       </div>
     </div>
     <!-- Main title (hidden during splash) -->
@@ -3392,40 +3449,58 @@ var _splashChoice = null;
   var hdr = document.getElementById('p2Header');
   if (hdr) hdr.classList.add('hidden');
 
-  const q = document.getElementById('p2SplashQ');
-  const no = document.getElementById('splashNo');
-  const yes = document.getElementById('splashYes');
+  var splash = document.getElementById('p2Splash');
+  var cols = splash.querySelectorAll('.p2-splash-col');
 
-  // Split button text into letters for wave animation
-  [no, yes].forEach(btn => {
-    const text = btn.textContent;
-    btn.innerHTML = text.split('').map(ch =>
-      ch === ' ' ? ' ' : '<span class="nav-letter">' + ch + '</span>'
-    ).join('');
+  // Stagger fade-in (left-to-right)
+  cols.forEach(function(col, i) {
+    setTimeout(function() { col.style.opacity = '1'; }, 250 + i * 180);
+  });
 
-    let waveTimer = null, waveIndex = 0;
-    const letters = btn.querySelectorAll('.nav-letter');
-    btn.addEventListener('mouseenter', () => {
+  // Split label letters for the same wave-on-hover the buttons used.
+  cols.forEach(function(col) {
+    var label = col.querySelector('.p2-splash-label');
+    if (!label) return;
+    var text = label.textContent;
+    label.innerHTML = text.split('').map(function(ch) {
+      return ch === ' ' ? ' ' : '<span class="nav-letter">' + ch + '</span>';
+    }).join('');
+
+    var waveTimer = null, waveIndex = 0;
+    var letters = label.querySelectorAll('.nav-letter');
+    col.addEventListener('mouseenter', function() {
       waveIndex = 0; clearInterval(waveTimer);
-      waveTimer = setInterval(() => {
+      waveTimer = setInterval(function() {
         if (waveIndex >= letters.length) { clearInterval(waveTimer); return; }
-        const letter = letters[waveIndex];
-        letter.style.animation = 'none'; letter.offsetHeight;
+        var letter = letters[waveIndex];
+        letter.style.animation = 'none'; void letter.offsetHeight;
         letter.style.animation = 'navWave 0.4s ease forwards';
         waveIndex++;
       }, 50);
     });
-    btn.addEventListener('mouseleave', () => { clearInterval(waveTimer); });
-  });
+    col.addEventListener('mouseleave', function() { clearInterval(waveTimer); });
 
-  setTimeout(() => { q.style.opacity = '1'; }, 300);
-  setTimeout(() => { no.style.opacity = '1'; }, 1000);
-  setTimeout(() => { yes.style.opacity = '1'; }, 1200);
+    col.addEventListener('click', function() {
+      if (!_splashActive) return;
+      var choice = col.getAttribute('data-choice');
+      // Click animation: chosen column expands, others collapse.
+      splash.classList.add('choosing');
+      col.classList.add('chosen');
+      // Once the column-expand transition is mostly done, dispatch the route.
+      setTimeout(function() { splashClick(choice); }, 480);
+    });
+  });
 })();
 
-// Splash button click → delay header reveal until studio scene finishes
-// loading in (title fades, items fly in, then header).
+// Splash column click → route. For 'work' (studio), delay the header
+// reveal until the float-in animation finishes. 'apps' (playground)
+// also has float-in so same treatment. 'about' jumps straight to the
+// about overlay so the header reveals immediately.
 function splashClick(choice) {
+  if (choice === 'about') {
+    splashChoose(choice);
+    return;
+  }
   splashChoose(choice, { delayHeader: true });
   // splashChoose's setTimeout(700) hides splash, then initP2 starts.
   // Items finish floating: 350 (start delay) + 9*150 (last stagger) + 1500 (floatDur) = 3200ms.
@@ -3449,17 +3524,6 @@ function splashChoose(choice, opts) {
   var delayHeader = opts && opts.delayHeader;
 
   const splash = document.getElementById('p2Splash');
-  const q = document.getElementById('p2SplashQ');
-  const no = document.getElementById('splashNo');
-  const yes = document.getElementById('splashYes');
-
-  // Fade everything out
-  q.style.transition = 'opacity 0.4s ease';
-  no.style.transition = 'opacity 0.3s ease';
-  yes.style.transition = 'opacity 0.3s ease';
-  q.style.opacity = '0';
-  no.style.opacity = '0';
-  yes.style.opacity = '0';
 
   setTimeout(() => {
     splash.classList.add('hidden');
@@ -3529,6 +3593,12 @@ function splashChoose(choice, opts) {
       _p2SetActiveNav('playground');
       _p2CreateLabCards();
       window._p2ResetStart = performance.now();
+    } else if (choice === 'about') {
+      // Studio scene initializes underneath, then about overlay opens.
+      initP2();
+      _p2SetActiveNav('about');
+      // Beat for studio init to settle, then show about.
+      setTimeout(function() { p2ShowAbout(); }, 100);
     } else {
       // Normal work mode
       initP2();
