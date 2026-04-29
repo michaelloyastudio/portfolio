@@ -1920,8 +1920,8 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     <div class="p2-splash" id="p2Splash">
       <div class="p2-splash-question" id="p2SplashQ">Got a minute?</div>
       <div class="p2-splash-answers">
-        <button class="p2-splash-btn btn-no" id="splashNo" onclick="splashChoose('work')">No</button>
-        <button class="p2-splash-btn btn-yes" id="splashYes" onclick="splashChoose('apps')">Yes</button>
+        <button class="p2-splash-btn btn-no" id="splashNo" onclick="splashClick('work')">No</button>
+        <button class="p2-splash-btn btn-yes" id="splashYes" onclick="splashClick('apps')">Yes</button>
       </div>
     </div>
     <!-- Main title (hidden during splash) -->
@@ -3409,10 +3409,30 @@ var _splashChoice = null;
   setTimeout(() => { yes.style.opacity = '1'; }, 1200);
 })();
 
-function splashChoose(choice) {
+// Splash button click → delay header reveal until studio scene finishes
+// loading in (title fades, items fly in, then header).
+function splashClick(choice) {
+  splashChoose(choice, { delayHeader: true });
+  // splashChoose's setTimeout(700) hides splash, then initP2 starts.
+  // Items finish floating: 350 (start delay) + 9*150 (last stagger) + 1500 (floatDur) = 3200ms.
+  // Plus the 700ms splash hide → ~3900ms after click. Round up to 4100ms
+  // for a beat of stillness, then reveal.
+  setTimeout(function() {
+    var hdr = document.getElementById('p2Header');
+    if (hdr) hdr.classList.remove('hidden');
+    // Wait for header's CSS opacity transition (0.4s) before unlocking clicks.
+    setTimeout(function() { window._p2LoadDone = true; }, 450);
+  }, 4100);
+}
+
+function splashChoose(choice, opts) {
   if (!_splashActive) return;
   _splashActive = false;
   _splashChoice = choice;
+  // Only delay the header reveal when explicitly requested (the splash
+  // button path). Deep-links / hashchange reloads should reveal it
+  // immediately so the page never lands without nav available.
+  var delayHeader = opts && opts.delayHeader;
 
   const splash = document.getElementById('p2Splash');
   const q = document.getElementById('p2SplashQ');
@@ -3431,8 +3451,14 @@ function splashChoose(choice) {
     splash.classList.add('hidden');
     splash.style.display = 'none';
 
-    // Header stays hidden until items have floated in — the bob/float-in
-    // loop in initP2 removes .hidden after the last item lands.
+    if (!delayHeader) {
+      // Default: reveal header immediately + unlock clicks.
+      var hdr = document.getElementById('p2Header');
+      if (hdr) hdr.classList.remove('hidden');
+      window._p2LoadDone = true;
+    }
+    // (delayHeader path: caller schedules its own reveal after the
+    //  studio float-in animation completes — see splash button onclick.)
 
     // Animate vision statement letters with the bounce wave
     var tagline = document.getElementById('p2Tagline');
@@ -3641,10 +3667,8 @@ function initP2(opts) {
 
   // Items float in 1→10 (Capstone first). Identity map; matches staggerOrderInit.
   const staggerOrder = staggerOrderInit;
-  // Title leads (fades in immediately), images stagger in shortly after,
-  // header is revealed last once all items have arrived.
+  // Title leads (fades in immediately), images stagger in shortly after.
   const imageStartDelay = 350;  // ms — wait this long after initP2 before items start flying
-  const headerRevealDelay = imageStartDelay + (staggerOrder.length - 1) * 150 + 1500; // last item done
 
   // Fall-out state (kept for project transitions)
   let p2Falling = false;
@@ -3784,16 +3808,9 @@ function initP2(opts) {
       item.el.style.transform = `translate3d(${item.restX}px, ${curY}px, 0) scale(${item.scaleAmt})`;
     });
 
-    // 3) Reveal header once items have all arrived. Then mark load done
-    //    so item clicks unlock (clicks before this point would fire a
-    //    project transition mid-load and leave the header stuck hidden).
-    const hdr = document.getElementById('p2Header');
-    if (hdr && hdr.classList.contains('hidden') && elapsed >= headerRevealDelay) {
-      hdr.classList.remove('hidden');
-      // Wait for header's CSS opacity transition (0.4s) to finish before
-      // unlocking interaction.
-      setTimeout(function() { window._p2LoadDone = true; }, 450);
-    }
+    // Header reveal + click-unlock is handled by splashChoose ONLY for
+    // the first-launch flow (button click). Reloads/deep-links unlock
+    // immediately so the header appears with the page.
 
     // If in interactive mode, keep work items parked off-screen
     if (_p2InteractiveMode) {
