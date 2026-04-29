@@ -762,22 +762,49 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     left: 10%;
   }
   .p2-splash-label .nav-letter { display: inline-block; }
-  /* Click → stickers explode outwards, text fades, then route */
-  .p2-splash.exploding .p2-splash-inner {
+  /* ── Click sequence ─────────────────────────────────────────────
+     0.0–0.5s  chosen column expands to fill the viewport; others
+               collapse to width 0 + fade out
+     0.5–1.15s chosen column's stickers fly outward (radial) and fade
+     1.15–1.5s text overlay (quote + label) cross-fades out
+     1.5s      destination route fires (handled in JS)
+     ──────────────────────────────────────────────────────────────── */
+  .p2-splash.exploding .p2-splash-col.chosen {
+    flex-grow: 99;
+    transition: flex-grow 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+  }
+  .p2-splash.exploding .p2-splash-col:not(.chosen) {
+    flex-grow: 0;
+    flex-basis: 0;
     opacity: 0;
+    transition: flex-grow 0.5s cubic-bezier(0.65, 0, 0.35, 1),
+                flex-basis 0.5s cubic-bezier(0.65, 0, 0.35, 1),
+                opacity 0.35s ease;
+  }
+  /* Non-chosen stickers just fade with their column. */
+  .p2-splash.exploding .p2-splash-col:not(.chosen) .p2-splash-sticker {
     transition: opacity 0.3s ease;
   }
-  .p2-splash.exploding .p2-splash-sticker {
-    /* Each sticker has precomputed --exit-x / --exit-y (viewport units)
-       pointing radially outward from its column's center. */
+  /* Chosen column: stickers explode AFTER the expand finishes. Each
+     sticker has precomputed --exit-x / --exit-y pointing radially
+     outward from its column's center. */
+  .p2-splash.exploding .p2-splash-col.chosen .p2-splash-sticker {
     transform: translate(-50%, -50%)
                rotate(calc(var(--rot, 0deg) * 2.5))
                translate(var(--exit-x, 0), var(--exit-y, 0))
                scale(1.4);
     opacity: 0;
-    transition: transform 0.65s cubic-bezier(0.5, 0, 0.75, 0.2),
-                opacity 0.55s ease;
-    transition-delay: 0s;
+    transition: transform 0.65s cubic-bezier(0.5, 0, 0.75, 0.2) 0.5s,
+                opacity 0.55s ease 0.5s;
+  }
+  /* Text fades after stickers are mostly gone. */
+  .p2-splash.exploding .p2-splash-col.chosen .p2-splash-inner {
+    opacity: 0;
+    transition: opacity 0.35s ease 1.15s;
+  }
+  .p2-splash.exploding .p2-splash-col:not(.chosen) .p2-splash-inner {
+    opacity: 0;
+    transition: opacity 0.25s ease;
   }
 
   .p2-nav {
@@ -3616,12 +3643,11 @@ var _splashChoice = null;
     col.addEventListener('click', function() {
       if (!_splashActive) return;
       var choice = col.getAttribute('data-choice');
-      // Trigger sticker explosion + text fade. Routing fires once the
-      // explosion has played out so the splash never visually overlaps
-      // the destination.
+      // Click sequence: chosen col expands → stickers explode → text
+      // fades → route. Total ~1.5s (matches CSS transition-delays).
       splash.classList.add('exploding');
       col.classList.add('chosen');
-      setTimeout(function() { splashClick(choice); }, 600);
+      setTimeout(function() { splashClick(choice); }, 1500);
     });
   });
 })();
@@ -3636,7 +3662,8 @@ function splashClick(choice) {
     return;
   }
   splashChoose(choice, { delayHeader: true, fromSplash: true });
-  // splash already exploded (~600ms), splash hides immediately, then initP2 starts.
+  // splash already played its full sequence (~1.5s), splash hides
+  // immediately, then initP2 starts.
   // Items float: 350 (start delay) + 9*150 (last stagger) + 1500 (floatDur) = 3200ms.
   setTimeout(function() {
     var hdr = document.getElementById('p2Header');
