@@ -698,26 +698,20 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     position: relative;
     z-index: 2;
     text-align: center;
-    padding: 1.5rem 2rem;
+    padding: 0 2rem;
     transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
   }
   .p2-splash-col:hover .p2-splash-inner { transform: translateY(-8px); }
-  /* Soft parchment backdrop sits behind the quote+label so they stay
-     readable when the sticker bomb fills the column on hover. */
-  .p2-splash-inner::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: rgba(232, 224, 212, 0.0);
-    border-radius: 4px;
-    box-shadow: 0 0 0 0 rgba(0,0,0,0);
-    transition: background 0.35s ease, box-shadow 0.35s ease;
-    z-index: -1;
+  /* Playground hover: the destination is dark-themed, so flip the
+     column's bg/text on hover. The eventual click-route lands on a
+     dark page that already matches — no bg flash. */
+  .p2-splash-col[data-choice="apps"] {
+    transition: opacity 0.6s ease, flex-grow 0.55s cubic-bezier(0.65, 0, 0.35, 1), background-color 0.4s ease;
   }
-  .p2-splash-col:hover .p2-splash-inner::before {
-    background: rgba(232, 224, 212, 0.92);
-    box-shadow: 0 6px 28px rgba(0,0,0,0.10);
-  }
+  .p2-splash-col[data-choice="apps"]:hover,
+  .p2-splash-col[data-choice="apps"].chosen { background: #0a0a0a; }
+  .p2-splash-col[data-choice="apps"]:hover .p2-splash-quote,
+  .p2-splash-col[data-choice="apps"].chosen .p2-splash-quote { color: #E8E0D4; }
   .p2-splash-quote {
     font-family: 'din-2014-rounded-variable', sans-serif; word-spacing: -0.05em;
     /* cqw = % of column width. About quote is ~36 chars italic; 4.6cqw
@@ -3547,9 +3541,25 @@ var _splashChoice = null;
     // sticker per cell with a random offset within. Guarantees full
     // coverage (no gaps) while still feeling chaotic.
     var GRID_C = 7, GRID_R = 12;       // 84 cells
-    var TARGET = GRID_C * GRID_R;
     var cellW = 100 / GRID_C;
     var cellH = 100 / GRID_R;
+    // Carve a rectangular hole around the column center so the quote +
+    // label remain readable against the bomb. The hole is sized to the
+    // longest quote width: about 6 cols × 2 rows of cell space.
+    function isTextZone(c, r) {
+      var midC = (GRID_C - 1) / 2;
+      var midR = (GRID_R - 1) / 2;
+      // Half-extents: 3 cells horizontally (~43% of column),
+      //               1.0 cells vertically (~8% of column).
+      return Math.abs(c - midC) < 3.0 && Math.abs(r - midR) < 1.0;
+    }
+    var cells = [];
+    for (var rr = 0; rr < GRID_R; rr++) {
+      for (var cc = 0; cc < GRID_C; cc++) {
+        if (!isTextZone(cc, rr)) cells.push({ c: cc, r: rr });
+      }
+    }
+    var TARGET = cells.length;
     var pool = [];
     while (pool.length < TARGET) pool = pool.concat(srcs);
     pool = pool.slice(0, TARGET);
@@ -3558,34 +3568,29 @@ var _splashChoice = null;
       var j = Math.floor(Math.random() * (k + 1));
       var t = pool[k]; pool[k] = pool[j]; pool[j] = t;
     }
-    // Order indices by distance-from-center so the reveal radiates outward.
-    var idxs = [];
-    for (var i = 0; i < TARGET; i++) idxs.push(i);
-    idxs.sort(function(a, b) {
-      var ax = (a % GRID_C) - (GRID_C - 1) / 2;
-      var ay = Math.floor(a / GRID_C) - (GRID_R - 1) / 2;
-      var bx = (b % GRID_C) - (GRID_C - 1) / 2;
-      var by = Math.floor(b / GRID_C) - (GRID_R - 1) / 2;
+    // Reveal order: cells sorted by distance from center so it radiates outward.
+    var cellOrder = cells.slice().sort(function(a, b) {
+      var ax = a.c - (GRID_C - 1) / 2, ay = a.r - (GRID_R - 1) / 2;
+      var bx = b.c - (GRID_C - 1) / 2, by = b.r - (GRID_R - 1) / 2;
       return (ax * ax + ay * ay) - (bx * bx + by * by);
     });
-    var revealOrder = {};
-    idxs.forEach(function(cellIdx, order) { revealOrder[cellIdx] = order; });
+    var revealOrder = new Map();
+    cellOrder.forEach(function(cell, order) { revealOrder.set(cell, order); });
     for (var ci = 0; ci < TARGET; ci++) {
       var src = pool[ci];
+      var cell = cells[ci];
       var sticker = document.createElement('img');
       sticker.className = 'p2-splash-sticker';
       sticker.src = src;
       sticker.alt = '';
-      var cIdx = ci % GRID_C;
-      var rIdx = Math.floor(ci / GRID_C);
       // Cell center + small jitter (±30% of cell). Less drift means cells
       // stay reliably covered; the larger sticker size handles overlap.
-      var x = (cIdx + 0.5) * cellW + (Math.random() - 0.5) * cellW * 0.6;
-      var y = (rIdx + 0.5) * cellH + (Math.random() - 0.5) * cellH * 0.6;
+      var x = (cell.c + 0.5) * cellW + (Math.random() - 0.5) * cellW * 0.6;
+      var y = (cell.r + 0.5) * cellH + (Math.random() - 0.5) * cellH * 0.6;
       var rot = (Math.random() - 0.5) * 50;              // -25° → 25°
       // Stickers larger than cells so neighbors always overlap → no white.
       var size = 120 + Math.random() * 70;               // 120–190 px
-      var order = revealOrder[ci];
+      var order = revealOrder.get(cell);
       // Fall-down vector: small horizontal drift + tumble rotation.
       var driftX = (Math.random() - 0.5) * 30;           // -15vw → 15vw
       var tumble = (Math.random() < 0.5 ? -1 : 1) * (40 + Math.random() * 80);
