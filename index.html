@@ -604,9 +604,11 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   .p2-tagline {
     display: block;
     text-align: center;
-    margin-top: 0.9rem;
+    margin-top: calc(0.9rem * var(--p2-scale, 1));
     font-family: 'Space Grotesk', sans-serif;
-    font-size: 1.3rem;
+    /* Locked up with the title — same --p2-scale formula. letter-spacing
+       and padding-left use em so they track font-size automatically. */
+    font-size: calc(1.3rem * var(--p2-scale, 1));
     font-weight: 400;
     letter-spacing: 0.85em;
     text-transform: uppercase;
