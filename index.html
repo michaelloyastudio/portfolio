@@ -3511,46 +3511,35 @@ var _splashChoice = null;
     if (!srcs.length) return;
     var container = document.createElement('div');
     container.className = 'p2-splash-stickers';
-    // About: single large portrait centered with a slight tilt.
-    // Studio/Playground: chaotic multi-image scatter, overlapping + rotated.
-    if (choice === 'about') {
+    // Cover the whole column with overlapping, rotated, duplicated stickers.
+    var TARGET = 45; // approximate sticker count per column
+    var pool = [];
+    while (pool.length < TARGET) pool = pool.concat(srcs);
+    pool = pool.slice(0, TARGET);
+    // Shuffle so duplicates don't cluster.
+    for (var k = pool.length - 1; k > 0; k--) {
+      var j = Math.floor(Math.random() * (k + 1));
+      var t = pool[k]; pool[k] = pool[j]; pool[j] = t;
+    }
+    pool.forEach(function(src, i) {
       var sticker = document.createElement('img');
       sticker.className = 'p2-splash-sticker';
-      sticker.src = srcs[0];
+      sticker.src = src;
       sticker.alt = '';
+      // Random position spanning the whole column. Allow slight bleed
+      // beyond the edges so the bomb feels endless rather than framed.
+      var x = -4 + Math.random() * 108;                  // -4 to 104%
+      var y = -4 + Math.random() * 108;
+      var rot = (Math.random() - 0.5) * 50;              // -25° → 25°
+      var size = 80 + Math.random() * 90;                // 80–170 px
       sticker.style.cssText =
-        'left:50%; top:50%; width:60%; max-width:340px; ' +
-        '--rot:-3deg; --delay:0.05s;';
+        'left:' + x.toFixed(1) + '%;' +
+        'top:' + y.toFixed(1) + '%;' +
+        'width:' + Math.round(size) + 'px;' +
+        '--rot:' + rot.toFixed(1) + 'deg;' +
+        '--delay:' + (Math.min(i, 30) * 0.018).toFixed(3) + 's;';
       container.appendChild(sticker);
-    } else {
-      // Repeat the source list a couple times for density on Studio.
-      var repeats = choice === 'work' ? 1 : 2;
-      var pool = [];
-      for (var r = 0; r < repeats; r++) pool = pool.concat(srcs);
-      pool.forEach(function(src, i) {
-        var sticker = document.createElement('img');
-        sticker.className = 'p2-splash-sticker';
-        sticker.src = src;
-        sticker.alt = '';
-        // Random position with center-avoidance: vertical y biased toward
-        // top or bottom thirds so the middle band (where the quote sits)
-        // stays mostly clear.
-        var x = 6 + Math.random() * 88;                 // 6–94% horizontally
-        var topHalf = Math.random() < 0.5;
-        var y = topHalf
-          ? 6 + Math.random() * 28                       // 6–34%
-          : 64 + Math.random() * 30;                     // 64–94%
-        var rot = (Math.random() - 0.5) * 50;            // -25° → 25°
-        var size = 90 + Math.random() * 80;              // 90–170 px
-        sticker.style.cssText =
-          'left:' + x.toFixed(1) + '%;' +
-          'top:' + y.toFixed(1) + '%;' +
-          'width:' + Math.round(size) + 'px;' +
-          '--rot:' + rot.toFixed(1) + 'deg;' +
-          '--delay:' + (i * 0.035).toFixed(2) + 's;';
-        container.appendChild(sticker);
-      });
-    }
+    });
     col.insertBefore(container, col.firstChild);
   }
   cols.forEach(buildStickers);
