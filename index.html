@@ -3430,9 +3430,8 @@ function splashChoose(choice) {
     splash.classList.add('hidden');
     splash.style.display = 'none';
 
-    // Show header
-    var hdr = document.getElementById('p2Header');
-    if (hdr) hdr.classList.remove('hidden');
+    // Header stays hidden until items have floated in — the bob/float-in
+    // loop in initP2 removes .hidden after the last item lands.
 
     // Animate vision statement letters with the bounce wave
     var tagline = document.getElementById('p2Tagline');
@@ -3525,6 +3524,9 @@ function initP2(opts) {
     { x: 0.235, y: 0.239, z: -60,  s: 135 },  // 9  Photography
   ];
 
+  // Items float in 1→10 (Capstone first, Photography last). Identity map.
+  const staggerOrderInit = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+
   projects.forEach((p, i) => {
     const pos = positions[i] || { x: Math.random() * 0.6 + 0.2, y: Math.random() * 0.6 + 0.2, z: -Math.random() * 100, s: 160 };
     const s = Math.round(pos.s * scale);
@@ -3580,6 +3582,13 @@ function initP2(opts) {
     el._baseBlur = blurAmt;
     el._scale = scaleAmt;
 
+    // Park each item off-screen below before the first tick so it never
+    // flashes at the scene-origin (0,0). The bob/float-in loop reads
+    // staggerOrder[i] for the same starting Y, so use that here too.
+    const initialSi = staggerOrderInit[i] !== undefined ? staggerOrderInit[i] : i;
+    const initialY = window.innerHeight + 200 + initialSi * 50;
+    el.style.transform = `translate3d(${restX}px, ${initialY}px, 0) scale(${scaleAmt})`;
+
     p2Items.push({
       el, restX, restY, scaleAmt,
       _pos: pos,   // original (unscaled) position+size, for resize recalc
@@ -3626,9 +3635,12 @@ function initP2(opts) {
   const stagger = 150;
   const floatDur = 2000;
 
-  // Custom stagger order (swapped 0↔8 so S&V comes in late, Misc comes in early)
-  // Swap 0 ↔ last so the headline project (Capstone) floats in last
-  const staggerOrder = [9, 1, 2, 3, 4, 5, 6, 7, 8, 0];
+  // Items float in 1→10 (Capstone first). Identity map; matches staggerOrderInit.
+  const staggerOrder = staggerOrderInit;
+  // Title leads (fades in immediately), images stagger in shortly after,
+  // header is revealed last once all items have arrived.
+  const imageStartDelay = 350;  // ms — wait this long after initP2 before items start flying
+  const headerRevealDelay = imageStartDelay + (staggerOrder.length - 1) * 150 + 1500; // last item done
 
   // Fall-out state (kept for project transitions)
   let p2Falling = false;
@@ -3742,20 +3754,20 @@ function initP2(opts) {
     }
 
     // ── NORMAL FLOAT-IN + BOB ──
-    // Float in title + bob
-    const titleT = Math.min(Math.max((elapsed - 600) / 2000, 0), 1);
+    // 1) Title fades in first (immediate).
+    const titleT = Math.min(Math.max(elapsed / 1200, 0), 1);
     const titleEase = easeOutQuint(titleT);
     titleEl.style.opacity = titleEase;
     const titleOffset = -50 + (1 - titleEase) * 20;
     titleEl.style.transform = `translate3d(-50%, ${titleOffset}%, 0)`;
 
-    // Animate the active items (lab cards or work items)
+    // 2) Images fly in after a short delay (so title leads).
     const activeItems = _p2InteractiveMode ? _p2LabItems : p2Items;
     const activeStaggerOrder = staggerOrder;
 
     activeItems.forEach((item, i) => {
       const si = activeStaggerOrder[i] !== undefined ? activeStaggerOrder[i] : i;
-      const delay = si * stagger;
+      const delay = imageStartDelay + si * stagger;
       const rawT = Math.max((elapsed - delay) / floatDur, 0);
       const t = Math.min(rawT, 1);
       const ease = easeOutQuint(t);
@@ -3767,6 +3779,12 @@ function initP2(opts) {
       const curY = Math.round((startY + (item.restY - startY) * ease + bobY) * 100) / 100;
       item.el.style.transform = `translate3d(${item.restX}px, ${curY}px, 0) scale(${item.scaleAmt})`;
     });
+
+    // 3) Reveal header once items have all arrived.
+    const hdr = document.getElementById('p2Header');
+    if (hdr && hdr.classList.contains('hidden') && elapsed >= headerRevealDelay) {
+      hdr.classList.remove('hidden');
+    }
 
     // If in interactive mode, keep work items parked off-screen
     if (_p2InteractiveMode) {
