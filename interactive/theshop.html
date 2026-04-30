@@ -43,7 +43,9 @@ a, button, .product-card, .size-btn, .filter-btn, .cart-toggle, .close-btn, .che
 
 h1, h2, h3 { font-family: 'din-2014-rounded-variable', sans-serif; word-spacing: -0.05em; font-weight: 400; }
 
-/* Product grid scrolls inside main, page itself never scrolls */
+/* Product grid scrolls inside main, page itself never scrolls.
+   main is the scroll container — full viewport width so wheel events
+   anywhere on the page (not just hovering items) scroll the grid. */
 main { flex: 1; overflow-y: auto; scrollbar-width: none; padding-top: 5rem; }
 main::-webkit-scrollbar { display: none; }
 
@@ -159,13 +161,32 @@ html { scrollbar-width: none; }
 /* ── MAIN ── */
 main {
   padding: 70px 2.5rem 4rem;
-  max-width: 1200px;
-  margin: 0 auto;
+  /* Full-viewport-width scroll container — no max-width here so wheel
+     events on the side margins still scroll. The grid itself caps at
+     1200px via .product-grid-wrap. */
   flex: 1;
   opacity: 0;
   transition: opacity 0.6s ease;
 }
 main.loaded { opacity: 1; transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+.product-grid-wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+/* Sticky bar holds the title + filters at the top of the scroll
+   container so they stay visible while the grid scrolls underneath. */
+.hero-bar {
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 50;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  /* Pull up over main's padding-top so the sticky edge starts right
+     at the bottom of the fixed page header. */
+  margin-top: -70px;
+  padding-top: 70px;
+}
 
 /* ── HERO ── */
 .hero {
@@ -869,25 +890,29 @@ main.loaded { opacity: 1; transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1)
 <!-- marquee removed -->
 
 <main id="mainContent">
-  <!-- HERO -->
-  <div class="hero">
-    <div class="title-row" id="titleRow">
-      <div class="page-title">The Shop</div>
-      <div class="page-subtitle">Things I'm selling</div>
+  <!-- HERO + FILTERS — sticky at top of scroll, content disappears below -->
+  <div class="hero-bar">
+    <div class="product-grid-wrap">
+      <div class="hero">
+        <div class="title-row" id="titleRow">
+          <div class="page-title">The Shop</div>
+          <div class="page-subtitle">Things I'm selling</div>
+        </div>
+      </div>
+      <div class="filters">
+        <button class="filter-btn active" onclick="filterProducts('all', this)">All</button>
+        <button class="filter-btn" onclick="filterProducts('tech', this)">Tech</button>
+        <button class="filter-btn" onclick="filterProducts('collectibles', this)">Collectibles</button>
+        <button class="filter-btn" onclick="filterProducts('shoes', this)">Shoes</button>
+        <button class="filter-btn" onclick="filterProducts('clothes', this)">Clothes</button>
+      </div>
     </div>
   </div>
 
-  <!-- FILTERS -->
-  <div class="filters">
-    <button class="filter-btn active" onclick="filterProducts('all', this)">All</button>
-    <button class="filter-btn" onclick="filterProducts('tech', this)">Tech</button>
-    <button class="filter-btn" onclick="filterProducts('collectibles', this)">Collectibles</button>
-    <button class="filter-btn" onclick="filterProducts('shoes', this)">Shoes</button>
-    <button class="filter-btn" onclick="filterProducts('clothes', this)">Clothes</button>
-  </div>
-
   <!-- PRODUCT GRID -->
-  <div class="product-grid" id="productGrid"></div>
+  <div class="product-grid-wrap">
+    <div class="product-grid" id="productGrid"></div>
+  </div>
 </main>
 
 <div class="footer">
