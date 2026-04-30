@@ -719,6 +719,14 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   .p2-splash-col[data-choice="apps"].chosen { background: #0a0a0a; }
   .p2-splash-col[data-choice="apps"]:hover .p2-splash-quote,
   .p2-splash-col[data-choice="apps"].chosen .p2-splash-quote { color: #E8E0D4; }
+  /* Dark playhead cursor when hovering the playground column (matches
+     the dark theme of the destination playground page). */
+  .p2-splash-col[data-choice="apps"]:hover,
+  .p2-splash-col[data-choice="apps"].chosen,
+  .p2-splash-col[data-choice="apps"]:hover *,
+  .p2-splash-col[data-choice="apps"].chosen * {
+    cursor: url('assets/cursors/play-cursor-dark.svg') 8 10, pointer !important;
+  }
   .p2-splash-quote {
     font-family: 'din-2014-rounded-variable', sans-serif; word-spacing: -0.05em;
     /* cqw = % of column width. About quote is ~36 chars italic; 4.6cqw
