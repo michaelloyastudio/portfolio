@@ -760,9 +760,12 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     color: #ff8e3d;
     letter-spacing: 0.45em;
   }
+  /* On hover, underline fills end-to-end of the visual text (box width
+     minus the trailing letter-spacing on the right). With the hover
+     letter-spacing of 0.45em, the trailing offset to subtract is 0.45em. */
   .p2-splash-col:hover .p2-splash-label::after {
-    width: 80%;
-    left: 10%;
+    width: calc(100% - 0.45em);
+    left: 0;
   }
   .p2-splash-label .nav-letter { display: inline-block; }
   /* When the chosen column targets a dark destination (playground),
