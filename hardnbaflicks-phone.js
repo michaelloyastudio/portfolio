@@ -25,10 +25,10 @@ function initHardnbaflicksPhone() {
 '.hnf-phone-embed .lp-iphone{cursor:url("assets/cursors/cursor-dark.svg") 16 8,default}',
 '.hnf-phone-embed .lp-iphone *{cursor:inherit}',
 '.hnf-phone-embed button,.hnf-phone-embed .lp-btn,.hnf-phone-embed .lp-content-tab,.hnf-phone-embed .lp-tab{cursor:url("assets/cursors/cursor-dark.svg") 16 8,default!important}',
-'.hnf-phone-embed .lp-grid-item,.hnf-phone-embed .lp-profile-pic-wrap,.hnf-phone-embed .lp-carousel-arrow,.hnf-phone-embed .lp-post-detail-header .lp-back,.hnf-phone-embed .lp-post-detail-header .lp-dots,.hnf-phone-embed .lp-s-close,.hnf-phone-embed .lp-stories-tap-left,.hnf-phone-embed .lp-stories-tap-right,.hnf-phone-embed .lp-stories-mute,.hnf-phone-embed .lp-profile-bio .lp-link a,.hnf-phone-embed .lp-btn-follow{cursor:url("assets/cursors/crosshair-dark.svg") 8 10,pointer!important}',
-'.hnf-phone-embed .lp-profile-pic-wrap,.hnf-phone-embed .lp-grid-item,.hnf-phone-embed .lp-post-detail-header .lp-back,.hnf-phone-embed .lp-s-close,.hnf-phone-embed .lp-stories-mute,.hnf-phone-embed .lp-btn-follow{transition:transform .15s ease}',
-'.hnf-phone-embed .lp-profile-pic-wrap:hover,.hnf-phone-embed .lp-grid-item:hover,.hnf-phone-embed .lp-post-detail-header .lp-back:hover,.hnf-phone-embed .lp-s-close:hover,.hnf-phone-embed .lp-stories-mute:hover,.hnf-phone-embed .lp-btn-follow:hover{transform:scale(1.06)}',
-'.hnf-phone-embed .lp-profile-pic-wrap:active,.hnf-phone-embed .lp-grid-item:active,.hnf-phone-embed .lp-post-detail-header .lp-back:active,.hnf-phone-embed .lp-s-close:active,.hnf-phone-embed .lp-stories-mute:active,.hnf-phone-embed .lp-btn-follow:active{transform:scale(0.96)}',
+'.hnf-phone-embed .lp-grid-item,.hnf-phone-embed .lp-carousel-arrow,.hnf-phone-embed .lp-post-detail-header .lp-back,.hnf-phone-embed .lp-post-detail-header .lp-dots,.hnf-phone-embed .lp-s-close,.hnf-phone-embed .lp-stories-tap-left,.hnf-phone-embed .lp-stories-tap-right,.hnf-phone-embed .lp-stories-mute,.hnf-phone-embed .lp-profile-bio .lp-link a,.hnf-phone-embed .lp-btn-follow{cursor:url("assets/cursors/crosshair-dark.svg") 8 10,pointer!important}',
+'.hnf-phone-embed .lp-grid-item,.hnf-phone-embed .lp-post-detail-header .lp-back,.hnf-phone-embed .lp-s-close,.hnf-phone-embed .lp-stories-mute,.hnf-phone-embed .lp-btn-follow{transition:transform .15s ease}',
+'.hnf-phone-embed .lp-grid-item:hover,.hnf-phone-embed .lp-post-detail-header .lp-back:hover,.hnf-phone-embed .lp-s-close:hover,.hnf-phone-embed .lp-stories-mute:hover,.hnf-phone-embed .lp-btn-follow:hover{transform:scale(1.06)}',
+'.hnf-phone-embed .lp-grid-item:active,.hnf-phone-embed .lp-post-detail-header .lp-back:active,.hnf-phone-embed .lp-s-close:active,.hnf-phone-embed .lp-stories-mute:active,.hnf-phone-embed .lp-btn-follow:active{transform:scale(0.96)}',
 '.hnf-phone-embed .lp-iphone{position:relative;width:375px;height:770px;background:#2c2c2e;border-radius:50px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),inset 0 2px 4px rgba(255,255,255,.05),0 0 0 1px rgba(0,0,0,.6),0 20px 60px rgba(0,0,0,.5);flex-shrink:0}',
 '.hnf-phone-embed .lp-iphone::before{content:"";position:absolute;inset:0;border-radius:50px;background:linear-gradient(135deg,rgba(255,255,255,.06) 0%,transparent 50%,rgba(0,0,0,.1) 100%);pointer-events:none;z-index:1}',
 '.hnf-phone-embed .lp-btn-silent{position:absolute;left:-3px;top:130px;width:3px;height:28px;background:linear-gradient(90deg,#1a1a1c,#3a3a3c);border-radius:2px 0 0 2px;box-shadow:-1px 0 2px rgba(0,0,0,.4)}',
@@ -38,7 +38,7 @@ function initHardnbaflicksPhone() {
 '.hnf-phone-embed .lp-screen{position:absolute;top:14px;left:14px;right:14px;bottom:14px;border-radius:40px;background:#000;overflow:hidden;z-index:2}',
 '.hnf-phone-embed .lp-dynamic-island{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:120px;height:34px;background:#000;border-radius:20px;z-index:60;border:1px solid rgba(255,255,255,.04)}',
 '.hnf-phone-embed .lp-home-indicator{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;background:rgba(255,255,255,.25);border-radius:3px;z-index:50}',
-'.hnf-phone-embed .lp-status-bar{display:flex;justify-content:space-between;align-items:center;padding:14px 28px 0;height:50px;position:absolute;top:0;left:0;right:0;z-index:60;pointer-events:none}',
+'.hnf-phone-embed .lp-status-bar{display:flex;justify-content:space-between;align-items:center;padding:14px 28px 0;height:50px;position:absolute;top:0;left:0;right:0;z-index:60;pointer-events:none;background:#000}',
 '.hnf-phone-embed .lp-status-bar .lp-time{font-size:15px;font-weight:600;letter-spacing:-.2px}',
 '.hnf-phone-embed .lp-status-bar .lp-icons{display:flex;align-items:center;gap:5px}',
 '.hnf-phone-embed .lp-status-bar .lp-icons svg{width:16px;height:16px;fill:#fff}',
@@ -50,7 +50,7 @@ function initHardnbaflicksPhone() {
 '.hnf-phone-embed .lp-tab-bar .lp-tab svg{width:24px;height:24px;fill:#fff}',
 '.hnf-phone-embed .lp-view{display:none;flex-direction:column;min-height:100%}',
 '.hnf-phone-embed .lp-view.active{display:flex}',
-'.hnf-phone-embed .lp-profile-header{padding:10px 16px 0}',
+'.hnf-phone-embed .lp-profile-header{padding:10px 16px 0;position:sticky;top:0;background:#000;z-index:10}',
 '.hnf-phone-embed .lp-profile-username-row{display:flex;align-items:center;gap:6px;padding:4px 0 12px}',
 '.hnf-phone-embed .lp-profile-username-row .lp-username{font-size:22px;font-weight:700;letter-spacing:-.3px;color:#fff!important;text-decoration:none!important}',
 '.hnf-phone-embed .lp-profile-username-row .lp-verified{width:18px;height:18px;flex-shrink:0}',
@@ -72,13 +72,13 @@ function initHardnbaflicksPhone() {
 '.hnf-phone-embed .lp-profile-actions .lp-btn{flex:1;height:34px;border-radius:8px;border:none;font-size:13px;font-weight:600;font-family:inherit;display:flex;align-items:center;justify-content:center;color:#fff!important;text-decoration:none!important}',
 '.hnf-phone-embed .lp-profile-actions .lp-btn-follow{background:#3897f0!important}',
 '.hnf-phone-embed .lp-profile-actions .lp-btn-message{background:#262626;color:#fff!important}',
-'.hnf-phone-embed .lp-content-tabs{display:flex;border-bottom:1px solid #262626}',
+'.hnf-phone-embed .lp-content-tabs{display:flex;border-bottom:1px solid #262626;position:sticky;top:54px;background:#000;z-index:9}',
 '.hnf-phone-embed .lp-content-tab{flex:1;height:44px;display:flex;align-items:center;justify-content:center;opacity:.4;position:relative}',
 '.hnf-phone-embed .lp-content-tab.active{opacity:1}',
 '.hnf-phone-embed .lp-content-tab.active::after{content:"";position:absolute;bottom:0;left:0;right:0;height:1px;background:#fff}',
 '.hnf-phone-embed .lp-content-tab svg{width:24px;height:24px;fill:#fff}',
 '.hnf-phone-embed .lp-post-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;padding:2px}',
-'.hnf-phone-embed .lp-grid-item{aspect-ratio:1;overflow:hidden;background:#111}',
+'.hnf-phone-embed .lp-grid-item{aspect-ratio:3/4;overflow:hidden;background:#111}',
 '.hnf-phone-embed .lp-grid-item img{width:100%;height:100%;object-fit:cover;border-radius:0!important;box-shadow:none!important;transform:none!important;max-width:none!important}',
 '.hnf-phone-embed .lp-post-detail{position:absolute;top:0;left:0;right:0;bottom:0;background:#000;z-index:20;transform:scale(.9);opacity:0;transition:transform .3s cubic-bezier(.4,0,.2,1),opacity .3s ease;overflow-y:auto;pointer-events:none}',
 '.hnf-phone-embed .lp-post-detail.open{transform:scale(1);opacity:1;pointer-events:auto}',
@@ -91,7 +91,7 @@ function initHardnbaflicksPhone() {
 '.hnf-phone-embed .lp-post-detail-header .lp-dots{font-size:18px;letter-spacing:2px}',
 '.hnf-phone-embed .lp-carousel-wrap{position:relative;width:100%;overflow:hidden;background:#111}',
 '.hnf-phone-embed .lp-carousel-track{display:flex;transition:transform .35s cubic-bezier(.4,0,.2,1);will-change:transform}',
-'.hnf-phone-embed .lp-carousel-slide{flex:0 0 100%;aspect-ratio:4/5}',
+'.hnf-phone-embed .lp-carousel-slide{flex:0 0 100%;aspect-ratio:3/4}',
 '.hnf-phone-embed .lp-carousel-slide img{width:100%;height:100%;object-fit:cover;border-radius:0!important;box-shadow:none!important;transform:none!important;max-width:none!important}',
 '.hnf-phone-embed .lp-carousel-arrow{position:absolute;top:50%;transform:translateY(-50%);width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.6);border:none;color:#fff;font-size:14px;display:flex;align-items:center;justify-content:center;z-index:3;backdrop-filter:blur(4px)}',
 '.hnf-phone-embed .lp-carousel-arrow.left{left:8px}',
@@ -168,19 +168,19 @@ function initHardnbaflicksPhone() {
 '            </div>',
 '          </div>',
 '          <div class="lp-profile-top">',
-'            <div class="lp-profile-pic-wrap" id="hnf-profilePicBtn">',
-'              <div class="lp-story-ring"><div class="lp-story-ring-inner"><div class="lp-profile-pic" style="background-image:url(' + IMG + 'cover.jpg)"></div></div></div>',
+'            <div class="lp-profile-pic-wrap">',
+'              <div class="lp-profile-pic" style="background-image:url(' + IMG + 'cover.jpg)"></div>',
 '            </div>',
 '            <div class="lp-profile-stats">',
 '              <div class="lp-profile-stat"><div class="lp-num">12</div><div class="lp-label">posts</div></div>',
-'              <div class="lp-profile-stat"><div class="lp-num">328</div><div class="lp-label">followers</div></div>',
-'              <div class="lp-profile-stat"><div class="lp-num">47</div><div class="lp-label">following</div></div>',
+'              <div class="lp-profile-stat"><div class="lp-num">36</div><div class="lp-label">followers</div></div>',
+'              <div class="lp-profile-stat"><div class="lp-num">45</div><div class="lp-label">following</div></div>',
 '            </div>',
 '          </div>',
 '          <div class="lp-profile-bio">',
 '            <div class="lp-name">hardnbaflicks</div>',
 '            <div class="lp-text" style="color:#aaa;font-size:12px;margin-bottom:3px;">Digital creator</div>',
-'            <div class="lp-text">\ud83c\udfc0 ai nba flicks<br>\ud83d\udd25 hard takes, harder visuals<br>\ud83d\udcf8 made by Mike</div>',
+'            <div class="lp-text">hardest nba flicks daily</div>',
 '            <div class="lp-link"><a href="https://instagram.com/hardnbaflicks" target="_blank" rel="noopener" style="color:#E0F1FF;text-decoration:none;">instagram.com/hardnbaflicks</a></div>',
 '          </div>',
 '          <div class="lp-profile-actions">',
@@ -307,7 +307,6 @@ function initHardnbaflicksPhone() {
           '<div class="lp-spacer"></div>' +
           '<div class="lp-bookmark"><svg viewBox="0 0 24 24"><path d="M20 21l-8-4-8 4V5a2 2 0 012-2h12a2 2 0 012 2z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>' +
         '</div>' +
-        '<div class="lp-post-likes">' + p.likes.toLocaleString() + ' likes</div>' +
         '<div class="lp-post-caption"><span class="lp-cap-user">hardnbaflicks</span> ' + p.caption + '</div>';
       det.classList.add('open');
       initCarousel(content.querySelector('.lp-carousel-wrap'));
@@ -357,8 +356,6 @@ function initHardnbaflicksPhone() {
     var sContent = $('storiesContent');
     var sProgress = $('storiesProgress');
     var sMute = $('storiesMute');
-
-    $('profilePicBtn').addEventListener('click', function() { if (stories.length) openStories(0); });
 
     function openStories(idx) {
       storyIdx = idx;
