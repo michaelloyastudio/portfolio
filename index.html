@@ -683,13 +683,11 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* Stack the two rows in the vertical center with a fixed gap reserved
-       for the quote+label overlay. The inner text element is a sibling
-       absolutely centered by the column's flex, so the gap reads as the
-       breathing room around it. */
-    justify-content: center;
-    gap: 9rem;
-    padding: 0 0.75rem;
+    /* All covers stack right below the centered text overlay (which is
+       absolutely placed at top: 22%). Top padding aligns the first sticker
+       just below the text block; flex-wrap on the row handles 6 / 4 / 1. */
+    justify-content: flex-start;
+    padding: 70% 0.75rem 0;
   }
   .p2-splash-row {
     display: flex;
@@ -717,6 +715,11 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     box-shadow: 0 6px 20px rgba(0,0,0,0.30),
                 0 0 0 1px rgba(255,142,61,0.15);
   }
+  /* Force playground apps into a 2×2 grid regardless of viewport width
+     (default flex-wrap might run all 4 onto a single row on wide screens). */
+  .p2-splash-col[data-choice="apps"] .p2-splash-row {
+    max-width: 296px;
+  }
   /* About sticker is a square top-anchored crop of the portrait so Mike's
      face is in frame (default center-crop would cut his head off). The
      fly-to-rest transition (see splashChoose) animates transform + clip-path
@@ -729,13 +732,17 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     transform: translateY(0);
   }
   .p2-splash-inner {
-    position: relative;
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
     z-index: 2;
     text-align: center;
     padding: 0 2rem;
     transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
   }
-  .p2-splash-col:hover .p2-splash-inner { transform: translateY(-8px); }
+  .p2-splash-col:hover .p2-splash-inner { transform: translate(-50%, -8px); }
   /* Playground hover: the destination is dark-themed, so flip the
      column's bg/text on hover. The eventual click-route lands on a
      dark page that already matches — no bg flash. */
@@ -2872,9 +2879,15 @@ function _p2CreateLabCards() {
     // Splash shared-element transition: if origins were captured on splash
     // click for the apps column, float the card from that sticker's rect
     // instead of off-screen-bottom.
-    var labSplashOrigin = (window._p2SplashOrigins && window._p2SplashOrigins.choice === 'apps')
-      ? window._p2SplashOrigins.rects[i]
-      : null;
+    var labSplashOrigin = null;
+    if (window._p2SplashOrigins && window._p2SplashOrigins.choice === 'apps') {
+      for (var _r = 0; _r < window._p2SplashOrigins.rects.length; _r++) {
+        if (window._p2SplashOrigins.rects[_r].projectIndex === i) {
+          labSplashOrigin = window._p2SplashOrigins.rects[_r];
+          break;
+        }
+      }
+    }
     if (labSplashOrigin) {
       var startX = labSplashOrigin.cx - s / 2;
       var startY = labSplashOrigin.cy - s / 2;
@@ -3568,49 +3581,30 @@ var _splashChoice = null;
     if (!srcs.length) return;
     var container = document.createElement('div');
     container.className = 'p2-splash-stickers';
-    // Two rows split by the centered text overlay. Half above, half below.
-    var topRow = document.createElement('div');
-    topRow.className = 'p2-splash-row p2-splash-row-top';
+    // All covers stack BELOW the centered text overlay. flex-wrap on the
+    // row lets 6 / 4 / 1 stickers reflow into multiple rows naturally.
     var bottomRow = document.createElement('div');
     bottomRow.className = 'p2-splash-row p2-splash-row-bottom';
-    // For columns with one sticker (about), put it in the bottom row so it
-    // sits BELOW the centered text overlay. Otherwise split: half above,
-    // half below.
-    if (srcs.length === 1) {
+    // Visual-only reorder for the studio column so each splash sticker
+    // sits closer to where its card lands on the studio page (shortens
+    // the fly-to-rest motion). The data-project-index attribute keeps the
+    // canonical mapping back to projects[] for the shared-element math.
+    // 2-wide × 3-tall grid (left col, right col):
+    //   capstone | loya       — top-left, top-right        (0, 1)
+    //   misc     | bodyarmor  — mid-left, mid-right        (5, 2)
+    //   lyrc     | UU         — bot-left, bot-right        (4, 3)
+    var workOrder = [0, 1, 5, 2, 4, 3];
+    var order = (choice === 'work') ? workOrder : srcs.map(function(_, i) { return i; });
+    order.forEach(function(srcIdx, visualIdx) {
       var img = document.createElement('img');
       img.className = 'p2-splash-sticker';
-      img.src = srcs[0];
+      img.src = srcs[srcIdx];
       img.alt = '';
-      img.style.setProperty('--delay', '0s');
+      img.dataset.projectIndex = srcIdx;
+      img.style.setProperty('--delay', (visualIdx * 0.04).toFixed(3) + 's');
       bottomRow.appendChild(img);
-    } else {
-      var half = Math.ceil(srcs.length / 2);
-      srcs.forEach(function(src, i) {
-        var img = document.createElement('img');
-        img.className = 'p2-splash-sticker';
-        img.src = src;
-        img.alt = '';
-        img.style.setProperty('--delay', (i * 0.04).toFixed(3) + 's');
-        (i < half ? topRow : bottomRow).appendChild(img);
-      });
-    }
-    // Symmetric two-row layout: the row without a sticker becomes an
-    // invisible spacer matching the other row's visual weight, so the
-    // single sticker is pushed away from the centered text overlay
-    // instead of overlapping it.
-    function makeSpacer() {
-      var spacer = document.createElement('div');
-      spacer.className = 'p2-splash-row';
-      spacer.setAttribute('aria-hidden', 'true');
-      // Match the visible sticker's box (138×138 square — about is also
-      // square now since the photo is cropped on the splash).
-      spacer.style.cssText = 'visibility:hidden;width:138px;height:138px;';
-      return spacer;
-    }
-    if (topRow.children.length) container.appendChild(topRow);
-    else if (bottomRow.children.length) container.appendChild(makeSpacer());
-    if (bottomRow.children.length) container.appendChild(bottomRow);
-    else if (topRow.children.length) container.appendChild(makeSpacer());
+    });
+    container.appendChild(bottomRow);
     col.insertBefore(container, col.firstChild);
   }
   cols.forEach(buildStickers);
@@ -3656,7 +3650,15 @@ var _splashChoice = null;
           choice: choice,
           rects: Array.from(stickers).map(function(s) {
             var r = s.getBoundingClientRect();
-            return { cx: r.x + r.width / 2, cy: r.y + r.height / 2, size: r.width };
+            return {
+              cx: r.x + r.width / 2,
+              cy: r.y + r.height / 2,
+              size: r.width,
+              // data-project-index decouples DOM order (visual layout) from
+              // the canonical projects[] / _p2LabApps[] index, so initP2 can
+              // find the right rect even when the splash reorders covers.
+              projectIndex: parseInt(s.dataset.projectIndex || '0', 10),
+            };
           }),
         };
         // Lock cards out of hover/click while the float animation is running.
@@ -4018,9 +4020,17 @@ function initP2(opts) {
     // splash click, override the off-screen start with the matching
     // sticker's viewport rect so the card floats from there to rest. ──
     const initialSi = staggerOrderInit[i] !== undefined ? staggerOrderInit[i] : i;
-    var splashOrigin = (window._p2SplashOrigins && window._p2SplashOrigins.choice === 'work')
-      ? window._p2SplashOrigins.rects[i]
-      : null;
+    var splashOrigin = null;
+    if (window._p2SplashOrigins && window._p2SplashOrigins.choice === 'work') {
+      // Match by canonical project index so visual reorders in the splash
+      // don't break the fly-to-rest mapping.
+      for (var _r = 0; _r < window._p2SplashOrigins.rects.length; _r++) {
+        if (window._p2SplashOrigins.rects[_r].projectIndex === i) {
+          splashOrigin = window._p2SplashOrigins.rects[_r];
+          break;
+        }
+      }
+    }
     var item = {
       el, restX, restY, scaleAmt,
       _pos: pos,   // original (unscaled) position+size, for resize recalc
