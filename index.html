@@ -24,7 +24,8 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
   @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
   @import url('https://use.typekit.net/vvj5gyy.css');
     /* Prevent blue tap highlights on mobile (via Sonny Cirasuolo / prof K) */
-    * { -webkit-tap-highlight-color: transparent; }
+    * { -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; }
+    ::selection { background: transparent; }
 
 
 
@@ -1447,6 +1448,7 @@ if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && window.innerWi
     position: absolute;
     inset: 0;
     overflow-y: auto;
+    overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
   }
   /* Bottom fade-out mask — signals more content below.
@@ -3590,10 +3592,10 @@ var _splashChoice = null;
     // the fly-to-rest motion). The data-project-index attribute keeps the
     // canonical mapping back to projects[] for the shared-element math.
     // 2-wide × 3-tall grid (left col, right col):
-    //   capstone | loya       — top-left, top-right        (0, 1)
-    //   misc     | bodyarmor  — mid-left, mid-right        (5, 2)
-    //   lyrc     | UU         — bot-left, bot-right        (4, 3)
-    var workOrder = [0, 1, 5, 2, 4, 3];
+    //   capstone  | loya       — top-left, top-right        (0, 1)
+    //   bodyarmor | misc       — mid-left, mid-right        (2, 5)
+    //   lyrc      | UU         — bot-left, bot-right        (4, 3)
+    var workOrder = [0, 1, 2, 5, 4, 3];
     var order = (choice === 'work') ? workOrder : srcs.map(function(_, i) { return i; });
     order.forEach(function(srcIdx, visualIdx) {
       var img = document.createElement('img');
@@ -4701,10 +4703,13 @@ document.querySelectorAll('.p2-about-back').forEach(link => {
   var hasFirst = false;
   function inPlayground() {
     // Pure playground/lab only. Returns false when About is open (even
-    // from playground) so music notes take over there.
+    // from playground) so music notes take over there. Also false during the
+    // About fall animation (_p2AboutFalling) — About isn't `.visible` yet then,
+    // so without this the cursor tick would re-force the dark cursor and leave
+    // it stuck on the light About page.
     var w = document.getElementById('p2Wrap');
     var about = document.getElementById('p2About');
-    var aboutOpen = !!(about && about.classList.contains('visible'));
+    var aboutOpen = !!(about && about.classList.contains('visible')) || _p2AboutFalling || _p2AboutOpen;
     return !!(w && w.classList.contains('dark-mode')) && !aboutOpen;
   }
 

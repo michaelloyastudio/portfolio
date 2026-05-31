@@ -10,7 +10,8 @@
 <link rel="stylesheet" href="https://use.typekit.net/vvj5gyy.css">
 <style>
     /* Prevent blue tap highlights on mobile (via Sonny Cirasuolo / prof K) */
-    * { -webkit-tap-highlight-color: transparent; }
+    * { -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; }
+    ::selection { background: transparent; }
 
 :root {
   --bg: #0a0a0a;

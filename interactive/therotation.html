@@ -10,7 +10,8 @@
 <link rel="stylesheet" href="https://use.typekit.net/vvj5gyy.css">
 <style>
     /* Prevent blue tap highlights on mobile (via Sonny Cirasuolo / prof K) */
-    * { -webkit-tap-highlight-color: transparent; }
+    * { -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; }
+    ::selection { background: transparent; }
 
   :root {
     --bg: #0a0a0a;
@@ -23,7 +24,7 @@
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  html { height: 100%; }
+  html { height: 100%; overflow: hidden; }
   body {
     background: var(--bg);
     color: var(--text);
@@ -37,6 +38,15 @@
     padding-top: 5rem;      /* clear fixed header so title never slips under */
     padding-bottom: 1rem;
     cursor: url('../assets/cursors/cursor-dark.svg') 16 8, default;
+  }
+
+  /* Holds title + iPod + color picker as one centered group; footer stays separate */
+  .rotation-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform: translateY(-26px) scale(1.07);
+    transform-origin: center center;
   }
 
   a, button, .wheel, .wheel-center, .wheel-btn, .ipod, .menu-item, .progress-bar, .streaming-links a, .color-dot, [onclick], input, select { cursor: url('../assets/cursors/crosshair-dark.svg') 8 10, pointer !important; }
@@ -895,6 +905,7 @@
   
 </div>
 
+<div class="rotation-stage" id="rotationStage">
 <div class="title-row" id="titleRow">
   <div class="page-title">The Rotation</div>
   <div class="page-subtitle">Recent top songs</div>
@@ -990,6 +1001,7 @@
 <div class="color-picker" id="colorPicker">
   <span class="color-label">Color</span>
 </div>
+</div>
 
 <div class="footer">What I'm listening to · Updated whenever I'm inspired</div>
 
@@ -1000,6 +1012,23 @@ const isMobile = window.matchMedia('(max-width: 480px)').matches;
 
 // ── PLAYLISTS ──
 const playlists = [
+  {
+    name: 'May 29',
+    date: 'May 29',
+    runtime: '34 min',
+    tracks: [
+      { title: 'The Thrill', artist: 'Wiz Khalifa, Empire Of The Sun', src: 'rotation-songs/wiz-khalifa-the-thrill.mp3', cover: 'rotation-songs/wiz-khalifa-the-thrill-cover.jpg', updates: 2 },
+      { title: 'Televisions', artist: 'Current Joys', src: 'rotation-songs/current-joys-televisions.mp3', cover: 'rotation-songs/current-joys-televisions-cover.jpg' },
+      { title: 'Fear', artist: 'Current Joys', src: 'rotation-songs/current-joys-fear.mp3', cover: 'rotation-songs/current-joys-fear-cover.jpg' },
+      { title: 'Year 22', artist: 'Jaded Juice Riders', src: 'rotation-songs/jaded-juice-riders-year-22.mp3', cover: 'rotation-songs/jaded-juice-riders-year-22-cover.jpg' },
+      { title: 'Feel It', artist: 'd4vd', src: 'rotation-songs/d4vd-feel-it.mp3', cover: 'rotation-songs/d4vd-feel-it-cover.jpg' },
+      { title: 'Sweet Boy', artist: 'Malcolm Todd', src: 'rotation-songs/malcolm-todd-sweet-boy.mp3', cover: 'rotation-songs/malcolm-todd-sweet-boy-cover.jpg' },
+      { title: 'Yosemite', artist: 'KETTAMA, Interplanetary Criminal', src: 'rotation-songs/kettama-yosemite.mp3', cover: 'rotation-songs/kettama-yosemite-cover.jpg' },
+      { title: "She's Gone, Dance On", artist: 'Disclosure', src: 'rotation-songs/disclosure-shes-gone-dance-on.mp3', cover: 'rotation-songs/disclosure-shes-gone-dance-on-cover.jpg' },
+      { title: 'Miss You', artist: 'Oliver Tree, Robin Schulz', src: 'rotation-songs/oliver-tree-miss-you.mp3', cover: 'rotation-songs/oliver-tree-miss-you-cover.jpg' },
+      { title: 'Café Pacific', artist: 'Toast Club', src: 'rotation-songs/toast-club-cafe-pacific.mp3', cover: 'rotation-songs/toast-club-cafe-pacific-cover.jpg' },
+    ]
+  },
   {
     name: 'Apr 21',
     date: 'April 21',

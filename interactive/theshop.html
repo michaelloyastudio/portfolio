@@ -10,7 +10,8 @@
 <link rel="stylesheet" href="https://use.typekit.net/vvj5gyy.css">
 <style>
     /* Prevent blue tap highlights on mobile (via Sonny Cirasuolo / prof K) */
-    * { -webkit-tap-highlight-color: transparent; }
+    * { -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; }
+    ::selection { background: transparent; }
 
 :root {
   --bg: #0a0a0a;
@@ -60,7 +61,8 @@ html { scrollbar-width: none; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 3rem 2.5rem;
+  padding: 0 2.5rem;
+  height: 70px;
   z-index: 100;
   background: var(--bg);
 }
@@ -160,7 +162,7 @@ html { scrollbar-width: none; }
 
 /* ── MAIN ── */
 main {
-  padding: 70px 2.5rem 4rem;
+  padding: 0 2.5rem 4rem;
   /* Full-viewport-width scroll container — no max-width here so wheel
      events on the side margins still scroll. The grid itself caps at
      1200px via .product-grid-wrap. */
@@ -182,9 +184,8 @@ main.loaded { opacity: 1; transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1)
   z-index: 50;
   padding-bottom: 1rem;
   margin-bottom: 1rem;
-  /* Pull up over main's padding-top so the sticky edge starts right
-     at the bottom of the fixed page header. */
-  margin-top: -70px;
+  /* padding-top clears the 70px fixed header — both at rest and when the
+     bar is stuck during scroll. */
   padding-top: 70px;
 }
 
