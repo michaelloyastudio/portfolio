@@ -21,10 +21,11 @@ const projects = [
 <p>I storyboarded the scenes and wrote the direction, generated each one, then broke the stills apart in Photoshop and animated them in After Effects. The imagery stays abstract on purpose. Z gave me the freedom, and I'd rather leave room for the viewer than push a narrative he wasn't comfortable carrying.</p>`,
     work: `<div class="project-video"><video src="projects/capstone/visualizer.mp4" controls playsinline preload="metadata" poster="projects/capstone/poster.jpg"></video></div>
 <div class="img-grid-3">
-<div><img src="projects/capstone/still-17.jpg" alt="Still from the visualizer" loading="lazy"></div>
-<div><img src="projects/capstone/still-30.jpg" alt="Still from the visualizer" loading="lazy"></div>
-<div><img src="projects/capstone/frame-03.jpg" alt="Paper-cutout Z facing a cliff in fog" loading="lazy"></div>
-<div><img src="projects/capstone/frame-08.jpg" alt="Black hole with rings against a starfield" loading="lazy"></div>
+<div><img src="projects/capstone/still-1.jpg" alt="Still from the visualizer" loading="lazy"></div>
+<div><img src="projects/capstone/still-2.jpg" alt="Still from the visualizer" loading="lazy"></div>
+<div><img src="projects/capstone/still-3.jpg" alt="Still from the visualizer" loading="lazy"></div>
+<div><img src="projects/capstone/still-4.jpg" alt="Still from the visualizer" loading="lazy"></div>
+<div><img src="projects/capstone/still-5.jpg" alt="Still from the visualizer" loading="lazy"></div>
 </div>`
   },
   {
@@ -38,8 +39,7 @@ const projects = [
     intro: `<p>I work with my brother, who produces under our last name — <a href="https://open.spotify.com/artist/5gNQpoYEBE1jxjCgFkLWce" target="_blank" rel="noopener">loya</a>. Cover art, Spotify canvas visuals, logo design, and social content, shaped around each release.</p>
 <p>The logo came out of his hat collection, set in Amador — a blackletter that balances elegance with edge. I've also made pieces for other artists along the way.</p>`,
     work: `<div class="project-video"><video src="projects/loya-and-co/canvases.mp4" autoplay loop muted playsinline></video></div>
-<div><img src="projects/loya-and-co/loya-hat-mockup.jpeg" alt="loya hat mockup" loading="lazy"></div>
-<div><img src="projects/loya-and-co/vinyl-cover.jpeg" alt="Diamonds and Damage vinyl" loading="lazy"></div>`
+<div><img src="projects/loya-and-co/loya-hat-mockup.jpeg" alt="loya hat mockup" loading="lazy"></div>`
   },
   {
     slug: "bodyarmor-powerade",
@@ -63,7 +63,7 @@ const projects = [
     year: "2024–2026",
     cover: `projects/university-union/cover.jpg`,
     hero: `projects/university-union/cover.jpg`,
-    intro: `<p>Co-Director of Design Board at University Union, Syracuse's largest programming organization. Concert posters, festival identity, large-format signage, and social assets reaching 12,000+ followers.</p>
+    intro: `<p>I was Co-Director of Design Board at University Union, Syracuse's largest programming organization, through May 2026. Concert posters, festival identity, large-format signage, and social assets reaching 12,000+ followers.</p>
 <p>The biggest piece was Juice Jam 2025 — the full visual identity for Syracuse's annual outdoor festival, built on a retro risograph look with bold gold type. I also spent two years trying to get a Block Party logo approved. I love it. Everybody else hates it.</p>`,
     work: `<div class="project-video"><video src="projects/university-union/jj-timelapse.mp4" autoplay loop muted playsinline></video></div>
 <div class="img-grid-3">
@@ -121,6 +121,10 @@ const projects = [
     work: `<div class="img-grid-3">
 <div data-span="2"><img src="projects/miscellaneous/lyrc-hat.jpeg" alt="Embroidered logo cap" loading="lazy"></div>
 <div><img src="projects/miscellaneous/felly-wildfire.jpg" alt="Wildfire, an album by Felly" loading="lazy"></div>
+<div><img src="projects/miscellaneous/fuji.jpg" alt="Fuji poster" loading="lazy"></div>
+<div><img src="projects/miscellaneous/sabt.jpg" alt="SABT design" loading="lazy"></div>
+<div><video src="projects/miscellaneous/homelander.mp4" autoplay loop muted playsinline></video></div>
+<div><video src="projects/miscellaneous/smiski-dress.mp4" autoplay loop muted playsinline></video></div>
 <div><img src="projects/miscellaneous/lust.jpg" alt="LUST experimental design" loading="lazy"></div>
 <div><video src="projects/miscellaneous/web-story.mp4" autoplay loop muted playsinline></video></div>
 <div data-span="2"><video src="projects/miscellaneous/ml-anim.mp4" autoplay loop muted playsinline></video></div>

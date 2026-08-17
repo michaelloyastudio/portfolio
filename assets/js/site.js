@@ -66,7 +66,9 @@
   if (grid) {
     projects.forEach(function (p) {
       var tile = document.createElement('a');
-      tile.className = 'tile reveal';
+      // No scroll-reveal here: on the Work page the grid IS the content, and
+      // fading tiles in made it look like only the first four existed.
+      tile.className = 'tile';
       tile.href = p.slug + '.html';
       tile.innerHTML =
         '<div class="tile-media">' +
