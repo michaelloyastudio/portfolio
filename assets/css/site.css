@@ -191,6 +191,15 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0.26s; }
 .menu-links a:hover,
 .menu-links a[aria-current="page"] { color: var(--accent); }
 
+/* Letter-jump on hover, carried over from the old nav: the text is split
+   into spans and site.js fires this across them 50ms apart. */
+.ltr { display: inline-block; }
+@keyframes navWave {
+  0%   { transform: translateY(0); }
+  40%  { transform: translateY(-5px); }
+  100% { transform: translateY(0); }
+}
+
 .menu-foot {
   max-width: var(--maxw);
   margin: 3.5rem auto 0;
@@ -225,7 +234,7 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0.26s; }
 .about-top .about-copy { max-width: 60ch; margin-left: auto; }
 .about-top .project-intro p { margin-bottom: 1.2rem; }
 .about-figure { margin: 0; }   /* UA default is 16px 40px, which broke the alignment */
-.about-figure img { width: 100%; border-radius: 3px; display: block; }
+.about-figure img { width: 100%; height: auto; border-radius: 3px; display: block; }
 .about-figure figcaption {
   margin-top: 0.7rem;
   font-size: 0.78rem;
@@ -865,6 +874,10 @@ footer {
 .project-work img,
 .project-work video {
   width: 100%;
+  /* height:auto is REQUIRED now that the markup carries intrinsic
+     width/height attributes — without it the browser honours the literal
+     height attribute and stretches the image into a very tall box. */
+  height: auto;
   border-radius: 3px;
   background: var(--panel);
 }

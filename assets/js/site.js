@@ -37,6 +37,35 @@
     });
   }
 
+
+  /* ── Letter jump on the menu links ───────────────────────────────
+     Split each label into per-letter spans and run navWave across them
+     50ms apart, so the word ripples rather than moving as a block.
+     Same timing as the old nav. */
+  document.querySelectorAll('.menu-links a').forEach(function (link) {
+    var text = link.textContent;
+    link.innerHTML = text.split('').map(function (ch) {
+      return ch === ' ' ? ' ' : '<span class="ltr">' + ch + '</span>';
+    }).join('');
+
+    var letters = link.querySelectorAll('.ltr');
+    var timer = null;
+
+    link.addEventListener('mouseenter', function () {
+      var i = 0;
+      clearInterval(timer);
+      timer = setInterval(function () {
+        if (i >= letters.length) { clearInterval(timer); return; }
+        var l = letters[i];
+        l.style.animation = 'none';
+        void l.offsetHeight;          // reflow so the animation can replay
+        l.style.animation = 'navWave 0.4s ease forwards';
+        i++;
+      }, 50);
+    });
+    link.addEventListener('mouseleave', function () { clearInterval(timer); });
+  });
+
   /* ── Nav background on scroll ────────────────────────────────────*/
   var cue = document.querySelector('.scroll-cue');
   if (cue) {
