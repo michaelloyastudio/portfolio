@@ -94,24 +94,31 @@
     $('detailHero').alt = p.title;
     $('detailBody').innerHTML = p.content;
     $('detailCount').textContent = (i + 1) + ' / ' + projects.length;
-    detail.classList.add('open');
-    detail.scrollTop = 0;
-    lockScroll(true);
+    // Remember where they were in the grid so Back returns them to it.
+    if (!document.body.classList.contains('project-open')) returnY = window.scrollY;
     if (document.body.classList.contains('menu-open')) {
       document.body.classList.remove('menu-open');
       if (burger) burger.setAttribute('aria-expanded', 'false');
-      lockScroll(false);   // release the menu's lock; the overlay holds its own
+      lockScroll(false);
     }
+    document.body.classList.add('project-open');
+    window.scrollTo(0, 0);
     if (pushHash && slugOf(p)) history.replaceState(null, '', '#project/' + slugOf(p));
   }
 
+  var returnY = 0;
+
   function closeDetail() {
     if (!detail) return;
-    detail.classList.remove('open');
-    lockScroll(false);
+    document.body.classList.remove('project-open');
     detail.querySelectorAll('video').forEach(function (v) { v.pause(); });
     history.replaceState(null, '', location.pathname);
     current = -1;
+    // Restore without the smooth-scroll animation, so it feels like going back.
+    var prev = document.documentElement.style.scrollBehavior;
+    document.documentElement.style.scrollBehavior = 'auto';
+    window.scrollTo(0, returnY);
+    document.documentElement.style.scrollBehavior = prev;
   }
 
   if (detail) {
@@ -199,10 +206,10 @@
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
       if (lb && lb.classList.contains('open')) { lb.classList.remove('open'); return; }
-      if (detail && detail.classList.contains('open')) closeDetail();
+      if (detail && document.body.classList.contains('project-open')) closeDetail();
       return;
     }
-    if (!detail || !detail.classList.contains('open')) return;
+    if (!detail || !document.body.classList.contains('project-open')) return;
     if (lb && lb.classList.contains('open')) return;
     if (e.key === 'ArrowLeft')  openDetail((current - 1 + projects.length) % projects.length, true);
     if (e.key === 'ArrowRight') openDetail((current + 1) % projects.length, true);
@@ -232,6 +239,27 @@
   if (detail && location.hash.indexOf('#project/') === 0) {
     var i = indexOfSlug(location.hash.slice('#project/'.length));
     if (i >= 0) openDetail(i, false);
+  }
+
+  /* ── TEMPORARY display-font toggle ───────────────────────────────
+     Flips <html data-font> between the two candidates and remembers the
+     choice across pages. Delete this block with the button and CSS. */
+  var fontToggle = $('fontToggle');
+  if (fontToggle) {
+    var label = function () {
+      var din = document.documentElement.getAttribute('data-font') === 'din';
+      fontToggle.textContent = din ? 'DIN' : 'Aa';
+      fontToggle.title = din
+        ? 'Display font: DIN 2014 Rounded — click for Space Grotesk'
+        : 'Display font: Space Grotesk — click for DIN 2014 Rounded';
+    };
+    label();
+    fontToggle.addEventListener('click', function () {
+      var next = document.documentElement.getAttribute('data-font') === 'din' ? 'grotesk' : 'din';
+      document.documentElement.setAttribute('data-font', next);
+      try { localStorage.setItem('ml-font', next); } catch (e) {}
+      label();
+    });
   }
 
   var yr = $('yr');

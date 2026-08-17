@@ -29,6 +29,12 @@
     body { opacity: 1; animation: none; }
   }
 </style>
+<link rel="stylesheet" href="https://use.typekit.net/vvj5gyy.css">
+<script>
+  // TEMPORARY: restores the display-font choice before first paint so the
+  // toggle survives page navigation without a flash. Remove with the toggle.
+  try { document.documentElement.setAttribute('data-font', localStorage.getItem('ml-font') || 'grotesk'); } catch (e) {}
+</script>
 </head>
 <body>
 
@@ -55,6 +61,8 @@
   </div>
 </nav>
 
+<div id="pageContent">
+
 <header class="page-head">
   <h1>Work</h1>
   <p>Music videos, brand campaigns, cover art, and event design. Click any project to read how it was made.</p>
@@ -76,6 +84,8 @@
   <span>© <span id="yr"></span> Michael Loya Studio</span>
   <span>Tampa, FL</span>
 </footer>
+
+</div><!-- /#pageContent -->
 
 <div class="detail" id="detail">
   <div class="detail-inner">
@@ -104,6 +114,7 @@
 
 <div class="lightbox" id="lightbox"><img src="" alt=""></div>
 
+<button id="fontToggle" title="Preview alternate display font">Aa</button>
 <script src="assets/js/projects.js"></script>
 <script src="assets/js/site.js"></script>
 </body>

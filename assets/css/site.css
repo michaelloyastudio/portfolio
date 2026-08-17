@@ -22,6 +22,19 @@
   --maxw: 1240px;
   --pad: clamp(1.25rem, 4vw, 3.5rem);
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Header and footer share this so their insets match exactly. */
+  --frame-x: clamp(2rem, 6vw, 6rem);
+  --frame-y: 2.1rem;
+
+  /* TEMPORARY font comparison. The toggle in the corner flips
+     <html data-font="din">. To lock one in: delete the toggle, the
+     data-font rule, and the Typekit @import in each page head. */
+  --font-body: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-body);
+}
+html[data-font="din"] {
+  --font-display: 'din-2014-rounded-variable', var(--font-body);
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -35,13 +48,8 @@ html {
   background: var(--black);
 }
 
-/* Custom cursors — light variants, since the site is dark throughout. */
-body { cursor: url('../cursors/cursor-dark.svg') 16 8, default; }
-a, button, summary,
-.tile, .band, .burger, [data-zoom],
-.detail-body .project-img img {
-  cursor: url('../cursors/play-cursor-dark.svg') 8 10, pointer;
-}
+.tile, .band, [data-zoom],
+.detail-body .project-img img { cursor: pointer; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -55,10 +63,21 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--fg);
-  font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  font-family: var(--font-body);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+}
+
+/* Everything typographically "UI": headings, buttons, labels, nav. */
+h1, h2, h3,
+.btn, .menu-links a, .section-label, .tag-label,
+.band-title, .band-cat, .tile-title, .tile-cat,
+.closing-mail, .closing .lead, .closing-links,
+.entry-role, .entry-date, .detail-facts dt, .detail-facts dd,
+.detail-back, .detail-nav button, .detail-count,
+.scroll-cue, .browse-link, footer {
+  font-family: var(--font-display);
 }
 /* Scroll lock lives on <html>, not <body>. A body-level overflow:hidden
    propagates up to the viewport and cancels the reserved scrollbar gutter,
@@ -88,9 +107,14 @@ a { color: inherit; text-decoration: none; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 2.1rem clamp(2rem, 6vw, 6rem);
+  padding: var(--frame-y) var(--frame-x);
   transition: background 0.4s ease, backdrop-filter 0.4s ease, border-color 0.4s ease;
   border-bottom: 1px solid transparent;
+  animation: navIn 0.8s var(--ease) 0.1s both;
+}
+@keyframes navIn {
+  from { opacity: 0; transform: translateY(-14px); }
+  to   { opacity: 1; transform: none; }
 }
 .nav.solid {
   background: rgba(10, 10, 10, 0.75);
@@ -319,7 +343,6 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0.26s; }
 .band {
   display: block;
   padding: clamp(2.5rem, 6vh, 4.5rem) 0;
-  border-bottom: 1px solid var(--line);
 }
 .band:first-child { padding-top: 0; }
 .band-media {
@@ -426,21 +449,19 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0.26s; }
 }
 
 /* ══ STATEMENT + CLOSING CTA ══ */
-.statement {
-  max-width: var(--maxw);
-  margin: 0 auto;
-  padding: clamp(5rem, 13vh, 9rem) var(--pad);
-  border-top: 1px solid var(--line);
+/* Plain centred text link — deliberately no button chrome. */
+.browse {
+  text-align: center;
+  padding: clamp(2.5rem, 7vh, 5rem) var(--pad) clamp(4rem, 10vh, 7rem);
 }
-.statement p {
-  font-size: clamp(1.6rem, 4.5vw, 3.1rem);
+.browse-link {
+  font-size: clamp(1.1rem, 2.4vw, 1.7rem);
   font-weight: 500;
-  letter-spacing: -0.032em;
-  line-height: 1.15;
-  margin: 0 0 2rem;
-  max-width: 20ch;
+  letter-spacing: -0.02em;
+  color: var(--fg);
+  transition: color 0.3s ease;
 }
-.statement p em { font-style: normal; color: var(--accent); }
+.browse-link:hover { color: var(--accent); }
 
 .closing {
   border-top: 1px solid var(--line);
@@ -478,7 +499,7 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0.26s; }
 
 footer {
   border-top: 1px solid var(--line);
-  padding: 1.7rem var(--pad);
+  padding: var(--frame-y) var(--frame-x);   /* matches .nav */
   display: flex;
   justify-content: space-between;
   gap: 1rem;
@@ -617,21 +638,20 @@ footer {
 #hovIcon.lg { width: 58px; height: 58px; }
 
 /* ══ PROJECT DETAIL OVERLAY ══ */
-.detail {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  background: var(--bg);
-  overflow-y: auto;
-  visibility: hidden;
-  opacity: 0;
-  transition: opacity 0.45s ease, visibility 0.45s;
+/* Sits in normal document flow rather than as a fixed overlay, so the
+   project page scrolls with the browser's own scrollbar instead of
+   rendering a second scroll track inside a full-screen layer. */
+.detail { display: none; }
+body.project-open .detail { display: block; animation: detailIn 0.45s var(--ease) both; }
+body.project-open #pageContent { display: none; }
+@keyframes detailIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: none; }
 }
-.detail.open { visibility: visible; opacity: 1; }
 .detail-inner {
   max-width: 980px;
   margin: 0 auto;
-  padding: calc(5rem + var(--pad)) var(--pad) 6rem;
+  padding: clamp(8rem, 15vh, 11rem) var(--pad) 6rem;
 }
 .detail-bar {
   display: flex;
@@ -722,6 +742,29 @@ footer {
   transition: color 0.3s ease;
 }
 .detail-nav button:hover { color: var(--accent); }
+
+/* ══ TEMPORARY font toggle ══
+   Delete this block, #fontToggle in each page, the data-font rule, the
+   Typekit <link>, and the inline restore script once a font is chosen. */
+#fontToggle {
+  position: fixed;
+  right: 1.25rem; bottom: 1.25rem;
+  z-index: 400;
+  min-width: 3.4rem;
+  padding: 0.5rem 0.75rem;
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: rgba(18, 18, 18, 0.9);
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: color 0.25s ease, border-color 0.25s ease;
+}
+#fontToggle:hover { color: var(--accent); border-color: var(--accent); }
 
 /* ══ LIGHTBOX ══ */
 .lightbox {

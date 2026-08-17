@@ -29,6 +29,12 @@
     body { opacity: 1; animation: none; }
   }
 </style>
+<link rel="stylesheet" href="https://use.typekit.net/vvj5gyy.css">
+<script>
+  // TEMPORARY: restores the display-font choice before first paint so the
+  // toggle survives page navigation without a flash. Remove with the toggle.
+  try { document.documentElement.setAttribute('data-font', localStorage.getItem('ml-font') || 'grotesk'); } catch (e) {}
+</script>
 </head>
 <body>
 
@@ -55,6 +61,8 @@
   </div>
 </nav>
 
+<div id="pageContent">
+
 <!-- ══ HERO ══ -->
 <section class="hero">
   <!-- NOTE: visualizer.mp4 is the full 71MB master. Swap for a
@@ -75,14 +83,12 @@
 
 <!-- ══ FEATURED ══ -->
 <section class="section">
-  <p class="section-label reveal">Selected Work</p>
   <div class="bands" id="bands" data-featured="where-it-hurts, loya, bodyarmor-powerade"></div>
 </section>
 
-<!-- ══ STATEMENT ══ -->
-<section class="statement">
-  <p class="reveal">Made for <em>artists</em> who care how it feels.</p>
-  <div class="reveal"><a class="btn" href="work.html">Browse all work</a></div>
+<!-- ══ BROWSE ══ -->
+<section class="browse">
+  <a class="browse-link reveal" href="work.html">Browse all work &rarr;</a>
 </section>
 
 <!-- ══ CLOSING ══ -->
@@ -100,6 +106,8 @@
   <span>© <span id="yr"></span> Michael Loya Studio</span>
   <span>Tampa, FL</span>
 </footer>
+
+</div><!-- /#pageContent -->
 
 <!-- ══ PROJECT DETAIL ══ -->
 <div class="detail" id="detail">
@@ -129,6 +137,7 @@
 
 <div class="lightbox" id="lightbox"><img src="" alt=""></div>
 
+<button id="fontToggle" title="Preview alternate display font">Aa</button>
 <script src="assets/js/projects.js"></script>
 <script src="assets/js/site.js"></script>
 </body>
