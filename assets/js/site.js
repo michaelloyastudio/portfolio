@@ -26,7 +26,7 @@
      that file stays pure content. */
   var SLUGS = {
     'where it hurts.':      'where-it-hurts',
-    'Loya':                 'loya',
+    'loya':                 'loya',
     'BODYARMOR & Powerade': 'bodyarmor-powerade',
     'University Union':     'university-union',
     'Album Covers':         'album-covers',
@@ -59,8 +59,12 @@
 
   /* ── Nav background on scroll ────────────────────────────────────*/
   var nav = $('nav');
-  if (nav) {
-    var onScroll = function () { nav.classList.toggle('solid', window.scrollY > 40); };
+  var cue = document.querySelector('.scroll-cue');
+  if (nav || cue) {
+    var onScroll = function () {
+      if (nav) nav.classList.toggle('solid', window.scrollY > 40);
+      if (cue) cue.classList.toggle('gone', window.scrollY > 24);
+    };
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
   }
@@ -244,18 +248,26 @@
   /* ── TEMPORARY display-font toggle ───────────────────────────────
      Flips <html data-font> between the two candidates and remembers the
      choice across pages. Delete this block with the button and CSS. */
+  var FONTS = [
+    { key: 'grotesk',    name: 'Space Grotesk' },
+    { key: 'instrument', name: 'Instrument Sans' },
+    { key: 'archivo',    name: 'Archivo' },
+    { key: 'schibsted',  name: 'Schibsted Grotesk' }
+  ];
   var fontToggle = $('fontToggle');
   if (fontToggle) {
     var label = function () {
-      var din = document.documentElement.getAttribute('data-font') === 'din';
-      fontToggle.textContent = din ? 'DIN' : 'Aa';
-      fontToggle.title = din
-        ? 'Display font: DIN 2014 Rounded — click for Space Grotesk'
-        : 'Display font: Space Grotesk — click for DIN 2014 Rounded';
+      var key = document.documentElement.getAttribute('data-font') || 'grotesk';
+      var i = 0;
+      FONTS.forEach(function (f, n) { if (f.key === key) i = n; });
+      fontToggle.textContent = FONTS[i].name;
+      fontToggle.title = 'Display font ' + (i + 1) + '/' + FONTS.length +
+                         ' — click for ' + FONTS[(i + 1) % FONTS.length].name;
+      return i;
     };
     label();
     fontToggle.addEventListener('click', function () {
-      var next = document.documentElement.getAttribute('data-font') === 'din' ? 'grotesk' : 'din';
+      var next = FONTS[(label() + 1) % FONTS.length].key;
       document.documentElement.setAttribute('data-font', next);
       try { localStorage.setItem('ml-font', next); } catch (e) {}
       label();

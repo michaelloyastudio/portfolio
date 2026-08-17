@@ -25,7 +25,7 @@ const projects = [
 <p><strong>The paper cutout.</strong> He doesn't feel quite like himself. Moving and acting in a different way than he usually would — recognizable as him, but not him.</p>`
   },
   {
-    title: "Loya",
+    title: "loya",
     overlayTitle: "Loya",
     category: "Creative Direction",
     tools: "Illustrator, Photoshop, After Effects, Blender, Adobe Firefly, Magnific",

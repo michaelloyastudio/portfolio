@@ -27,15 +27,17 @@
   --frame-x: clamp(2rem, 6vw, 6rem);
   --frame-y: 2.1rem;
 
-  /* TEMPORARY font comparison. The toggle in the corner flips
-     <html data-font="din">. To lock one in: delete the toggle, the
-     data-font rule, and the Typekit @import in each page head. */
+  /* TEMPORARY font comparison. The corner toggle cycles <html data-font>.
+     Aptos itself can't be used here — it ships with Microsoft Office under a
+     desktop-only licence and isn't on any webfont CDN. These are the closest
+     free flat grotesques. To lock one in: set --font-display below, then
+     delete the toggle, these data-font rules, and the extra <link> tags. */
   --font-body: 'Space Grotesk', system-ui, -apple-system, sans-serif;
   --font-display: var(--font-body);
 }
-html[data-font="din"] {
-  --font-display: 'din-2014-rounded-variable', var(--font-body);
-}
+html[data-font="instrument"] { --font-display: 'Instrument Sans', var(--font-body); }
+html[data-font="archivo"]    { --font-display: 'Archivo', var(--font-body); }
+html[data-font="schibsted"]  { --font-display: 'Schibsted Grotesk', var(--font-body); }
 
 *, *::before, *::after { box-sizing: border-box; }
 
@@ -140,6 +142,7 @@ a { color: inherit; text-decoration: none; }
   background: none;
   border: none;
   padding: 0;
+  cursor: pointer;
 }
 .burger span {
   display: block;
@@ -277,13 +280,14 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0.26s; }
   transition: border-color 0.3s ease, color 0.3s ease, background 0.3s ease;
 }
 .btn:hover { border-color: var(--accent); color: var(--accent); }
+/* Outlined at rest, fills orange on hover. */
 .btn-solid {
-  background: var(--accent);
+  background: transparent;
   border-color: var(--accent);
-  color: var(--black);
+  color: var(--accent);
   font-weight: 500;
 }
-.btn-solid:hover { background: transparent; color: var(--accent); }
+.btn-solid:hover { background: var(--accent); color: var(--black); }
 
 .scroll-cue {
   position: absolute;
@@ -295,10 +299,18 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0.26s; }
   text-transform: uppercase;
   color: var(--muted);
   animation: cue 2.4s ease-in-out infinite;
+  transition: opacity 0.4s ease;
 }
 @keyframes cue {
   0%, 100% { opacity: 0.35; transform: translate(-50%, 0); }
   50%      { opacity: 1;    transform: translate(-50%, 5px); }
+}
+/* Fades out once they start scrolling — it has served its purpose. The
+   animation is cancelled so its keyframed opacity can't fight the fade. */
+.scroll-cue.gone {
+  opacity: 0;
+  animation: none;
+  pointer-events: none;
 }
 
 /* ══ PAGE HEADER (work / about) ══ */
@@ -342,9 +354,10 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0.26s; }
 .bands { display: flex; flex-direction: column; }
 .band {
   display: block;
-  padding: clamp(2.5rem, 6vh, 4.5rem) 0;
+  padding: clamp(1.4rem, 3.2vh, 2.4rem) 0;
 }
 .band:first-child { padding-top: 0; }
+.band:last-child { padding-bottom: 0; }
 .band-media {
   position: relative;
   aspect-ratio: 16 / 9;
@@ -449,10 +462,14 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0.26s; }
 }
 
 /* ══ STATEMENT + CLOSING CTA ══ */
+/* Pairs with .section--flush on the featured block above, which drops its
+   bottom padding so this top value alone controls the gap. */
+.section--flush { padding-bottom: 0; }
+
 /* Plain centred text link — deliberately no button chrome. */
 .browse {
   text-align: center;
-  padding: clamp(2.5rem, 7vh, 5rem) var(--pad) clamp(4rem, 10vh, 7rem);
+  padding: clamp(3rem, 7vh, 5rem) var(--pad) clamp(4rem, 10vh, 7rem);
 }
 .browse-link {
   font-size: clamp(1.1rem, 2.4vw, 1.7rem);
