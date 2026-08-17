@@ -30,7 +30,7 @@ const projects = [
     category: "Creative Direction",
     tools: "Illustrator, Photoshop, After Effects, Blender, Adobe Firefly, Magnific",
     year: "2023–Present",
-    cover: `projects/loya-and-co/dnd-final.jpeg`,
+    cover: `projects/loya-and-co/cover.jpg`,
     images: [],
     content: `<p>I collaborate with my brother, who produces music under our last name Loya (stylized as "<a href="https://open.spotify.com/artist/5gNQpoYEBE1jxjCgFkLWce?si=AsVRN9PsRu2rgS5POckwnQ" target="_blank">loya</a>"), bringing his music to life through cover art, motion graphics, and social content. I've also created pieces for other artists, tailoring visuals to fit their sound and aesthetic.</p>
 <h3>loya</h3>
@@ -56,7 +56,7 @@ const projects = [
     category: "Brand Campaign",
     tools: "Photoshop, Illustrator, Premiere, After Effects, Kling, Runway, ChatGPT, Topaz Labs, ElevenLabs",
     year: "2025",
-    cover: `projects/bodyarmor-powerade/bapa.png`,
+    cover: `projects/bodyarmor-powerade/cover.jpg`,
     images: [],
     content: `<p>Last summer I interned with BODYARMOR and Powerade in Queens, NY, designing POS ads, producing a Powerade fall football video ad, and creating an AI-generated BODYARMOR commercial as my capstone project. The internship pushed my design and technical skills while giving me hands-on experience at the intersection of brand storytelling and emerging technology.</p>
 <h3>Internship Work</h3>
@@ -80,7 +80,7 @@ const projects = [
     category: "Event Design",
     tools: "Illustrator, Photoshop, After Effects",
     year: "2024–2026",
-    cover: `projects/university-union/uu.png`,
+    cover: `projects/university-union/cover.jpg`,
     images: [],
     content: `<p>Design work as Co-Director of Design Board for University Union — Syracuse University's largest programming organization. Responsible for concert posters, festival branding, large-format signage, and social media assets reaching 12,000+ Instagram followers.</p>
 

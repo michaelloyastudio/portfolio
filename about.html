@@ -29,12 +29,7 @@
     body { opacity: 1; animation: none; }
   }
 </style>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Archivo:wght@400;500;600;700&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script>
-  // TEMPORARY: restores the display-font choice before first paint so the
-  // toggle survives page navigation without a flash. Remove with the toggle.
-  try { document.documentElement.setAttribute('data-font', localStorage.getItem('ml-font') || 'grotesk'); } catch (e) {}
-</script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -200,7 +195,6 @@
 <div class="lightbox" id="lightbox"><img src="" alt=""></div>
 <img id="hovIcon" src="" alt="">
 
-<button id="fontToggle" title="Preview alternate display font">Aa</button>
 <script src="assets/js/projects.js"></script>
 <script src="assets/js/site.js"></script>
 </body>

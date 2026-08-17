@@ -245,35 +245,6 @@
     if (i >= 0) openDetail(i, false);
   }
 
-  /* ── TEMPORARY display-font toggle ───────────────────────────────
-     Flips <html data-font> between the two candidates and remembers the
-     choice across pages. Delete this block with the button and CSS. */
-  var FONTS = [
-    { key: 'grotesk',    name: 'Space Grotesk' },
-    { key: 'instrument', name: 'Instrument Sans' },
-    { key: 'archivo',    name: 'Archivo' },
-    { key: 'schibsted',  name: 'Schibsted Grotesk' }
-  ];
-  var fontToggle = $('fontToggle');
-  if (fontToggle) {
-    var label = function () {
-      var key = document.documentElement.getAttribute('data-font') || 'grotesk';
-      var i = 0;
-      FONTS.forEach(function (f, n) { if (f.key === key) i = n; });
-      fontToggle.textContent = FONTS[i].name;
-      fontToggle.title = 'Display font ' + (i + 1) + '/' + FONTS.length +
-                         ' — click for ' + FONTS[(i + 1) % FONTS.length].name;
-      return i;
-    };
-    label();
-    fontToggle.addEventListener('click', function () {
-      var next = FONTS[(label() + 1) % FONTS.length].key;
-      document.documentElement.setAttribute('data-font', next);
-      try { localStorage.setItem('ml-font', next); } catch (e) {}
-      label();
-    });
-  }
-
   var yr = $('yr');
   if (yr) yr.textContent = new Date().getFullYear();
 })();

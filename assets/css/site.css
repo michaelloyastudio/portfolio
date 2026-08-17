@@ -27,17 +27,12 @@
   --frame-x: clamp(2rem, 6vw, 6rem);
   --frame-y: 2.1rem;
 
-  /* TEMPORARY font comparison. The corner toggle cycles <html data-font>.
-     Aptos itself can't be used here — it ships with Microsoft Office under a
-     desktop-only licence and isn't on any webfont CDN. These are the closest
-     free flat grotesques. To lock one in: set --font-display below, then
-     delete the toggle, these data-font rules, and the extra <link> tags. */
-  --font-body: 'Space Grotesk', system-ui, -apple-system, sans-serif;
-  --font-display: var(--font-body);
+  /* Space Grotesk carries headings, buttons, and labels.
+     IBM Plex Sans carries body copy — neutral and easy at small sizes, so
+     it stays out of the way of the display face. */
+  --font-display: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  --font-body: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
 }
-html[data-font="instrument"] { --font-display: 'Instrument Sans', var(--font-body); }
-html[data-font="archivo"]    { --font-display: 'Archivo', var(--font-body); }
-html[data-font="schibsted"]  { --font-display: 'Schibsted Grotesk', var(--font-body); }
 
 *, *::before, *::after { box-sizing: border-box; }
 
@@ -280,14 +275,14 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0.26s; }
   transition: border-color 0.3s ease, color 0.3s ease, background 0.3s ease;
 }
 .btn:hover { border-color: var(--accent); color: var(--accent); }
-/* Outlined at rest, fills orange on hover. */
+/* Filled orange at rest, hollows out on hover. */
 .btn-solid {
-  background: transparent;
+  background: var(--accent);
   border-color: var(--accent);
-  color: var(--accent);
+  color: var(--black);
   font-weight: 500;
 }
-.btn-solid:hover { background: var(--accent); color: var(--black); }
+.btn-solid:hover { background: transparent; color: var(--accent); }
 
 .scroll-cue {
   position: absolute;
@@ -298,18 +293,20 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0.26s; }
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--muted);
+  /* The pulse drives TRANSFORM ONLY. Opacity is left to the transition
+     below, so fading out is a smooth 0.5s ramp rather than a snap — an
+     animation that also keyframed opacity would have to be cancelled to
+     fade, and cancelling it is what made the cue vanish instantly. */
+  opacity: 0.55;
   animation: cue 2.4s ease-in-out infinite;
-  transition: opacity 0.4s ease;
+  transition: opacity 0.5s ease;
 }
 @keyframes cue {
-  0%, 100% { opacity: 0.35; transform: translate(-50%, 0); }
-  50%      { opacity: 1;    transform: translate(-50%, 5px); }
+  0%, 100% { transform: translate(-50%, 0); }
+  50%      { transform: translate(-50%, 5px); }
 }
-/* Fades out once they start scrolling — it has served its purpose. The
-   animation is cancelled so its keyframed opacity can't fight the fade. */
 .scroll-cue.gone {
   opacity: 0;
-  animation: none;
   pointer-events: none;
 }
 
@@ -759,29 +756,6 @@ body.project-open #pageContent { display: none; }
   transition: color 0.3s ease;
 }
 .detail-nav button:hover { color: var(--accent); }
-
-/* ══ TEMPORARY font toggle ══
-   Delete this block, #fontToggle in each page, the data-font rule, the
-   Typekit <link>, and the inline restore script once a font is chosen. */
-#fontToggle {
-  position: fixed;
-  right: 1.25rem; bottom: 1.25rem;
-  z-index: 400;
-  min-width: 3.4rem;
-  padding: 0.5rem 0.75rem;
-  font-family: var(--font-display);
-  font-size: 0.72rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--muted);
-  background: rgba(18, 18, 18, 0.9);
-  border: 1px solid var(--line);
-  border-radius: 2px;
-  cursor: pointer;
-  backdrop-filter: blur(8px);
-  transition: color 0.25s ease, border-color 0.25s ease;
-}
-#fontToggle:hover { color: var(--accent); border-color: var(--accent); }
 
 /* ══ LIGHTBOX ══ */
 .lightbox {
