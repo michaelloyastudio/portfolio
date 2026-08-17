@@ -204,15 +204,126 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0.26s; }
   margin: 3.5rem auto 0;
   width: 100%;
   display: flex;
-  gap: 2rem;
-  flex-wrap: wrap;
-  font-size: 0.74rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  gap: 1.6rem;
+  align-items: center;
+}
+.menu-foot a {
+  width: 26px; height: 26px;
+  color: var(--muted);
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+.menu-foot a:hover { color: var(--accent); transform: translateY(-3px); }
+.menu-foot svg { width: 100%; height: 100%; fill: currentColor; display: block; }
+
+/* ══ ABOUT: portrait column on the right, copy on the left ══ */
+.about-top {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: calc(2.5rem) var(--pad) clamp(2.5rem, 6vh, 4rem);
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: start;
+}
+.about-top .project-intro p { margin-bottom: 1.2rem; }
+.about-figure img { width: 100%; border-radius: 3px; display: block; }
+.about-figure figcaption {
+  margin-top: 0.7rem;
+  font-size: 0.78rem;
   color: var(--muted);
 }
-.menu-foot a { transition: color 0.3s ease; }
-.menu-foot a:hover { color: var(--accent); }
+.about-figure figcaption a { text-decoration: underline; text-underline-offset: 3px; }
+.about-figure figcaption a:hover { color: var(--accent); }
+.about-figure .project-facts {
+  margin-top: 1.75rem;
+  padding-top: 1.5rem;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* ══ RESUME: a dated rail instead of a flat list ══ */
+.cv-section { margin-bottom: clamp(2.75rem, 6vh, 4rem); }
+.cv-section > h2 {
+  font-size: 0.7rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--line);
+}
+.cv-item {
+  display: grid;
+  grid-template-columns: 8.5rem 1fr;
+  gap: 0 1.75rem;
+  padding: 1.1rem 0;
+  border-bottom: 1px solid rgba(232, 224, 212, 0.07);
+}
+.cv-item:last-child { border-bottom: none; }
+.cv-when {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding-top: 0.25rem;
+}
+.cv-what { min-width: 0; }
+.cv-role {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+.cv-org { font-size: 0.9rem; color: var(--accent); margin-top: 0.15rem; }
+.cv-note { font-size: 0.95rem; opacity: 0.72; margin-top: 0.45rem; line-height: 1.6; max-width: 62ch; }
+.cv-role .entry-link img { width: 22px; height: 22px; border-radius: 3px; object-fit: cover; opacity: 0.55; transition: opacity 0.3s ease, transform 0.3s ease; }
+.cv-role .entry-link:hover img { opacity: 1; transform: scale(1.12); }
+
+/* ══ INTERESTS: floating, nudgeable bubbles ══ */
+#interests {
+  position: relative;
+  width: 100%;
+  height: 460px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  overflow: hidden;
+  background: rgba(18, 18, 18, 0.45);
+  touch-action: pan-y;
+}
+.bubble {
+  position: absolute;
+  top: 0; left: 0;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: rgba(10, 10, 10, 0.75);
+  color: var(--fg);
+  font-family: var(--font-display);
+  line-height: 1.15;
+  padding: 0.4rem;
+  will-change: transform;
+  transition: border-color 0.25s ease, color 0.25s ease, background 0.25s ease;
+  user-select: none;
+}
+.bubble[data-kind="Games"]  { border-color: rgba(255,142,61,0.45); }
+.bubble[data-kind="Music"]  { border-color: rgba(232,224,212,0.35); }
+.bubble.lit { border-color: var(--accent); color: var(--accent); background: rgba(255,142,61,0.08); }
+#interests-hint {
+  position: absolute;
+  right: 0.9rem; bottom: 0.75rem;
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  pointer-events: none;
+  opacity: 0.65;
+}
 
 /* ══ HERO ══ */
 .hero {
@@ -691,12 +802,12 @@ footer {
    cover with a max-height was quietly cropping 16:9 heroes to ~1.86. */
 .project-hero img,
 .project-hero video {
-  width: 100%;
+  width: auto;
+  max-width: 100%;
   height: auto;
   max-height: 86svh;
-  object-fit: contain;
+  margin: 0 auto;
   border-radius: 3px;
-  background: var(--panel);
 }
 
 /* Title + category sit above the hero. Category is pushed right and sits
@@ -772,11 +883,12 @@ footer {
 
 /* ── the work ── */
 .project-work {
+  --tile-gap: clamp(0.6rem, 1.2vw, 1rem);
   max-width: 1100px;
   margin: 0 auto;
   padding: 0 var(--pad);
 }
-.project-work > * { margin-bottom: clamp(0.75rem, 1.6vw, 1.25rem); }
+.project-work > * { margin-bottom: var(--tile-gap); }
 .project-work > *:last-child { margin-bottom: 0; }
 
 .project-work img,
@@ -785,24 +897,26 @@ footer {
   border-radius: 3px;
   background: var(--panel);
 }
-/* Masonry via CSS columns. Every image keeps its own aspect ratio, so
-   nothing is ever cropped — posters stay whole, wide shots stay wide —
-   and the columns still bottom out at roughly even heights. A fixed grid
-   with object-fit:cover was the thing chopping the tops off posters. */
-.project-work .img-grid-2,
-.project-work .img-grid-3,
-.project-work .img-grid-4 {
-  column-gap: clamp(0.75rem, 1.6vw, 1.25rem);
+/* ── mosaic ──────────────────────────────────────────────────────
+   Justified rows, the way a photo gallery lays out. site.js measures
+   each tile's real aspect ratio and scales a row of them so the row is
+   exactly the container width, every tile in that row sharing one
+   height. Result: identical gaps in both axes, portrait next to
+   landscape, no cropping, and no holes — a fixed grid always leaves
+   holes when the spans don't happen to tile. */
+.project-work [class^="img-grid"] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--tile-gap);
 }
-.project-work .img-grid-2 { column-count: 2; }
-.project-work .img-grid-3 { column-count: 3; }
-.project-work .img-grid-4 { column-count: 4; }
-.project-work [class^="img-grid"] > * {
-  break-inside: avoid;
-  -webkit-column-break-inside: avoid;
-  margin-bottom: clamp(0.75rem, 1.6vw, 1.25rem);
+.project-work [class^="img-grid"] > * { overflow: hidden; border-radius: 3px; }
+.project-work [class^="img-grid"] img,
+.project-work [class^="img-grid"] video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;   /* ratios are matched exactly, so nothing is lost */
+  display: block;
 }
-.project-work [class^="img-grid"] img { height: auto; }
 
 /* ── prev / next ── */
 /* Plain text buttons with arrows. No rule, no project names. */
@@ -827,10 +941,12 @@ footer {
 @media (max-width: 900px) {
   .work-grid { grid-template-columns: 1fr; }
   .about-hero { grid-template-columns: 1fr; }
+  .about-top { grid-template-columns: 1fr; }
+  .cv-item { grid-template-columns: 1fr; gap: 0.35rem; }
+  #interests { height: 520px; }
   .about-portrait { max-width: 260px; }
   .two-col { grid-template-columns: 1fr; }
-  .project-work .img-grid-3,
-  .project-work .img-grid-4 { column-count: 2; }
+
   .project-head { padding-bottom: 1.25rem; }
   .project-facts { gap: 1.5rem; }
   .band-meta { flex-direction: column; align-items: flex-start; gap: 0.75rem; }

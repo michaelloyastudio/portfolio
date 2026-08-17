@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/site.css?v=8">
 <style>
   /* First-paint guard. Applies before anything else resolves, so the page
      never flashes raw content before the load-in animations start.
@@ -50,9 +50,9 @@
     <a href="mailto:hello@michaelloya.studio">Contact</a>
   </div>
   <div class="menu-foot">
-    <a href="https://instagram.com/michaelloya.studio" target="_blank" rel="noopener">Instagram</a>
-    <a href="https://www.linkedin.com/in/michael-loya/" target="_blank" rel="noopener">LinkedIn</a>
-    <a href="assets/site/resume.pdf" target="_blank" rel="noopener">Resume</a>
+    <a href="https://instagram.com/michaelloya.studio" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41 1.27-.06 1.65-.07 4.85-.07M12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63c-.79.3-1.46.72-2.13 1.38C1.35 2.68.93 3.35.63 4.14.33 4.9.13 5.78.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.3.79.72 1.46 1.38 2.13.67.66 1.34 1.08 2.13 1.38.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56.79-.3 1.46-.72 2.13-1.38.66-.67 1.08-1.34 1.38-2.13.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91-.3-.79-.72-1.46-1.38-2.13C21.32 1.35 20.65.93 19.86.63 19.1.33 18.22.13 16.95.07 15.67.01 15.26 0 12 0z"/><path d="M12 5.84a6.16 6.16 0 100 12.32 6.16 6.16 0 000-12.32zM12 16a4 4 0 110-8 4 4 0 010 8z"/><circle cx="18.41" cy="5.59" r="1.44"/></svg></a>
+    <a href="https://www.linkedin.com/in/michael-loya/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 110-4.13 2.06 2.06 0 010 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg></a>
+    <a href="assets/site/resume.pdf" target="_blank" rel="noopener" aria-label="Resume"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm0 2.5L18.5 9H14V4.5zM8 13h8v1.5H8V13zm0 3.5h8V18H8v-1.5zM8 9.5h4V11H8V9.5z"/></svg></a>
   </div>
 </nav>
 
@@ -63,120 +63,133 @@
     <p class="project-category">Designer &amp; Editor</p>
   </header>
 
-  <div class="project-hero is-portrait">
-    <img src="assets/site/mike-portrait.jpg" alt="Michael Loya">
-  </div>
+  <div class="about-top">
 
-  <div class="project-body">
     <div class="project-intro">
       <p>When I was a kid, everyone told me I'd be an engineer. I was big into DIY and tech, building cardboard phones, VR headsets, and whatever else I could imagine. That creative energy was eventually channeled into video editing, cutting YouTube videos and sports highlight reels for hours on end.</p>
       <p>I found graphic design in the nick of time, taking my first class senior year of high school. Now, graduating from Syracuse with an award in motion design, I can say I made little Mike proud, and I'll keep doing so by staying on top of emerging tech and being the best creative I can be.</p>
-      <p class="photo-credit-line">Portrait by <a href="https://www.mctvisual.com/" target="_blank" rel="noopener">Malcolm Taylor</a></p>
     </div>
-    <dl class="project-facts">
-      <div><dt>Based</dt><dd>Tampa, FL</dd></div>
-      <div><dt>Focus</dt><dd>Video, motion, and design</dd></div>
-    </dl>
+
+    <figure class="about-figure">
+      <img src="assets/site/mike-portrait.jpg" alt="Michael Loya">
+      <figcaption>Portrait by <a href="https://www.mctvisual.com/" target="_blank" rel="noopener">Malcolm Taylor</a></figcaption>
+      <dl class="project-facts">
+        <div><dt>Based</dt><dd>Tampa, FL</dd></div>
+        <div><dt>Focus</dt><dd>Video, motion, and design</dd></div>
+      </dl>
+    </figure>
+
   </div>
 
   <div class="project-work about-detail">
 
-  <section class="about-block">
+  <section class="cv-section">
     <h2>Education</h2>
-    <div class="entry">
-      <div class="entry-top">
-        <div class="entry-role">Syracuse University</div>
-        <div class="entry-date">May 2026</div>
+    <div class="cv-item">
+      <div class="cv-when">2022 &ndash; May 2026</div>
+      <div class="cv-what">
+        <div class="cv-role">Syracuse University</div>
+        <div class="cv-org">B.S. Graphic Design &middot; Minor, Music Industry</div>
+        <div class="cv-note">S.I. Newhouse School of Public Communications, and the College of Visual and Performing Arts.</div>
       </div>
-      <div class="entry-sub">S.I. Newhouse School of Public Communications — B.S., Graphic Design</div>
-      <div class="entry-sub">College of Visual and Performing Arts — Minor, Music Industry</div>
     </div>
   </section>
 
-  <section class="about-block">
+  <section class="cv-section">
     <h2>Experience</h2>
-    <div class="two-col">
-      <div class="entry">
-        <div class="entry-top">
-          <div class="entry-role">Graphic Design &amp; Video Intern
-            <a class="entry-link" href="bodyarmor-powerade.html" title="View project"><img src="projects/bodyarmor-powerade/cover.jpg" alt=""></a>
-          </div>
-          <div class="entry-date">Jun — Aug 2025</div>
+    <div class="cv-item">
+      <div class="cv-when">Jun &ndash; Aug 2025</div>
+      <div class="cv-what">
+        <div class="cv-role">Graphic Design &amp; Video Intern
+          <a class="entry-link" href="bodyarmor-powerade.html" title="View project"><img src="projects/bodyarmor-powerade/cover.jpg" alt=""></a>
         </div>
-        <div class="entry-org">BODYARMOR SuperDrink</div>
-        <div class="entry-desc">Designed POS ads deployed across hundreds of BODYARMOR and Powerade retail locations nationwide. Produced an original video ad for Powerade's fall football campaign. Led AI capstone project generating branded content, presented to C-suite executives.</div>
+        <div class="cv-org">BODYARMOR SuperDrink</div>
+        <div class="cv-note">POS ads deployed across hundreds of retail locations nationwide. Produced an original video ad for Powerade's fall football campaign, and led an AI capstone presented to C-suite executives.</div>
       </div>
-      <div class="entry">
-        <div class="entry-top">
-          <div class="entry-role">Design Co-Director
-            <a class="entry-link" href="university-union.html" title="View project"><img src="projects/university-union/cover.jpg" alt=""></a>
-          </div>
-          <div class="entry-date">Dec 2024 — Present</div>
+    </div>
+    <div class="cv-item">
+      <div class="cv-when">Dec 2024 &ndash; Present</div>
+      <div class="cv-what">
+        <div class="cv-role">Design Co-Director
+          <a class="entry-link" href="university-union.html" title="View project"><img src="projects/university-union/cover.jpg" alt=""></a>
         </div>
-        <div class="entry-org">University Union</div>
-        <div class="entry-desc">Co-direct design board producing visuals for 20+ events including concerts and festivals. Create graphics for social media reaching 12,000+ Instagram followers. Design large-format signage displayed in the Schine Student Center. Oversee visual direction and brand consistency across all University Union marketing.</div>
+        <div class="cv-org">University Union</div>
+        <div class="cv-note">Co-direct the design board behind 20+ events, social reaching 12,000+ followers, and large-format signage in the Schine Student Center.</div>
       </div>
-      <div class="entry">
-        <div class="entry-top">
-          <div class="entry-role">Head of Design</div>
-          <div class="entry-date">Sep — Dec 2024</div>
-        </div>
-        <div class="entry-org">20 Watts Magazine</div>
-        <div class="entry-desc">Designed graphics for events and promotional materials. Aligned design concepts with editorial goals across team meetings. Created onboarding tutorials for new members. Mentored and guided design team through projects.</div>
+    </div>
+    <div class="cv-item">
+      <div class="cv-when">Sep &ndash; Dec 2024</div>
+      <div class="cv-what">
+        <div class="cv-role">Head of Design</div>
+        <div class="cv-org">20 Watts Magazine</div>
+        <div class="cv-note">Event and promotional graphics, onboarding tutorials, and mentoring the design team.</div>
       </div>
-      <div class="entry">
-        <div class="entry-top">
-          <div class="entry-role">Head of Design</div>
-          <div class="entry-date">Sep 2022 — Sep 2024</div>
-        </div>
-        <div class="entry-org">Mixtape Magazine</div>
-        <div class="entry-desc">Designed print magazine graphic and 10+ web article graphics. Collaborated with editorial teams on visual concepts. Managed and coordinated design projects from conception to finish.</div>
+    </div>
+    <div class="cv-item">
+      <div class="cv-when">Sep 2022 &ndash; Sep 2024</div>
+      <div class="cv-what">
+        <div class="cv-role">Head of Design</div>
+        <div class="cv-org">Mixtape Magazine</div>
+        <div class="cv-note">Print magazine graphics and 10+ web article graphics, run from concept to finish.</div>
       </div>
     </div>
   </section>
 
-  <section class="about-block">
+  <section class="cv-section">
+    <h2>Recognition</h2>
+    <div class="cv-item">
+      <div class="cv-when">2026</div>
+      <div class="cv-what">
+        <div class="cv-role">Department Prize in Motion Graphics</div>
+        <div class="cv-org">S.I. Newhouse School of Public Communications</div>
+      </div>
+    </div>
+    <div class="cv-item">
+      <div class="cv-when">2025</div>
+      <div class="cv-what">
+        <div class="cv-role">Walk-On, Syracuse Football</div>
+        <div class="cv-org">ACC Academic Honor Roll</div>
+      </div>
+    </div>
+    <div class="cv-item">
+      <div class="cv-when">2026</div>
+      <div class="cv-what">
+        <div class="cv-role">Top 5% of Rocket League players globally</div>
+        <div class="cv-note"><span class="hov" data-icon="assets/about-icons/champion-2.png" data-size="lg">Champion 2</span> in Doubles &middot; <span class="hov" data-icon="assets/about-icons/champion-1.png" data-size="lg">Champion 1</span> in Standard &middot; <span class="hov" data-icon="assets/about-icons/diamond-1.png" data-size="lg">Diamond 1</span> in Solo</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cv-section">
     <h2>Skills</h2>
-    <div class="tag-row"><span class="tag-label">Design</span><span><span class="hov" data-icon="assets/about-icons/photoshop.svg">Photoshop</span>, <span class="hov" data-icon="assets/about-icons/illustrator.svg">Illustrator</span>, <span class="hov" data-icon="assets/about-icons/premiere-pro.svg">Premiere Pro</span>, <span class="hov" data-icon="assets/about-icons/after-effects.svg">After Effects</span>, <span class="hov" data-icon="assets/about-icons/indesign.svg">InDesign</span>, <span class="hov" data-icon="assets/about-icons/figma.svg">Figma</span></span></div>
-    <div class="tag-row"><span class="tag-label">AI &amp; Tech</span><span><span class="hov" data-icon="assets/about-icons/claude.svg">Claude</span>, <span class="hov" data-icon="assets/about-icons/openclaw.svg">OpenClaw</span>, <span class="hov" data-icon="assets/about-icons/chatgpt.svg">ChatGPT</span>, <span class="hov" data-icon="assets/about-icons/higgsfield.svg">Higgsfield AI</span>, <span class="hov" data-icon="assets/about-icons/freepik.svg">Freepik Suite</span>, <span class="hov" data-icon="assets/about-icons/fl-studio.svg">FL Studio</span></span></div>
-    <div class="tag-row"><span class="tag-label">Platforms</span><span><span class="hov" data-icon="assets/about-icons/x.svg">X</span>, <span class="hov" data-icon="assets/about-icons/instagram.svg">Instagram</span>, <span class="hov" data-icon="assets/about-icons/snapchat.svg">Snapchat</span>, <span class="hov" data-icon="assets/about-icons/youtube.svg">YouTube</span>, <span class="hov" data-icon="assets/about-icons/microsoft-office.svg">Microsoft Office</span></span></div>
-  </section>
-
-  <section class="about-block">
-    <h2>Achievements</h2>
-    <div class="two-col">
-      <div class="entry">
-        <div class="entry-top">
-          <div class="entry-role">Department Prize in Motion Graphics</div>
-          <div class="entry-date">2026</div>
-        </div>
-        <div class="entry-org">S.I. Newhouse School of Public Communications</div>
-      </div>
-      <div class="entry">
-        <div class="entry-top">
-          <div class="entry-role">Top 5% of Rocket League players globally</div>
-          <div class="entry-date">2026</div>
-        </div>
-        <div class="entry-desc"><span class="hov" data-icon="assets/about-icons/champion-2.png" data-size="lg">Champion 2</span> in Doubles (top 4.999%) · <span class="hov" data-icon="assets/about-icons/champion-1.png" data-size="lg">Champion 1</span> in Standard (top 4.112%) · <span class="hov" data-icon="assets/about-icons/diamond-1.png" data-size="lg">Diamond 1</span> in Solo (top 6.550%)</div>
-      </div>
-      <div class="entry">
-        <div class="entry-top">
-          <div class="entry-role">Walk-On, Syracuse Football</div>
-          <div class="entry-date">2025</div>
-        </div>
-        <div class="entry-org">ACC Academic Honor Roll</div>
-      </div>
+    <div class="cv-item">
+      <div class="cv-when">Design</div>
+      <div class="cv-what"><div class="cv-note" style="margin-top:0;opacity:.85"><span class="hov" data-icon="assets/about-icons/photoshop.svg">Photoshop</span>, <span class="hov" data-icon="assets/about-icons/illustrator.svg">Illustrator</span>, <span class="hov" data-icon="assets/about-icons/premiere-pro.svg">Premiere Pro</span>, <span class="hov" data-icon="assets/about-icons/after-effects.svg">After Effects</span>, <span class="hov" data-icon="assets/about-icons/indesign.svg">InDesign</span>, <span class="hov" data-icon="assets/about-icons/figma.svg">Figma</span></div></div>
+    </div>
+    <div class="cv-item">
+      <div class="cv-when">AI &amp; Tech</div>
+      <div class="cv-what"><div class="cv-note" style="margin-top:0;opacity:.85"><span class="hov" data-icon="assets/about-icons/claude.svg">Claude</span>, <span class="hov" data-icon="assets/about-icons/openclaw.svg">OpenClaw</span>, <span class="hov" data-icon="assets/about-icons/chatgpt.svg">ChatGPT</span>, <span class="hov" data-icon="assets/about-icons/higgsfield.svg">Higgsfield AI</span>, <span class="hov" data-icon="assets/about-icons/freepik.svg">Freepik Suite</span>, <span class="hov" data-icon="assets/about-icons/fl-studio.svg">FL Studio</span></div></div>
+    </div>
+    <div class="cv-item">
+      <div class="cv-when">Platforms</div>
+      <div class="cv-what"><div class="cv-note" style="margin-top:0;opacity:.85"><span class="hov" data-icon="assets/about-icons/x.svg">X</span>, <span class="hov" data-icon="assets/about-icons/instagram.svg">Instagram</span>, <span class="hov" data-icon="assets/about-icons/snapchat.svg">Snapchat</span>, <span class="hov" data-icon="assets/about-icons/youtube.svg">YouTube</span>, <span class="hov" data-icon="assets/about-icons/microsoft-office.svg">Microsoft Office</span></div></div>
     </div>
   </section>
 
-  <section class="about-block">
+  <section class="cv-section">
     <h2>Interests</h2>
-    <div class="tag-row"><span class="tag-label">Games</span><span>Rocket League, Tomodachi Life: Living the Dream</span></div>
-    <div class="tag-row"><span class="tag-label">Sports</span><span>NBA, Golden State Warriors</span></div>
-    <div class="tag-row"><span class="tag-label">Books</span><span>The Hunger Games series</span></div>
-    <div class="tag-row"><span class="tag-label">TV</span><span>Rick and Morty, BoJack Horseman, The Amazing World of Gumball, Invincible, The Boys, Seinfeld</span></div>
-    <div class="tag-row"><span class="tag-label">Film</span><span>Ferris Bueller's Day Off, Kill Bill, Django Unchained, Spirited Away, My Neighbor Totoro, Interstellar, Into the Spider-Verse, A24, horror</span></div>
-    <div class="tag-row"><span class="tag-label">Music</span><span>Indie (Vacations, Mind's Eye, The Strokes, Still Woozy), Rap (Aminé, Logic), House</span></div>
+    <div id="interests" data-items='[
+      {"k":"Games","v":"Rocket League"},{"k":"Games","v":"Tomodachi Life"},
+      {"k":"Sports","v":"NBA"},{"k":"Sports","v":"Warriors"},
+      {"k":"Books","v":"The Hunger Games"},
+      {"k":"TV","v":"Rick and Morty"},{"k":"TV","v":"BoJack Horseman"},{"k":"TV","v":"Gumball"},
+      {"k":"TV","v":"Invincible"},{"k":"TV","v":"The Boys"},{"k":"TV","v":"Seinfeld"},
+      {"k":"Film","v":"Ferris Bueller"},{"k":"Film","v":"Kill Bill"},{"k":"Film","v":"Django"},
+      {"k":"Film","v":"Spirited Away"},{"k":"Film","v":"Totoro"},{"k":"Film","v":"Interstellar"},
+      {"k":"Film","v":"Spider-Verse"},{"k":"Film","v":"A24"},{"k":"Film","v":"Horror"},
+      {"k":"Music","v":"Vacations"},{"k":"Music","v":"The Strokes"},{"k":"Music","v":"Still Woozy"},
+      {"k":"Music","v":"Aminé"},{"k":"Music","v":"Logic"},{"k":"Music","v":"House"}
+    ]'><span id="interests-hint">Push them around</span></div>
   </section>
 
   <div class="resume-row">
@@ -204,7 +217,8 @@
 
 <img id="hovIcon" src="" alt="">
 
-<script src="assets/js/projects.js"></script>
-<script src="assets/js/site.js"></script>
+<script src="assets/js/projects.js?v=8"></script>
+<script src="assets/js/interests.js?v=8"></script>
+<script src="assets/js/site.js?v=8"></script>
 </body>
 </html>
