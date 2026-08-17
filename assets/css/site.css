@@ -209,6 +209,9 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0.26s; }
 }
 .menu-foot a {
   width: 26px; height: 26px;
+}
+.menu-foot a[aria-label="Resume"] {
+  width: 30px; height: 30px;   /* the doc glyph reads smaller at 26 */
   color: var(--muted);
   transition: color 0.3s ease, transform 0.3s ease;
 }
@@ -217,15 +220,19 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0.26s; }
 
 /* ══ ABOUT: portrait column on the right, copy on the left ══ */
 .about-top {
-  max-width: 1100px;
+  /* Same frame as .project-head so the photo lines up with the title and
+     the copy lines up with the category. */
+  max-width: 1600px;
   margin: 0 auto;
-  padding: calc(2.5rem) var(--pad) clamp(2.5rem, 6vh, 4rem);
+  padding: 0 var(--pad) clamp(3rem, 7vh, 5rem);
   display: grid;
-  grid-template-columns: 1fr 380px;
-  gap: clamp(2rem, 5vw, 4.5rem);
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: clamp(2rem, 5vw, 5rem);
   align-items: start;
 }
+.about-top .about-copy { max-width: 60ch; margin-left: auto; }
 .about-top .project-intro p { margin-bottom: 1.2rem; }
+.about-figure { margin: 0; }   /* UA default is 16px 40px, which broke the alignment */
 .about-figure img { width: 100%; border-radius: 3px; display: block; }
 .about-figure figcaption {
   margin-top: 0.7rem;
@@ -234,11 +241,10 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0.26s; }
 }
 .about-figure figcaption a { text-decoration: underline; text-underline-offset: 3px; }
 .about-figure figcaption a:hover { color: var(--accent); }
-.about-figure .project-facts {
-  margin-top: 1.75rem;
+.about-top .project-facts {
+  margin-top: 2rem;
   padding-top: 1.5rem;
-  flex-direction: column;
-  gap: 1.25rem;
+  gap: 2.5rem;
 }
 
 /* ══ RESUME: a dated rail instead of a flat list ══ */
@@ -284,14 +290,14 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0.26s; }
 .cv-role .entry-link:hover img { opacity: 1; transform: scale(1.12); }
 
 /* ══ INTERESTS: floating, nudgeable bubbles ══ */
+/* No frame — the circles drift across the full width of the page. */
 #interests {
   position: relative;
-  width: 100%;
-  height: 460px;
-  border: 1px solid var(--line);
-  border-radius: 4px;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  height: 520px;
   overflow: hidden;
-  background: rgba(18, 18, 18, 0.45);
   touch-action: pan-y;
 }
 .bubble {
@@ -301,22 +307,27 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0.26s; }
   place-items: center;
   text-align: center;
   border-radius: 50%;
+  overflow: hidden;
   border: 1px solid var(--line);
-  background: rgba(10, 10, 10, 0.75);
+  background: rgba(18, 18, 18, 0.9);
   color: var(--fg);
   font-family: var(--font-display);
+  font-weight: 500;
   line-height: 1.15;
   padding: 0.4rem;
   will-change: transform;
-  transition: border-color 0.25s ease, color 0.25s ease, background 0.25s ease;
   user-select: none;
 }
-.bubble[data-kind="Games"]  { border-color: rgba(255,142,61,0.45); }
-.bubble[data-kind="Music"]  { border-color: rgba(232,224,212,0.35); }
-.bubble.lit { border-color: var(--accent); color: var(--accent); background: rgba(255,142,61,0.08); }
+.bubble img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+  pointer-events: none;
+}
 #interests-hint {
   position: absolute;
-  right: 0.9rem; bottom: 0.75rem;
+  right: var(--pad); bottom: 0.75rem;
   font-size: 0.66rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -618,15 +629,17 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0.26s; }
 .closing-links {
   display: flex;
   justify-content: center;
-  gap: 2rem;
-  flex-wrap: wrap;
-  font-size: 0.72rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  align-items: center;
+  gap: 1.6rem;
   color: var(--muted);
 }
-.closing-links a { transition: color 0.3s ease; }
-.closing-links a:hover { color: var(--accent); }
+.closing-links a {
+  width: 26px; height: 26px;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+.closing-links a[aria-label="Resume"] { width: 30px; height: 30px; }
+.closing-links a:hover { color: var(--accent); transform: translateY(-3px); }
+.closing-links svg { width: 100%; height: 100%; fill: currentColor; display: block; }
 
 footer {
   border-top: 1px solid var(--line);
@@ -802,12 +815,20 @@ footer {
    cover with a max-height was quietly cropping 16:9 heroes to ~1.86. */
 .project-hero img,
 .project-hero video {
+  width: 100%;
+  height: auto;
+  border-radius: 3px;
+  display: block;
+}
+/* Square or portrait heroes only: going full width would make them
+   absurdly tall, so cap the height and centre instead. project-page.js
+   adds this class from the hero's real aspect ratio. */
+.project-hero.is-tall img,
+.project-hero.is-tall video {
   width: auto;
   max-width: 100%;
-  height: auto;
-  max-height: 86svh;
+  max-height: 78svh;
   margin: 0 auto;
-  border-radius: 3px;
 }
 
 /* Title + category sit above the hero. Category is pushed right and sits

@@ -1,7 +1,8 @@
 /* ══════════════════════════════════════════════════════════════
-   Interests — floating bubbles you can shove around with the cursor.
-   Light circle-packing physics: gentle drift, cursor repulsion,
-   pairwise separation, walls. No dependencies, no canvas.
+   Interests — circles drifting in a shallow 3D field.
+   Each has a simulated depth that drives its scale, blur, opacity and
+   z-index, so they pass in front of and behind one another. They move
+   on their own; the cursor only nudges them gently.
    ══════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
@@ -13,7 +14,6 @@
   try { items = JSON.parse(box.dataset.items); } catch (e) { return; }
   if (!items || !items.length) return;
 
-  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var W = box.clientWidth, H = box.clientHeight;
   var balls = [];
 
@@ -21,25 +21,46 @@
     var el = document.createElement('span');
     el.className = 'bubble';
     el.dataset.kind = it.k;
-    el.textContent = it.v;
-    // Longer names get bigger circles so the text always fits.
-    var r = Math.max(34, Math.min(62, 20 + it.v.length * 2.6));
-    el.style.width = el.style.height = (r * 2) + 'px';
-    el.style.fontSize = (r < 42 ? 0.62 : 0.72) + 'rem';
-    el.title = it.k;
+    el.title = it.k + ' — ' + it.v;
+
+    // Depth: 0 = far, 1 = near. Drives size, blur, opacity, stacking.
+    var z = Math.random();
+    var base = 46 + z * 46;                 // radius before scale
+
+    if (it.img) {
+      var img = document.createElement('img');
+      img.src = 'assets/interests/' + it.img;
+      img.alt = it.v;
+      // No image on disk yet? Fall back to the label rather than a blank disc.
+      img.addEventListener('error', function () {
+        img.remove();
+        el.textContent = it.v;
+      });
+      el.appendChild(img);
+    } else {
+      el.textContent = it.v;
+    }
+
+    el.style.width = el.style.height = (base * 2) + 'px';
+    el.style.fontSize = (base < 60 ? 0.6 : 0.7) + 'rem';
+    el.style.zIndex = Math.round(z * 100);
+    el.style.opacity = (0.45 + z * 0.55).toFixed(2);
+    el.style.filter = z < 0.5 ? 'blur(' + ((0.5 - z) * 3).toFixed(1) + 'px)' : 'none';
     box.appendChild(el);
+
     var ball = {
-      el: el, r: r,
-      x: r + Math.random() * Math.max(1, W - r * 2),
-      y: r + Math.random() * Math.max(1, H - r * 2),
-      vx: (Math.random() - 0.5) * 0.35,
-      vy: (Math.random() - 0.5) * 0.35
+      el: el, r: base, z: z,
+      x: base + Math.random() * Math.max(1, W - base * 2),
+      y: base + Math.random() * Math.max(1, H - base * 2),
+      // Nearer circles drift a little faster — cheap parallax.
+      vx: (Math.random() - 0.5) * (0.25 + z * 0.35),
+      vy: (Math.random() - 0.5) * (0.25 + z * 0.35)
     };
-    // Place immediately; without this every bubble sits stacked at the
-    // origin until the first animation frame lands.
-    el.style.transform = 'translate(' + (ball.x - r) + 'px,' + (ball.y - r) + 'px)';
+    el.style.transform = 'translate(' + (ball.x - base) + 'px,' + (ball.y - base) + 'px)';
     balls.push(ball);
   });
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
   var mx = -9999, my = -9999;
   box.addEventListener('mousemove', function (e) {
@@ -49,67 +70,65 @@
   box.addEventListener('mouseleave', function () { mx = my = -9999; });
 
   function step() {
-    for (var i = 0; i < balls.length; i++) {
-      var a = balls[i];
+    var i, a;
+    for (i = 0; i < balls.length; i++) {
+      a = balls[i];
 
-      // cursor push
+      // Gentle cursor nudge — deliberately weak and short-range.
       var dx = a.x - mx, dy = a.y - my;
       var d = Math.sqrt(dx * dx + dy * dy);
-      var reach = a.r + 90;
+      var reach = a.r + 40;
       if (d < reach && d > 0.01) {
-        var push = (1 - d / reach) * 1.5;
+        var push = (1 - d / reach) * 0.28 * a.z;   // nearer ones react more
         a.vx += (dx / d) * push;
         a.vy += (dy / d) * push;
-        a.el.classList.add('lit');
-      } else {
-        a.el.classList.remove('lit');
       }
 
-      // keep a lazy drift so it never fully settles
-      a.vx += (Math.random() - 0.5) * 0.02;
-      a.vy += (Math.random() - 0.5) * 0.02;
+      // Self-directed wander so the field never goes still.
+      a.vx += (Math.random() - 0.5) * 0.03;
+      a.vy += (Math.random() - 0.5) * 0.03;
 
-      a.vx *= 0.94; a.vy *= 0.94;
+      // Light damping, with a floor so drift persists.
+      a.vx *= 0.985; a.vy *= 0.985;
+      var sp = Math.sqrt(a.vx * a.vx + a.vy * a.vy);
+      var min = 0.08 + a.z * 0.12;
+      if (sp < min && sp > 0.0001) { a.vx = a.vx / sp * min; a.vy = a.vy / sp * min; }
+
       a.x += a.vx; a.y += a.vy;
 
-      // walls
-      if (a.x < a.r) { a.x = a.r; a.vx = Math.abs(a.vx) * 0.5; }
-      if (a.x > W - a.r) { a.x = W - a.r; a.vx = -Math.abs(a.vx) * 0.5; }
-      if (a.y < a.r) { a.y = a.r; a.vy = Math.abs(a.vy) * 0.5; }
-      if (a.y > H - a.r) { a.y = H - a.r; a.vy = -Math.abs(a.vy) * 0.5; }
+      // Wrap around the edges — they're floating, not boxed in.
+      if (a.x < -a.r) a.x = W + a.r;
+      if (a.x > W + a.r) a.x = -a.r;
+      if (a.y < -a.r) a.y = H + a.r;
+      if (a.y > H + a.r) a.y = -a.r;
     }
 
-    // pairwise separation
+    // Only separate circles at similar depths; different planes pass through.
     for (var p = 0; p < balls.length; p++) {
       for (var q = p + 1; q < balls.length; q++) {
         var A = balls[p], B = balls[q];
+        if (Math.abs(A.z - B.z) > 0.22) continue;
         var ox = B.x - A.x, oy = B.y - A.y;
         var dist = Math.sqrt(ox * ox + oy * oy) || 0.01;
-        var min = A.r + B.r + 4;
-        if (dist < min) {
-          var overlap = (min - dist) / 2;
+        var minD = (A.r + B.r) * 0.8;
+        if (dist < minD) {
+          var push2 = (minD - dist) / 2 * 0.35;
           var ux = ox / dist, uy = oy / dist;
-          A.x -= ux * overlap; A.y -= uy * overlap;
-          B.x += ux * overlap; B.y += uy * overlap;
-          A.vx -= ux * 0.12; A.vy -= uy * 0.12;
-          B.vx += ux * 0.12; B.vy += uy * 0.12;
+          A.x -= ux * push2; A.y -= uy * push2;
+          B.x += ux * push2; B.y += uy * push2;
         }
       }
     }
 
-    for (var k = 0; k < balls.length; k++) {
-      var b2 = balls[k];
-      b2.el.style.transform =
-        'translate(' + (b2.x - b2.r).toFixed(1) + 'px,' + (b2.y - b2.r).toFixed(1) + 'px)';
+    for (i = 0; i < balls.length; i++) {
+      a = balls[i];
+      a.el.style.transform =
+        'translate(' + (a.x - a.r).toFixed(1) + 'px,' + (a.y - a.r).toFixed(1) + 'px)';
     }
     raf = requestAnimationFrame(step);
   }
 
   var raf = null;
-  // Reduced motion: leave them where they were placed, no animation.
-  if (reduce) return;
-
-  // Only animate while the section is actually on screen.
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {

@@ -16,15 +16,15 @@ const projects = [
     tools: "Photoshop, After Effects, Magnific, Higgsfield AI",
     year: "2026",
     cover: `projects/capstone/cover.jpg`,
-    hero: `projects/capstone/hero-16x9.jpg`,
+    hero: `projects/capstone/hero.jpg`,
     intro: `<p>A music visualizer for <a href="https://open.spotify.com/artist/" target="_blank" rel="noopener">Z</a>'s track <em>where it hurts.</em>, made as my senior capstone. Z isn't based in NY, so instead of shooting him I built the whole piece out of AI-generated assets and art-directed it end to end.</p>
 <p>I storyboarded the scenes and wrote the direction, generated each one, then broke the stills apart in Photoshop and animated them in After Effects. The imagery stays abstract on purpose. Z gave me the freedom, and I'd rather leave room for the viewer than push a narrative he wasn't comfortable carrying.</p>`,
     work: `<div class="project-video"><video src="projects/capstone/visualizer.mp4" controls playsinline preload="metadata" poster="projects/capstone/poster.jpg"></video></div>
 <div class="img-grid-3">
-<div data-span="2"><img src="projects/capstone/frame-02.jpg" alt="Paper-cutout Z walking through a field" loading="lazy"></div>
-<div><img src="projects/capstone/frame-04.jpg" alt="Z floating among planets in space" loading="lazy"></div>
+<div><img src="projects/capstone/still-17.jpg" alt="Still from the visualizer" loading="lazy"></div>
+<div><img src="projects/capstone/still-30.jpg" alt="Still from the visualizer" loading="lazy"></div>
 <div><img src="projects/capstone/frame-03.jpg" alt="Paper-cutout Z facing a cliff in fog" loading="lazy"></div>
-<div data-span="2"><img src="projects/capstone/frame-08.jpg" alt="Black hole with rings against a starfield" loading="lazy"></div>
+<div><img src="projects/capstone/frame-08.jpg" alt="Black hole with rings against a starfield" loading="lazy"></div>
 </div>`
   },
   {
@@ -36,14 +36,10 @@ const projects = [
     cover: `projects/loya-and-co/cover.jpg`,
     hero: `projects/loya-and-co/cover.jpg`,
     intro: `<p>I work with my brother, who produces under our last name — <a href="https://open.spotify.com/artist/5gNQpoYEBE1jxjCgFkLWce" target="_blank" rel="noopener">loya</a>. Cover art, Spotify canvas visuals, logo design, and social content, shaped around each release.</p>
-<p>The logo came out of his hat collection, set in Amador — a blackletter that balances elegance with edge. I've also made pieces for other artists, including posters and a motion graphic for <a href="https://open.spotify.com/artist/2848adRcxvgWNRcz1g1tQD" target="_blank" rel="noopener">Felly</a>.</p>`,
+<p>The logo came out of his hat collection, set in Amador — a blackletter that balances elegance with edge. I've also made pieces for other artists along the way.</p>`,
     work: `<div class="project-video"><video src="projects/loya-and-co/canvases.mp4" autoplay loop muted playsinline></video></div>
 <div><img src="projects/loya-and-co/loya-hat-mockup.jpeg" alt="loya hat mockup" loading="lazy"></div>
-<div class="img-grid-3">
-<div><img src="projects/loya-and-co/felly-1.jpg" alt="Felly poster design 1" loading="lazy"></div>
-<div><img src="projects/loya-and-co/felly-2.jpg" alt="Felly poster design 2" loading="lazy"></div>
-<div><img src="projects/loya-and-co/felly-3.jpg" alt="Felly poster design 3" loading="lazy"></div>
-</div>`
+<div><img src="projects/loya-and-co/vinyl-cover.jpeg" alt="Diamonds and Damage vinyl" loading="lazy"></div>`
   },
   {
     slug: "bodyarmor-powerade",
@@ -124,6 +120,7 @@ const projects = [
     intro: `<p>A mix of passion projects, school assignments, professional work, and collaborations. Not every concept made it to production, but each one shaped my process.</p>`,
     work: `<div class="img-grid-3">
 <div data-span="2"><img src="projects/miscellaneous/lyrc-hat.jpeg" alt="Embroidered logo cap" loading="lazy"></div>
+<div><img src="projects/miscellaneous/felly-wildfire.jpg" alt="Wildfire, an album by Felly" loading="lazy"></div>
 <div><img src="projects/miscellaneous/lust.jpg" alt="LUST experimental design" loading="lazy"></div>
 <div><video src="projects/miscellaneous/web-story.mp4" autoplay loop muted playsinline></video></div>
 <div data-span="2"><video src="projects/miscellaneous/ml-anim.mp4" autoplay loop muted playsinline></video></div>

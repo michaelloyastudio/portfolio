@@ -25,6 +25,16 @@
       ? '<video src="' + p.hero + '" controls playsinline preload="metadata"' +
         (p.heroPoster ? ' poster="' + p.heroPoster + '"' : '') + '></video>'
       : '<img src="' + p.hero + '" alt="' + p.title + '">';
+
+    // A hero narrower than ~4:3 would be enormous at full width, so mark it
+    // and let CSS cap the height instead (Album Covers is square).
+    var hm = hero.firstElementChild;
+    var flag = function () {
+      var w = hm.naturalWidth || hm.videoWidth, h = hm.naturalHeight || hm.videoHeight;
+      if (w && h) hero.classList.toggle('is-tall', (w / h) < 1.3);
+    };
+    hm.addEventListener(hm.tagName === 'VIDEO' ? 'loadedmetadata' : 'load', flag);
+    flag();
   }
 
   // ── title block ──
@@ -97,7 +107,13 @@
       tiles.forEach(function (t, i) {
         row.push(t); sum += ratios[i];
         var h = (W - gap * (row.length - 1)) / sum;
-        if (h <= target) { flush(row, start, h, true); row = []; sum = 0; start = i + 1; }
+        // Break on the target height OR the column count. The count matters:
+        // three portrait tiles are still short of the target, so without it
+        // they'd keep collecting neighbours and end up small. Breaking at the
+        // column count lets a row of verticals fill the width and stand tall.
+        if (h <= target || row.length >= perRow) {
+          flush(row, start, h, true); row = []; sum = 0; start = i + 1;
+        }
       });
       if (row.length) {
         // Trailing row: cap at the target so a lone tile isn't blown up.
