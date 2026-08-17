@@ -181,13 +181,17 @@ body.menu-open .menu { opacity: 1; visibility: visible; }
   color: var(--fg);
   opacity: 0;
   transform: translateY(20px);
-  transition: color 0.3s ease, opacity 0.5s var(--ease), transform 0.5s var(--ease);
+  /* Property order matters below: the staggered open delays must apply to
+     opacity and transform ONLY. A single transition-delay would also delay
+     colour, so hovering (especially Contact, at 0.26s) left the highlight
+     lagging behind the letter jump on the way in and on the way out. */
+  transition: color 0.16s ease, opacity 0.5s var(--ease), transform 0.5s var(--ease);
 }
 body.menu-open .menu-links a { opacity: 1; transform: none; }
-body.menu-open .menu-links a:nth-child(1) { transition-delay: 0.08s; }
-body.menu-open .menu-links a:nth-child(2) { transition-delay: 0.14s; }
-body.menu-open .menu-links a:nth-child(3) { transition-delay: 0.20s; }
-body.menu-open .menu-links a:nth-child(4) { transition-delay: 0.26s; }
+body.menu-open .menu-links a:nth-child(1) { transition-delay: 0s, 0.08s, 0.08s; }
+body.menu-open .menu-links a:nth-child(2) { transition-delay: 0s, 0.14s, 0.14s; }
+body.menu-open .menu-links a:nth-child(3) { transition-delay: 0s, 0.20s, 0.20s; }
+body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; }
 .menu-links a:hover,
 .menu-links a[aria-current="page"] { color: var(--accent); }
 
