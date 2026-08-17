@@ -16,12 +16,11 @@ const projects = [
     tools: "Photoshop, After Effects, Magnific, Higgsfield AI",
     year: "2026",
     cover: `projects/capstone/cover.jpg`,
-    hero: `projects/capstone/cover.jpg`,
+    hero: `projects/capstone/frame-04.jpg`,
     intro: `<p>A music visualizer for <a href="https://open.spotify.com/artist/" target="_blank" rel="noopener">Z</a>'s track <em>where it hurts.</em>, made as my senior capstone. Z isn't based in NY, so instead of shooting him I built the whole piece out of AI-generated assets and art-directed it end to end.</p>
 <p>I storyboarded the scenes and wrote the direction, generated each one, then broke the stills apart in Photoshop and animated them in After Effects. The imagery stays abstract on purpose. Z gave me the freedom, and I'd rather leave room for the viewer than push a narrative he wasn't comfortable carrying.</p>`,
     work: `<div class="project-video"><video src="projects/capstone/visualizer.mp4" controls playsinline preload="metadata" poster="projects/capstone/poster.jpg"></video></div>
 <div class="project-img"><img src="projects/capstone/frame-02.jpg" alt="Paper-cutout Z walking through a field" loading="lazy"></div>
-<div class="project-img"><img src="projects/capstone/frame-04.jpg" alt="Z floating among planets in space" loading="lazy"></div>
 <div class="project-img"><img src="projects/capstone/frame-08.jpg" alt="Black hole with rings against a starfield" loading="lazy"></div>
 <div class="project-img"><img src="projects/capstone/frame-03.jpg" alt="Paper-cutout Z facing a cliff in fog" loading="lazy"></div>`
   },
@@ -133,12 +132,12 @@ const projects = [
 <div class="project-img"><img src="projects/miscellaneous/mm-print.jpg" alt="Mixtape Magazine, Artist or Rapper" loading="lazy"></div>
 </div>
 <div class="project-video"><video src="projects/miscellaneous/truck-circle.mp4" autoplay loop muted playsinline></video></div>
-<div class="img-grid-3">
-<div class="project-img"><img src="projects/miscellaneous/scene-3.png" alt="Steph Curry graphic" loading="lazy"></div>
+<div class="img-grid-4">
+<div class="project-img"><img src="projects/miscellaneous/scene-2.jpg" alt="Django Unchained poster" loading="lazy"></div>
+<div class="project-img"><img src="projects/miscellaneous/scene-3.png" alt="Steph Curry poster" loading="lazy"></div>
 <div class="project-img"><img src="projects/miscellaneous/cartoon.jpg" alt="Cartoon illustration" loading="lazy"></div>
 <div class="project-img"><img src="projects/miscellaneous/billboard.jpg" alt="2023 Billboard design" loading="lazy"></div>
 </div>
-<div class="project-img"><img src="projects/miscellaneous/play-in.jpg" alt="Play-In tournament design" loading="lazy"></div>
 <div class="project-img"><img src="projects/miscellaneous/characters-sketchbook.jpeg" alt="Character sketchbook mockup" loading="lazy"></div>`
   }
 ];

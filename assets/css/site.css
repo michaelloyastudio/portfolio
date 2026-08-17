@@ -595,13 +595,13 @@ footer {
 }
 .entry-org { font-size: 0.88rem; color: var(--accent); margin-top: 0.15rem; }
 .entry-desc {
-  font-size: 0.92rem;
+  font-size: 1rem;
   opacity: 0.72;
   margin-top: 0.5rem;
   max-width: 68ch;
   line-height: 1.6;
 }
-.entry-sub { font-size: 0.9rem; opacity: 0.75; margin-top: 0.2rem; }
+.entry-sub { font-size: 0.98rem; opacity: 0.75; margin-top: 0.2rem; }
 .entry-link img {
   width: 22px; height: 22px;
   border-radius: 3px;
@@ -621,7 +621,7 @@ footer {
   gap: 0.6rem;
   padding: 0.6rem 0;
   border-bottom: 1px solid var(--line);
-  font-size: 0.92rem;
+  font-size: 1rem;
 }
 .tag-row:last-child { border-bottom: none; }
 .tag-label {
@@ -687,22 +687,26 @@ footer {
   max-height: none;
   margin: 0 auto;
 }
+/* contain + height:auto so the hero renders at its true aspect ratio.
+   cover with a max-height was quietly cropping 16:9 heroes to ~1.86. */
 .project-hero img,
 .project-hero video {
   width: 100%;
-  max-height: 78svh;
-  object-fit: cover;
+  height: auto;
+  max-height: 86svh;
+  object-fit: contain;
   border-radius: 3px;
   background: var(--panel);
 }
-.project-hero video { object-fit: contain; max-height: 82svh; }
 
 /* Title + category sit above the hero. Category is pushed right and sits
    on the title's baseline. */
 .project-head {
   max-width: 1600px;
   margin: 0 auto;
-  padding: calc(var(--frame-y) * 2 + 63px) var(--pad) clamp(1.5rem, 3.5vh, 2.5rem);
+  /* Same top offset as .page-head on Work/About so titles sit at a
+     consistent height across the site. */
+  padding: calc(7rem + var(--pad)) var(--pad) clamp(2.75rem, 6vh, 4.5rem);
   display: flex;
   align-items: baseline;
   justify-content: space-between;
@@ -710,8 +714,8 @@ footer {
   flex-wrap: wrap;
 }
 .project-category {
-  font-size: 0.72rem;
-  letter-spacing: 0.26em;
+  font-size: 0.92rem;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--accent);
   margin: 0;
@@ -719,14 +723,14 @@ footer {
   white-space: nowrap;
 }
 .project-head h1 {
-  font-size: clamp(2.4rem, 7vw, 4.6rem);
+  font-size: clamp(3rem, 8.5vw, 6rem);
   font-weight: 700;
   letter-spacing: -0.04em;
   line-height: 1;
   margin: 0;
 }
 .project-intro p {
-  font-size: clamp(1.02rem, 1.7vw, 1.18rem);
+  font-size: clamp(1.14rem, 1.9vw, 1.32rem);
   line-height: 1.7;
   opacity: 0.82;
   margin: 0 0 1.1rem;
@@ -755,7 +759,7 @@ footer {
 }
 .project-facts dd {
   margin: 0;
-  font-size: 0.86rem;
+  font-size: 0.95rem;
   max-width: 44ch;
 }
 
