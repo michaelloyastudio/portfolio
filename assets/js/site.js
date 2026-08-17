@@ -38,11 +38,9 @@
   }
 
   /* ── Nav background on scroll ────────────────────────────────────*/
-  var nav = $('nav');
   var cue = document.querySelector('.scroll-cue');
-  if (nav || cue) {
+  if (cue) {
     var onScroll = function () {
-      if (nav) nav.classList.toggle('solid', window.scrollY > 40);
       if (cue) cue.classList.toggle('gone', window.scrollY > 24);
     };
     window.addEventListener('scroll', onScroll, { passive: true });

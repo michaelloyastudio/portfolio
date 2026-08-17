@@ -60,11 +60,15 @@
      then lock that row in. Every tile in a row shares a height and each
      keeps its own aspect ratio, so gaps stay uniform and nothing is
      cropped or left as a hole. */
+  /* Prefer the width/height baked into the markup: those are known at
+     parse time, so the mosaic lays out correctly on first paint instead
+     of waiting for every lazy image below the fold to download. Falls
+     back to the decoded size if an attribute is ever missing. */
   function ratioOf(tile) {
     var m = tile.querySelector('img, video');
     if (!m) return 0;
-    var w = m.naturalWidth || m.videoWidth;
-    var h = m.naturalHeight || m.videoHeight;
+    var w = parseFloat(m.getAttribute('width'))  || m.naturalWidth  || m.videoWidth;
+    var h = parseFloat(m.getAttribute('height')) || m.naturalHeight || m.videoHeight;
     return (w && h) ? w / h : 0;
   }
 
@@ -75,15 +79,24 @@
       var tiles = Array.prototype.slice.call(grid.children);
       if (!tiles.length) return;
 
-      var gap = parseFloat(getComputedStyle(grid).columnGap) || 0;
-      var W = grid.clientWidth;
+      /* Round the gap to a whole pixel and pin it inline. The token is a
+         clamp() with a vw term, so it resolves to something like 15.18px —
+         and a row whose widths sum to exactly the container then overflows
+         by a fraction and wraps. Integer gap + integer width = exact fit. */
+      var gap = Math.round(parseFloat(getComputedStyle(grid).columnGap) || 0);
+      grid.style.gap = gap + 'px';
+      /* floor the FRACTIONAL width: clientWidth rounds up (999 for a real
+         998.81), so a row summing to clientWidth overflows and wraps. */
+      var W = Math.floor(grid.getBoundingClientRect().width);
       if (!W) return;
 
       // Column count in the class name sets the target row height.
       var m = (grid.className.match(/img-grid-(\d)/) || [])[1];
       var perRow = Math.max(1, parseInt(m || '3', 10));
       if (W < 700) perRow = Math.min(perRow, 2);
-      var target = (W - gap * (perRow - 1)) / perRow;
+      // data-exact: always this many per row, whatever height that gives.
+      var exact = grid.hasAttribute('data-exact');
+      var target = exact ? 0 : (W - gap * (perRow - 1)) / perRow;
 
       var ratios = tiles.map(ratioOf);
       if (ratios.some(function (r) { return !r; })) { pending = true; return; }
@@ -111,7 +124,7 @@
         // three portrait tiles are still short of the target, so without it
         // they'd keep collecting neighbours and end up small. Breaking at the
         // column count lets a row of verticals fill the width and stand tall.
-        if (h <= target || row.length >= perRow) {
+        if ((!exact && h <= target) || row.length >= perRow) {
           flush(row, start, h, true); row = []; sum = 0; start = i + 1;
         }
       });

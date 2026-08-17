@@ -104,15 +104,12 @@ a { color: inherit; text-decoration: none; }
   align-items: center;
   justify-content: space-between;
   padding: var(--frame-y) var(--frame-x);
-  transition: background 0.4s ease, backdrop-filter 0.4s ease, border-color 0.4s ease;
-  border-bottom: 1px solid transparent;
+  /* Deliberately no background, blur, or bottom rule — the logo and the
+     hamburger sit directly on the page and never gain a container. */
+  background: none;
+  pointer-events: none;
 }
-.nav.solid {
-  background: rgba(10, 10, 10, 0.75);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-bottom-color: var(--line);
-}
+.nav > * { pointer-events: auto; }
 .nav-logo img {
   height: 45px;
   width: auto;
@@ -215,9 +212,9 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0.26s; }
 
 /* ══ ABOUT: portrait column on the right, copy on the left ══ */
 .about-top {
-  /* Same frame as .project-head so the photo lines up with the title and
-     the copy lines up with the category. */
-  max-width: 1600px;
+  /* Matches .page-head on Work, so About's title, category, photo and copy
+     all sit on the same grid as the Work page. */
+  max-width: var(--maxw);
   margin: 0 auto;
   padding: 0 var(--pad) clamp(3rem, 7vh, 5rem);
   display: grid;
@@ -732,7 +729,7 @@ footer {
 
 
 /* About reuses the project-page shell. These are the bits unique to it. */
-.about-detail { max-width: 860px; }
+.about-detail { max-width: var(--maxw); }
 .photo-credit-line {
   font-size: 0.8rem !important;
   color: var(--muted);
@@ -784,6 +781,10 @@ footer {
    on the title's baseline. */
 .project-head {
   max-width: 1600px;
+}
+/* About uses the narrower Work-page frame. */
+.project-head--narrow { max-width: var(--maxw); }
+.project-head {
   margin: 0 auto;
   /* Same top offset as .page-head on Work/About so titles sit at a
      consistent height across the site. */
