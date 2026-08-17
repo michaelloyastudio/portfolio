@@ -4,18 +4,27 @@
 Direct. No filler, no forced enthusiasm, no "great question."
 
 ## What this is
-Michael Loya's portfolio. Static site, no build step, no dependencies — open `index.html` and it runs.
+Michael Loya's portfolio. Static, multi-page, no build step and no dependencies. Open any HTML file and it runs.
 
-## Structure
-- **`index.html`** — the entire site. ~5,000 lines: inline CSS (top), markup (~1900–2300), JS (~2300+). Splash, Studio, Playground, About, and project detail are all views inside this one file.
-  - `const projects = [...]` at ~line 2164 — project data. Each entry has `title`, `overlayTitle`, `category`, `tools`, `year`, `cover`, `images`, and `content` (an inline HTML string).
-  - Scatter coordinates for the floating layout live in a separate array (~line 3946), index-matched to `projects`.
-- **`mobile.html`** — placeholder stub. `index.html` redirects here on mobile UA + width < 768.
-- **`studio-editor.html`** — internal tool for positioning the floating scatter. Not linked publicly.
-- **`interactive/`** — playground apps: `theblob`, `thegrid`, `therotation`, `theshop`. (`tycoon.html` is gitignored.)
-- **`projects/`** — per-project media, one folder per project.
-- **`assets/`** — `brand/`, `cursors/`, `site/`, `about-icons/`.
-- **`BRAND.md`** — colors and voice. Read it before any visual change.
+## Pages
+- **`index.html`** — Studio. The main page: video hero, three featured project bands, statement, closing CTA.
+- **`work.html`** — Work. All projects in a two-column grid; clicking one opens the detail overlay.
+- **`about.html`** — About. Bio, education, experience, skills, achievements, interests, resume.
+- **`mobile.html`** — orphaned. Nothing links to it since the mobile redirect was removed. Delete it or wire it back up.
+
+## Shared files
+- **`assets/css/site.css`** — every style on the site. Tokens at the top; the semantic block (`--bg`, `--fg`, `--accent`…) is the only thing a light mode would need to change.
+- **`assets/js/site.js`** — all behaviour. Each block no-ops if its markup is absent, so all three pages load the same file.
+- **`assets/js/projects.js`** — project content only. `const projects = [...]`, each entry with `title`, `category`, `tools`, `year`, `cover`, `images`, `content` (an inline HTML string).
+
+Project slugs live in `SLUGS` in `site.js`, not in the data file. They keep `#project/<slug>` anchors stable — About links into `work.html#project/<slug>`.
+
+Featured projects on the Studio page are set by `data-featured` on `#bands` in `index.html`. Comma-separated slugs, in order.
+
+## Other directories
+- **`projects/`** — per-project media, one folder each.
+- **`assets/brand/`** — logo. **Use `logo-cream.svg`** on dark. `logo-parchment.svg` is a different, outline-only mark with a different viewBox; it is not the primary logo.
+- **`interactive/`** — four standalone apps (theblob, thegrid, therotation, theshop). Still on disk and reachable by direct URL, but unlinked from the site since the Playground was removed.
 
 ## Brand (source: BRAND.md)
 | Role | Hex |
@@ -26,12 +35,16 @@ Michael Loya's portfolio. Static site, no build step, no dependencies — open `
 | Parchment | `#E8E0D4` |
 | Orange | `#ff8e3d` |
 
-Parchment replaces white everywhere. Black is `#0a0a0a`, never pure `#000`. Orange is for links, hover, and active states only — it works because it's rationed.
+Parchment replaces white. Black is `#0a0a0a`, never pure `#000`. Orange is for links, hover, and active states only — it works because it's rationed.
 
 Type: **Space Grotesk** (Google Fonts).
 
+## Known issues
+- **Hero video is the 71MB master** (`projects/capstone/visualizer.mp4`). Needs a compressed ~5MB web cut before launch.
+- **Mobile is unstyled beyond a single 900px breakpoint.** A real responsive pass hasn't happened.
+
 ## Deployment
-GitHub Pages from `michaelloyastudio/portfolio`, branch `main`, root. Cloudflare sits in front and terminates TLS. **Push to `main` = live.**
+GitHub Pages from `michaelloyastudio/portfolio`, branch `main`, root. Cloudflare fronts it and terminates TLS. **Push to `main` = live.**
 
 ## Rules
 - Anti-slop: no generic AI aesthetics, no purple gradients, no rounded-corner-Inter-font look.
