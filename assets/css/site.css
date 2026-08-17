@@ -181,8 +181,11 @@ body.menu-open .menu { opacity: 1; visibility: visible; }
   font-size: clamp(2.2rem, 8vw, 5rem);
   font-weight: 600;
   letter-spacing: -0.035em;
-  line-height: 1.12;
-  padding: 0.35rem 0;
+  /* line-height near 1 keeps the box close to the glyphs, and the space
+     between links is margin rather than padding — so the cursor drops back
+     to default in the gaps instead of staying on a link. */
+  line-height: 1.02;
+  margin: 0.75rem 0;
   color: var(--fg);
   opacity: 0;
   transform: translateY(20px);
@@ -655,6 +658,19 @@ footer {
 #hovIcon.lg { width: 58px; height: 58px; }
 
 
+/* About reuses the project-page shell. These are the bits unique to it. */
+.about-detail { max-width: 860px; }
+.photo-credit-line {
+  font-size: 0.8rem !important;
+  color: var(--muted);
+  opacity: 1 !important;
+  margin-top: 1.75rem !important;
+}
+.photo-credit-line a { color: var(--muted); text-decoration: underline; text-underline-offset: 3px; }
+.photo-credit-line a:hover { color: var(--accent); }
+.about-detail .about-block:first-child { margin-top: 0; }
+.resume-row a { display: inline-block; }
+
 /* ══ PROJECT PAGE ══════════════════════════════════════════════
    Hero at the top, then one block of copy, then the work. */
 .project { padding-bottom: clamp(3rem, 8vh, 6rem); }
@@ -663,7 +679,13 @@ footer {
   width: 100%;
   max-width: 1600px;
   margin: 0 auto;
-  padding: calc(var(--frame-y) * 2 + 63px) var(--pad) 0;
+  padding: 0 var(--pad);
+}
+/* About uses the same slot for a portrait, which shouldn't go full-bleed. */
+.project-hero.is-portrait img {
+  max-width: 520px;
+  max-height: none;
+  margin: 0 auto;
 }
 .project-hero img,
 .project-hero video {
@@ -675,24 +697,33 @@ footer {
 }
 .project-hero video { object-fit: contain; max-height: 82svh; }
 
+/* Title + category sit above the hero. Category is pushed right and sits
+   on the title's baseline. */
 .project-head {
-  max-width: 860px;
+  max-width: 1600px;
   margin: 0 auto;
-  padding: clamp(2.5rem, 6vh, 4.5rem) var(--pad) clamp(2.5rem, 6vh, 4rem);
+  padding: calc(var(--frame-y) * 2 + 63px) var(--pad) clamp(1.5rem, 3.5vh, 2.5rem);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
 }
 .project-category {
   font-size: 0.72rem;
   letter-spacing: 0.26em;
   text-transform: uppercase;
   color: var(--accent);
-  margin: 0 0 1rem;
+  margin: 0;
+  text-align: right;
+  white-space: nowrap;
 }
 .project-head h1 {
   font-size: clamp(2.4rem, 7vw, 4.6rem);
   font-weight: 700;
   letter-spacing: -0.04em;
   line-height: 1;
-  margin: 0 0 1.75rem;
+  margin: 0;
 }
 .project-intro p {
   font-size: clamp(1.02rem, 1.7vw, 1.18rem);
@@ -728,6 +759,13 @@ footer {
   max-width: 44ch;
 }
 
+/* ── copy under the hero ── */
+.project-body {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: clamp(2.5rem, 6vh, 4.5rem) var(--pad) clamp(2.5rem, 6vh, 4rem);
+}
+
 /* ── the work ── */
 .project-work {
   max-width: 1100px;
@@ -743,50 +781,43 @@ footer {
   border-radius: 3px;
   background: var(--panel);
 }
+/* Masonry via CSS columns. Every image keeps its own aspect ratio, so
+   nothing is ever cropped — posters stay whole, wide shots stay wide —
+   and the columns still bottom out at roughly even heights. A fixed grid
+   with object-fit:cover was the thing chopping the tops off posters. */
 .project-work .img-grid-2,
 .project-work .img-grid-3,
 .project-work .img-grid-4 {
-  display: grid;
-  gap: clamp(0.75rem, 1.6vw, 1.25rem);
+  column-gap: clamp(0.75rem, 1.6vw, 1.25rem);
 }
-.project-work .img-grid-2 { grid-template-columns: repeat(2, 1fr); }
-.project-work .img-grid-3 { grid-template-columns: repeat(3, 1fr); }
-.project-work .img-grid-4 { grid-template-columns: repeat(4, 1fr); }
-.project-work .img-grid-2 img,
-.project-work .img-grid-3 img,
-.project-work .img-grid-4 img {
-  aspect-ratio: 1;
-  object-fit: cover;
+.project-work .img-grid-2 { column-count: 2; }
+.project-work .img-grid-3 { column-count: 3; }
+.project-work .img-grid-4 { column-count: 4; }
+.project-work [class^="img-grid"] > * {
+  break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+  margin-bottom: clamp(0.75rem, 1.6vw, 1.25rem);
 }
+.project-work [class^="img-grid"] img { height: auto; }
 
 /* ── prev / next ── */
+/* Plain text buttons with arrows. No rule, no project names. */
 .project-pager {
   max-width: 1100px;
-  margin: clamp(3.5rem, 9vh, 6rem) auto 0;
-  padding: 1.75rem var(--pad) 0;
-  border-top: 1px solid var(--line);
+  margin: clamp(3rem, 8vh, 5rem) auto 0;
+  padding: 0 var(--pad);
   display: flex;
   justify-content: space-between;
   gap: 2rem;
 }
-.project-pager a { display: block; max-width: 45%; }
-.project-pager a:last-child { text-align: right; }
-.project-pager em {
-  display: block;
-  font-style: normal;
-  font-size: 0.66rem;
-  letter-spacing: 0.2em;
+.project-pager a {
+  font-size: 0.74rem;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--muted);
-  margin-bottom: 0.45rem;
-}
-.project-pager span {
-  font-size: clamp(1rem, 2vw, 1.35rem);
-  font-weight: 500;
-  letter-spacing: -0.02em;
   transition: color 0.3s ease;
 }
-.project-pager a:hover span { color: var(--accent); }
+.project-pager a:hover { color: var(--accent); }
 
 /* ══ RESPONSIVE (desktop-first; full mobile pass still to come) ══ */
 @media (max-width: 900px) {
@@ -795,7 +826,8 @@ footer {
   .about-portrait { max-width: 260px; }
   .two-col { grid-template-columns: 1fr; }
   .project-work .img-grid-3,
-  .project-work .img-grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .project-work .img-grid-4 { column-count: 2; }
+  .project-head { padding-bottom: 1.25rem; }
   .project-facts { gap: 1.5rem; }
   .band-meta { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
 }

@@ -16,11 +16,11 @@ const projects = [
     tools: "Photoshop, After Effects, Magnific, Higgsfield AI",
     year: "2026",
     cover: `projects/capstone/cover.jpg`,
-    hero: `projects/capstone/visualizer.mp4`,
-    heroPoster: `projects/capstone/poster.jpg`,
+    hero: `projects/capstone/cover.jpg`,
     intro: `<p>A music visualizer for <a href="https://open.spotify.com/artist/" target="_blank" rel="noopener">Z</a>'s track <em>where it hurts.</em>, made as my senior capstone. Z isn't based in NY, so instead of shooting him I built the whole piece out of AI-generated assets and art-directed it end to end.</p>
 <p>I storyboarded the scenes and wrote the direction, generated each one, then broke the stills apart in Photoshop and animated them in After Effects. The imagery stays abstract on purpose. Z gave me the freedom, and I'd rather leave room for the viewer than push a narrative he wasn't comfortable carrying.</p>`,
-    work: `<div class="project-img"><img src="projects/capstone/frame-02.jpg" alt="Paper-cutout Z walking through a field" loading="lazy"></div>
+    work: `<div class="project-video"><video src="projects/capstone/visualizer.mp4" controls playsinline preload="metadata" poster="projects/capstone/poster.jpg"></video></div>
+<div class="project-img"><img src="projects/capstone/frame-02.jpg" alt="Paper-cutout Z walking through a field" loading="lazy"></div>
 <div class="project-img"><img src="projects/capstone/frame-04.jpg" alt="Z floating among planets in space" loading="lazy"></div>
 <div class="project-img"><img src="projects/capstone/frame-08.jpg" alt="Black hole with rings against a starfield" loading="lazy"></div>
 <div class="project-img"><img src="projects/capstone/frame-03.jpg" alt="Paper-cutout Z facing a cliff in fog" loading="lazy"></div>`
@@ -35,8 +35,7 @@ const projects = [
     hero: `projects/loya-and-co/cover.jpg`,
     intro: `<p>I work with my brother, who produces under our last name — <a href="https://open.spotify.com/artist/5gNQpoYEBE1jxjCgFkLWce" target="_blank" rel="noopener">loya</a>. Cover art, Spotify canvas visuals, logo design, and social content, shaped around each release.</p>
 <p>The logo came out of his hat collection, set in Amador — a blackletter that balances elegance with edge. I've also made pieces for other artists, including posters and a motion graphic for <a href="https://open.spotify.com/artist/2848adRcxvgWNRcz1g1tQD" target="_blank" rel="noopener">Felly</a>.</p>`,
-    work: `<div class="project-img"><img src="projects/loya-and-co/vinyl-cover.jpeg" alt="Diamonds and Damage vinyl" loading="lazy"></div>
-<div class="project-video"><video src="projects/loya-and-co/canvases.mp4" autoplay loop muted playsinline></video></div>
+    work: `<div class="project-video"><video src="projects/loya-and-co/canvases.mp4" autoplay loop muted playsinline></video></div>
 <div class="project-img"><img src="projects/loya-and-co/loya-hat-mockup.jpeg" alt="loya hat mockup" loading="lazy"></div>
 <div class="img-grid-3">
 <div class="project-img"><img src="projects/loya-and-co/felly-1.jpg" alt="Felly poster design 1" loading="lazy"></div>
@@ -55,11 +54,7 @@ const projects = [
     hero: `projects/bodyarmor-powerade/cover.jpg`,
     intro: `<p>I spent last summer interning with BODYARMOR and Powerade in Queens. Day to day I reformatted brand creative into point-of-sale ads — window clings, cooler clings, end caps — and produced an original video ad for Powerade's fall football campaign.</p>
 <p>For my capstone I built an AI-generated BODYARMOR commercial end to end: Runway and Kling for imagery, Topaz for upscaling, ElevenLabs for voiceover, After Effects to assemble. It was presented to C-suite executives.</p>`,
-    work: `<div class="project-video"><video src="projects/bodyarmor-powerade/pa-fall-football.mp4" controls playsinline preload="metadata" poster="projects/bodyarmor-powerade/cover.jpg"></video></div>
-<div class="img-grid-2">
-<div class="project-img"><img src="projects/bodyarmor-powerade/text-clarity-1.jpg" alt="AI character consistency test - snow scene" loading="lazy"></div>
-<div class="project-img"><img src="projects/bodyarmor-powerade/text-clarity-2.jpg" alt="AI character consistency test - ice cave" loading="lazy"></div>
-</div>
+    work: `<div class="project-video"><video src="projects/bodyarmor-powerade/pa-fall-football.mp4" controls playsinline preload="metadata" poster="projects/bodyarmor-powerade/pa-first.jpg"></video></div>
 <div class="project-video"><video src="projects/bodyarmor-powerade/kling.mp4" autoplay loop muted playsinline></video></div>
 <div class="project-video"><video src="projects/bodyarmor-powerade/aiba-commercial.mp4" controls playsinline preload="metadata" poster="projects/bodyarmor-powerade/aiba-poster.jpg"></video></div>`
   },
@@ -138,16 +133,12 @@ const projects = [
 <div class="project-img"><img src="projects/miscellaneous/mm-print.jpg" alt="Mixtape Magazine, Artist or Rapper" loading="lazy"></div>
 </div>
 <div class="project-video"><video src="projects/miscellaneous/truck-circle.mp4" autoplay loop muted playsinline></video></div>
-<div class="img-grid-4">
-<div class="project-img"><img src="projects/miscellaneous/scene-2.jpg" alt="Django Unchained poster" loading="lazy"></div>
+<div class="img-grid-3">
 <div class="project-img"><img src="projects/miscellaneous/scene-3.png" alt="Steph Curry graphic" loading="lazy"></div>
 <div class="project-img"><img src="projects/miscellaneous/cartoon.jpg" alt="Cartoon illustration" loading="lazy"></div>
 <div class="project-img"><img src="projects/miscellaneous/billboard.jpg" alt="2023 Billboard design" loading="lazy"></div>
 </div>
-<div class="img-grid-2">
 <div class="project-img"><img src="projects/miscellaneous/play-in.jpg" alt="Play-In tournament design" loading="lazy"></div>
-<div class="project-img"><img src="projects/miscellaneous/scene-1.jpg" alt="Design project screenshot" loading="lazy"></div>
-</div>
 <div class="project-img"><img src="projects/miscellaneous/characters-sketchbook.jpeg" alt="Character sketchbook mockup" loading="lazy"></div>`
   }
 ];

@@ -40,39 +40,40 @@
 <nav class="menu" id="menu">
   <div class="menu-links">
     <a href="index.html">Studio</a>
-    <a href="work.html">Work</a>
+    <!-- project pages live under Work, so Work stays lit in the menu -->
+    <a href="work.html" aria-current="page">Work</a>
     <a href="about.html">About</a>
     <a href="mailto:hello@michaelloya.studio">Contact</a>
   </div>
   <div class="menu-foot">
     <a href="https://instagram.com/michaelloya.studio" target="_blank" rel="noopener">Instagram</a>
     <a href="https://www.linkedin.com/in/michael-loya/" target="_blank" rel="noopener">LinkedIn</a>
-    <a href="assets/site/resume.pdf" download>Resume</a>
+    <a href="assets/site/resume.pdf" target="_blank" rel="noopener">Resume</a>
   </div>
 </nav>
 
 <main class="project">
 
-  <!-- hero -->
+  <header class="project-head">
+    <h1 id="projectTitle"></h1>
+    <p class="project-category" id="projectCategory"></p>
+  </header>
+
   <div class="project-hero" id="projectHero"></div>
 
-  <!-- title + copy: one block -->
-  <header class="project-head">
-    <p class="project-category" id="projectCategory"></p>
-    <h1 id="projectTitle"></h1>
+  <div class="project-body">
     <div class="project-intro" id="projectIntro"></div>
     <dl class="project-facts">
       <div><dt>Tools</dt><dd id="projectTools"></dd></div>
       <div><dt>Year</dt><dd id="projectYear"></dd></div>
     </dl>
-  </header>
+  </div>
 
-  <!-- the work -->
   <div class="project-work" id="projectWork"></div>
 
   <nav class="project-pager">
-    <a id="projectPrev" href="#"><em>Previous</em><span></span></a>
-    <a id="projectNext" href="#"><em>Next</em><span></span></a>
+    <a id="projectPrev" href="#">&larr; Previous</a>
+    <a id="projectNext" href="#">Next &rarr;</a>
   </nav>
 
 </main>

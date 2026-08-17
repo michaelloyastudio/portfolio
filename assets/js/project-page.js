@@ -41,8 +41,8 @@
   var prev = projects[(i - 1 + projects.length) % projects.length];
   var next = projects[(i + 1) % projects.length];
   var prevEl = $('projectPrev'), nextEl = $('projectNext');
-  if (prevEl) { prevEl.href = prev.slug + '.html'; prevEl.querySelector('span').textContent = prev.title; }
-  if (nextEl) { nextEl.href = next.slug + '.html'; nextEl.querySelector('span').textContent = next.title; }
+  if (prevEl) prevEl.href = prev.slug + '.html';
+  if (nextEl) nextEl.href = next.slug + '.html';
 
   // Autoplay loops only once they're on screen — a project page can hold a
   // lot of video, and decoding them all at once stutters the scroll.
