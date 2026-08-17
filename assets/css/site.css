@@ -185,7 +185,7 @@ body.menu-open .menu { opacity: 1; visibility: visible; }
      opacity and transform ONLY. A single transition-delay would also delay
      colour, so hovering (especially Contact, at 0.26s) left the highlight
      lagging behind the letter jump on the way in and on the way out. */
-  transition: color 0.16s ease, opacity 0.5s var(--ease), transform 0.5s var(--ease);
+  transition: color 0.3s ease, opacity 0.5s var(--ease), transform 0.5s var(--ease);
 }
 body.menu-open .menu-links a { opacity: 1; transform: none; }
 body.menu-open .menu-links a:nth-child(1) { transition-delay: 0s, 0.08s, 0.08s; }
