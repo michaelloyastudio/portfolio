@@ -2,9 +2,9 @@
 // Each entry: title, overlayTitle, category, tools, year, cover, images[], content (HTML string)
 const projects = [
   {
-    title: "Senior Capstone",
-    overlayTitle: "Senior<br>Capstone",
-    category: "Capstone / Motion / AI",
+    title: "where it hurts.",
+    overlayTitle: "where it<br>hurts.",
+    category: "Music Video",
     tools: "Photoshop, After Effects, Magnific, Higgsfield AI",
     year: "2026",
     cover: `projects/capstone/cover.jpg`,
@@ -25,9 +25,9 @@ const projects = [
 <p><strong>The paper cutout.</strong> He doesn't feel quite like himself. Moving and acting in a different way than he usually would — recognizable as him, but not him.</p>`
   },
   {
-    title: "Loya and Co.",
-    overlayTitle: "Music<br>Visuals",
-    category: "Cover Art / Motion / Music",
+    title: "Loya",
+    overlayTitle: "Loya",
+    category: "Creative Direction",
     tools: "Illustrator, Photoshop, After Effects, Blender, Adobe Firefly, Magnific",
     year: "2023–Present",
     cover: `projects/loya-and-co/dnd-final.jpeg`,
@@ -48,17 +48,12 @@ const projects = [
 <div class="project-img"><img src="projects/loya-and-co/felly-2.jpg" alt="Felly poster design 2" loading="lazy"></div>
 <div class="project-img"><img src="projects/loya-and-co/felly-3.jpg" alt="Felly poster design 3" loading="lazy"></div>
 </div>
-<div class="project-img project-img-video" data-video-src="projects/loya-and-co/felly-render.mp4"><video src="projects/loya-and-co/felly-render.mp4" autoplay loop muted playsinline style="width:100%;"></video></div>
-<p>I pitched a cover art concept for the artist <a href="https://open.spotify.com/artist/4DSFmAOMwMqDVKIsPY0kqs?si=IuyZFZwoTCCsxNR4Py_JHA" target="_blank">Sweezy</a>. While ultimately rejected, I'm proud of the design and the creative process behind it. I also designed cover art for Chitt, who my brother and I met as a kid at our summer house. Now collaborating with loya, it was great to work on something for an artist with such a personal connection to us.</p>
-<div class="img-grid-2">
-<div class="project-img"><img src="projects/loya-and-co/exotic-sweezy.jpg" alt="Sweezy cover art concept" loading="lazy"></div>
-<div class="project-img"><img src="projects/loya-and-co/feel-your-love.jpg" alt="Chitt cover art" loading="lazy"></div>
-</div>`
+<div class="project-img project-img-video" data-video-src="projects/loya-and-co/felly-render.mp4"><video src="projects/loya-and-co/felly-render.mp4" autoplay loop muted playsinline style="width:100%;"></video></div>`
   },
   {
     title: "BODYARMOR & Powerade",
     overlayTitle: "BODYARMOR<br>& Powerade",
-    category: "Internship / Branding / AI",
+    category: "Brand Campaign",
     tools: "Photoshop, Illustrator, Premiere, After Effects, Kling, Runway, ChatGPT, Topaz Labs, ElevenLabs",
     year: "2025",
     cover: `projects/bodyarmor-powerade/bapa.png`,
@@ -82,7 +77,7 @@ const projects = [
   {
     title: "University Union",
     overlayTitle: "University<br>Union",
-    category: "Event Design / Art Direction",
+    category: "Event Design",
     tools: "Illustrator, Photoshop, After Effects",
     year: "2024–2026",
     cover: `projects/university-union/uu.png`,
@@ -115,42 +110,14 @@ const projects = [
 </div>`
   },
   {
-    title: "LYRC",
-    overlayTitle: "LYRC",
-    category: "Social Media / Advertising / Branding",
-    tools: "Photoshop, Illustrator, After Effects, Premiere",
-    year: "2025–Present",
-    cover: `projects/lyrc/lyrc.png`,
-    images: [],
-    content: `<p><a href="https://lyrc.studio" target="_blank">LYRC</a> is an AI-powered content creation platform for musicians that generates lyric videos, performance visuals, and social media content. My brother loya founded it and brought me on to help out with the brand's social media and advertising: Instagram carousels, video ads, and promotional graphics.</p>
-
-<h3>Logo Design</h3>
-<p>The wordmark uses bold sans-serif letterforms that reflect LYRC's core product: stylized typography and lyric videos. A play button sits in the negative space of the R, and the icon mark reads as both a video camera and a microphone; capturing the dual nature of a platform built for musicians and visual content.</p>
-<div class="project-img" style="margin:1.5rem 0;"><img src="projects/lyrc/logo-mockup.jpeg" alt="LYRC logo mockup" loading="lazy"></div>
-
-<h3>Social Content</h3>
-<p>Instagram ads, carousel posts, and video content designed to drive user acquisition.</p>
-<div style="display:flex;justify-content:center;margin:1.5rem 0;">
-<div id="lyrc-phone-embed" class="lyrc-phone-embed"></div>
-</div>
-<p style="text-align:center;font-size:0.85rem;color:#8a8580;margin-top:-0.25rem;font-style:italic;">Click around to browse the phone.</p>
-
-<h3>Seedance 2.0</h3>
-<p>Seedance 2.0 is ByteDance's new video generation model. While loya integrates it into LYRC's core pipeline, we've been testing it on the advertising side. The video below was generated from a single prompt that pulled assets straight from lyrc.studio.</p>
-<div class="project-img-video" style="margin:1.5rem 0;cursor:pointer;">
-  <video src="projects/lyrc/seedance.mov" autoplay loop muted playsinline style="width:100%;border-radius:8px;display:block;"></video>
-</div>`
-  },
-  {
-    title: "Miscellaneous Projects",
-    overlayTitle: "Miscellaneous<br>Projects",
-    category: "Mixed / Passion Projects",
-    tools: "Various",
-    year: "2022–Present",
+    title: "Album Covers",
+    overlayTitle: "Album<br>Covers",
+    category: "Cover Art",
+    tools: "Photoshop, Illustrator",
+    year: "2022\u2013Present",
     cover: `projects/album-covers/commercial-break.jpg`,
     images: [],
-    content: `<h3>Album Covers</h3>
-<p>Covers I did when I used to produce music. Each one was shot and designed from scratch using Photoshop and&nbsp;Illustrator.</p>
+    content: `<p>Covers I did when I used to produce music. Each one was shot and designed from scratch using Photoshop and&nbsp;Illustrator.</p>
 <div class="img-grid-3">
 <div class="project-img"><img src="projects/album-covers/loya-passion-update.jpg" alt="Album cover - Passion update" loading="lazy"></div>
 <div class="project-img"><img src="projects/album-covers/loya-passion-4.jpg" alt="Album cover - Passion series 4" loading="lazy"></div>
@@ -164,9 +131,18 @@ const projects = [
 <div class="project-img"><img src="projects/album-covers/swim.jpg" alt="Swim cover" loading="lazy"></div>
 <div class="project-img"><img src="projects/album-covers/getting-loud.jpg" alt="Getting Loud cover" loading="lazy"></div>
 <div class="project-img"><img src="projects/album-covers/loya-passion-6.jpg" alt="Album cover - Passion series 6 (Fade Away)" loading="lazy"></div>
-</div>
-<h3>Miscellaneous</h3>
-<p>A mix of passion projects, school assignments, professional work, and collaborations. Not every concept made it to production, but each one shaped my process.</p>
+</div>`
+  },
+  {
+    title: "Miscellaneous",
+    overlayTitle: "Miscellaneous",
+    category: "Selected Works",
+    tools: "Various",
+    year: "2022\u2013Present",
+    cover: `projects/miscellaneous/lyrc-hat.jpeg`,
+    images: [],
+    content: `<p>A mix of passion projects, school assignments, professional work, and collaborations. Not every concept made it to production, but each one shaped my process.</p>
+<div class="project-img"><img src="projects/miscellaneous/lyrc-hat.jpeg" alt="Embroidered logo cap" loading="lazy"></div>
 <div class="img-grid-tight">
 <div class="project-img" style="aspect-ratio:2/3;"><img src="projects/miscellaneous/lust.jpg" alt="LUST experimental design" loading="lazy"></div>
 <div class="project-img project-img-video" data-video-src="projects/miscellaneous/web-story.mp4" style="aspect-ratio:2/3;"><video src="projects/miscellaneous/web-story.mp4" autoplay loop muted playsinline style="width:100%;height:100%;object-fit:cover;"></video></div>

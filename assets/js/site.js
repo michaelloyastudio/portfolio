@@ -8,17 +8,29 @@
 
   var $ = function (id) { return document.getElementById(id); };
 
+  /* Scroll lock — see the html.locked note in site.css. Reference-counted so
+     closing a project overlay doesn't unlock a still-open menu.
+     No width compensation needed: scrollbar-gutter keeps the gutter reserved
+     through overflow:hidden, so layout width is unchanged. (documentElement
+     .clientWidth does report the wider value while locked — that's a quirk of
+     the metric, not an actual reflow. Measure a real element to confirm.) */
+  var locks = 0;
+  function lockScroll(on) {
+    locks = Math.max(0, locks + (on ? 1 : -1));
+    document.documentElement.classList.toggle('locked', locks > 0);
+  }
+
   /* ── Slugs ───────────────────────────────────────────────────────
      Keeps #project/<slug> anchors stable and lets pages cross-link
      into a specific project. Kept here rather than in projects.js so
      that file stays pure content. */
   var SLUGS = {
-    'Senior Capstone':        'capstone',
-    'Loya and Co.':           'loya-and-co',
-    'BODYARMOR & Powerade':   'bodyarmor-powerade',
-    'University Union':       'university-union',
-    'LYRC':                   'lyrc',
-    'Miscellaneous Projects': 'miscellaneous'
+    'where it hurts.':      'where-it-hurts',
+    'Loya':                 'loya',
+    'BODYARMOR & Powerade': 'bodyarmor-powerade',
+    'University Union':     'university-union',
+    'Album Covers':         'album-covers',
+    'Miscellaneous':        'miscellaneous'
   };
   function slugOf(p) { return SLUGS[p.title] || ''; }
   function indexOfSlug(slug) {
@@ -34,11 +46,13 @@
     burger.addEventListener('click', function () {
       var open = document.body.classList.toggle('menu-open');
       burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+      lockScroll(open);
     });
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && document.body.classList.contains('menu-open')) {
         document.body.classList.remove('menu-open');
         burger.setAttribute('aria-expanded', 'false');
+        lockScroll(false);
       }
     });
   }
@@ -82,15 +96,19 @@
     $('detailCount').textContent = (i + 1) + ' / ' + projects.length;
     detail.classList.add('open');
     detail.scrollTop = 0;
-    document.body.style.overflow = 'hidden';
-    document.body.classList.remove('menu-open');
+    lockScroll(true);
+    if (document.body.classList.contains('menu-open')) {
+      document.body.classList.remove('menu-open');
+      if (burger) burger.setAttribute('aria-expanded', 'false');
+      lockScroll(false);   // release the menu's lock; the overlay holds its own
+    }
     if (pushHash && slugOf(p)) history.replaceState(null, '', '#project/' + slugOf(p));
   }
 
   function closeDetail() {
     if (!detail) return;
     detail.classList.remove('open');
-    document.body.style.overflow = '';
+    lockScroll(false);
     detail.querySelectorAll('video').forEach(function (v) { v.pause(); });
     history.replaceState(null, '', location.pathname);
     current = -1;
