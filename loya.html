@@ -3,33 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Work — Michael Loya Studio</title>
-<meta name="description" content="Selected design, motion, and video work by Michael Loya.">
+<title>loya — Michael Loya Studio</title>
+<meta name="description" content="loya — Creative Direction. Michael Loya Studio.">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 
-<meta property="og:title" content="Work — Michael Loya Studio">
-<meta property="og:description" content="Selected design, motion, and video work.">
-<meta property="og:image" content="https://michaelloya.studio/assets/site/preview.jpg">
-<meta property="og:url" content="https://michaelloya.studio/work.html">
-<meta property="og:type" content="website">
+<meta property="og:title" content="loya — Michael Loya Studio">
+<meta property="og:description" content="Creative Direction">
+<meta property="og:image" content="https://michaelloya.studio/projects/loya-and-co/cover.jpg">
+<meta property="og:url" content="https://michaelloya.studio/loya.html">
+<meta property="og:type" content="article">
 <meta name="twitter:card" content="summary_large_image">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/site.css">
 <style>
-  /* First-paint guard. Applies before anything else resolves, so the page
-     never flashes raw content before the load-in animations start.
-     Pure CSS — no JS dependency, so it can't leave the page stuck hidden. */
   html { background: #0a0a0a; }
   body { opacity: 0; animation: pageIn 0.4s ease 0.03s forwards; }
   @keyframes pageIn { to { opacity: 1; } }
-  @media (prefers-reduced-motion: reduce) {
-    body { opacity: 1; animation: none; }
-  }
+  @media (prefers-reduced-motion: reduce) { body { opacity: 1; animation: none; } }
 </style>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -45,7 +40,7 @@
 <nav class="menu" id="menu">
   <div class="menu-links">
     <a href="index.html">Studio</a>
-    <a href="work.html" aria-current="page">Work</a>
+    <a href="work.html">Work</a>
     <a href="about.html">About</a>
     <a href="mailto:hello@michaelloya.studio">Contact</a>
   </div>
@@ -56,20 +51,39 @@
   </div>
 </nav>
 
-<header class="page-head">
-  <h1>Work</h1>
-  <p>Music videos, brand campaigns, cover art, and event design. Click any project to read how it was made.</p>
-</header>
+<main class="project">
 
-<div class="work-grid" id="workGrid"></div>
+  <!-- hero -->
+  <div class="project-hero" id="projectHero"></div>
+
+  <!-- title + copy: one block -->
+  <header class="project-head">
+    <p class="project-category" id="projectCategory"></p>
+    <h1 id="projectTitle"></h1>
+    <div class="project-intro" id="projectIntro"></div>
+    <dl class="project-facts">
+      <div><dt>Tools</dt><dd id="projectTools"></dd></div>
+      <div><dt>Year</dt><dd id="projectYear"></dd></div>
+    </dl>
+  </header>
+
+  <!-- the work -->
+  <div class="project-work" id="projectWork"></div>
+
+  <nav class="project-pager">
+    <a id="projectPrev" href="#"><em>Previous</em><span></span></a>
+    <a id="projectNext" href="#"><em>Next</em><span></span></a>
+  </nav>
+
+</main>
 
 <section class="closing">
   <p class="lead">Let's create</p>
   <a class="closing-mail" href="mailto:hello@michaelloya.studio">hello@michaelloya.studio</a>
   <div class="closing-links">
-    <a href="https://instagram.com/michaelloya.studio" target="_blank" rel="noopener">Instagram</a>
-    <a href="https://www.linkedin.com/in/michael-loya/" target="_blank" rel="noopener">LinkedIn</a>
+    <a href="work.html">Work</a>
     <a href="about.html">About</a>
+    <a href="https://instagram.com/michaelloya.studio" target="_blank" rel="noopener">Instagram</a>
   </div>
 </section>
 
@@ -78,7 +92,9 @@
   <span>Tampa, FL</span>
 </footer>
 
+<script>window.PROJECT_SLUG = "loya";</script>
 <script src="assets/js/projects.js"></script>
+<script src="assets/js/project-page.js"></script>
 <script src="assets/js/site.js"></script>
 </body>
 </html>

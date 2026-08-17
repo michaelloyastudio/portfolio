@@ -38,15 +38,14 @@
 
 /* scrollbar-gutter reserves the scrollbar's width at all times, so the
    page never shifts sideways when a scrollbar appears on load or is
-   removed by overflow:hidden (menu open, project overlay open). */
+   removed by overflow:hidden when the menu opens. */
 html {
   scroll-behavior: smooth;
   scrollbar-gutter: stable;
   background: var(--black);
 }
 
-.tile, .band, [data-zoom],
-.detail-body .project-img img { cursor: pointer; }
+.tile, .band { cursor: pointer; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -71,15 +70,15 @@ h1, h2, h3,
 .btn, .menu-links a, .section-label, .tag-label,
 .band-title, .band-cat, .tile-title, .tile-cat,
 .closing-mail, .closing .lead, .closing-links,
-.entry-role, .entry-date, .detail-facts dt, .detail-facts dd,
-.detail-back, .detail-nav button, .detail-count,
+.entry-role, .entry-date,
+.project-category, .project-facts dt, .project-facts dd, .project-pager,
 .scroll-cue, .browse-link, footer {
   font-family: var(--font-display);
 }
 /* Scroll lock lives on <html>, not <body>. A body-level overflow:hidden
    propagates up to the viewport and cancels the reserved scrollbar gutter,
-   which is what made the page jump sideways whenever the menu or a project
-   overlay opened. Locking <html> keeps the gutter reserved. */
+   which is what made the page jump sideways whenever the menu opened.
+   Locking <html> keeps the gutter reserved. */
 html.locked { overflow: hidden; }
 
 img, video { display: block; max-width: 100%; }
@@ -651,131 +650,148 @@ footer {
 #hovIcon.on { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 #hovIcon.lg { width: 58px; height: 58px; }
 
-/* ══ PROJECT DETAIL OVERLAY ══ */
-/* Sits in normal document flow rather than as a fixed overlay, so the
-   project page scrolls with the browser's own scrollbar instead of
-   rendering a second scroll track inside a full-screen layer. */
-.detail { display: none; }
-body.project-open .detail { display: block; animation: detailIn 0.45s var(--ease) both; }
-body.project-open #pageContent { display: none; }
-@keyframes detailIn {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: none; }
-}
-.detail-inner {
-  max-width: 980px;
+
+/* ══ PROJECT PAGE ══════════════════════════════════════════════
+   Hero at the top, then one block of copy, then the work. */
+.project { padding-bottom: clamp(3rem, 8vh, 6rem); }
+
+.project-hero {
+  width: 100%;
+  max-width: 1600px;
   margin: 0 auto;
-  padding: clamp(8rem, 15vh, 11rem) var(--pad) 6rem;
+  padding: calc(var(--frame-y) * 2 + 63px) var(--pad) 0;
 }
-.detail-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 2.5rem;
+.project-hero img,
+.project-hero video {
+  width: 100%;
+  max-height: 78svh;
+  object-fit: cover;
+  border-radius: 3px;
+  background: var(--panel);
 }
-.detail-back {
-  font-size: 0.73rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--muted);
-  cursor: pointer;
-  background: none;
-  border: none;
-  font-family: inherit;
-  padding: 0;
-  transition: color 0.3s ease;
+.project-hero video { object-fit: contain; max-height: 82svh; }
+
+.project-head {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: clamp(2.5rem, 6vh, 4.5rem) var(--pad) clamp(2.5rem, 6vh, 4rem);
 }
-.detail-back:hover { color: var(--accent); }
-.detail-count { font-size: 0.71rem; letter-spacing: 0.14em; color: var(--muted); }
-.detail-top {
-  display: grid;
-  grid-template-columns: 290px 1fr;
-  gap: clamp(1.75rem, 4vw, 3rem);
-  align-items: start;
-  margin-bottom: 2.75rem;
-}
-.detail-hero { width: 100%; border-radius: 3px; cursor: zoom-in; }
-.detail-top h1 {
-  font-size: clamp(1.9rem, 4.5vw, 3rem);
-  font-weight: 600;
-  letter-spacing: -0.035em;
-  margin: 0 0 1.5rem;
-  line-height: 1.04;
-}
-.detail-facts dt {
-  font-size: 0.63rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-top: 0.9rem;
-}
-.detail-facts dd {
-  margin: 0.25rem 0 0;
-  font-size: 0.89rem;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-.detail-body { font-size: 1rem; line-height: 1.7; }
-.detail-body p { margin: 0 0 1.3rem; opacity: 0.85; max-width: 72ch; }
-.detail-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
-.detail-body h3 {
-  font-size: 0.7rem;
-  letter-spacing: 0.24em;
+.project-category {
+  font-size: 0.72rem;
+  letter-spacing: 0.26em;
   text-transform: uppercase;
   color: var(--accent);
-  margin: 2.75rem 0 1.1rem;
-  padding-bottom: 0.6rem;
-  border-bottom: 1px solid var(--line);
+  margin: 0 0 1rem;
 }
-.detail-body .project-img img,
-.detail-body .project-video video {
-  width: 100%;
-  border-radius: 3px;
-  margin: 1.75rem 0;
+.project-head h1 {
+  font-size: clamp(2.4rem, 7vw, 4.6rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  margin: 0 0 1.75rem;
 }
-.detail-body .project-img img { cursor: zoom-in; }
-.detail-nav {
+.project-intro p {
+  font-size: clamp(1.02rem, 1.7vw, 1.18rem);
+  line-height: 1.7;
+  opacity: 0.82;
+  margin: 0 0 1.1rem;
+}
+.project-intro p:last-child { margin-bottom: 0; }
+.project-intro a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.project-facts {
   display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-top: 4rem;
+  flex-wrap: wrap;
+  gap: 2.5rem;
+  margin: 2.25rem 0 0;
   padding-top: 1.5rem;
   border-top: 1px solid var(--line);
 }
-.detail-nav button {
-  background: none;
-  border: none;
-  color: var(--muted);
-  font-family: inherit;
-  font-size: 0.73rem;
-  letter-spacing: 0.14em;
+.project-facts dt {
+  font-size: 0.64rem;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  cursor: pointer;
-  padding: 0.5rem 0;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+}
+.project-facts dd {
+  margin: 0;
+  font-size: 0.86rem;
+  max-width: 44ch;
+}
+
+/* ── the work ── */
+.project-work {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 var(--pad);
+}
+.project-work > * { margin-bottom: clamp(0.75rem, 1.6vw, 1.25rem); }
+.project-work > *:last-child { margin-bottom: 0; }
+
+.project-work img,
+.project-work video {
+  width: 100%;
+  border-radius: 3px;
+  background: var(--panel);
+}
+.project-work .img-grid-2,
+.project-work .img-grid-3,
+.project-work .img-grid-4 {
+  display: grid;
+  gap: clamp(0.75rem, 1.6vw, 1.25rem);
+}
+.project-work .img-grid-2 { grid-template-columns: repeat(2, 1fr); }
+.project-work .img-grid-3 { grid-template-columns: repeat(3, 1fr); }
+.project-work .img-grid-4 { grid-template-columns: repeat(4, 1fr); }
+.project-work .img-grid-2 img,
+.project-work .img-grid-3 img,
+.project-work .img-grid-4 img {
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+/* ── prev / next ── */
+.project-pager {
+  max-width: 1100px;
+  margin: clamp(3.5rem, 9vh, 6rem) auto 0;
+  padding: 1.75rem var(--pad) 0;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+}
+.project-pager a { display: block; max-width: 45%; }
+.project-pager a:last-child { text-align: right; }
+.project-pager em {
+  display: block;
+  font-style: normal;
+  font-size: 0.66rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.45rem;
+}
+.project-pager span {
+  font-size: clamp(1rem, 2vw, 1.35rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
   transition: color 0.3s ease;
 }
-.detail-nav button:hover { color: var(--accent); }
-
-/* ══ LIGHTBOX ══ */
-.lightbox {
-  position: fixed;
-  inset: 0;
-  z-index: 300;
-  background: rgba(10, 10, 10, 0.94);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  cursor: zoom-out;
-}
-.lightbox.open { display: flex; }
-.lightbox img { max-width: 92vw; max-height: 92vh; object-fit: contain; border-radius: 3px; }
+.project-pager a:hover span { color: var(--accent); }
 
 /* ══ RESPONSIVE (desktop-first; full mobile pass still to come) ══ */
 @media (max-width: 900px) {
   .work-grid { grid-template-columns: 1fr; }
-  .about-hero, .detail-top { grid-template-columns: 1fr; }
+  .about-hero { grid-template-columns: 1fr; }
   .about-portrait { max-width: 260px; }
   .two-col { grid-template-columns: 1fr; }
+  .project-work .img-grid-3,
+  .project-work .img-grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .project-facts { gap: 1.5rem; }
   .band-meta { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
 }
