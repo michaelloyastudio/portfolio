@@ -173,7 +173,11 @@ body.menu-open .menu { opacity: 1; visibility: visible; }
   width: 100%;
 }
 .menu-links a {
+  /* fit-content keeps each link on its own line while shrinking the box to
+     the width of the word — otherwise a full-width block means hovering
+     anywhere on the row lights it up, including far off to the right. */
   display: block;
+  width: fit-content;
   font-size: clamp(2.2rem, 8vw, 5rem);
   font-weight: 600;
   letter-spacing: -0.035em;
