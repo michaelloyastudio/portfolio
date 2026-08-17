@@ -715,9 +715,6 @@ footer {
   color: var(--muted);
   padding-top: 0.22rem;
 }
-.hov { transition: color 0.25s ease; }
-.hov:hover { color: var(--accent); }
-
 .resume-row { margin-top: 3rem; }
 .resume-row a {
   font-size: 0.73rem;
@@ -728,17 +725,6 @@ footer {
 }
 .resume-row a:hover { color: var(--accent); }
 
-#hovIcon {
-  position: fixed;
-  pointer-events: none;
-  z-index: 200;
-  width: 34px; height: 34px;
-  opacity: 0;
-  transform: translate(-50%, -50%) scale(0.8);
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
-#hovIcon.on { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-#hovIcon.lg { width: 58px; height: 58px; }
 
 
 /* About reuses the project-page shell. These are the bits unique to it. */

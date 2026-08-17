@@ -136,26 +136,6 @@
 
   observeReveals();
 
-  /* ── Cursor-following icon (About skill tags) ────────────────────*/
-  var hovIcon = $('hovIcon');
-  if (hovIcon) {
-    document.addEventListener('mouseover', function (e) {
-      var t = e.target.closest('.hov[data-icon]');
-      if (!t || !t.dataset.icon) return;
-      hovIcon.src = t.dataset.icon;
-      hovIcon.classList.toggle('lg', t.dataset.size === 'lg');
-      hovIcon.classList.add('on');
-    });
-    document.addEventListener('mouseout', function (e) {
-      if (e.target.closest('.hov[data-icon]')) hovIcon.classList.remove('on');
-    });
-    document.addEventListener('mousemove', function (e) {
-      if (!hovIcon.classList.contains('on')) return;
-      hovIcon.style.left = (e.clientX + 26) + 'px';
-      hovIcon.style.top  = (e.clientY - 6) + 'px';
-    });
-  }
-
   var yr = $('yr');
   if (yr) yr.textContent = new Date().getFullYear();
 })();
