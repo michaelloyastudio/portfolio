@@ -72,7 +72,7 @@ h1, h2, h3,
 .closing-mail, .closing .lead, .closing-links,
 .entry-role, .entry-date,
 .project-category, .project-facts dt, .project-facts dd, .project-pager,
-.scroll-cue, .browse-link, .hero-tagline, .wordmark, footer {
+.scroll-cue, .browse-link, .hero-tagline, footer {
   font-family: var(--font-display);
 }
 /* Scroll lock lives on <html>, not <body>. A body-level overflow:hidden
@@ -362,10 +362,15 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   align-items: flex-start;
   justify-content: center;
   gap: 0.126em;
+  /* DIN 2014 Rounded is the original wordmark face, loaded from the
+     Typekit kit on index.html only. word-spacing and weight 400 are from
+     the old CSS too — DIN sets wider than Space Grotesk at the same size. */
+  font-family: 'din-2014-rounded-variable', var(--font-display);
   font-size: var(--wm);
-  font-weight: 500;
+  font-weight: 400;
+  word-spacing: -0.05em;
   line-height: 1;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
   white-space: nowrap;
   margin: 0;
 }
