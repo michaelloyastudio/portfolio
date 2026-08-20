@@ -40,7 +40,8 @@ const projects = [
     hero: `projects/loya-and-co/cover.jpg`,
     intro: `<p>I work with my brother, who produces under our last name — <a href="https://open.spotify.com/artist/5gNQpoYEBE1jxjCgFkLWce" target="_blank" rel="noopener">loya</a>. Cover art, Spotify canvas visuals, logo design, and social content, shaped around each release.</p>
 <p>The logo came out of his hat collection, set in Amador — a blackletter that balances elegance with edge. I've also made pieces for other artists along the way.</p>`,
-    work: `<div class="project-video"><video src="projects/loya-and-co/canvases.mp4" autoplay loop muted playsinline width="1920" height="1080"></video></div>
+    work: `<div class="project-video"><video src="projects/loya-and-co/intro.mp4" controls playsinline preload="metadata" poster="projects/loya-and-co/intro-poster.jpg" width="1920" height="1080"></video></div>
+<div class="project-video"><video src="projects/loya-and-co/canvases.mp4" autoplay loop muted playsinline width="1920" height="1080"></video></div>
 <div><img src="projects/loya-and-co/loya-hat-mockup.jpeg" alt="loya hat mockup" loading="lazy" width="2752" height="1536"></div>`
   },
   {
