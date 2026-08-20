@@ -320,6 +320,16 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
     rgba(10,10,10,0.60) 70%,
     rgba(10,10,10,0.94) 100%);
   pointer-events: none;
+  transition: opacity 0.6s ease;
+}
+/* "clean" = overlay off, sound on: scrim and copy clear out so the video
+   plays unobstructed. The toggle itself stays put. */
+.hero.clean::after { opacity: 0; }
+.hero.clean .hero-inner,
+.hero.clean .scroll-cue {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.45s ease;
 }
 .hero-inner {
   position: relative;
@@ -395,6 +405,32 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   opacity: 0;
   pointer-events: none;
 }
+
+/* Sound / overlay toggle on the hero */
+.hero-toggle {
+  position: absolute;
+  z-index: 3;
+  right: var(--frame-x);
+  bottom: 1.7rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition: color 0.3s ease;
+}
+.hero-toggle:hover { color: var(--accent); }
+.hero-toggle svg { width: 19px; height: 19px; fill: currentColor; display: block; }
+.hero-toggle .ico-on { display: none; }
+.hero.clean .hero-toggle .ico-on { display: block; }
+.hero.clean .hero-toggle .ico-off { display: none; }
 
 /* ══ PAGE HEADER (work / about) ══ */
 .page-head {

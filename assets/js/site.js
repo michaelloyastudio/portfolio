@@ -38,6 +38,28 @@
   }
 
 
+
+  /* ── Hero sound / overlay toggle ─────────────────────────────────
+     One control: clears the scrim and copy, and unmutes. The click is
+     also the user gesture browsers demand before audio may play, so the
+     unmute has to happen inside this handler. */
+  var hero = document.querySelector('.hero');
+  var heroVideo = $('heroVideo');
+  var heroToggle = $('heroToggle');
+  if (hero && heroVideo && heroToggle) {
+    var label = heroToggle.querySelector('.hero-toggle-label');
+    heroToggle.addEventListener('click', function () {
+      var clean = hero.classList.toggle('clean');
+      heroVideo.muted = !clean;
+      heroToggle.setAttribute('aria-pressed', clean ? 'true' : 'false');
+      if (label) label.textContent = clean ? 'Mute' : 'Play with sound';
+      if (clean) {
+        var p = heroVideo.play();
+        if (p && p.catch) p.catch(function () {});
+      }
+    });
+  }
+
   /* ── Letter jump on the menu links ───────────────────────────────
      Split each label into per-letter spans and run navWave across them
      50ms apart, so the word ripples rather than moving as a block.

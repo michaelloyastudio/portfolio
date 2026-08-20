@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/site.css?v=19">
+<link rel="stylesheet" href="assets/css/site.css?v=20">
 <style>
   /* First-paint guard. Applies before anything else resolves, so the page
      never flashes raw content before the load-in animations start.
@@ -58,11 +58,9 @@
 
 <!-- ══ HERO ══ -->
 <section class="hero">
-  <!-- NOTE: visualizer.mp4 is the full 71MB master. Swap for a
-       compressed ~5MB web cut before this goes live. -->
-  <video class="hero-video"
-         src="projects/capstone/visualizer.mp4"
-         poster="projects/capstone/cover.jpg"
+  <video class="hero-video" id="heroVideo"
+         src="assets/video/intro-hero.mp4"
+         poster="assets/video/intro-hero-poster.jpg"
          autoplay muted loop playsinline preload="auto"></video>
   <div class="hero-inner">
     <h1>Sound and Vision</h1>
@@ -71,6 +69,15 @@
       <a class="btn btn-solid" href="work.html">Explore the work</a>
     </div>
   </div>
+
+  <!-- Clears the scrim and the copy, and unmutes. The click doubles as the
+       user gesture browsers require before audio may play. -->
+  <button class="hero-toggle" id="heroToggle" aria-pressed="false">
+    <svg class="ico-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16l-5-4H3V8h4l5-4zm7.5 8l2.5 2.5-1 1L18.5 13 16 15.5l-1-1L17.5 12 15 9.5l1-1 2.5 2.5L21 8.5l1 1L19.5 12z"/></svg>
+    <svg class="ico-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16l-5-4H3V8h4l5-4zm4.5 2.8a7 7 0 010 10.4l-1-1.2a5.5 5.5 0 000-8l1-1.2zm-2.3 2.6a3.6 3.6 0 010 5.2l-1-1.2a2 2 0 000-2.8l1-1.2z"/></svg>
+    <span class="hero-toggle-label">Play with sound</span>
+  </button>
+
   <div class="scroll-cue">Scroll</div>
 </section>
 
@@ -101,7 +108,7 @@
 </footer>
 
 <!-- ══ PROJECT DETAIL ══ -->
-<script src="assets/js/projects.js?v=19"></script>
-<script src="assets/js/site.js?v=19"></script>
+<script src="assets/js/projects.js?v=20"></script>
+<script src="assets/js/site.js?v=20"></script>
 </body>
 </html>
