@@ -45,6 +45,13 @@ Two breakpoints, both in `site.css`:
 
 Project mosaics go to one tile per row below 520px (`project-page.js`).
 
+## The two Warblers
+The desktop Warbler Deck (Creative Cloud sync) and the Adobe web Warbler Deck (kit `oft2xxg`) have the **same outlines but different vertical metrics**: ascent/descent 0.97/0.24em against 1.32/0.38em. Anything derived from those numbers — the slot window's height, the star pip's placement — is correct under one and wrong under the other, and it fails silently: a clipped descender and a floating star, no error.
+
+So `hero.js` measures the loaded font at runtime (`tuneToFont`) and writes `--slot-h`, `--slot-mt`, `--pip-top`, `--pip-top-strong`. The values in `site.css` are fallbacks for the first paint only. **Don't replace them with constants.**
+
+The reel's window is sized against the deepest descender across *every* word on it, not the landing word: the `g` in "brand campaigns" drops further than the `p` in "video production."
+
 ## Known issues
 - **The wordmark needs michaelloya.studio on the Typekit kit's allowed domains** (kit `vvj5gyy`, loaded on index.html). It resolves on localhost; if the live domain isn't listed it will silently fall back to Space Grotesk.
 

@@ -618,6 +618,7 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   white-space: nowrap;
   color: var(--fg);
 }
+.hero .studio-title .pip-i .pip { top: var(--pip-top-strong, var(--pip-top, 0.156em)); }
 .hero .studio-title .st-sans { font-family: var(--font-hero); }
 .hero .studio-title .st-serif {
   font-family: var(--font-hero-serif);
@@ -637,14 +638,15 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 }
 .pip-i .pip {
   position: absolute;
-  /* Placed from the font's own metrics rather than by eye. Measured in
-     Warbler Deck Italic: with line-height:1 the baseline sits 0.865em
-     below the box top and the dotless i's ink rises 0.474em, so its top
-     edge is at 0.391em. A 0.2em star with a small gap lands at 0.156em.
-     Horizontally the ink centre is 53% of the advance, and the italic
-     lean carries the top of the stem right of that, so ~65%. */
+  /* Placed from the font's own metrics, measured at runtime rather than
+     baked in — see tuneToFont in hero.js. The two Warblers disagree about
+     where the baseline sits inside a line box, which moves the dotless i's
+     ink top by 0.135em and leaves the star hanging off the stem.
+     The fallback is the desktop value, for the paint before the script.
+     Horizontally the ink centre is ~51% of the advance in both, and the
+     italic lean carries the top of the stem right of that, so 84%. */
   left: 84%;
-  top: 0.156em;
+  top: var(--pip-top, 0.156em);
   width: 0.2em;
   height: 0.2em;
   /* raked to sit with the italic rather than upright against it */
@@ -715,14 +717,14 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
      nudge: Warbler's ascent is 0.97em against Nimbus's 0.73em, so inside
      an identical line box the serif baseline sits 0.135em lower and the
      red line reads as detached from the sentence above it. */
-  /* 1.2em was one line box exactly, which cut the descender off the p in
-     "production" — Warbler's ink runs to 1.233em below the box top once
-     half-leading and the 0.268em descender are counted. 1.36em clears it
-     with about 1.5px to spare. The extra height is split above and below
-     the text, so the top margin takes back half of it to keep the red
-     line sitting where it was against the sentence. */
-  height: 1.36em;
-  margin: -0.215em 0 0;
+  /* Both numbers are computed from the loaded font by hero.js — see
+     tuneToFont. They cannot be fixed constants: the desktop Warbler and
+     the Adobe web Warbler report different ascent and descent for the
+     same outlines, so a height tuned against one clips the p in
+     "production" under the other. These fallbacks are the desktop values,
+     used only for the paint before the script runs. */
+  height: var(--slot-h, 1.36em);
+  margin: var(--slot-mt, -0.215em) 0 0;
 }
 .slot-reel {
   display: block;
@@ -734,8 +736,8 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 .slot-word {
   display: block;
   /* must match .slot's height: it is also the reel's step distance. */
-  height: 1.36em;
-  line-height: 1.36em;
+  height: var(--slot-h, 1.36em);
+  line-height: var(--slot-h, 1.36em);
   white-space: nowrap;
   font-family: var(--font-hero-serif);
   font-style: italic;

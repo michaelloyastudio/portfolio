@@ -111,6 +111,94 @@
   }
 
 
+  /* ── Tune to the font that actually loaded ────────────────────────
+     The slot's height and the star's placement both fall out of Warbler's
+     VERTICAL metrics, and those are not a property of the design — they
+     are a property of whichever Warbler is serving. Same outlines, two
+     different sets of numbers:
+
+       desktop (Creative Cloud sync)   ascent 0.97em  descent 0.24em
+       Adobe web project               ascent 1.32em  descent 0.38em
+
+     Every constant here was originally derived against the desktop font,
+     because that was the only one that existed until the web project went
+     live. The moment the kit started serving, the content box grew from
+     1.21em to 1.70em: the slot clipped the p in "production" by 0.058em,
+     and the dotless i's ink top moved 0.135em down, leaving the star
+     floating above the stem it belongs to.
+
+     So measure, don't assume. Runs once after fonts settle; everything is
+     in em, so it holds at every size and viewport. The stylesheet keeps
+     the old values as fallbacks for the paint before this runs. */
+  function faceOf(el, px) {
+    var cs = getComputedStyle(el);
+    return cs.fontStyle + ' ' + cs.fontWeight + ' ' + px + 'px ' + cs.fontFamily;
+  }
+
+  function metricsOf(font, text) {
+    var c = document.createElement('canvas').getContext('2d');
+    c.font = font;
+    var m = c.measureText(text);
+    return {
+      fA: m.fontBoundingBoxAscent / 100,   // the line box the font asks for
+      fD: m.fontBoundingBoxDescent / 100,
+      iA: m.actualBoundingBoxAscent / 100, // the ink actually drawn
+      iD: m.actualBoundingBoxDescent / 100
+    };
+  }
+
+  function tuneToFont() {
+    var slotWord = document.querySelector('.slot-word');
+    var ledeLine = document.querySelector('.lede-line');
+    var titleSerif = document.querySelector('.st-serif');
+    if (!slotWord) return;
+    var root = document.documentElement.style;
+
+    /* Across EVERY word on the reel, not just the landing one. The window
+       has to clear the deepest descender it will ever show, and a g drops
+       further than a p — "brand campaigns" is the real constraint here,
+       not "video production.". */
+    var W = { fA: 0, fD: 0, iA: 0, iD: 0 };
+    var face = faceOf(slotWord, 100);
+    [LAND].concat(SPIN).forEach(function (t) {
+      var m = metricsOf(face, t);
+      W.fA = Math.max(W.fA, m.fA); W.fD = Math.max(W.fD, m.fD);
+      W.iA = Math.max(W.iA, m.iA); W.iD = Math.max(W.iD, m.iD);
+    });
+
+    /* Height that fits the ink both ways. With height and line-height
+       equal, the baseline sits at (H - fA - fD)/2 + fA, so
+         ink fits below:  H >= (fA - fD) + 2*iD
+         ink fits above:  H >= (fD - fA) + 2*iA
+       Take the larger, plus a hair so it never lands exactly on the edge. */
+    var H = Math.max((W.fA - W.fD) + 2 * W.iD, (W.fD - W.fA) + 2 * W.iA) + 0.08;   /* + a hair, so rounding never lands on the edge */
+    root.setProperty('--slot-h', H.toFixed(4) + 'em');
+
+    /* Pull the reel back up so the red line's BASELINE lands where a third
+       line of the lede would, rather than wherever Warbler's line box
+       happens to put it. Without this the taller box reads as a gap. */
+    if (ledeLine) {
+      var N = metricsOf(faceOf(ledeLine, 100), 'A multifaceted creative');
+      var lh = parseFloat(getComputedStyle(ledeLine).lineHeight) /
+               parseFloat(getComputedStyle(ledeLine).fontSize);
+      var wantBaseline = (lh - N.fA - N.fD) / 2 + N.fA;
+      var slotBaseline = (H - W.fA - W.fD) / 2 + W.fA;
+      root.setProperty('--slot-mt', (wantBaseline - slotBaseline).toFixed(4) + 'em');
+    }
+
+    /* Star pip. .pip-i is line-height:1, so the baseline sits at
+       (1 - fA - fD)/2 + fA and the dotless i's ink top is that minus its
+       ink ascent. The star hangs a hair above it. Measured per weight:
+       the reel is 400 and the title is 700, and their i's differ. */
+    function pipTop(el) {
+      var m = metricsOf(faceOf(el, 100), '\u0131');
+      var baseline = (1 - m.fA - m.fD) / 2 + m.fA;
+      return (baseline - m.iA - 0.2 - 0.035).toFixed(4) + 'em';   // 0.2 star + gap
+    }
+    root.setProperty('--pip-top', pipTop(slotWord));
+    if (titleSerif) root.setProperty('--pip-top-strong', pipTop(titleSerif));
+  }
+
   /* ── Fit the title to the margins ─────────────────────────────────
      A vw font-size can only be correct at one viewport, so the string is
      measured and scaled to the container instead.
@@ -170,8 +258,9 @@
   }
 
   if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(fitTitle);
+    document.fonts.ready.then(function () { tuneToFont(); fitTitle(); });
   }
+  tuneToFont();
   fitTitle();
   window.addEventListener('resize', fitTitle);
   if (PHONE.addEventListener) PHONE.addEventListener('change', fitTitle);
