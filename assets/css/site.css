@@ -64,6 +64,9 @@
   --pad: clamp(1.25rem, 4vw, 3.5rem);
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
 
+  /* film grain over the page ground. 0 = off. */
+  --grain: 0.085;
+
   /* Header and footer share this so their insets match exactly. Don't
      retune it for a page layout — the nav and footer sit on it site-wide. */
   --frame-x: clamp(2rem, 6vw, 6rem);
@@ -73,11 +76,16 @@
      separate so widening the hero never moves the logo or the burger. */
   --hero-x: clamp(1.5rem, 11.5vw, 14.5rem);
 
-  /* Space Grotesk carries headings, buttons, and labels.
-     IBM Plex Sans carries body copy — neutral and easy at small sizes, so
-     it stays out of the way of the display face. */
-  --font-display: 'Space Grotesk', system-ui, -apple-system, sans-serif;
-  --font-body: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+  /* TRIAL: the whole site now runs on the two hero faces instead of
+     Space Grotesk + IBM Plex Sans. Nimbus carries structure, Warbler
+     italic carries the accents. To revert, put the two commented stacks
+     back and nothing else has to change.
+       --font-display: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+       --font-body: 'IBM Plex Sans', system-ui, -apple-system, sans-serif; */
+  --font-display: var(--font-hero);
+  --font-body: var(--font-hero);
+  /* the accent voice: same face and colour logic as the hero slot word */
+  --font-accent: var(--font-hero-serif);
 
   /* Hero faces.
      Nimbus Sans is URW's open-source Helvetica clone, self-hosted, so
@@ -143,6 +151,24 @@ h1, h2, h3,
 html.locked { overflow: hidden; }
 
 img, video { display: block; max-width: 100%; }
+
+/* ══ GRAIN ══
+   Film grain on the black paper only. It sits at z-index -1 inside body,
+   so it paints above body's background but under every image, video and
+   panel — the photography stays clean and only the page ground moves.
+   Static, not animated: an animated grain repaints the whole viewport
+   every frame and this page already runs a parallax on scroll.
+   Dial it with --grain; 0 turns it off. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: var(--grain);
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='180'%20height='180'%3E%3Cfilter%20id='g'%20x='0'%20y='0'%20width='100%'%20height='100%'%3E%3CfeTurbulence%20type='fractalNoise'%20baseFrequency='0.82'%20numOctaves='4'%20stitchTiles='stitch'/%3E%3CfeColorMatrix%20type='saturate'%20values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncR%20type='gamma'%20exponent='2.2'/%3E%3CfeFuncG%20type='gamma'%20exponent='2.2'/%3E%3CfeFuncB%20type='gamma'%20exponent='2.2'/%3E%3CfeFuncA%20type='discrete'%20tableValues='1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect%20width='100%'%20height='100%'%20filter='url%28%23g%29'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}
 a { color: inherit; text-decoration: none; }
 ::selection { background: var(--accent); color: var(--black); }
 
@@ -744,10 +770,17 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   margin: 0 auto;
   padding: calc(7rem + var(--pad)) var(--pad) clamp(2.5rem, 6vw, 4rem);
 }
+/* Page and project names run in the accent face, italic, the same way
+   "Studio" does in the hero wordmark. Everything structural stays sans,
+   so the italic only ever marks the name of the thing you're looking at.
+   Warbler's italic sets narrower than Nimbus, so the tracking opens back
+   up from -0.04em. */
 .page-head h1 {
-  font-size: clamp(2.6rem, 8vw, 5.4rem);
+  font-family: var(--font-accent);
+  font-style: italic;
+  font-size: clamp(2.9rem, 8.6vw, 5.9rem);
   font-weight: 700;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.01em;
   line-height: 1;
   margin: 0 0 1.1rem;
 }
@@ -1146,9 +1179,11 @@ footer {
   white-space: nowrap;
 }
 .project-head h1 {
-  font-size: clamp(3rem, 8.5vw, 6rem);
+  font-family: var(--font-accent);
+  font-style: italic;
+  font-size: clamp(3.2rem, 9vw, 6.4rem);
   font-weight: 700;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.01em;
   line-height: 1;
   margin: 0;
 }

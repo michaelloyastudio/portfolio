@@ -18,7 +18,8 @@ const projects = [
     cover: `projects/capstone/cover.jpg`,
     hero: `projects/capstone/hero.jpg`,
     intro: `<p>A music visualizer for <a href="https://open.spotify.com/artist/" target="_blank" rel="noopener">Z</a>'s track <em>where it hurts.</em>, made as my senior capstone. Z isn't based in NY, so instead of shooting him I built the whole piece out of AI-generated assets and art-directed it end to end.</p>
-<p>I storyboarded the scenes and wrote the direction, generated each one, then broke the stills apart in Photoshop and animated them in After Effects. The imagery stays abstract on purpose. Z gave me the freedom, and I'd rather leave room for the viewer than push a narrative he wasn't comfortable carrying.</p>`,
+<p>I storyboarded the scenes and wrote the direction, generated each one, then broke the stills apart in Photoshop and animated them in After Effects. The imagery stays abstract on purpose. Z gave me the freedom, and I'd rather leave room for the viewer than push a narrative he wasn't comfortable carrying.</p>
+<p>The look is homage, and I'd rather that show than hide it. <em>Into the Spider-Verse</em> is where the cut-paper lyric type, the halftone dots, and the white keyline around the figure come from. <em>Invincible</em> is the other half: flat bold color and heavy ink outlines, a clean surface that can still turn ugly. Building on top of the work that shaped me is more honest than pretending I got here on my own.</p>`,
     work: `<div class="project-video"><video src="projects/capstone/visualizer.mp4" controls playsinline preload="metadata" poster="projects/capstone/poster.jpg" width="1920" height="1080"></video></div>
 <div class="img-grid-2">
 <div><img src="projects/capstone/still-1.jpg" alt="Still from the visualizer" loading="lazy" width="1920" height="1080"></div>
