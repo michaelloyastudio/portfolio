@@ -73,12 +73,11 @@
      separate so widening the hero never moves the logo or the burger. */
   --hero-x: clamp(1.5rem, 11.5vw, 14.5rem);
 
-  /* Nimbus carries everything structural — headings, menu, buttons,
-     labels, nav, footer — so the site runs on the same face as the hero
-     wordmark. IBM Plex Sans stays on body copy: neutral and easy at small
-     sizes, so it keeps out of the way of the display face.
-     Warbler is hero-only now: "Studio" and the slot word, both italic. */
-  --font-display: var(--font-hero);
+  /* IBM Plex Sans carries the whole site: headings, menu, labels, nav,
+     footer, body copy. Nimbus and Warbler are hero-only now — the hero
+     sets its own faces directly off --font-hero / --font-hero-serif, so
+     it stays its own lockup and nothing else inherits from it. */
+  --font-display: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
   --font-body: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
 
   /* Hero faces.
@@ -489,14 +488,11 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   font-size: 0.76rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  /* The label is all caps, so it never uses the descender space the line
-     box reserves for it, and the ink floats above centre. The correction
-     is the font's own metrics, not a nudge:
-       (ascent - descent)/2 + (inkDescent - inkAscent)/2 = -0.133em
-     in Nimbus. The ink sits ABOVE centre, so the correction goes onto the
-     top and comes off the bottom. Stated in em so it tracks the clamped
-     font-size, and it nets to zero so the button's height is unchanged. */
-  padding: calc(1rem + 0.133em) 2.6rem calc(1rem - 0.133em);
+  /* Symmetric: IBM Plex's ascent and descent are near enough balanced
+     that all-caps sits centred on its own (measured: +0.026em, a third of
+     a pixel at this size). The hero button overrides this because it runs
+     Nimbus, whose metrics are not balanced — see the note there. */
+  padding: 1rem 2.6rem;
   border: 1px solid var(--line);
   border-radius: 999px;
   transition: border-color 0.3s ease, color 0.3s ease, background 0.3s ease;
@@ -680,6 +676,11 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   font-weight: 500;
   font-size: clamp(0.8rem, 1.05vw, 1.05rem);
   letter-spacing: 0.055em;
+  /* Nimbus reserves descender room that an all-caps label never uses, so
+     the ink floats above a perfectly centred line box. Correction is the
+     font's own metrics, not a nudge:
+       (ascent - descent)/2 + (inkDescent - inkAscent)/2 = -0.133em
+     Added to the top, taken off the bottom: nets to zero, height holds. */
   padding: calc(1.15rem + 0.133em) 2.5rem calc(1.15rem - 0.133em);
 }
 /* .btn-solid:hover further up the sheet has the same specificity as the
