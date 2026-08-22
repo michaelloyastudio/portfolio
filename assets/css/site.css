@@ -71,7 +71,7 @@
 
   /* The studio hero pulls its content in further than the nav does. Kept
      separate so widening the hero never moves the logo or the burger. */
-  --hero-x: clamp(1.5rem, 8.6vw, 11rem);
+  --hero-x: clamp(1.5rem, 11.5vw, 14.5rem);
 
   /* Space Grotesk carries headings, buttons, and labels.
      IBM Plex Sans carries body copy — neutral and easy at small sizes, so
@@ -584,6 +584,10 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
      inline so the line lands exactly on both margins at any width —
      a fixed vw can only ever be right at one viewport. */
   font-size: clamp(2.5rem, 10.2vw, 18rem);
+  /* REQUIRED for the fit to work. Without it the line wraps the moment
+     the fitted size exceeds the container, which collapses the measured
+     width and makes every subsequent fit undershoot. */
+  white-space: nowrap;
   color: var(--fg);
 }
 .hero .studio-title .st-sans { font-family: var(--font-hero); }
@@ -611,7 +615,7 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
      edge is at 0.391em. A 0.2em star with a small gap lands at 0.156em.
      Horizontally the ink centre is 53% of the advance, and the italic
      lean carries the top of the stem right of that, so ~65%. */
-  left: 78%;
+  left: 84%;
   top: 0.156em;
   width: 0.2em;
   height: 0.2em;
@@ -691,12 +695,11 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   opacity: 1;
   filter: blur(0);
 }
-.hero-work img {
-  /* Capped by HEIGHT so the hero stays on one screen. With the margins
-     pulled in, the work column got wide enough to push the image past the
-     fold. Both maxes with auto width/height means it scales to fit
-     without distorting; it right-aligns so the outer edge stays on the
-     margin. */
+.hero-work img,
+.hero-work video {
+  /* Capped by HEIGHT so the hero stays on one screen. Both maxes with
+     auto width/height means it scales to fit without distorting, and it
+     right-aligns so its outer edge sits on the margin. */
   max-width: 100%;
   max-height: 49svh;
   width: auto;

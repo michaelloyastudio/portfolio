@@ -91,22 +91,47 @@
 
 
   /* ── Fit the title to the margins ─────────────────────────────────
-     A vw font-size can only be correct at one viewport; everywhere else
-     the line falls short of the margin or overshoots it. Measure the
-     string once and scale to the container instead. Runs after the fonts
-     resolve, since the fallback's metrics differ. */
+     A vw font-size can only be correct at one viewport, so the string is
+     measured and scaled to the container instead.
+
+     Fitting the ADVANCE box leaves a visible gap at each end, because the
+     M and the o both carry side bearings — whitespace baked into the
+     glyph. To make the ink itself land on the margins we measure those
+     bearings on canvas, subtract them to get the true ink width, scale to
+     that, and pull the line left by the leading bearing. */
+  function bearings(probe) {
+    var c = document.createElement('canvas').getContext('2d');
+    c.textAlign = 'left';
+    c.font = '700 ' + probe + 'px "Nimbus Sans", sans-serif';
+    var first = c.measureText('M');
+    c.font = 'italic 700 ' + probe + 'px "warbler-deck", "Warbler Deck", serif';
+    var lastGlyph = c.measureText('o');
+    return {
+      left: -first.actualBoundingBoxLeft,                       // ink inset from origin
+      right: lastGlyph.width - lastGlyph.actualBoundingBoxRight // trailing whitespace
+    };
+  }
+
   function fitTitle() {
     var title = document.querySelector('.studio-title');
     if (!title) return;
+    title.style.marginLeft = '';
     var avail = title.clientWidth;
     if (!avail) return;
+
     var probe = 100;
     title.style.fontSize = probe + 'px';
     var rng = document.createRange();
     rng.selectNodeContents(title);
-    var w = rng.getBoundingClientRect().width;
-    if (!w) { title.style.fontSize = ''; return; }
-    title.style.fontSize = (probe * (avail / w)).toFixed(2) + 'px';
+    var advance = rng.getBoundingClientRect().width;
+    if (!advance) { title.style.fontSize = ''; return; }
+
+    var b = bearings(probe);
+    var ink = advance - b.left - b.right;
+    var scale = avail / ink;
+
+    title.style.fontSize = (probe * scale).toFixed(2) + 'px';
+    title.style.marginLeft = (-b.left * scale).toFixed(2) + 'px';
   }
 
   if (document.fonts && document.fonts.ready) {
