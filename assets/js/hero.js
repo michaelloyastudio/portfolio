@@ -39,11 +39,13 @@
     return '<span class="slot-word">' + html + '</span>';
   }
 
-  // Two passes of the spin list give it enough travel to read as a spin.
+  /* Reel order is LANDING FIRST, spin words after. The reel starts pushed
+     to the bottom of the list and travels back to 0, so the words fall
+     downward through the window and it settles on the first one — the way
+     a real reel reads. Building it the other way scrolls upward. */
   var order = SPIN.concat(SPIN);
-  var html = '';
+  var html = word(LAND, true);
   for (var i = 0; i < order.length; i++) html += word(order[i], false);
-  html += word(LAND, true);
   reel.innerHTML = html;
 
   var words = reel.querySelectorAll('.slot-word');
@@ -60,20 +62,22 @@
   }
 
   if (reduce) {
-    reel.style.transform = 'translateY(' + (-last * stepHeight()) + 'px)';
+    reel.style.transform = 'translateY(0)';
     settle();
   } else {
     /* Decelerating spin: each step waits a little longer than the last,
        so it reads as a slot losing momentum rather than a timed carousel.
        Total lands around 2.1s — long enough to register, short enough that
        the work isn't held back. */
+    // start at the far end of the reel, then walk back to index 0
+    reel.style.transform = 'translateY(' + (-last * stepHeight()) + 'px)';
     var delay = 55;
     var t = 0;
-    for (var n = 1; n <= last; n++) {
+    for (var n = last - 1; n >= 0; n--) {
       (function (index, at) {
         setTimeout(function () {
           reel.style.transform = 'translateY(' + (-index * stepHeight()) + 'px)';
-          if (index === last) setTimeout(settle, 160);
+          if (index === 0) setTimeout(settle, 160);
         }, at);
       })(n, t);
       t += delay;
@@ -83,27 +87,29 @@
 
   /* ── Parallax ─────────────────────────────────────────────────────
      Layers drift at different rates as the hero leaves the viewport.
-     translate3d only — no layout properties — and driven off rAF so it
-     stays on the compositor. */
+     Written straight from the scroll handler rather than gated behind
+     requestAnimationFrame: browsers already coalesce scroll to a frame,
+     and the rAF gate silently does nothing whenever frames are throttled
+     (background tab, some embedded views), which looks like no parallax
+     at all. Three transform-only writes are cheap.
+     Rates are fractions of scroll distance — the work drifts against the
+     text, which is what gives the depth. */
   if (!reduce) {
     var title = document.querySelector('.studio-title');
     var lede = document.querySelector('.hero-lede');
-    var ticking = false;
+    var hero = document.querySelector('.hero--studio');
 
     function parallax() {
-      var y = window.scrollY;
-      if (title) title.style.transform = 'translate3d(0,' + (y * 0.12).toFixed(1) + 'px,0)';
-      if (lede)  lede.style.transform  = 'translate3d(0,' + (y * 0.06).toFixed(1) + 'px,0)';
-      if (work && work.classList.contains('is-in')) {
-        work.style.transform = 'translate3d(0,' + (y * -0.05).toFixed(1) + 'px,0)';
-      }
-      ticking = false;
+      var y = window.scrollY || window.pageYOffset || 0;
+      // stop computing once the hero is well off screen
+      if (hero && y > hero.offsetHeight + 200) return;
+      if (title) title.style.transform = 'translate3d(0,' + (y * 0.18).toFixed(2) + 'px,0)';
+      if (lede)  lede.style.transform  = 'translate3d(0,' + (y * 0.09).toFixed(2) + 'px,0)';
+      if (work)  work.style.transform  = 'translate3d(0,' + (y * -0.07).toFixed(2) + 'px,0)';
     }
 
-    window.addEventListener('scroll', function () {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(parallax);
-    }, { passive: true });
+    window.addEventListener('scroll', parallax, { passive: true });
+    window.addEventListener('resize', parallax);
+    parallax();
   }
 })();

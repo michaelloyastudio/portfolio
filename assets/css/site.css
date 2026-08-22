@@ -562,7 +562,9 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 }
 
 /* ── the lockup ── */
-.studio-title {
+.hero .studio-title {
+  /* .hero h1 is (0,1,1); a bare .studio-title is (0,1,0) and loses, which
+     pinned this at 7.2rem. Scoping to .hero makes it (0,2,0). */
   grid-column: 1 / -1;
   margin: 0;
   font-family: var(--font-hero);
@@ -570,11 +572,15 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   /* squashed tracking, as in the reference */
   letter-spacing: -0.045em;
   line-height: 0.92;
-  font-size: clamp(2.75rem, 11.6vw, 13rem);
+  /* Measured: this string renders 8.82x its font-size in Nimbus Bold at
+     the tracking below. 9.6vw puts it at ~85% of the viewport, matching
+     the reference, and the cap is high enough not to bind on wide
+     screens — a low cap is what made it shrink at 2000px. */
+  font-size: clamp(2.5rem, 9.6vw, 16rem);
   color: var(--fg);
 }
-.studio-title .st-sans { font-family: var(--font-hero); }
-.studio-title .st-serif {
+.hero .studio-title .st-sans { font-family: var(--font-hero); }
+.hero .studio-title .st-serif {
   font-family: var(--font-hero-serif);
   font-style: italic;
   font-weight: 700;
@@ -592,22 +598,27 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 .pip-i .pip {
   position: absolute;
   left: 50%;
-  bottom: 0.72em;
-  width: 0.3em;
-  height: 0.3em;
-  transform: translateX(-42%);
+  bottom: 0.6em;          /* just above the x-height, where a tittle sits */
+  width: 0.23em;
+  height: 0.23em;
+  transform: translateX(-50%);
   fill: currentColor;
   pointer-events: none;
 }
 
 /* ── lede ── */
-.hero-lede { align-self: start; max-width: 26ch; }
+.hero-lede { align-self: start; }
 .hero-copy {
   font-family: var(--font-hero);
   font-weight: 400;
-  font-size: clamp(1.15rem, 2.1vw, 1.9rem);
-  line-height: 1.22;
+  font-size: clamp(1.2rem, 2.2vw, 3.2rem);
+  line-height: 1.2;
   letter-spacing: -0.015em;
+  /* em here resolves against the copy's own size, so the measure tracks
+     the type. On .hero-lede it resolved against 16px and clamped to
+     200px, which broke the line into five. ~11.5em holds the reference's
+     three lines. */
+  max-width: 11.5em;
   margin: 0 0 clamp(1.5rem, 3vw, 2.25rem);
   color: var(--fg);
 }
@@ -651,13 +662,11 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   /* revealed once the slot lands: opacity plus a defocus that resolves */
   opacity: 0;
   filter: blur(18px);
-  transform: scale(1.015);
-  transition: opacity 1s var(--ease), filter 1.1s var(--ease), transform 1.2s var(--ease);
+  transition: opacity 1s var(--ease), filter 1.1s var(--ease);
 }
 .hero-work.is-in {
   opacity: 1;
   filter: blur(0);
-  transform: none;
 }
 .hero-work img {
   width: 100%;
