@@ -639,10 +639,22 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
      three lines. */
   /* The lede and the work split one row, so the measure directly sets how
      much width is left for the video. Narrower measure + larger type =
-     both read bigger. */
-  max-width: 9.2em;
+     both read bigger.
+
+     The first two lines are hard-broken in the markup, so the measure is
+     no longer a wrap point to tune — it's the widest forced line. width
+     is max-content so the copy takes exactly that and the rest of the row
+     goes to the video. */
+  width: max-content;
+  max-width: 100%;
   margin: 0 0 clamp(1.5rem, 3vw, 2.25rem);
   color: var(--fg);
+}
+/* Fixed lines. nowrap is what makes them fixed — without it a narrow
+   viewport re-wraps them and the break lands somewhere else. */
+.lede-line {
+  display: block;
+  white-space: nowrap;
 }
 .hero--studio .btn-solid {
   background: var(--accent);
