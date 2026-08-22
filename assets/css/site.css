@@ -71,7 +71,7 @@
 
   /* The studio hero pulls its content in further than the nav does. Kept
      separate so widening the hero never moves the logo or the burger. */
-  --hero-x: clamp(1.1rem, 3.4vw, 4.25rem);
+  --hero-x: clamp(1.5rem, 8.6vw, 11rem);
 
   /* Space Grotesk carries headings, buttons, and labels.
      IBM Plex Sans carries body copy — neutral and easy at small sizes, so
@@ -611,7 +611,7 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
      edge is at 0.391em. A 0.2em star with a small gap lands at 0.156em.
      Horizontally the ink centre is 53% of the advance, and the italic
      lean carries the top of the stem right of that, so ~65%. */
-  left: 72%;
+  left: 78%;
   top: 0.156em;
   width: 0.2em;
   height: 0.2em;
