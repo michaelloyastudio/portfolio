@@ -71,7 +71,7 @@
 
   /* The studio hero pulls its content in further than the nav does. Kept
      separate so widening the hero never moves the logo or the burger. */
-  --hero-x: clamp(1.5rem, 7.4vw, 9.5rem);
+  --hero-x: clamp(1.1rem, 3.4vw, 4.25rem);
 
   /* Space Grotesk carries headings, buttons, and labels.
      IBM Plex Sans carries body copy — neutral and easy at small sizes, so
@@ -578,13 +578,12 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   font-family: var(--font-hero);
   font-weight: 700;
   /* squashed tracking, as in the reference */
-  letter-spacing: -0.058em;
+  letter-spacing: -0.075em;
   line-height: 0.92;
-  /* Measured: this string renders 8.82x its font-size in Nimbus Bold at
-     the tracking below. 9.6vw puts it at ~85% of the viewport, matching
-     the reference, and the cap is high enough not to bind on wide
-     screens — a low cap is what made it shrink at 2000px. */
-  font-size: clamp(2.5rem, 9.6vw, 16rem);
+  /* Starting size only. hero.js measures the string and overrides this
+     inline so the line lands exactly on both margins at any width —
+     a fixed vw can only ever be right at one viewport. */
+  font-size: clamp(2.5rem, 10.2vw, 18rem);
   color: var(--fg);
 }
 .hero .studio-title .st-sans { font-family: var(--font-hero); }
@@ -612,11 +611,12 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
      edge is at 0.391em. A 0.2em star with a small gap lands at 0.156em.
      Horizontally the ink centre is 53% of the advance, and the italic
      lean carries the top of the stem right of that, so ~65%. */
-  left: 65%;
+  left: 72%;
   top: 0.156em;
   width: 0.2em;
   height: 0.2em;
-  transform: translateX(-50%);
+  /* raked to sit with the italic rather than upright against it */
+  transform: translateX(-50%) rotate(12deg);
   fill: currentColor;
   pointer-events: none;
 }
@@ -641,19 +641,23 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   background: var(--accent);
   border-color: var(--accent);
   color: var(--black);
-  font-size: 0.72rem;
-  letter-spacing: 0.1em;
-  padding: 0.85rem 1.6rem;
+  font-family: var(--font-hero);
+  font-weight: 500;
+  font-size: clamp(0.8rem, 1.05vw, 1.05rem);
+  letter-spacing: 0.055em;
+  padding: 1.15rem 2.5rem;
 }
 
 /* ── slot machine ── */
 .slot {
   display: block;
   overflow: hidden;
-  /* exactly one line of the copy, so the reel sits in the paragraph's
-     rhythm rather than dropping a gap beneath it */
+  /* One line of the copy. The negative top is a metrics correction, not a
+     nudge: Warbler's ascent is 0.97em against Nimbus's 0.73em, so inside
+     an identical line box the serif baseline sits 0.135em lower and the
+     red line reads as detached from the sentence above it. */
   height: 1.2em;
-  margin: 0;
+  margin: -0.135em 0 0;
 }
 .slot-reel {
   display: block;
@@ -688,8 +692,16 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   filter: blur(0);
 }
 .hero-work img {
-  width: 100%;
+  /* Capped by HEIGHT so the hero stays on one screen. With the margins
+     pulled in, the work column got wide enough to push the image past the
+     fold. Both maxes with auto width/height means it scales to fit
+     without distorting; it right-aligns so the outer edge stays on the
+     margin. */
+  max-width: 100%;
+  max-height: 49svh;
+  width: auto;
   height: auto;
+  margin-left: auto;
   display: block;
   border-radius: 2px;
 }

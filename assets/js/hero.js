@@ -89,6 +89,32 @@
     setTimeout(onLanded, 2600);
   }
 
+
+  /* ── Fit the title to the margins ─────────────────────────────────
+     A vw font-size can only be correct at one viewport; everywhere else
+     the line falls short of the margin or overshoots it. Measure the
+     string once and scale to the container instead. Runs after the fonts
+     resolve, since the fallback's metrics differ. */
+  function fitTitle() {
+    var title = document.querySelector('.studio-title');
+    if (!title) return;
+    var avail = title.clientWidth;
+    if (!avail) return;
+    var probe = 100;
+    title.style.fontSize = probe + 'px';
+    var rng = document.createRange();
+    rng.selectNodeContents(title);
+    var w = rng.getBoundingClientRect().width;
+    if (!w) { title.style.fontSize = ''; return; }
+    title.style.fontSize = (probe * (avail / w)).toFixed(2) + 'px';
+  }
+
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(fitTitle);
+  }
+  fitTitle();
+  window.addEventListener('resize', fitTitle);
+
   /* ── Parallax ─────────────────────────────────────────────────────
      Layers drift at different rates as the hero leaves the viewport.
      Written straight from the scroll handler rather than gated behind
