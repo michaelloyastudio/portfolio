@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://use.typekit.net/vvj5gyy.css">
-<link rel="stylesheet" href="assets/css/site.css?v=29">
+<link rel="stylesheet" href="assets/css/site.css?v=34">
 <style>
   /* First-paint guard. Applies before anything else resolves, so the page
      never flashes raw content before the load-in animations start.
@@ -58,15 +58,15 @@
 </nav>
 
 <!-- ══ HERO ══ -->
-<section class="hero">
-  <video class="hero-video" id="heroVideo"
-         src="assets/video/hero-loop.mp4"
-         poster="assets/video/hero-loop-poster.jpg"
-         autoplay muted loop playsinline preload="auto"></video>
+<section class="hero hero--halation">
   <div class="hero-inner">
-    <h1 class="wordmark">
-      <img src="assets/brand/logo-cream.svg" alt="">
-      <span>Michael Loya&nbsp;Studio</span>
+    <!-- Three stacked copies of the same text: two blurred glow layers
+         behind, the crisp cream letters in front. aria-hidden on the
+         glows so the wordmark is announced once. -->
+    <h1 class="halation">
+      <span class="halation-glow halation-glow--wide" aria-hidden="true">Michael Loya Studio</span>
+      <span class="halation-glow halation-glow--tight" aria-hidden="true">Michael Loya Studio</span>
+      <span class="halation-face">Michael Loya Studio</span>
     </h1>
     <p class="hero-sub">Video, motion, and design for artists and brands.</p>
     <div class="hero-cta">
@@ -74,13 +74,8 @@
     </div>
   </div>
 
-  <!-- Clears the scrim and the copy, and unmutes. The click doubles as the
-       user gesture browsers require before audio may play. -->
-  <button class="hero-toggle" id="heroToggle" aria-pressed="false">
-    <svg class="ico-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16l-5-4H3V8h4l5-4zm7.5 8l2.5 2.5-1 1L18.5 13 16 15.5l-1-1L17.5 12 15 9.5l1-1 2.5 2.5L21 8.5l1 1L19.5 12z"/></svg>
-    <svg class="ico-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16l-5-4H3V8h4l5-4zm4.5 2.8a7 7 0 010 10.4l-1-1.2a5.5 5.5 0 000-8l1-1.2zm-2.3 2.6a3.6 3.6 0 010 5.2l-1-1.2a2 2 0 000-2.8l1-1.2z"/></svg>
-    <span class="hero-toggle-label">Play with sound</span>
-  </button>
+  <!-- film grain, sits over everything in the hero -->
+  <div class="hero-grain" aria-hidden="true"></div>
 
   <div class="scroll-cue">Scroll</div>
 </section>
@@ -112,7 +107,7 @@
 </footer>
 
 <!-- ══ PROJECT DETAIL ══ -->
-<script src="assets/js/projects.js?v=29"></script>
-<script src="assets/js/site.js?v=29"></script>
+<script src="assets/js/projects.js?v=34"></script>
+<script src="assets/js/site.js?v=34"></script>
 </body>
 </html>

@@ -4,6 +4,22 @@
    place a light mode would need to change.
    ══════════════════════════════════════════════════════════════ */
 
+/* ══ STEELFISH (hero wordmark) ══ */
+@font-face {
+  font-family: 'Steelfish';
+  src: url('../fonts/steelfish-bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Steelfish';
+  src: url('../fonts/steelfish-extrabold.woff2') format('woff2');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* ══ TOKENS ══ */
 :root {
   --black:     #0a0a0a;
@@ -485,6 +501,115 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 .hero-toggle .ico-on { display: none; }
 .hero.clean .hero-toggle .ico-on { display: block; }
 .hero.clean .hero-toggle .ico-off { display: none; }
+
+
+/* ══ HALATION HERO ═════════════════════════════════════════════════
+   Halation is film bleed: bright highlights scatter in the emulsion and
+   leave a warm ring around the edge of the exposure. Recreated with three
+   stacked copies of the same text —
+     wide glow   heavily blurred, deep red, the ambient bloom
+     tight glow  lightly blurred, orange-red, hugs the letterform
+     face        crisp cream on top
+   Blur alone would just look soft, so the glows sit in a lighter blend
+   mode to make the overlap genuinely brighten rather than smear. */
+.hero--halation {
+  background: var(--black);
+  min-height: 100svh;
+}
+.hero--halation::after { content: none; }   /* no video, so no scrim */
+/* The wordmark is sized against the viewport, so it needs the full frame —
+   the default 1100px cap on .hero-inner would clip it. */
+.hero--halation .hero-inner {
+  max-width: none;
+  width: 100%;
+}
+
+.hero .halation {
+  /* .hero h1 is (0,1,1) and was winning over a bare .halation, capping the
+     size at 7.2rem. Two classes puts this at (0,2,0) so it takes over. */
+  position: relative;
+  display: block;
+  margin: 0 0 clamp(1.5rem, 3vw, 2.5rem);
+  font-family: 'Steelfish', 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  /* Measured: in Steelfish Bold this string renders 5.44x its font-size.
+     The gutter is --pad on each side and also scales with vw, so 16.2vw
+     holds the text at ~92% of the available width at every size —
+     the remaining margin is headroom for the bloom, which extends past
+     the glyphs and would otherwise be clipped by the hero's overflow. */
+  font-size: clamp(1.5rem, 15.4vw, 21rem);
+  line-height: 0.9;
+  letter-spacing: 0.005em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  animation: none;
+}
+.hero .halation > span {
+  display: block;
+  grid-area: 1 / 1;
+}
+.hero .halation-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  user-select: none;
+  mix-blend-mode: screen;
+  will-change: opacity, filter;
+}
+/* Ambient bloom — the halo you see well away from the letters. */
+.hero .halation-glow--wide {
+  color: #d91c28;
+  filter: blur(0.085em) saturate(1.4);
+  opacity: 0.95;
+  transform: scale(1.012);
+}
+/* Edge bleed — hotter and tighter, sits right on the stroke. */
+.hero .halation-glow--tight {
+  color: #ff5a1f;
+  filter: blur(0.026em);
+  opacity: 0.85;
+}
+.hero .halation-face {
+  position: relative;
+  color: #f2ece0;
+  /* a faint warm rim so the cream never meets black with a hard edge */
+  text-shadow:
+    0 0 0.02em rgba(255, 138, 60, 0.55),
+    0 0 0.06em rgba(217, 28, 40, 0.35);
+}
+
+/* Flicker: barely-there brightness drift on the glow layers only, so the
+   letterforms themselves never move or dim. Values stay close to 1 —
+   a strong flicker reads as a broken sign, not film. */
+@keyframes halationFlicker {
+  0%,  100% { opacity: 0.95; }
+  8%        { opacity: 0.88; }
+  15%       { opacity: 0.99; }
+  23%       { opacity: 0.91; }
+  40%       { opacity: 0.97; }
+  62%       { opacity: 0.90; }
+  71%       { opacity: 0.98; }
+  88%       { opacity: 0.93; }
+}
+.hero .halation-glow--wide  { animation: halationFlicker 7s ease-in-out infinite; }
+.hero .halation-glow--tight { animation: halationFlicker 5.5s ease-in-out infinite reverse; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero .halation-glow { animation: none !important; }
+}
+
+/* Grain, so the bloom sits in an image rather than floating on flat black.
+   feTurbulence is generated once as a data URI — no extra request. */
+.hero-grain {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  opacity: 0.16;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.9'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+}
 
 /* ══ PAGE HEADER (work / about) ══ */
 .page-head {
