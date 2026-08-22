@@ -620,7 +620,7 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   pointer-events: none;
   white-space: nowrap;
 }
-.hero .studio-title { --st-shift: 0.011em; }
+.hero .studio-title { --st-shift: 0.006em; }
 .st-layer--warm { color: #f7a12b; transform: translateY(calc(var(--st-shift) * -1)); }
 .st-layer--cool { color: #2f6bff; transform: translateY(var(--st-shift)); }
 
