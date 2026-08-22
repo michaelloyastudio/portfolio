@@ -73,17 +73,13 @@
      separate so widening the hero never moves the logo or the burger. */
   --hero-x: clamp(1.5rem, 11.5vw, 14.5rem);
 
-  /* Space Grotesk carries headings, buttons, and labels.
-     IBM Plex Sans carries body copy — neutral and easy at small sizes, so
-     it stays out of the way of the display face. */
-  --font-display: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  /* Nimbus carries everything structural — headings, menu, buttons,
+     labels, nav, footer — so the site runs on the same face as the hero
+     wordmark. IBM Plex Sans stays on body copy: neutral and easy at small
+     sizes, so it keeps out of the way of the display face.
+     Warbler is hero-only now: "Studio" and the slot word, both italic. */
+  --font-display: var(--font-hero);
   --font-body: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
-
-  /* Warbler, upright, on the menu titles and nowhere else. Display is the
-     optical size cut for type this large; Deck (what the hero uses) is
-     drawn for smaller settings and looks soft blown up to 5rem. */
-  --font-menu: 'warbler-display', 'Warbler Display', 'warbler-banner',
-               'Warbler Banner', 'Warbler Deck', 'Playfair Display', Georgia, serif;
 
   /* Hero faces.
      Nimbus Sans is URW's open-source Helvetica clone, self-hosted, so
@@ -254,11 +250,6 @@ body.menu-open .menu { opacity: 1; visibility: visible; }
   width: 100%;
 }
 .menu-links a {
-  /* The one place that runs Warbler. Restated here rather than pulled out
-     of the --font-display group above, which also lists .menu-links a at
-     the same specificity — this rule wins on source order. */
-  font-family: var(--font-menu);
-  font-style: normal;
   /* fit-content keeps each link on its own line while shrinking the box to
      the width of the word — otherwise a full-width block means hovering
      anywhere on the row lights it up, including far off to the right. */
@@ -456,7 +447,7 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   gap: 0.126em;
   /* DIN 2014 Rounded is the original wordmark face, loaded from the
      Typekit kit on index.html only. word-spacing and weight 400 are from
-     the old CSS too — DIN sets wider than Space Grotesk at the same size. */
+     the old CSS too — DIN sets wider than the display face at the same size. */
   font-family: 'din-2014-rounded-variable', var(--font-display);
   font-size: var(--wm);
   font-weight: 400;
