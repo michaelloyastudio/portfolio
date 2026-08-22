@@ -71,6 +71,12 @@
      retune it for a page layout — the nav and footer sit on it site-wide. */
   --frame-x: clamp(2rem, 6vw, 6rem);
   --frame-y: 2.1rem;
+  /* The header alone sits higher than the shared inset. Only the TOP of
+     the nav uses this; its bottom padding stays on --frame-y so the bar's
+     overall height, which the hero reserves space against, doesn't move.
+     Expressed as a fraction of --frame-y so it tracks the phone override
+     rather than needing its own. */
+  --nav-y: calc(var(--frame-y) * 0.74);
 
   /* The mark's rendered height. The burger is built entirely out of this
      so the two never drift: the bars take their weight from the mark's
@@ -180,7 +186,7 @@ a { color: inherit; text-decoration: none; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--frame-y) var(--frame-x);
+  padding: var(--nav-y) var(--frame-x) var(--frame-y);
   /* Deliberately no background, blur, or bottom rule — the logo and the
      hamburger sit directly on the page and never gain a container. */
   background: none;
