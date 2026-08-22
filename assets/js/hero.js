@@ -43,8 +43,13 @@
     return text.replace(/i/g, '<span class="pip-i">ı' + STAR + '</span>');
   }
 
+  /* Two boxes, not one. .slot-word is the reel's STEP (its height is the
+     travel distance); .slot-ink carries the glyphs and is placed inside it
+     by transform. Sizing the step off line-height instead would drag
+     Warbler's line box along with it — see tuneToFont. */
   function word(text) {
-    return '<span class="slot-word">' + starDots(text) + '</span>';
+    return '<span class="slot-word"><span class="slot-ink">' +
+           starDots(text) + '</span></span>';
   }
 
   /* Reel order is LANDING FIRST, spin words after. The reel starts pushed
@@ -166,13 +171,25 @@
       W.iA = Math.max(W.iA, m.iA); W.iD = Math.max(W.iD, m.iD);
     });
 
-    /* Height that fits the ink both ways. With height and line-height
-       equal, the baseline sits at (H - fA - fD)/2 + fA, so
-         ink fits below:  H >= (fA - fD) + 2*iD
-         ink fits above:  H >= (fD - fA) + 2*iA
-       Take the larger, plus a hair so it never lands exactly on the edge. */
-    var H = Math.max((W.fA - W.fD) + 2 * W.iD, (W.fD - W.fA) + 2 * W.iA) + 0.08;   /* + a hair, so rounding never lands on the edge */
+    /* Size the window to the INK, not to the font's line box.
+       Warbler declares 1.70em of line box around 1.04em of actual ink, and
+       that slack is not centred — it nearly all sits above the glyphs. Let
+       line-height place the baseline and the window has to be 1.59em tall
+       with half an em of dead space along its top edge, which is a mask
+       hanging over the line above: mid-spin, words scrolled through that
+       strip and painted on the descenders of "focusing on".
+       So the window is the ink plus a small pad, and .slot-ink is shifted
+       to sit inside it. PAD is the breathing room at each edge. */
+    var PAD = 0.06;
+    var H = W.iA + W.iD + 2 * PAD;
     root.setProperty('--slot-h', H.toFixed(4) + 'em');
+
+    /* .slot-ink is line-height:1, so its baseline sits here, and its ink
+       top is that minus the ascent. Shift it so the ink lands PAD below
+       the window's top edge. */
+    var inkBaseline = (1 - W.fA - W.fD) / 2 + W.fA;
+    var shift = PAD - (inkBaseline - W.iA);
+    root.setProperty('--slot-shift', shift.toFixed(4) + 'em');
 
     /* Pull the reel back up so the red line's BASELINE lands where a third
        line of the lede would, rather than wherever Warbler's line box
@@ -182,7 +199,7 @@
       var lh = parseFloat(getComputedStyle(ledeLine).lineHeight) /
                parseFloat(getComputedStyle(ledeLine).fontSize);
       var wantBaseline = (lh - N.fA - N.fD) / 2 + N.fA;
-      var slotBaseline = (H - W.fA - W.fD) / 2 + W.fA;
+      var slotBaseline = inkBaseline + shift;      // where it lands in the window
       root.setProperty('--slot-mt', (wantBaseline - slotBaseline).toFixed(4) + 'em');
     }
 

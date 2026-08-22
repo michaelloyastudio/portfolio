@@ -733,11 +733,18 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
      of instant jumps between positions */
   transition: transform 2200ms cubic-bezier(0.08, 0.72, 0.12, 1);
 }
+/* The glyphs, placed inside the step box rather than by line-height.
+   line-height:1 gives a predictable baseline to measure from; the shift
+   is computed off the loaded font in tuneToFont. */
+.slot-ink {
+  display: block;
+  line-height: 1;
+  transform: translateY(var(--slot-shift, 0));
+}
 .slot-word {
   display: block;
   /* must match .slot's height: it is also the reel's step distance. */
   height: var(--slot-h, 1.36em);
-  line-height: var(--slot-h, 1.36em);
   white-space: nowrap;
   font-family: var(--font-hero-serif);
   font-style: italic;
