@@ -10,12 +10,12 @@
   --espresso:  #3d2b1f;
   --gray:      #8a8580;
   --parchment: #E8E0D4;
-  --orange:    #ff8e3d;
+  --red:       #ff4a3d;
 
   --bg:     var(--black);
   --fg:     var(--parchment);
   --muted:  var(--gray);
-  --accent: var(--orange);
+  --accent: var(--red);
   --panel:  #121212;
   --line:   rgba(232, 224, 212, 0.14);
 

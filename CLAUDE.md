@@ -33,15 +33,15 @@ Featured projects on the Studio page are set by `data-featured` on `#bands` in `
 | Espresso | `#3d2b1f` |
 | Warm Gray | `#8a8580` |
 | Parchment | `#E8E0D4` |
-| Orange | `#ff8e3d` |
+| Red | `#ff4a3d` |
 
-Parchment replaces white. Black is `#0a0a0a`, never pure `#000`. Orange is for links, hover, and active states only — it works because it's rationed.
+Parchment replaces white. Black is `#0a0a0a`, never pure `#000`. Red is for links, hover, and active states only — it works because it's rationed.
 
-Type: **Space Grotesk** (Google Fonts).
+Type: **Space Grotesk** (Google Fonts) for UI, **IBM Plex Sans** for body copy, **DIN 2014 Rounded** (Typekit) for the hero wordmark only.
 
 ## Known issues
-- **Hero video is the 71MB master** (`projects/capstone/visualizer.mp4`). Needs a compressed ~5MB web cut before launch.
 - **Mobile is unstyled beyond a single 900px breakpoint.** A real responsive pass hasn't happened.
+- **The wordmark needs michaelloya.studio on the Typekit kit's allowed domains** (kit `vvj5gyy`, loaded on index.html). It resolves on localhost; if the live domain isn't listed it will silently fall back to Space Grotesk.
 
 ## Deployment
 GitHub Pages from `michaelloyastudio/portfolio`, branch `main`, root. Cloudflare fronts it and terminates TLS. **Push to `main` = live.**
