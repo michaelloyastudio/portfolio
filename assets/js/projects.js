@@ -17,9 +17,9 @@ const projects = [
     year: "2026",
     cover: `projects/capstone/cover.jpg`,
     hero: `projects/capstone/hero.jpg`,
-    intro: `<p>A music visualizer for <a href="https://open.spotify.com/artist/" target="_blank" rel="noopener">Z</a>'s track <em>where it hurts.</em>, made as my senior capstone. Z isn't based in NY, so instead of shooting him I built the whole piece out of AI-generated assets and art-directed it end to end.</p>
-<p>I storyboarded the scenes and wrote the direction, generated each one, then broke the stills apart in Photoshop and animated them in After Effects. The imagery stays abstract on purpose. Z gave me the freedom, and I'd rather leave room for the viewer than push a narrative he wasn't comfortable carrying.</p>
-<p>The look is homage, and I'd rather that show than hide it. <em>Into the Spider-Verse</em> is where the cut-paper lyric type, the halftone dots, and the white keyline around the figure come from. <em>Invincible</em> is the other half: flat bold color and heavy ink outlines, a clean surface that can still turn ugly. Building on top of the work that shaped me is more honest than pretending I got here on my own.</p>`,
+    intro: `<p>A music visualizer for <a href="https://open.spotify.com/artist/" target="_blank" rel="noopener">Z</a>'s track <em>where it hurts.</em>, made as my senior capstone. Z isn't based in NY, so the piece had to be built rather than shot, and I art directed it end to end.</p>
+<p>I storyboarded the scenes and wrote the direction, then composed each frame from AI-generated assets, broke the stills apart in Photoshop, and animated them in After Effects. The imagery stays abstract on purpose. Z gave me the freedom, and I'd rather leave room for the viewer than push a narrative he wasn't comfortable carrying.</p>
+<p>I take in a lot of media, and the things I love end up shaping how I direct. The look here came out of that.</p>`,
     work: `<div class="project-video"><video src="projects/capstone/visualizer.mp4" controls playsinline preload="metadata" poster="projects/capstone/poster.jpg" width="1920" height="1080"></video></div>
 <div class="img-grid-2">
 <div><img src="projects/capstone/still-1.jpg" alt="Still from the visualizer" loading="lazy" width="1920" height="1080"></div>
@@ -39,8 +39,8 @@ const projects = [
     year: "2023–Present",
     cover: `projects/loya-and-co/cover.jpg`,
     hero: `projects/loya-and-co/cover.jpg`,
-    intro: `<p>I work with my brother, who produces under our last name — <a href="https://open.spotify.com/artist/5gNQpoYEBE1jxjCgFkLWce" target="_blank" rel="noopener">loya</a>. Cover art, Spotify canvas visuals, logo design, and social content, shaped around each release.</p>
-<p>The logo came out of his hat collection, set in Amador — a blackletter that balances elegance with edge. I've also made pieces for other artists along the way.</p>`,
+    intro: `<p>My brother produces music under our last name, <a href="https://open.spotify.com/artist/5gNQpoYEBE1jxjCgFkLWce" target="_blank" rel="noopener">loya</a>, and runs LYRC, the company he started. I work with him on promoting his music and his personal brand, keyed to cinematic and viral content.</p>
+<p>The logo came out of his hat collection, set in Amador, a blackletter that balances elegance with edge.</p>`,
     work: `<div class="project-video"><video src="projects/loya-and-co/intro.mp4" controls playsinline preload="metadata" poster="projects/loya-and-co/intro-poster.jpg" width="1920" height="1080"></video></div>
 <div class="project-video"><video src="projects/loya-and-co/canvases.mp4" autoplay loop muted playsinline width="1920" height="1080"></video></div>
 <div><img src="projects/loya-and-co/loya-hat-mockup.jpeg" alt="loya hat mockup" loading="lazy" width="2752" height="1536"></div>`

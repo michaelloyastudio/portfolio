@@ -41,6 +41,7 @@
   $('projectTitle').textContent = p.title;
   $('projectCategory').textContent = p.category;
   $('projectIntro').innerHTML = p.intro;
+  noWidows($('projectIntro'));
   $('projectTools').textContent = p.tools;
   $('projectYear').textContent = p.year;
 
@@ -172,5 +173,25 @@
       });
     }, { rootMargin: '150px 0px' });
     loops.forEach(function (v) { vio.observe(v); });
+  }
+
+  /* ── No widows ─────────────────────────────────────────────────────
+     Binds the last two words of every paragraph with a non-breaking
+     space, so a paragraph can never break with one word stranded on its
+     own final line. Runs on the text nodes only — the <a> and <em> inside
+     the copy are left alone. */
+  function noWidows(root) {
+    if (!root) return;
+    root.querySelectorAll('p').forEach(function (para) {
+      var walker = document.createTreeWalker(para, NodeFilter.SHOW_TEXT, null);
+      var last = null, node;
+      while ((node = walker.nextNode())) {
+        if (node.nodeValue.trim()) last = node;
+      }
+      if (!last) return;
+      // \u00a0 between the final two words. Only bind if the tail actually
+      // has two words to bind; a one-word tail is already unbreakable.
+      last.nodeValue = last.nodeValue.replace(/\s+(\S+)\s*$/, '\u00a0$1');
+    });
   }
 })();

@@ -169,23 +169,61 @@
     var lede = document.querySelector('.hero-lede');
     var hero = document.querySelector('.hero--studio');
 
+    /* Depth order. In scroll parallax the layer that moves FASTEST than the
+       page reads as nearest, and the one that lags reads as furthest. The
+       title is the loudest thing on the page, so it leads (negative rate)
+       and sits in front; the work frame lags behind it and settles into the
+       background. That is the reverse of how this started, where the title
+       lagged hardest and read as the most distant layer. */
+    var RATE_TITLE = -0.30;
+    var RATE_LEDE  = -0.12;
+    var RATE_WORK  =  0.22;
+
+    /* Stars scattered below the hero, so the drift carries on past it.
+       Each one is measured from where it sits in the document and moves in
+       proportion to how far it has travelled since first coming into view,
+       rather than to raw scrollY — otherwise something 3000px down the page
+       would start life displaced by hundreds of pixels. */
+    var stars = [].slice.call(document.querySelectorAll('.star'));
+    var starTops = [];
+    function measureStars() {
+      starTops = stars.map(function (el) {
+        var t = el.style.translate;
+        el.style.translate = '';                       // measure undisplaced
+        var top = el.getBoundingClientRect().top + (window.scrollY || 0);
+        el.style.translate = t;
+        return top;
+      });
+    }
+    measureStars();
+
     function parallax() {
       var y = window.scrollY || window.pageYOffset || 0;
-      // stop computing once the hero is well off screen
-      if (hero && y > hero.offsetHeight + 200) return;
+      var vh = window.innerHeight || 0;
+
       /* Written to `translate`, not `transform`. .hero h1 carries the
          load-in `rise` animation with fill-mode both, and a filling
          animation beats an inline style forever — so a transform written
          here was silently thrown away on the title, the layer with the
          strongest rate. translate is its own property: it composes with
-         the animation's transform instead of fighting it. */
-      if (title) title.style.translate = '0 ' + (y * 0.34).toFixed(2) + 'px';
-      if (lede)  lede.style.translate  = '0 ' + (y * 0.19).toFixed(2) + 'px';
-      if (work)  work.style.translate  = '0 ' + (y * -0.16).toFixed(2) + 'px';
+         the animation's transform instead of fighting it. It also leaves
+         the stars' own centring transform alone. */
+      if (!hero || y <= hero.offsetHeight + 200) {
+        if (title) title.style.translate = '0 ' + (y * RATE_TITLE).toFixed(2) + 'px';
+        if (lede)  lede.style.translate  = '0 ' + (y * RATE_LEDE).toFixed(2) + 'px';
+        if (work)  work.style.translate  = '0 ' + (y * RATE_WORK).toFixed(2) + 'px';
+      }
+
+      for (var i = 0; i < stars.length; i++) {
+        var seen = (y + vh) - starTops[i];             // px travelled since it entered
+        if (seen < 0 || seen > vh * 2.5) continue;     // off screen either way
+        var rate = parseFloat(stars[i].dataset.rate) || 0;
+        stars[i].style.translate = '0 ' + (seen * rate).toFixed(2) + 'px';
+      }
     }
 
     window.addEventListener('scroll', parallax, { passive: true });
-    window.addEventListener('resize', parallax);
+    window.addEventListener('resize', function () { measureStars(); parallax(); });
     parallax();
   }
 })();
