@@ -25,18 +25,20 @@
   var LAND = 'video production.';
 
   /* Star pip on the "i", same treatment as the title: a dotless i with the
-     star absolutely placed where the tittle would sit. */
+     star absolutely placed where the tittle would sit. Every i on the reel
+     gets one now, not just the landing word, so the motif holds through
+     the whole spin instead of only showing up at the end. */
   var STAR = '<svg class="pip" viewBox="0 0 24 24" aria-hidden="true">' +
     '<path d="M12 0c.6 6.3 5.1 10.8 12 12-6.9 1.2-11.4 5.7-12 12-.6-6.3-5.1-10.8-12-12C6.9 10.8 11.4 6.3 12 0z"/>' +
     '</svg>';
 
-  function word(text, starOnI) {
-    var html = text;
-    if (starOnI) {
-      // star goes on the i in "production"
-      html = text.replace('production', 'product<span class="pip-i">ı' + STAR + '</span>on');
-    }
-    return '<span class="slot-word">' + html + '</span>';
+  // Blind replace is safe here: the words are plain text, never markup.
+  function starDots(text) {
+    return text.replace(/i/g, '<span class="pip-i">ı' + STAR + '</span>');
+  }
+
+  function word(text) {
+    return '<span class="slot-word">' + starDots(text) + '</span>';
   }
 
   /* Reel order is LANDING FIRST, spin words after. The reel starts pushed
@@ -44,8 +46,8 @@
      downward through the window and it settles on the first one — the way
      a real reel reads. Building it the other way scrolls upward. */
   var order = SPIN.concat(SPIN);
-  var html = word(LAND, true);
-  for (var i = 0; i < order.length; i++) html += word(order[i], false);
+  var html = word(LAND);
+  for (var i = 0; i < order.length; i++) html += word(order[i]);
   reel.innerHTML = html;
 
   var words = reel.querySelectorAll('.slot-word');
@@ -171,9 +173,15 @@
       var y = window.scrollY || window.pageYOffset || 0;
       // stop computing once the hero is well off screen
       if (hero && y > hero.offsetHeight + 200) return;
-      if (title) title.style.transform = 'translate3d(0,' + (y * 0.34).toFixed(2) + 'px,0)';
-      if (lede)  lede.style.transform  = 'translate3d(0,' + (y * 0.19).toFixed(2) + 'px,0)';
-      if (work)  work.style.transform  = 'translate3d(0,' + (y * -0.16).toFixed(2) + 'px,0)';
+      /* Written to `translate`, not `transform`. .hero h1 carries the
+         load-in `rise` animation with fill-mode both, and a filling
+         animation beats an inline style forever — so a transform written
+         here was silently thrown away on the title, the layer with the
+         strongest rate. translate is its own property: it composes with
+         the animation's transform instead of fighting it. */
+      if (title) title.style.translate = '0 ' + (y * 0.34).toFixed(2) + 'px';
+      if (lede)  lede.style.translate  = '0 ' + (y * 0.19).toFixed(2) + 'px';
+      if (work)  work.style.translate  = '0 ' + (y * -0.16).toFixed(2) + 'px';
     }
 
     window.addEventListener('scroll', parallax, { passive: true });

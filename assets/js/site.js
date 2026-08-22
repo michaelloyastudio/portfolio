@@ -60,11 +60,12 @@
     });
   }
 
-  /* ── Letter jump on the menu links ───────────────────────────────
+  /* ── Letter jump ─────────────────────────────────────────────────
      Split each label into per-letter spans and run navWave across them
      50ms apart, so the word ripples rather than moving as a block.
-     Same timing as the old nav. */
-  document.querySelectorAll('.menu-links a').forEach(function (link) {
+     Same timing as the old nav. Anything with data-wave opts in, which
+     is how the hero button gets the same interaction as the menu. */
+  document.querySelectorAll('.menu-links a, [data-wave]').forEach(function (link) {
     var text = link.textContent;
     link.innerHTML = text.split('').map(function (ch) {
       return ch === ' ' ? ' ' : '<span class="ltr">' + ch + '</span>';

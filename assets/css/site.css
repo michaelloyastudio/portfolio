@@ -64,9 +64,6 @@
   --pad: clamp(1.25rem, 4vw, 3.5rem);
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
 
-  /* film grain over the page ground. 0 = off. */
-  --grain: 0.085;
-
   /* Header and footer share this so their insets match exactly. Don't
      retune it for a page layout — the nav and footer sit on it site-wide. */
   --frame-x: clamp(2rem, 6vw, 6rem);
@@ -76,16 +73,11 @@
      separate so widening the hero never moves the logo or the burger. */
   --hero-x: clamp(1.5rem, 11.5vw, 14.5rem);
 
-  /* TRIAL: the whole site now runs on the two hero faces instead of
-     Space Grotesk + IBM Plex Sans. Nimbus carries structure, Warbler
-     italic carries the accents. To revert, put the two commented stacks
-     back and nothing else has to change.
-       --font-display: 'Space Grotesk', system-ui, -apple-system, sans-serif;
-       --font-body: 'IBM Plex Sans', system-ui, -apple-system, sans-serif; */
-  --font-display: var(--font-hero);
-  --font-body: var(--font-hero);
-  /* the accent voice: same face and colour logic as the hero slot word */
-  --font-accent: var(--font-hero-serif);
+  /* Space Grotesk carries headings, buttons, and labels.
+     IBM Plex Sans carries body copy — neutral and easy at small sizes, so
+     it stays out of the way of the display face. */
+  --font-display: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  --font-body: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
 
   /* Hero faces.
      Nimbus Sans is URW's open-source Helvetica clone, self-hosted, so
@@ -152,23 +144,6 @@ html.locked { overflow: hidden; }
 
 img, video { display: block; max-width: 100%; }
 
-/* ══ GRAIN ══
-   Film grain on the black paper only. It sits at z-index -1 inside body,
-   so it paints above body's background but under every image, video and
-   panel — the photography stays clean and only the page ground moves.
-   Static, not animated: an animated grain repaints the whole viewport
-   every frame and this page already runs a parallax on scroll.
-   Dial it with --grain; 0 turns it off. */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  opacity: var(--grain);
-  background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='180'%20height='180'%3E%3Cfilter%20id='g'%20x='0'%20y='0'%20width='100%'%20height='100%'%3E%3CfeTurbulence%20type='fractalNoise'%20baseFrequency='0.82'%20numOctaves='4'%20stitchTiles='stitch'/%3E%3CfeColorMatrix%20type='saturate'%20values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncR%20type='gamma'%20exponent='2.2'/%3E%3CfeFuncG%20type='gamma'%20exponent='2.2'/%3E%3CfeFuncB%20type='gamma'%20exponent='2.2'/%3E%3CfeFuncA%20type='discrete'%20tableValues='1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect%20width='100%'%20height='100%'%20filter='url%28%23g%29'/%3E%3C/svg%3E");
-  background-size: 180px 180px;
-}
 a { color: inherit; text-decoration: none; }
 ::selection { background: var(--accent); color: var(--black); }
 
@@ -201,9 +176,21 @@ a { color: inherit; text-decoration: none; }
   height: 45px;
   width: auto;
   display: block;
-  transition: opacity 0.3s ease;
 }
-.nav-logo:hover img { opacity: 0.72; }
+.nav-logo:hover img { animation: logoWave 0.72s var(--ease); }
+
+/* The mark waves. It's already red at rest, so hover has to be motion
+   rather than colour: it kicks up and tips right, tips back through
+   centre to the left, and settles. Origin sits low so the rotation reads
+   as a hand waving from the wrist rather than a spin about the middle. */
+@keyframes logoWave {
+  0%   { transform: translateY(0)    rotate(0deg); }
+  20%  { transform: translateY(-7px) rotate(9deg); }
+  45%  { transform: translateY(-4px) rotate(-8deg); }
+  68%  { transform: translateY(-5px) rotate(5deg); }
+  86%  { transform: translateY(-1px) rotate(-2deg); }
+  100% { transform: translateY(0)    rotate(0deg); }
+}
 
 /* Tint the mark on hover. An <img> can't be recoloured with CSS, so where
    masks are supported the anchor becomes the shape and the SVG supplies
@@ -221,7 +208,10 @@ a { color: inherit; text-decoration: none; }
     transition: background-color 0.3s ease;
   }
   .nav-logo img { display: none; }
-  .nav-logo:hover { background-color: var(--fg); }
+  /* transform-origin low and centred: the wave pivots near the base of
+     the mark, not through its middle. */
+  .nav-logo { transform-origin: 50% 88%; }
+  .nav-logo:hover { animation: logoWave 0.72s var(--ease); }
 }
 
 /* Hamburger */
@@ -239,16 +229,32 @@ a { color: inherit; text-decoration: none; }
 }
 .burger span {
   display: block;
-  width: 36px; height: 3px;
+  /* 4.4px is the logo's own stroke measured out: the mark is drawn on a
+     96.52-unit viewBox with a 7.5-unit stroke and renders 56.6px wide, so
+     7.5 x (56.6 / 96.52) = 4.4. The bars and the mark now carry the same
+     weight instead of the burger reading thinner. */
+  width: 36px; height: 4.4px;
   border-radius: 999px;          /* round caps, not square */
   background: var(--accent);
-  transition: transform 0.4s var(--ease), opacity 0.25s ease, background 0.3s ease;
+  transition: transform 0.4s var(--ease), opacity 0.25s ease;
 }
-.burger:hover span { background: var(--fg); }
+
+/* Hover pinches the bars toward the centre and lets them spring back —
+   red at rest, so this is motion, not colour, and it previews the X the
+   button is about to become. Deliberately unlike the logo's wave. */
+@keyframes burgerPinchTop { 0%, 100% { transform: translateY(0); }    45% { transform: translateY(4.5px); } }
+@keyframes burgerPinchMid { 0%, 100% { transform: scaleX(1); }        45% { transform: scaleX(0.5); } }
+@keyframes burgerPinchBot { 0%, 100% { transform: translateY(0); }    45% { transform: translateY(-4.5px); } }
+.burger:hover span:nth-child(1) { animation: burgerPinchTop 0.46s var(--ease); }
+.burger:hover span:nth-child(2) { animation: burgerPinchMid 0.46s var(--ease); }
+.burger:hover span:nth-child(3) { animation: burgerPinchBot 0.46s var(--ease); }
+/* Once it IS the X, the pinch would fight the crossed transform. */
+body.menu-open .burger:hover span { animation: none; }
+
 /* Offset = span height + gap, so the two bars meet exactly at centre. */
-body.menu-open .burger span:nth-child(1) { transform: translateY(12px) rotate(45deg); }
+body.menu-open .burger span:nth-child(1) { transform: translateY(13.4px) rotate(45deg); }
 body.menu-open .burger span:nth-child(2) { opacity: 0; }
-body.menu-open .burger span:nth-child(3) { transform: translateY(-12px) rotate(-45deg); }
+body.menu-open .burger span:nth-child(3) { transform: translateY(-13.4px) rotate(-45deg); }
 
 /* Menu overlay */
 .menu {
@@ -305,6 +311,7 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 /* Letter-jump on hover, carried over from the old nav: the text is split
    into spans and site.js fires this across them 50ms apart. */
 .ltr { display: inline-block; }
+.btn .ltr { will-change: transform; }
 @keyframes navWave {
   0%   { transform: translateY(0); }
   40%  { transform: translateY(-5px); }
@@ -578,7 +585,7 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 .hero--studio {
   display: block;
   min-height: 100svh;
-  padding: calc(var(--frame-y) * 2 + 63px + clamp(0.5rem, 3.5vh, 3rem)) var(--hero-x) clamp(2rem, 5vh, 4rem);
+  padding: calc(var(--frame-y) * 2 + 63px + clamp(0.25rem, 2.1vh, 1.8rem)) var(--hero-x) clamp(2rem, 5vh, 4rem);
   text-align: left;
   overflow: hidden;
 }
@@ -692,6 +699,13 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   letter-spacing: 0.055em;
   padding: 1.15rem 2.5rem;
 }
+/* .btn-solid:hover further up the sheet has the same specificity as the
+   rule above and loses on source order, so the hero button had no hover
+   state at all. Restating it here, scoped, is what makes it fire. */
+.hero--studio .btn-solid:hover {
+  background: transparent;
+  color: var(--accent);
+}
 
 /* ── slot machine ── */
 .slot {
@@ -701,8 +715,14 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
      nudge: Warbler's ascent is 0.97em against Nimbus's 0.73em, so inside
      an identical line box the serif baseline sits 0.135em lower and the
      red line reads as detached from the sentence above it. */
-  height: 1.2em;
-  margin: -0.135em 0 0;
+  /* 1.2em was one line box exactly, which cut the descender off the p in
+     "production" — Warbler's ink runs to 1.233em below the box top once
+     half-leading and the 0.268em descender are counted. 1.36em clears it
+     with about 1.5px to spare. The extra height is split above and below
+     the text, so the top margin takes back half of it to keep the red
+     line sitting where it was against the sentence. */
+  height: 1.36em;
+  margin: -0.215em 0 0;
 }
 .slot-reel {
   display: block;
@@ -713,8 +733,9 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 }
 .slot-word {
   display: block;
-  height: 1.2em;
-  line-height: 1.2em;
+  /* must match .slot's height: it is also the reel's step distance. */
+  height: 1.36em;
+  line-height: 1.36em;
   white-space: nowrap;
   font-family: var(--font-hero-serif);
   font-style: italic;
@@ -770,17 +791,10 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   margin: 0 auto;
   padding: calc(7rem + var(--pad)) var(--pad) clamp(2.5rem, 6vw, 4rem);
 }
-/* Page and project names run in the accent face, italic, the same way
-   "Studio" does in the hero wordmark. Everything structural stays sans,
-   so the italic only ever marks the name of the thing you're looking at.
-   Warbler's italic sets narrower than Nimbus, so the tracking opens back
-   up from -0.04em. */
 .page-head h1 {
-  font-family: var(--font-accent);
-  font-style: italic;
-  font-size: clamp(2.9rem, 8.6vw, 5.9rem);
+  font-size: clamp(2.6rem, 8vw, 5.4rem);
   font-weight: 700;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.04em;
   line-height: 1;
   margin: 0 0 1.1rem;
 }
@@ -1179,11 +1193,9 @@ footer {
   white-space: nowrap;
 }
 .project-head h1 {
-  font-family: var(--font-accent);
-  font-style: italic;
-  font-size: clamp(3.2rem, 9vw, 6.4rem);
+  font-size: clamp(3rem, 8.5vw, 6rem);
   font-weight: 700;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.04em;
   line-height: 1;
   margin: 0;
 }
