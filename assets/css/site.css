@@ -552,7 +552,7 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 .hero--studio {
   display: block;
   min-height: 100svh;
-  padding: calc(var(--frame-y) * 2 + 63px) var(--hero-x) clamp(3rem, 7vh, 6rem);
+  padding: calc(var(--frame-y) * 2 + 63px + clamp(0.5rem, 3.5vh, 3rem)) var(--hero-x) clamp(2rem, 5vh, 4rem);
   text-align: left;
   overflow: hidden;
 }
@@ -564,8 +564,8 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
      measure instead of holding an empty 1fr, which is what left the gap
      in the middle. The work then takes everything that's left. */
   grid-template-columns: minmax(0, max-content) minmax(0, 1fr);
-  column-gap: clamp(1.5rem, 3vw, 3.25rem);
-  row-gap: clamp(2.5rem, 7vh, 5.5rem);
+  column-gap: clamp(1.25rem, 2.2vw, 2.5rem);
+  row-gap: clamp(1.5rem, 4vh, 3.25rem);
   align-items: start;
 }
 
@@ -630,14 +630,17 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 .hero-copy {
   font-family: var(--font-hero);
   font-weight: 400;
-  font-size: clamp(1.2rem, 2.2vw, 3.2rem);
+  font-size: clamp(1.3rem, 2.6vw, 3.6rem);
   line-height: 1.2;
   letter-spacing: -0.015em;
   /* em here resolves against the copy's own size, so the measure tracks
      the type. On .hero-lede it resolved against 16px and clamped to
      200px, which broke the line into five. ~11.5em holds the reference's
      three lines. */
-  max-width: 11.5em;
+  /* The lede and the work split one row, so the measure directly sets how
+     much width is left for the video. Narrower measure + larger type =
+     both read bigger. */
+  max-width: 9.2em;
   margin: 0 0 clamp(1.5rem, 3vw, 2.25rem);
   color: var(--fg);
 }
@@ -684,7 +687,12 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 
 /* ── the work ── */
 .hero-work {
+  /* width:max-content so the anchor is exactly the media. As a full-width
+     block it stayed clickable in the empty space beside the frame. */
   display: block;
+  width: max-content;
+  max-width: 100%;
+  margin-left: auto;
   align-self: start;
   /* revealed once the slot lands: opacity plus a defocus that resolves */
   opacity: 0;
@@ -701,7 +709,7 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
      auto width/height means it scales to fit without distorting, and it
      right-aligns so its outer edge sits on the margin. */
   max-width: 100%;
-  max-height: 49svh;
+  max-height: 57svh;
   width: auto;
   height: auto;
   margin-left: auto;

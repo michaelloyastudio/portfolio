@@ -57,8 +57,21 @@
 
   function settle() {
     if (!work) return;
-    // Reveal the work once the reel has landed.
+    // Reveal the work once the reel has landed, and start the loop on the
+    // same beat — it holds on its poster until then rather than playing
+    // behind a blur nobody can see.
     work.classList.add('is-in');
+    var v = work.querySelector('video');
+    if (v) {
+      var p = v.play();
+      // If the element isn't ready yet the promise rejects; try once more
+      // when it has enough data rather than leaving it on the poster.
+      if (p && p.catch) p.catch(function () {
+        v.addEventListener('canplay', function () {
+          var q = v.play(); if (q && q.catch) q.catch(function () {});
+        }, { once: true });
+      });
+    }
   }
 
   if (reduce) {
