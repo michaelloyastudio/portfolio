@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://use.typekit.net/vvj5gyy.css">
-<link rel="stylesheet" href="assets/css/site.css?v=38">
+<link rel="stylesheet" href="assets/css/site.css?v=41">
 <style>
   /* First-paint guard. Applies before anything else resolves, so the page
      never flashes raw content before the load-in animations start.
@@ -31,6 +31,7 @@
   }
 </style>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,400;1,700&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -58,27 +59,29 @@
 </nav>
 
 <!-- ══ HERO ══ -->
-<section class="hero hero--halation">
-  <div class="hero-inner">
-    <!-- Three stacked copies of the same text: two blurred glow layers
-         behind, the crisp cream letters in front. aria-hidden on the
-         glows so the wordmark is announced once. -->
-    <h1 class="halation">
-      <span class="halation-glow halation-glow--far"  aria-hidden="true">Michael Loya Studio</span>
-      <span class="halation-glow halation-glow--mid"  aria-hidden="true">Michael Loya Studio</span>
-      <span class="halation-glow halation-glow--edge" aria-hidden="true">Michael Loya Studio</span>
-      <span class="halation-face">Michael Loya Studio</span>
+<section class="hero hero--studio">
+  <div class="hero-grid">
+
+    <h1 class="studio-title">
+      <span class="st-sans">Michael Loya</span>
+      <em class="st-serif">Stud<span class="pip-i">&#x131;<svg class="pip" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0c.6 6.3 5.1 10.8 12 12-6.9 1.2-11.4 5.7-12 12-.6-6.3-5.1-10.8-12-12C6.9 10.8 11.4 6.3 12 0z"/></svg></span>o</em>
     </h1>
-    <p class="hero-sub">Video, motion, and design for artists and brands.</p>
-    <div class="hero-cta">
-      <a class="btn btn-solid" href="work.html">Explore the work</a>
+
+    <div class="hero-lede">
+      <p class="hero-copy">
+        A multifaceted creative currently focusing on
+        <span class="slot" id="slot">
+          <span class="slot-reel" id="slotReel"></span>
+        </span>
+      </p>
+      <a class="btn btn-solid" href="work.html">See the work</a>
     </div>
+
+    <a class="hero-work" id="heroWork" href="where-it-hurts.html" aria-label="where it hurts. — latest work">
+      <img src="projects/capstone/hero.jpg" alt="" width="1920" height="1080">
+    </a>
+
   </div>
-
-  <!-- film grain, sits over everything in the hero -->
-  <div class="hero-grain" aria-hidden="true"></div>
-
-  <div class="scroll-cue">Scroll</div>
 </section>
 
 <!-- ══ FEATURED ══ -->
@@ -108,7 +111,8 @@
 </footer>
 
 <!-- ══ PROJECT DETAIL ══ -->
-<script src="assets/js/projects.js?v=38"></script>
-<script src="assets/js/site.js?v=38"></script>
+<script src="assets/js/projects.js?v=41"></script>
+<script src="assets/js/hero.js?v=41"></script>
+<script src="assets/js/site.js?v=41"></script>
 </body>
 </html>
