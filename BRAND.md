@@ -8,11 +8,11 @@
 | **Supporting** | `#3d2b1f` | Espresso | Secondary headings, body text on light bg, dividers |
 | **Neutral** | `#8a8580` | Warm Gray | Muted text, subtitles, secondary UI elements |
 | **Primary Light** | `#E8E0D4` | Parchment | Light backgrounds, cards, containers |
-| **Accent** | `#ff2600` | Brand Red | Links, hover states, active indicators — use intentionally |
+| **Accent** | `#d91c28` | Brand Red | Links, hover states, active indicators — use intentionally |
 
 ## Usage Rules
 
-### Red (`#ff2600`)
+### Red (`#d91c28`)
 - Links default to orange
 - Hover states, active nav, interactive highlights
 - Accent borders on contact buttons
