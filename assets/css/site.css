@@ -64,9 +64,14 @@
   --pad: clamp(1.25rem, 4vw, 3.5rem);
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
 
-  /* Header and footer share this so their insets match exactly. */
-  --frame-x: clamp(1.5rem, 7.4vw, 9.5rem);
+  /* Header and footer share this so their insets match exactly. Don't
+     retune it for a page layout — the nav and footer sit on it site-wide. */
+  --frame-x: clamp(2rem, 6vw, 6rem);
   --frame-y: 2.1rem;
+
+  /* The studio hero pulls its content in further than the nav does. Kept
+     separate so widening the hero never moves the logo or the burger. */
+  --hero-x: clamp(1.5rem, 7.4vw, 9.5rem);
 
   /* Space Grotesk carries headings, buttons, and labels.
      IBM Plex Sans carries body copy — neutral and easy at small sizes, so
@@ -547,7 +552,7 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 .hero--studio {
   display: block;
   min-height: 100svh;
-  padding: calc(var(--frame-y) * 2 + 63px) var(--frame-x) clamp(3rem, 7vh, 6rem);
+  padding: calc(var(--frame-y) * 2 + 63px) var(--hero-x) clamp(3rem, 7vh, 6rem);
   text-align: left;
   overflow: hidden;
 }
