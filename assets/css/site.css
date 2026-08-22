@@ -62,16 +62,14 @@
 
   --maxw: 1240px;
   --pad: clamp(1.25rem, 4vw, 3.5rem);
+  /* Menu title size, shared so the social row can offset itself against
+     the same number the titles are set in. */
+  --menu-fs: clamp(2.2rem, 8vw, 5rem);
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
 
   /* Header and footer share this so their insets match exactly. Don't
-     retune it for a page layout — the nav and footer sit on it site-wide.
-     Tied to --pad because the open menu is padded on --pad: at 6vw the
-     logo sat 25px right of "Studio" and the burger 25px inside the menu
-     block's right edge, so the header read as inset from its own menu.
-     One inset now carries the header, the footer, the menu and the page
-     content, and they line up at every width. */
-  --frame-x: var(--pad);
+     retune it for a page layout — the nav and footer sit on it site-wide. */
+  --frame-x: clamp(2rem, 6vw, 6rem);
   --frame-y: 2.1rem;
 
   /* The studio hero pulls its content in further than the nav does. Kept
@@ -173,14 +171,6 @@ a { color: inherit; text-decoration: none; }
   align-items: center;
   justify-content: space-between;
   padding: var(--frame-y) var(--frame-x);
-  /* Same container as .menu-links, so the logo lands on the left edge of
-     the menu titles and the burger on their right edge at every width.
-     The inset alone isn't enough: .menu-links is capped at --maxw and
-     centred, so past ~1350px it pulls away from a full-width nav. The nav
-     has no background, so centring the bar is the same as centring what
-     is in it. */
-  max-width: calc(var(--maxw) + var(--frame-x) * 2);
-  margin-inline: auto;
   /* Deliberately no background, blur, or bottom rule — the logo and the
      hamburger sit directly on the page and never gain a container. */
   background: none;
@@ -268,7 +258,7 @@ body.menu-open .menu { opacity: 1; visibility: visible; }
      anywhere on the row lights it up, including far off to the right. */
   display: block;
   width: fit-content;
-  font-size: clamp(2.2rem, 8vw, 5rem);
+  font-size: var(--menu-fs);
   font-weight: 600;
   letter-spacing: -0.035em;
   /* line-height near 1 keeps the box close to the glyphs, and the space
@@ -306,6 +296,14 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 .menu-foot {
   max-width: var(--maxw);
   margin: 3.5rem auto 0;
+  /* Optical alignment, not box alignment. The icons are SVGs whose ink
+     runs to the edge of their box, while the titles are text: every
+     capital carries a left side bearing, so their ink starts inside the
+     box. Measured in Space Grotesk 600 — S 0.0375em, W 0.0317em,
+     A 0.0198em, C 0.0525em — so the row moves right by the average,
+     0.035em of the title size, putting it within about a pixel of all
+     four. Left at 0 the icons read a couple of pixels too far left. */
+  padding-left: calc(var(--menu-fs) * 0.035);
   width: 100%;
   display: flex;
   gap: 1.6rem;
@@ -986,8 +984,6 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 footer {
   border-top: 1px solid var(--line);
   padding: var(--frame-y) var(--frame-x);   /* matches .nav */
-  max-width: calc(var(--maxw) + var(--frame-x) * 2);
-  margin-inline: auto;
   display: flex;
   justify-content: space-between;
   gap: 1rem;
