@@ -198,14 +198,14 @@ a { color: inherit; text-decoration: none; }
    only its alpha — the fill then comes from background-color, which means
    it tracks --accent automatically instead of needing a second SVG file.
    The <img> stays as the fallback for anything without mask support. */
-@supports ((-webkit-mask-image: url('../brand/logo-cream.svg')) or (mask-image: url('../brand/logo-cream.svg'))) {
+@supports ((-webkit-mask-image: url('../brand/logo-cream.svg?v=84')) or (mask-image: url('../brand/logo-cream.svg?v=84'))) {
   .nav-logo {
     display: block;
     height: var(--logo-h);
     aspect-ratio: 98.52 / 78.75;   /* the mark's viewBox */
     background-color: var(--accent);
-    -webkit-mask: url('../brand/logo-cream.svg') no-repeat center / contain;
-    mask: url('../brand/logo-cream.svg') no-repeat center / contain;
+    -webkit-mask: url('../brand/logo-cream.svg?v=84') no-repeat center / contain;
+    mask: url('../brand/logo-cream.svg?v=84') no-repeat center / contain;
     transition: background-color 0.3s ease;
   }
   .nav-logo img { display: none; }
