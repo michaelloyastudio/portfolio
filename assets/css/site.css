@@ -383,6 +383,10 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 /* ══ HERO ══ */
 .hero {
   position: relative;
+  /* Nothing in the hero is selectable. It's a lockup, not copy — a stray
+     drag highlighting half the wordmark reads as a bug. */
+  -webkit-user-select: none;
+  user-select: none;
   min-height: 100svh;
   display: flex;
   align-items: center;
@@ -485,7 +489,14 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   font-size: 0.76rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  padding: 1rem 2.6rem;
+  /* The label is all caps, so it never uses the descender space the line
+     box reserves for it, and the ink floats above centre. The correction
+     is the font's own metrics, not a nudge:
+       (ascent - descent)/2 + (inkDescent - inkAscent)/2 = -0.133em
+     in Nimbus. The ink sits ABOVE centre, so the correction goes onto the
+     top and comes off the bottom. Stated in em so it tracks the clamped
+     font-size, and it nets to zero so the button's height is unchanged. */
+  padding: calc(1rem + 0.133em) 2.6rem calc(1rem - 0.133em);
   border: 1px solid var(--line);
   border-radius: 999px;
   transition: border-color 0.3s ease, color 0.3s ease, background 0.3s ease;
@@ -669,7 +680,7 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   font-weight: 500;
   font-size: clamp(0.8rem, 1.05vw, 1.05rem);
   letter-spacing: 0.055em;
-  padding: 1.15rem 2.5rem;
+  padding: calc(1.15rem + 0.133em) 2.5rem calc(1.15rem - 0.133em);
 }
 /* .btn-solid:hover further up the sheet has the same specificity as the
    rule above and loses on source order, so the hero button had no hover
