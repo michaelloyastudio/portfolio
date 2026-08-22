@@ -73,11 +73,12 @@
      separate so widening the hero never moves the logo or the burger. */
   --hero-x: clamp(1.5rem, 11.5vw, 14.5rem);
 
-  /* IBM Plex Sans carries the whole site: headings, menu, labels, nav,
-     footer, body copy. Nimbus and Warbler are hero-only now — the hero
-     sets its own faces directly off --font-hero / --font-hero-serif, so
-     it stays its own lockup and nothing else inherits from it. */
-  --font-display: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+  /* Space Grotesk carries headings, buttons, and labels.
+     IBM Plex Sans carries body copy — neutral and easy at small sizes, so
+     it stays out of the way of the display face.
+     Nimbus and Warbler are hero-only: the hero sets its faces directly
+     off --font-hero / --font-hero-serif, so nothing else inherits them. */
+  --font-display: 'Space Grotesk', system-ui, -apple-system, sans-serif;
   --font-body: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
 
   /* Hero faces.
@@ -488,10 +489,6 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   font-size: 0.76rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  /* Symmetric: IBM Plex's ascent and descent are near enough balanced
-     that all-caps sits centred on its own (measured: +0.026em, a third of
-     a pixel at this size). The hero button overrides this because it runs
-     Nimbus, whose metrics are not balanced — see the note there. */
   padding: 1rem 2.6rem;
   border: 1px solid var(--line);
   border-radius: 999px;
