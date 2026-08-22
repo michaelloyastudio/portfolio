@@ -65,24 +65,28 @@
     reel.style.transform = 'translateY(0)';
     settle();
   } else {
-    /* Decelerating spin: each step waits a little longer than the last,
-       so it reads as a slot losing momentum rather than a timed carousel.
-       Total lands around 2.1s — long enough to register, short enough that
-       the work isn't held back. */
-    // start at the far end of the reel, then walk back to index 0
+    /* One continuous travel from the far end of the reel back to index 0,
+       eased so it spins fast and then slows into the landing. Stepping the
+       transform position by position is what made it jump-cut — each write
+       snapped instead of scrolling. */
+    reel.style.transition = 'none';
     reel.style.transform = 'translateY(' + (-last * stepHeight()) + 'px)';
-    var delay = 55;
-    var t = 0;
-    for (var n = last - 1; n >= 0; n--) {
-      (function (index, at) {
-        setTimeout(function () {
-          reel.style.transform = 'translateY(' + (-index * stepHeight()) + 'px)';
-          if (index === 0) setTimeout(settle, 160);
-        }, at);
-      })(n, t);
-      t += delay;
-      delay *= 1.135;          // the deceleration curve
+    void reel.offsetHeight;                      // commit the start position
+    reel.style.transition = '';                  // hand back to the stylesheet
+
+    requestAnimationFrame(function () {
+      reel.style.transform = 'translateY(0)';
+    });
+
+    var landed = false;
+    function onLanded() {
+      if (landed) return;
+      landed = true;
+      settle();
     }
+    reel.addEventListener('transitionend', onLanded, { once: true });
+    // belt and braces: transitionend can be missed if the tab is throttled
+    setTimeout(onLanded, 2600);
   }
 
   /* ── Parallax ─────────────────────────────────────────────────────
@@ -103,9 +107,9 @@
       var y = window.scrollY || window.pageYOffset || 0;
       // stop computing once the hero is well off screen
       if (hero && y > hero.offsetHeight + 200) return;
-      if (title) title.style.transform = 'translate3d(0,' + (y * 0.18).toFixed(2) + 'px,0)';
-      if (lede)  lede.style.transform  = 'translate3d(0,' + (y * 0.09).toFixed(2) + 'px,0)';
-      if (work)  work.style.transform  = 'translate3d(0,' + (y * -0.07).toFixed(2) + 'px,0)';
+      if (title) title.style.transform = 'translate3d(0,' + (y * 0.34).toFixed(2) + 'px,0)';
+      if (lede)  lede.style.transform  = 'translate3d(0,' + (y * 0.19).toFixed(2) + 'px,0)';
+      if (work)  work.style.transform  = 'translate3d(0,' + (y * -0.16).toFixed(2) + 'px,0)';
     }
 
     window.addEventListener('scroll', parallax, { passive: true });

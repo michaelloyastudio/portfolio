@@ -65,7 +65,7 @@
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
 
   /* Header and footer share this so their insets match exactly. */
-  --frame-x: clamp(2rem, 6vw, 6rem);
+  --frame-x: clamp(1.5rem, 7.4vw, 9.5rem);
   --frame-y: 2.1rem;
 
   /* Space Grotesk carries headings, buttons, and labels.
@@ -555,8 +555,11 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 
 .hero-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.45fr);
-  column-gap: clamp(2rem, 5vw, 5rem);
+  /* max-content on the first column means it shrinks to the copy's own
+     measure instead of holding an empty 1fr, which is what left the gap
+     in the middle. The work then takes everything that's left. */
+  grid-template-columns: minmax(0, max-content) minmax(0, 1fr);
+  column-gap: clamp(1.5rem, 3vw, 3.25rem);
   row-gap: clamp(2.5rem, 7vh, 5.5rem);
   align-items: start;
 }
@@ -570,7 +573,7 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   font-family: var(--font-hero);
   font-weight: 700;
   /* squashed tracking, as in the reference */
-  letter-spacing: -0.045em;
+  letter-spacing: -0.058em;
   line-height: 0.92;
   /* Measured: this string renders 8.82x its font-size in Nimbus Bold at
      the tracking below. 9.6vw puts it at ~85% of the viewport, matching
@@ -594,13 +597,20 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 .pip-i {
   position: relative;
   display: inline-block;
+  line-height: 1;    /* so the box top is predictable for the star */
 }
 .pip-i .pip {
   position: absolute;
-  left: 50%;
-  bottom: 0.6em;          /* just above the x-height, where a tittle sits */
-  width: 0.23em;
-  height: 0.23em;
+  /* Placed from the font's own metrics rather than by eye. Measured in
+     Warbler Deck Italic: with line-height:1 the baseline sits 0.865em
+     below the box top and the dotless i's ink rises 0.474em, so its top
+     edge is at 0.391em. A 0.2em star with a small gap lands at 0.156em.
+     Horizontally the ink centre is 53% of the advance, and the italic
+     lean carries the top of the stem right of that, so ~65%. */
+  left: 65%;
+  top: 0.156em;
+  width: 0.2em;
+  height: 0.2em;
   transform: translateX(-50%);
   fill: currentColor;
   pointer-events: none;
@@ -635,18 +645,22 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 .slot {
   display: block;
   overflow: hidden;
-  /* one line tall, so only the landed word is ever visible */
-  height: 1.22em;
-  margin-top: 0.05em;
+  /* exactly one line of the copy, so the reel sits in the paragraph's
+     rhythm rather than dropping a gap beneath it */
+  height: 1.2em;
+  margin: 0;
 }
 .slot-reel {
   display: block;
   will-change: transform;
+  /* the spin itself — one long decelerating travel rather than a series
+     of instant jumps between positions */
+  transition: transform 2200ms cubic-bezier(0.08, 0.72, 0.12, 1);
 }
 .slot-word {
   display: block;
-  height: 1.22em;
-  line-height: 1.22em;
+  height: 1.2em;
+  line-height: 1.2em;
   white-space: nowrap;
   font-family: var(--font-hero-serif);
   font-style: italic;
