@@ -598,7 +598,32 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
      width and makes every subsequent fit undershoot. */
   white-space: nowrap;
   color: var(--fg);
+  /* stacking context for the offset colour layers below, which sit at
+     z-index -1 so the cream lockup stays on top of them */
+  position: relative;
+  isolation: isolate;
 }
+
+/* ── Chromatic offset ──────────────────────────────────────────────
+   Two duplicates of the lockup, built by hero.js and marked aria-hidden,
+   sitting behind the real one and nudged a sliver up and down. Warm above,
+   cool below. They're absolutely positioned so they take no space and the
+   fit measurement never sees them, and the offset is in em so the sliver
+   scales with the fitted size instead of drifting at large viewports.
+   Tune the effect here: --st-shift is the offset, the two colours are the
+   layer rules. */
+.st-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.hero .studio-title { --st-shift: 0.022em; }
+.st-layer--warm { color: #f7a12b; transform: translateY(calc(var(--st-shift) * -1)); }
+.st-layer--cool { color: #2f6bff; transform: translateY(var(--st-shift)); }
+
 .hero .studio-title .st-sans { font-family: var(--font-hero); }
 .hero .studio-title .st-serif {
   font-family: var(--font-hero-serif);

@@ -111,6 +111,26 @@
   }
 
 
+  /* ── Chromatic offset layers ──────────────────────────────────────
+     Two aria-hidden duplicates of the lockup behind the real one, one
+     warm and nudged up, one cool and nudged down. Cloned rather than
+     written out in the HTML so there is a single source of truth for the
+     markup — including the star pips, which pick up each layer's colour
+     through fill: currentColor. Offsets and colours live in the CSS. */
+  function buildTitleLayers() {
+    var title = document.querySelector('.studio-title');
+    if (!title || title.querySelector('.st-layer')) return;
+    var inner = title.innerHTML;
+    ['warm', 'cool'].forEach(function (tone) {
+      var layer = document.createElement('span');
+      layer.className = 'st-layer st-layer--' + tone;
+      layer.setAttribute('aria-hidden', 'true');
+      layer.innerHTML = inner;
+      title.insertBefore(layer, title.firstChild);
+    });
+  }
+  buildTitleLayers();
+
   /* ── Fit the title to the margins ─────────────────────────────────
      A vw font-size can only be correct at one viewport, so the string is
      measured and scaled to the container instead.
@@ -142,8 +162,18 @@
 
     var probe = 100;
     title.style.fontSize = probe + 'px';
+    /* Range over the REAL children only. selectNodeContents would union in
+       the two offset layers, which are the same string at the same left
+       edge — harmless today, but it would silently start lying the moment
+       a layer is nudged sideways rather than just up and down. */
+    var real = [];
+    for (var n = 0; n < title.children.length; n++) {
+      if (!title.children[n].classList.contains('st-layer')) real.push(title.children[n]);
+    }
+    if (!real.length) { title.style.fontSize = ''; return; }
     var rng = document.createRange();
-    rng.selectNodeContents(title);
+    rng.setStartBefore(real[0]);
+    rng.setEndAfter(real[real.length - 1]);
     var advance = rng.getBoundingClientRect().width;
     if (!advance) { title.style.fontSize = ''; return; }
 
