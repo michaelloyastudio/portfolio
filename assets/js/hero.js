@@ -10,17 +10,23 @@
 
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* Categories the reel spins through before landing. The last entry is
-     the one it settles on, so order matters. */
+  /* Categories the reel spins through before landing on LAND.
+     READ THIS LIST BACKWARDS to picture the spin. The reel is built with
+     LAND first and travels from the far end back to index 0, so the DOM
+     order plays in reverse: the LAST entry here is the first word you
+     see, and SPIN[0] is the one that flicks past immediately before the
+     reel settles. The four that matter are the four at the top. */
   var SPIN = [
+    'motion design',        // last thing seen before it lands
+    'creative direction',
+    'music production',
+    'event design',
+    // the rest, seen earlier in the spin while it's still moving fast
     'brand campaigns',
     'music videos',
-    'motion design',
     'cover art',
     'art direction',
-    'event design',
-    'title sequences',
-    'creative direction'
+    'title sequences'
   ];
   var LAND = 'video production.';
 
