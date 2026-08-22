@@ -33,7 +33,7 @@ Featured projects on the Studio page are set by `data-featured` on `#bands` in `
 | Espresso | `#3d2b1f` |
 | Warm Gray | `#8a8580` |
 | Parchment | `#E8E0D4` |
-| Red | `#ff4a3d` |
+| Red | `#ff2600` |
 
 Parchment replaces white. Black is `#0a0a0a`, never pure `#000`. Red is for links, hover, and active states only — it works because it's rationed.
 
