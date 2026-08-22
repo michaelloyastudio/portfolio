@@ -133,9 +133,23 @@
     };
   }
 
+  /* Same width the stylesheet switches the hero to one column at. */
+  var PHONE = window.matchMedia('(max-width: 640px)');
+
   function fitTitle() {
     var title = document.querySelector('.studio-title');
     if (!title) return;
+    /* The fit is a single-line trick — it needs white-space:nowrap, and one
+       line of the full lockup on a phone sets at about 35px, which is a
+       caption rather than a hero. Below 640 hand the size back to the
+       stylesheet, which wraps the title onto two lines instead. Clearing
+       both inline properties matters: they'd otherwise survive a rotate
+       from landscape and pin a desktop size onto a portrait screen. */
+    if (PHONE.matches) {
+      title.style.fontSize = '';
+      title.style.marginLeft = '';
+      return;
+    }
     title.style.marginLeft = '';
     var avail = title.clientWidth;
     if (!avail) return;
@@ -160,6 +174,7 @@
   }
   fitTitle();
   window.addEventListener('resize', fitTitle);
+  if (PHONE.addEventListener) PHONE.addEventListener('change', fitTitle);
 
   /* ── Parallax ─────────────────────────────────────────────────────
      Layers drift at different rates as the hero leaves the viewport.

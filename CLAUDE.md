@@ -10,7 +10,6 @@ Michael Loya's portfolio. Static, multi-page, no build step and no dependencies.
 - **`index.html`** — Studio. The main page: video hero, three featured project bands, statement, closing CTA.
 - **`work.html`** — Work. All projects in a two-column grid; clicking one opens the detail overlay.
 - **`about.html`** — About. Bio, education, experience, skills, achievements, interests, resume.
-- **`mobile.html`** — orphaned. Nothing links to it since the mobile redirect was removed. Delete it or wire it back up.
 
 ## Shared files
 - **`assets/css/site.css`** — every style on the site. Tokens at the top; the semantic block (`--bg`, `--fg`, `--accent`…) is the only thing a light mode would need to change.
@@ -39,8 +38,14 @@ Parchment replaces white. Black is `#0a0a0a`, never pure `#000`. Red is for link
 
 Type: **Space Grotesk** (Google Fonts) for UI, **IBM Plex Sans** for body copy, **DIN 2014 Rounded** (Typekit) for the hero wordmark only.
 
+## Responsive
+Two breakpoints, both in `site.css`:
+- **`max-width: 900px`** — one-column grids (hero, work, about, CV). The hero grid must stay `minmax(0, 1fr)`, never plain `1fr`: the title is `white-space: nowrap`, so a plain `1fr` column can't shrink below the whole string and `fitTitle` then measures that oversized column and sizes off it.
+- **`max-width: 640px`** — the phone layout. `--logo-h` drives the whole header (bar weight and the X offsets derive from it), `--pad` collapses onto `--frame-x` so one gutter runs the page, and `hero.js` stops fitting the title to one line and lets it wrap. The 640 figure is duplicated in `hero.js` as `PHONE`; change both together.
+
+Project mosaics go to one tile per row below 520px (`project-page.js`).
+
 ## Known issues
-- **Mobile is unstyled beyond a single 900px breakpoint.** A real responsive pass hasn't happened.
 - **The wordmark needs michaelloya.studio on the Typekit kit's allowed domains** (kit `vvj5gyy`, loaded on index.html). It resolves on localhost; if the live domain isn't listed it will silently fall back to Space Grotesk.
 
 ## Deployment

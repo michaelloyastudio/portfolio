@@ -94,7 +94,10 @@
       // Column count in the class name sets the target row height.
       var m = (grid.className.match(/img-grid-(\d)/) || [])[1];
       var perRow = Math.max(1, parseInt(m || '3', 10));
-      if (W < 700) perRow = Math.min(perRow, 2);
+      /* Two portrait tiles side by side on a phone are about 140px wide
+         each — too small to read as work. One per row below 520. */
+      if (W < 520) perRow = 1;
+      else if (W < 700) perRow = Math.min(perRow, 2);
       // data-exact: always this many per row, whatever height that gives.
       var exact = grid.hasAttribute('data-exact');
       var target = exact ? 0 : (W - gap * (perRow - 1)) / perRow;
