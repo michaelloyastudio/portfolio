@@ -10,6 +10,7 @@ Michael Loya's portfolio. Static, multi-page, no build step and no dependencies.
 - **`index.html`** — Studio. The main page: video hero, three featured project bands, statement, closing CTA.
 - **`work.html`** — Work. All projects in a two-column grid; clicking one opens the detail overlay.
 - **`about.html`** — About. Bio, education, experience, skills, achievements, interests, resume.
+- **`plugins.html`** — Plugins. Free tools, rendered from `assets/js/plugins.js`. A card only shows a download button when its entry has a `download` URL; otherwise it shows the status, so work in progress can be listed without a dead link. **Binaries do not go in this repo** — cut a GitHub Release on the plugin's own repo and point `download` at the asset.
 
 ## Shared files
 - **`assets/css/site.css`** — every style on the site. Tokens at the top; the semantic block (`--bg`, `--fg`, `--accent`…) is the only thing a light mode would need to change.

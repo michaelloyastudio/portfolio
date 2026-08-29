@@ -3,28 +3,33 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Miscellaneous — Michael Loya Studio</title>
-<meta name="description" content="Miscellaneous — Selected Works. Michael Loya Studio.">
+<title>Plugins — Michael Loya Studio</title>
+<meta name="description" content="Free plugins by Michael Loya Studio. Lookout for After Effects and GH MIDI for FL Studio.">
 <link rel="icon" type="image/svg+xml" href="favicon.svg?v=90">
 
-<meta property="og:title" content="Miscellaneous — Michael Loya Studio">
-<meta property="og:description" content="Selected Works">
-<meta property="og:image" content="https://michaelloya.studio/projects/miscellaneous/lyrc-hat.jpeg">
-<meta property="og:url" content="https://michaelloya.studio/miscellaneous.html">
-<meta property="og:type" content="article">
+<meta property="og:title" content="Plugins — Michael Loya Studio">
+<meta property="og:description" content="Tools I build and give away.">
+<meta property="og:image" content="https://michaelloya.studio/assets/site/preview.jpg">
+<meta property="og:url" content="https://michaelloya.studio/plugins.html">
+<meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/site.css?v=90">
 <style>
+  /* First-paint guard. Applies before anything else resolves, so the page
+     never flashes raw content before the load-in animations start.
+     Pure CSS — no JS dependency, so it can't leave the page stuck hidden. */
   html { background: #0a0a0a; }
   body { opacity: 0; animation: pageIn 0.4s ease 0.03s forwards; }
   @keyframes pageIn { to { opacity: 1; } }
-  @media (prefers-reduced-motion: reduce) { body { opacity: 1; animation: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    body { opacity: 1; animation: none; }
+  }
 </style>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -40,10 +45,9 @@
 <nav class="menu" id="menu">
   <div class="menu-links">
     <a href="index.html">Studio</a>
-    <!-- project pages live under Work, so Work stays lit in the menu -->
-    <a href="work.html" aria-current="page">Work</a>
+    <a href="work.html">Work</a>
     <a href="about.html">About</a>
-    <a href="plugins.html">Plugins</a>
+    <a href="plugins.html" aria-current="page">Plugins</a>
     <a href="mailto:hello@michaelloya.studio">Contact</a>
   </div>
   <div class="menu-foot">
@@ -53,31 +57,12 @@
   </div>
 </nav>
 
-<main class="project">
+<header class="page-head">
+  <h1>Plugins</h1>
+  <p>Tools I build for my own edits and then give away. Free, no account, no upsell.</p>
+</header>
 
-  <header class="project-head">
-    <h1 id="projectTitle"></h1>
-    <p class="project-category" id="projectCategory"></p>
-  </header>
-
-  <div class="project-hero" id="projectHero"></div>
-
-  <div class="project-body">
-    <div class="project-intro" id="projectIntro"></div>
-    <dl class="project-facts">
-      <div><dt>Tools</dt><dd id="projectTools"></dd></div>
-      <div><dt>Year</dt><dd id="projectYear"></dd></div>
-    </dl>
-  </div>
-
-  <div class="project-work" id="projectWork"></div>
-
-  <nav class="project-pager">
-    <a id="projectPrev" href="#">&larr; Previous</a>
-    <a id="projectNext" href="#">Next &rarr;</a>
-  </nav>
-
-</main>
+<div class="plugin-list" id="pluginList"></div>
 
 <section class="closing">
   <p class="lead">Let's create</p>
@@ -94,9 +79,7 @@
   <span>Tampa, FL</span>
 </footer>
 
-<script>window.PROJECT_SLUG = "miscellaneous";</script>
-<script src="assets/js/projects.js?v=90"></script>
-<script src="assets/js/project-page.js?v=90"></script>
+<script src="assets/js/plugins.js?v=90"></script>
 <script src="assets/js/site.js?v=90"></script>
 </body>
 </html>
