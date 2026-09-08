@@ -164,6 +164,51 @@
     clearTimeout(rt); rt = setTimeout(layoutMosaic, 120);
   });
 
+  /* ── Sound, one clip at a time ────────────────────────────────────
+     Autoplay only works muted, so every grid clip starts silent. This is
+     the way back in: hover a tile, hit the button, that clip gets the
+     audio. Unmuting one mutes whatever was playing before — two
+     soundtracks over each other is never what you want, and the user
+     shouldn't have to go hunting for the one they left on.
+     The audio survives the scroll pause below: the clip is paused when it
+     leaves the screen and resumes still unmuted, which keeps sound from
+     playing for something nobody can see. */
+  var ICON_OFF = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.2-3.9v2.2l2.1 2.1c.06-.13.1-.26.1-.4zm2.5 0c0 .94-.2 1.83-.55 2.63l1.5 1.5A8.9 8.9 0 0 0 21 12a9 9 0 0 0-6.7-8.7v2.1A6.9 6.9 0 0 1 19 12zM2.3 2.3 1 3.6l4.4 4.4H3v8h4l5 5v-6.7l4.2 4.2c-.66.5-1.4.9-2.2 1.15v2.06a9 9 0 0 0 3.66-1.78L20.4 22l1.3-1.3L2.3 2.3zM12 4 9.9 6.1 12 8.2V4z"/></svg>';
+  var ICON_ON  = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05A4.5 4.5 0 0 0 16.5 12zM14 3.23v2.06a6.99 6.99 0 0 1 0 13.42v2.06a9 9 0 0 0 0-17.54z"/></svg>';
+
+  var sounded = document.querySelectorAll('#projectWork [class^="img-grid"] video[autoplay]');
+  if (sounded.length) {
+    var buttons = [];
+    var paint = function (v, btn) {
+      var live = !v.muted;
+      btn.innerHTML = live ? ICON_ON : ICON_OFF;
+      btn.classList.toggle('is-live', live);
+      btn.setAttribute('aria-pressed', live ? 'true' : 'false');
+      btn.setAttribute('aria-label', live ? 'Mute this clip' : 'Unmute this clip');
+    };
+    Array.prototype.forEach.call(sounded, function (v) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'sound-toggle';
+      v.parentNode.appendChild(btn);
+      buttons.push([v, btn]);
+      paint(v, btn);
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        var turningOn = v.muted;
+        buttons.forEach(function (pair) {      // solo: everything else goes quiet
+          pair[0].muted = true;
+          paint(pair[0], pair[1]);
+        });
+        if (turningOn) {
+          v.muted = false;
+          var q = v.play(); if (q && q.catch) q.catch(function () {});
+        }
+        paint(v, btn);
+      });
+    });
+  }
+
   // Autoplay loops only once they're on screen — a project page can hold a
   // lot of video, and decoding them all at once stutters the scroll.
   var loops = document.querySelectorAll('#projectWork video[autoplay]');

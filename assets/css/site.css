@@ -1504,7 +1504,56 @@ footer {
   flex-wrap: wrap;
   gap: var(--tile-gap);
 }
-.project-work [class^="img-grid"] > * { overflow: hidden; border-radius: 3px; }
+.project-work [class^="img-grid"] > * {
+  overflow: hidden;
+  border-radius: 3px;
+  position: relative;    /* anchors the sound button */
+}
+
+/* ── Sound toggle on autoplaying grid video ────────────────────────
+   The videos start muted because no browser will autoplay with sound.
+   This is the way back: hover a tile and the control fades in, click it
+   and that one clip gets the audio. Only ever one at a time — see
+   project-page.js, which mutes the others rather than letting two
+   soundtracks fight. */
+.sound-toggle {
+  position: absolute;
+  right: 0.7rem;
+  bottom: 0.7rem;
+  width: 2.6rem;
+  height: 2.6rem;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 999px;
+  background: rgba(10, 10, 10, 0.55);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  color: var(--fg);
+  cursor: pointer;
+  padding: 0;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.28s var(--ease), transform 0.28s var(--ease),
+              background 0.25s ease, color 0.25s ease;
+}
+.project-work [class^="img-grid"] > *:hover .sound-toggle,
+.sound-toggle:focus-visible { opacity: 1; transform: none; }
+/* The one with sound stays visible, so you can see where the audio is
+   coming from without hunting for it. */
+.sound-toggle.is-live {
+  opacity: 1;
+  transform: none;
+  background: var(--accent);
+  color: var(--black);
+}
+.sound-toggle:hover { background: var(--accent); color: var(--black); }
+.sound-toggle svg { width: 1.15rem; height: 1.15rem; fill: currentColor; display: block; }
+
+@media (hover: none) {
+  /* No hover on a phone, so the control is simply always there. */
+  .sound-toggle { opacity: 1; transform: none; }
+}
 .project-work [class^="img-grid"] img,
 .project-work [class^="img-grid"] video {
   width: 100%;
