@@ -198,9 +198,10 @@
   });
 
   /* ── Sound, one clip at a time ────────────────────────────────────
-     Autoplay only works muted, so every grid clip starts silent. This is
-     the way back in: hover a tile, hit the button, that clip gets the
-     audio. Unmuting one mutes whatever was playing before — two
+     Autoplay only works muted, so every looping clip starts silent. This
+     is the way back in: hover it, hit the button, that clip gets the
+     audio. Full-width blocks are included as well as grid tiles — a clip
+     shouldn't lose its sound just because it isn't sharing a row. Unmuting one mutes whatever was playing before — two
      soundtracks over each other is never what you want, and the user
      shouldn't have to go hunting for the one they left on.
      The audio survives the scroll pause below: the clip is paused when it
@@ -214,7 +215,7 @@
      broken rather than absent. The attribute is set from what ffprobe
      actually reports on the file, not from memory. */
   var sounded = document.querySelectorAll(
-    '#projectWork [class^="img-grid"] video[autoplay]:not([data-silent])');
+    '#projectWork video[autoplay]:not([data-silent])');
   if (sounded.length) {
     var buttons = [];
     var paint = function (v, btn) {

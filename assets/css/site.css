@@ -1504,7 +1504,8 @@ footer {
   flex-wrap: wrap;
   gap: var(--tile-gap);
 }
-.project-work [class^="img-grid"] > * {
+.project-work [class^="img-grid"] > *,
+.project-video {
   overflow: hidden;
   border-radius: 3px;
   position: relative;    /* anchors the sound button */
@@ -1538,6 +1539,7 @@ footer {
               background 0.25s ease, color 0.25s ease;
 }
 .project-work [class^="img-grid"] > *:hover .sound-toggle,
+.project-video:hover .sound-toggle,
 .sound-toggle:focus-visible { opacity: 1; transform: none; }
 /* The one with sound stays visible, so you can see where the audio is
    coming from without hunting for it. */
