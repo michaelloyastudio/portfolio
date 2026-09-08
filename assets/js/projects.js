@@ -134,8 +134,12 @@ const projects = [
        ranking, and where a new piece goes is decided by where he places it
        in this list, not by when it was made:
          felly, fuji, random element, lust, jumpscare, Z poster (sabt),
-         logic, django, homelander, sketch, basketball video (web story),
-         the other videos, steph curry, final four, sweezy, then the rest.
+         logic, django, homelander, sketch (smiski), basketball video
+         (web story), the other videos, steph curry, final four, freshmen,
+         sweezy, then the rest.
+       "Tyler the Creator" is mm-print.jpg, the Artist or Rapper magazine
+       spread. Mike wants it left down in the rest, next to the characters
+       sketchbook, rather than ranked up with steph curry.
        One grid, not several: the mosaic justifies EVERY row including the
        last, so the block always comes out rectangular. Splitting it would
        reintroduce ragged edges between the pieces. */
@@ -155,6 +159,7 @@ const projects = [
 <div><video src="projects/miscellaneous/truck-circle.mp4" data-silent autoplay loop muted playsinline width="1920" height="1080"></video></div>
 <div><img src="projects/miscellaneous/scene-3.png" alt="Steph Curry poster" loading="lazy" width="1292" height="1762"></div>
 <div><img src="projects/miscellaneous/volleyball-final-four.jpg" alt="2024 Volleyball Final Four" loading="lazy" width="1200" height="1600"></div>
+<div><img src="projects/miscellaneous/freshmen.jpg" alt="Mixtape Magazine 2023 Freshman" loading="lazy" width="1600" height="1600"></div>
 <div><img src="projects/miscellaneous/exotic-sweezy.jpg" alt="Exotic, an album by Sweezy" loading="lazy" width="1800" height="1800"></div>
 <div><img src="projects/miscellaneous/cartoon.jpg" alt="Cartoon illustration" loading="lazy" width="1002" height="1986"></div>
 <div><img src="projects/miscellaneous/billboard.jpg" alt="2023 Billboard design" loading="lazy" width="2500" height="2500"></div>
