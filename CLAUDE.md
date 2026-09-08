@@ -39,6 +39,13 @@ Parchment replaces white. Black is `#0a0a0a`, never pure `#000`. Red is for link
 
 Type: **Space Grotesk** (Google Fonts) for UI, **IBM Plex Sans** for body copy, **DIN 2014 Rounded** (Typekit) for the hero wordmark only.
 
+## Grids
+**Every row is justified, including the last, so a grid always comes out rectangular.** `layoutMosaic` in `project-page.js` collects the rows before laying any out, then rebalances the tail: if the last row is left with one tile, or would justify to an absurd height, it borrows tiles from the row above until it can fill the width sensibly. Never revert this to flushing rows as they fill, and never leave the trailing row unjustified — that is what produced the ragged bottoms.
+
+`data-exact` sets `target` to 0 (the column count, not the height, decides the break), so the rebalance falls back to `(W - gaps) / perRow` as its yardstick. Comparing against 0 strips a grid to a single row.
+
+**Miscellaneous is ordered by importance, most to least** — Mike ranks the pieces and new work goes where he places it in that list, not where it fits. The order is written out in a comment above the `work` field in `projects.js`. It is one grid, not several: splitting reintroduces ragged edges between the pieces.
+
 ## Responsive
 Two breakpoints, both in `site.css`:
 - **`max-width: 900px`** — one-column grids (hero, work, about, CV). The hero grid must stay `minmax(0, 1fr)`, never plain `1fr`: the title is `white-space: nowrap`, so a plain `1fr` column can't shrink below the whole string and `fitTitle` then measures that oversized column and sizes off it.

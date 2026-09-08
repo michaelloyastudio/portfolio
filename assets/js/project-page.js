@@ -105,37 +105,70 @@
       var ratios = tiles.map(ratioOf);
       if (ratios.some(function (r) { return !r; })) { pending = true; return; }
 
-      // justified = row spans the full width, so the last tile absorbs
-      // rounding. A trailing row is NOT justified: stretching a lone tile
-      // to full width would distort it.
-      function flush(row, idx, height, justified) {
+      /* Every row spans the full width; the last tile in a row absorbs the
+         rounding so the edges stay flush. */
+      function flush(idxs, height) {
         var used = 0;
-        row.forEach(function (t, n) {
-          var w = (justified && n === row.length - 1)
-            ? (W - gap * (row.length - 1)) - used
-            : Math.round(height * ratios[idx + n]);
+        idxs.forEach(function (ti, n) {
+          var w = (n === idxs.length - 1)
+            ? (W - gap * (idxs.length - 1)) - used
+            : Math.round(height * ratios[ti]);
           used += w;
-          t.style.width = w + 'px';
-          t.style.height = Math.round(height) + 'px';
+          tiles[ti].style.width = w + 'px';
+          tiles[ti].style.height = Math.round(height) + 'px';
         });
       }
 
-      var row = [], sum = 0, start = 0;
+      /* Collect the rows before laying any of them out. The last row needs
+         to be able to borrow from the one above it, which isn't possible
+         once a row has already been committed. */
+      var rows = [], row = [], sum = 0;
       tiles.forEach(function (t, i) {
-        row.push(t); sum += ratios[i];
+        row.push(i); sum += ratios[i];
         var h = (W - gap * (row.length - 1)) / sum;
         // Break on the target height OR the column count. The count matters:
         // three portrait tiles are still short of the target, so without it
         // they'd keep collecting neighbours and end up small. Breaking at the
         // column count lets a row of verticals fill the width and stand tall.
         if ((!exact && h <= target) || row.length >= perRow) {
-          flush(row, start, h, true); row = []; sum = 0; start = i + 1;
+          rows.push(row); row = []; sum = 0;
         }
       });
-      if (row.length) {
-        // Trailing row: cap at the target so a lone tile isn't blown up.
-        flush(row, start, Math.min(target, (W - gap * (row.length - 1)) / sum), false);
+      if (row.length) rows.push(row);
+      if (!rows.length) return;
+
+      function heightOf(r) {
+        var s = 0;
+        for (var i = 0; i < r.length; i++) s += ratios[r[i]];
+        return (W - gap * (r.length - 1)) / s;
       }
+
+      // A grid holding a single tile has nothing to balance against, and
+      // justifying it would blow it up to the full width.
+      if (rows.length === 1 && rows[0].length === 1) {
+        flush(rows[0], Math.min(target, heightOf(rows[0])));
+        return;
+      }
+
+      /* THE BLOCK MUST COME OUT RECTANGULAR. Every row is justified,
+         including the last — a short trailing row is exactly what leaves
+         the bottom edge jagged. But a row left holding one tile would
+         justify to the full width and tower over everything above it, so
+         pull tiles down from the row above until the last row can fill the
+         width at a height in the same league as the rest. */
+      /* data-exact sets target to 0 (the row count, not the height, decides
+         the break), so it can't be the yardstick here — comparing against
+         zero makes every row look too tall and the loop strips the grid
+         down to one row. Fall back to the height a full row would have. */
+      var balanceTarget = target || (W - gap * (perRow - 1)) / perRow;
+      var guard = 0;
+      while (rows.length > 1 && guard++ < 30) {
+        var last = rows[rows.length - 1], prev = rows[rows.length - 2];
+        if (last.length > 1 && heightOf(last) <= balanceTarget * 1.6) break;
+        if (prev.length < 2) break;
+        last.unshift(prev.pop());
+      }
+      rows.forEach(function (r) { flush(r, heightOf(r)); });
     });
   }
 
