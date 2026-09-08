@@ -42,8 +42,10 @@ const projects = [
     intro: `<p>My brother produces music under our last name, <a href="https://open.spotify.com/artist/5gNQpoYEBE1jxjCgFkLWce" target="_blank" rel="noopener">loya</a>, and runs LYRC, the company he started. I work with him on promoting his music and his personal brand, keyed to cinematic and viral content.</p>
 <p>The logo came out of his hat collection, set in Amador, a blackletter that balances elegance with edge.</p>`,
     work: `<div class="project-video"><video src="projects/loya-and-co/intro.mp4" controls playsinline preload="metadata" poster="projects/loya-and-co/intro-poster.jpg" width="1920" height="1080"></video></div>
-<div class="project-video"><video src="projects/loya-and-co/oh-no-promo-1.mp4" controls playsinline preload="metadata" poster="projects/loya-and-co/oh-no-promo-1-poster.jpg" width="1440" height="1080"></video></div>
-<div class="project-video"><video src="projects/loya-and-co/oh-no-promo-2.mp4" controls playsinline preload="metadata" poster="projects/loya-and-co/oh-no-promo-2-poster.jpg" width="1440" height="1080"></video></div>
+<div class="img-grid-2" data-exact>
+<div><video src="projects/loya-and-co/oh-no-promo-1.mp4" autoplay loop muted playsinline poster="projects/loya-and-co/oh-no-promo-1-poster.jpg" width="1440" height="1080"></video></div>
+<div><video src="projects/loya-and-co/oh-no-promo-2.mp4" autoplay loop muted playsinline poster="projects/loya-and-co/oh-no-promo-2-poster.jpg" width="1440" height="1080"></video></div>
+</div>
 <div class="project-video"><video src="projects/loya-and-co/canvases.mp4" autoplay loop muted playsinline width="1920" height="1080"></video></div>
 <div><img src="projects/loya-and-co/loya-hat-mockup.jpeg" alt="loya hat mockup" loading="lazy" width="2752" height="1536"></div>`
   },
