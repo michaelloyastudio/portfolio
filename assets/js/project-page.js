@@ -176,7 +176,12 @@
   var ICON_OFF = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.2-3.9v2.2l2.1 2.1c.06-.13.1-.26.1-.4zm2.5 0c0 .94-.2 1.83-.55 2.63l1.5 1.5A8.9 8.9 0 0 0 21 12a9 9 0 0 0-6.7-8.7v2.1A6.9 6.9 0 0 1 19 12zM2.3 2.3 1 3.6l4.4 4.4H3v8h4l5 5v-6.7l4.2 4.2c-.66.5-1.4.9-2.2 1.15v2.06a9 9 0 0 0 3.66-1.78L20.4 22l1.3-1.3L2.3 2.3zM12 4 9.9 6.1 12 8.2V4z"/></svg>';
   var ICON_ON  = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05A4.5 4.5 0 0 0 16.5 12zM14 3.23v2.06a6.99 6.99 0 0 1 0 13.42v2.06a9 9 0 0 0 0-17.54z"/></svg>';
 
-  var sounded = document.querySelectorAll('#projectWork [class^="img-grid"] video[autoplay]');
+  /* data-silent marks a clip with no audio track at all. Giving one a
+     button is worse than giving it nothing: it looks like the sound is
+     broken rather than absent. The attribute is set from what ffprobe
+     actually reports on the file, not from memory. */
+  var sounded = document.querySelectorAll(
+    '#projectWork [class^="img-grid"] video[autoplay]:not([data-silent])');
   if (sounded.length) {
     var buttons = [];
     var paint = function (v, btn) {

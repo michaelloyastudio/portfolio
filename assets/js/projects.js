@@ -35,11 +35,12 @@ const projects = [
     slug: "loya",
     title: "loya",
     category: "Creative Direction",
-    tools: "Illustrator, Photoshop, After Effects, Blender, Adobe Firefly, Magnific",
+    tools: "Illustrator, Photoshop, After Effects, Blender, Adobe Firefly, Magnific, Higgsfield, Claude",
     year: "2023–Present",
     cover: `projects/loya-and-co/cover.jpg`,
     hero: `projects/loya-and-co/cover.jpg`,
-    intro: `<p>My brother produces music under our last name, <a href="https://open.spotify.com/artist/5gNQpoYEBE1jxjCgFkLWce" target="_blank" rel="noopener">loya</a>, and runs LYRC, the company he started. I work with him on promoting his music and his personal brand, keyed to cinematic and viral content.</p>
+    intro: `<p>My brother produces music under our last name, <a href="https://open.spotify.com/artist/5gNQpoYEBE1jxjCgFkLWce" target="_blank" rel="noopener">loya</a>, and runs LYRC, a company he started to make lyric videos for independent artists. I work with him on promoting his music and his personal brand, keyed to cinematic and viral content.</p>
+<p>We shape the idea together, then I execute it. My schooling and the work before this were graphic design; loya is where I'm building the video craft on top of it.</p>
 <p>The logo came out of his hat collection, set in Amador, a blackletter that balances elegance with edge.</p>`,
     work: `<div class="img-grid-2" data-exact>
 <div><video src="projects/loya-and-co/intro.mp4" autoplay loop muted playsinline poster="projects/loya-and-co/intro-poster.jpg" width="1280" height="720"></video></div>
@@ -58,8 +59,8 @@ const projects = [
     year: "2025",
     cover: `projects/bodyarmor-powerade/cover.jpg`,
     hero: `projects/bodyarmor-powerade/cover.jpg`,
-    intro: `<p>I spent last summer interning with BODYARMOR and Powerade in Queens. Day to day I reformatted brand creative into point-of-sale ads — window clings, cooler clings, end caps — and produced an original video ad for Powerade's fall football campaign.</p>
-<p>For my capstone I built an AI-generated BODYARMOR commercial end to end: Runway and Kling for imagery, Topaz for upscaling, ElevenLabs for voiceover, After Effects to assemble. It was presented to C-suite executives.</p>`,
+    intro: `<p>I spent the summer of 2025 interning with BODYARMOR and Powerade in Queens. Day to day I reformatted brand creative into point-of-sale ads — window clings, cooler clings, end caps — and produced an original video ad for Powerade's fall football campaign.</p>
+<p>For my capstone I built an AI-generated BODYARMOR commercial end to end: Runway and Kling for imagery, Topaz for upscaling, ElevenLabs for voiceover, After Effects to assemble. It was presented to C-suite executives, and it was the one that got the CEO to look up.</p>`,
     work: `<div class="project-video"><video src="projects/bodyarmor-powerade/pa-fall-football.mp4" controls playsinline preload="metadata" poster="projects/bodyarmor-powerade/pa-first.jpg" width="1920" height="1080"></video></div>
 <div class="project-video"><video src="projects/bodyarmor-powerade/kling.mp4" autoplay loop muted playsinline width="1900" height="1200"></video></div>
 <div class="project-video"><video src="projects/bodyarmor-powerade/aiba-commercial.mp4" controls playsinline preload="metadata" poster="projects/bodyarmor-powerade/aiba-poster.jpg" width="1280" height="720"></video></div>`
@@ -73,7 +74,8 @@ const projects = [
     cover: `projects/university-union/cover.jpg`,
     hero: `projects/university-union/cover.jpg`,
     intro: `<p>I was Co-Director of Design Board at University Union, Syracuse's largest programming organization, through May 2026. Concert posters, festival identity, large-format signage, and social assets reaching 12,000+ followers.</p>
-<p>The biggest piece was Juice Jam 2025 — the full visual identity for Syracuse's annual outdoor festival, built on a retro risograph look with bold gold type. I also spent two years trying to get a Block Party logo approved. I love it. Everybody else hates it.</p>`,
+<p>The biggest piece was Juice Jam 2025, the full visual identity for Syracuse's annual outdoor festival, built on a retro risograph look with bold gold type.</p>
+<p>I also spent two years trying to get a logo approved for Block Party, our spring concert. I love it. Everybody else hates it.</p>`,
     work: `<div class="project-video"><video src="projects/university-union/jj-timelapse.mp4" autoplay loop muted playsinline width="1280" height="720"></video></div>
 <div class="img-grid-3">
 <div><img src="projects/university-union/jj-kiosk.jpg" alt="Juice Jam vertical kiosk" loading="lazy" width="1339" height="2400"></div>
@@ -87,11 +89,12 @@ const projects = [
 <div><img src="projects/university-union/calenton.jpg" alt="Calentón Latin Music Festival" loading="lazy" width="1553" height="2400"></div>
 </div>
 <div class="project-video"><video src="projects/university-union/block-party-anim.mp4" autoplay loop muted playsinline onloadedmetadata="this.playbackRate=1.5" width="1280" height="720"></video></div>
-<div class="img-grid-4">
+<div class="img-grid-5">
 <div><img src="projects/university-union/connor-wood.jpg" alt="A Night with Connor Wood" loading="lazy" width="1553" height="2400"></div>
 <div><img src="projects/university-union/sarah-sherman.jpg" alt="A Night with Sarah Sherman" loading="lazy" width="1164" height="1800"></div>
 <div><img src="projects/university-union/talent-show.jpg" alt="Talent Show" loading="lazy" width="1164" height="1800"></div>
 <div><img src="projects/university-union/danielle-brooks.jpg" alt="Danielle Brooks" loading="lazy" width="1553" height="2400"></div>
+<div><img src="projects/university-union/comedy-knockout.jpg" alt="Comedy Knockout" loading="lazy" width="1118" height="1727"></div>
 </div>`
   },
   {
@@ -130,21 +133,27 @@ const projects = [
     work: `<div class="img-grid-3">
 <div><img src="projects/miscellaneous/felly-wildfire.jpg" alt="Wildfire, an album by Felly" loading="lazy" width="1650" height="2550"></div>
 <div><img src="projects/miscellaneous/fuji.jpg" alt="Fuji poster" loading="lazy" width="1800" height="2700"></div>
-<div><img src="projects/miscellaneous/sabt.jpg" alt="SABT design" loading="lazy" width="1200" height="1600"></div>
-<div><video src="projects/miscellaneous/homelander.mp4" autoplay loop muted playsinline width="1280" height="720"></video></div>
-<div><video src="projects/miscellaneous/smiski-dress.mp4" autoplay loop muted playsinline width="1280" height="1024"></video></div>
-<div><img src="projects/miscellaneous/lust.jpg" alt="LUST experimental design" loading="lazy" width="1333" height="2000"></div>
+<div><img src="projects/miscellaneous/exotic-sweezy.jpg" alt="Exotic, an album by Sweezy" loading="lazy" width="1800" height="1800"></div>
+<div><video src="projects/miscellaneous/homelander.mp4" data-silent autoplay loop muted playsinline width="1280" height="720"></video></div>
+<div><video src="projects/miscellaneous/smiski-dress.mp4" data-silent autoplay loop muted playsinline width="1280" height="1024"></video></div>
 <div><video src="projects/miscellaneous/web-story.mp4" autoplay loop muted playsinline width="1080" height="1920"></video></div>
-<div data-span="2"><video src="projects/miscellaneous/ml-anim.mp4" autoplay loop muted playsinline width="1920" height="1080"></video></div>
-<div><img src="projects/miscellaneous/scene-4.jpg" alt="Comedy Knockout poster" loading="lazy" width="1118" height="1727"></div>
+<div><video src="projects/miscellaneous/random-element.mp4" autoplay loop muted playsinline width="720" height="1280"></video></div>
+<div><video src="projects/miscellaneous/jumpscare.mp4" autoplay loop muted playsinline width="720" height="1280"></video></div>
+</div>
+<div class="img-grid-2" data-exact>
+<div><img src="projects/miscellaneous/lust.jpg" alt="LUST experimental design" loading="lazy" width="1333" height="2000"></div>
+<div><img src="projects/miscellaneous/sabt.jpg" alt="SABT design" loading="lazy" width="1200" height="1600"></div>
+</div>
+<div class="img-grid-3">
+<div><video src="projects/miscellaneous/ml-anim.mp4" autoplay loop muted playsinline width="1920" height="1080"></video></div>
+<div><video src="projects/miscellaneous/truck-circle.mp4" data-silent autoplay loop muted playsinline width="1920" height="1080"></video></div>
 <div><img src="projects/miscellaneous/scene-2.jpg" alt="Django Unchained poster" loading="lazy" width="1190" height="1768"></div>
 <div><img src="projects/miscellaneous/scene-3.png" alt="Steph Curry poster" loading="lazy" width="1292" height="1762"></div>
-<div data-span="2"><video src="projects/miscellaneous/truck-circle.mp4" autoplay loop muted playsinline width="1920" height="1080"></video></div>
 <div><img src="projects/miscellaneous/volleyball-final-four.jpg" alt="2024 Volleyball Final Four" loading="lazy" width="1200" height="1600"></div>
 <div><img src="projects/miscellaneous/logic.jpg" alt="Logic-inspired design" loading="lazy" width="1080" height="1867"></div>
 <div><img src="projects/miscellaneous/cartoon.jpg" alt="Cartoon illustration" loading="lazy" width="1002" height="1986"></div>
 <div><img src="projects/miscellaneous/billboard.jpg" alt="2023 Billboard design" loading="lazy" width="2500" height="2500"></div>
-<div data-span="2"><img src="projects/miscellaneous/mm-print.jpg" alt="Mixtape Magazine, Artist or Rapper" loading="lazy" width="1976" height="1525"></div>
+<div><img src="projects/miscellaneous/mm-print.jpg" alt="Mixtape Magazine, Artist or Rapper" loading="lazy" width="1976" height="1525"></div>
 <div><img src="projects/miscellaneous/characters-sketchbook.jpeg" alt="Character sketchbook mockup" loading="lazy" width="2272" height="1888"></div>
 </div>`
   }
