@@ -137,7 +137,7 @@ const projects = [
     /* ORDER IS DELIBERATE — most important first, least last. Mike's
        ranking, and where a new piece goes is decided by where he places it
        in this list, not by when it was made:
-         felly, fuji, random element, lust, jumpscare, Z poster (sabt),
+         felly, fuji, random element, lust, Z poster (sabt), jumpscare,
          logic, django, homelander, sketch (smiski), basketball video
          (web story), the other videos, steph curry, final four, freshmen,
          sweezy, then the rest.
@@ -152,8 +152,8 @@ const projects = [
 <div><img src="projects/miscellaneous/fuji.jpg" alt="Fuji poster" loading="lazy" width="1800" height="2700"></div>
 <div><img src="projects/miscellaneous/random-element.jpg" alt="Random Element poster" loading="lazy" width="1164" height="1800"></div>
 <div><img src="projects/miscellaneous/lust.jpg" alt="LUST experimental design" loading="lazy" width="1333" height="2000"></div>
-<div><img src="projects/miscellaneous/jumpscare.jpg" alt="Jumpscare poster" loading="lazy" width="1164" height="1800"></div>
 <div><img src="projects/miscellaneous/sabt.jpg" alt="Sweet American Boy Tour, a poster for Z" loading="lazy" width="1200" height="1600"></div>
+<div><img src="projects/miscellaneous/jumpscare.jpg" alt="Jumpscare poster" loading="lazy" width="1164" height="1800"></div>
 <div><img src="projects/miscellaneous/logic.jpg" alt="Logic-inspired design" loading="lazy" width="1080" height="1867"></div>
 <div><img src="projects/miscellaneous/scene-2.jpg" alt="Django Unchained poster" loading="lazy" width="1190" height="1768"></div>
 <div><video src="projects/miscellaneous/homelander.mp4" autoplay loop muted playsinline width="1280" height="720"></video></div>
