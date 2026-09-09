@@ -35,7 +35,7 @@ const projects = [
     slug: "loya",
     title: "loya",
     category: "Creative Direction",
-    tools: "Canon EOS R8, Illustrator, Photoshop, After Effects, Blender, Adobe Firefly, Magnific, Higgsfield, Claude",
+    tools: "Canon EOS R8, Premiere, After Effects, Illustrator, Photoshop, Blender, Magnific, Higgsfield, Claude",
     year: "2023–Present",
     cover: `projects/loya-and-co/cover.jpg`,
     hero: `projects/loya-and-co/cover.jpg`,
