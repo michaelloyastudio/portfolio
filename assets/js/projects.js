@@ -106,7 +106,7 @@ const projects = [
     title: "Album Covers",
     category: "Cover Art",
     tools: "Photoshop, Illustrator",
-    year: "2022–Present",
+    year: "2022–2024",
     cover: `projects/album-covers/commercial-break.jpg`,
     hero: `projects/album-covers/commercial-break.jpg`,
     intro: `<p>Covers I made back when I was producing my own music. Each one shot and designed from scratch in Photoshop and Illustrator.</p>`,
