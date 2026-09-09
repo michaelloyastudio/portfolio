@@ -35,12 +35,12 @@ const projects = [
     slug: "loya",
     title: "loya",
     category: "Creative Direction",
-    tools: "Illustrator, Photoshop, After Effects, Blender, Adobe Firefly, Magnific, Higgsfield, Claude",
+    tools: "Canon EOS R8, Illustrator, Photoshop, After Effects, Blender, Adobe Firefly, Magnific, Higgsfield, Claude",
     year: "2023–Present",
     cover: `projects/loya-and-co/cover.jpg`,
     hero: `projects/loya-and-co/cover.jpg`,
     intro: `<p>My brother produces music under our last name, <a href="https://open.spotify.com/artist/5gNQpoYEBE1jxjCgFkLWce" target="_blank" rel="noopener">loya</a>, and runs LYRC, a company he started to make lyric videos for independent artists. I work with him on promoting his music and his personal brand, keyed to cinematic and viral content.</p>
-<p>We shape the idea together, then I execute it. My schooling and the work before this were graphic design; loya is where I'm building the video craft on top of it.</p>
+<p>We shape the idea together, then I execute it, shooting and editing it myself. My schooling and the work before this were graphic design; loya is where I'm building the video craft on top of it.</p>
 <p>The logo came out of his hat collection, set in Amador, a blackletter that balances elegance with edge.</p>`,
     work: `<div class="project-video"><video src="projects/loya-and-co/intro.mp4" autoplay loop muted playsinline poster="projects/loya-and-co/intro-poster.jpg" width="1920" height="1080"></video></div>
 <div class="img-grid-2" data-exact>
