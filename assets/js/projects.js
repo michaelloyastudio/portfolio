@@ -53,6 +53,7 @@ const projects = [
 <div><video src="projects/loya-and-co/oh-no-oner.mp4" autoplay loop muted playsinline poster="projects/loya-and-co/oh-no-oner-poster.jpg" width="1280" height="720"></video></div>
 <div><video src="projects/loya-and-co/lie-promo.mp4" autoplay loop muted playsinline poster="projects/loya-and-co/lie-promo-poster.jpg" width="1280" height="960"></video></div>
 </div>
+<hr class="work-rule">
 <div class="project-video"><video src="projects/loya-and-co/canvases.mp4" data-silent autoplay loop muted playsinline width="1920" height="1080"></video></div>
 <div><img src="projects/loya-and-co/loya-hat-mockup.jpeg" alt="loya hat mockup" loading="lazy" width="2752" height="1536"></div>`
   },

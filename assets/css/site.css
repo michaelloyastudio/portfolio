@@ -1040,6 +1040,18 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   white-space: nowrap;
 }
 
+/* A hairline between sections of a project's work, so a page can break
+   into groups instead of reading as one long column. Same rule weight as
+   the one under the facts list and above the footer. */
+.project-work .work-rule {
+  border: 0;
+  border-top: 1px solid var(--line);
+  /* .project-work > * carries a tile-gap bottom margin, so only the top
+     needs opening up for the two sides to breathe evenly. */
+  margin: clamp(2.25rem, 5.5vh, 4rem) 0 clamp(2.25rem, 5.5vh, 4rem);
+  width: 100%;
+}
+
 /* ══ PLUGIN LIST (plugins page) ══
    Two wide rows rather than a grid of tiles: a plugin is read, not
    browsed, and each one needs room for a paragraph and a spec table. */
