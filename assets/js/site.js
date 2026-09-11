@@ -132,51 +132,6 @@
     });
   }
 
-  /* ── Plugin list (plugins page) ──────────────────────────────────
-     Data lives in plugins.js. A card only gets a download button if its
-     entry actually has a URL: a plugin still in progress shows its status
-     instead, so the page can list work in flight without ever handing
-     someone a link that 404s. */
-  var plist = $('pluginList');
-  /* typeof, not window.plugins: plugins.js declares it with const, and a
-     top-level const lives in script scope rather than on window. */
-  if (plist && typeof plugins !== 'undefined') {
-    var STATUS = {
-      live:     'Available',
-      beta:     'Beta',
-      building: 'In development'
-    };
-    plugins.forEach(function (pl) {
-      var card = document.createElement('article');
-      card.className = 'plugin';
-      card.id = pl.slug;
-
-      var specs = (pl.specs || []).map(function (row) {
-        return '<div class="plugin-spec"><dt>' + row[0] + '</dt><dd>' + row[1] + '</dd></div>';
-      }).join('');
-
-      var action = pl.download
-        ? '<a class="btn btn-solid" href="' + pl.download + '" download>Download' +
-            (pl.version ? ' ' + pl.version : '') + '</a>'
-        : '<span class="plugin-pending">' + (STATUS[pl.status] || STATUS.building) + '</span>';
-
-      var source = pl.source
-        ? '<a class="plugin-source" href="' + pl.source + '" target="_blank" rel="noopener">Source</a>'
-        : '';
-
-      card.innerHTML =
-        '<div class="plugin-head">' +
-          '<h2 class="plugin-name">' + pl.name + '</h2>' +
-          '<span class="plugin-host">' + pl.host + '</span>' +
-        '</div>' +
-        '<p class="plugin-tagline">' + pl.tagline + '</p>' +
-        '<div class="plugin-body">' + pl.body + '</div>' +
-        '<dl class="plugin-specs">' + specs + '</dl>' +
-        '<div class="plugin-actions">' + action + source + '</div>';
-      plist.appendChild(card);
-    });
-  }
-
   /* ── Featured bands (studio page) ────────────────────────────────
      Edit data-featured on #bands to change which projects appear. */
   var bands = $('bands');
