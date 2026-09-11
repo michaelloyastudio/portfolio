@@ -47,12 +47,12 @@ const projects = [
 <div><video src="projects/loya-and-co/oh-no-promo-1.mp4" autoplay loop muted playsinline poster="projects/loya-and-co/oh-no-promo-1-poster.jpg" width="1280" height="960"></video></div>
 <div><video src="projects/loya-and-co/oh-no-promo-2.mp4" autoplay loop muted playsinline poster="projects/loya-and-co/oh-no-promo-2-poster.jpg" width="1280" height="960"></video></div>
 </div>
-<div class="img-grid-3" data-exact>
+<div class="img-grid-4" data-exact>
 <div><video src="projects/loya-and-co/ikwud-promo.mp4" autoplay loop muted playsinline poster="projects/loya-and-co/ikwud-promo-poster.jpg" width="1280" height="960"></video></div>
 <div><video src="projects/loya-and-co/oh-no-oner.mp4" autoplay loop muted playsinline poster="projects/loya-and-co/oh-no-oner-poster.jpg" width="1280" height="720"></video></div>
 <div><video src="projects/loya-and-co/lie-promo.mp4" autoplay loop muted playsinline poster="projects/loya-and-co/lie-promo-poster.jpg" width="1280" height="960"></video></div>
+<div><video src="projects/loya-and-co/sunrise-shoot.mp4" autoplay loop muted playsinline poster="projects/loya-and-co/sunrise-shoot-poster.jpg" width="1280" height="960"></video></div>
 </div>
-<div class="project-video"><video src="projects/loya-and-co/sunrise-shoot.mp4" autoplay loop muted playsinline poster="projects/loya-and-co/sunrise-shoot-poster.jpg" width="1280" height="960"></video></div>
 <div class="project-video"><video src="projects/loya-and-co/canvases.mp4" data-silent autoplay loop muted playsinline width="1920" height="1080"></video></div>
 <div><img src="projects/loya-and-co/loya-hat-mockup.jpeg" alt="loya hat mockup" loading="lazy" width="2752" height="1536"></div>`
   },
