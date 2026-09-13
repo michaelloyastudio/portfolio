@@ -13,7 +13,7 @@ const projects = [
     slug: "where-it-hurts",
     title: "where it hurts.",
     category: "Music Video",
-    tools: "Photoshop, After Effects, Magnific, Higgsfield AI",
+    tools: "Photoshop, After Effects, Magnific, Higgsfield",
     year: "2026",
     cover: `projects/capstone/cover.jpg`,
     hero: `projects/capstone/hero.jpg`,
@@ -61,12 +61,12 @@ const projects = [
     slug: "bodyarmor-powerade",
     title: "BODYARMOR & Powerade",
     category: "Brand Campaign",
-    tools: "Photoshop, Illustrator, Premiere, After Effects, Kling, Runway, ChatGPT, Topaz Labs, ElevenLabs",
+    tools: "Photoshop, Illustrator, Premiere, After Effects, Magnific, ChatGPT",
     year: "2025",
     cover: `projects/bodyarmor-powerade/cover.jpg`,
     hero: `projects/bodyarmor-powerade/cover.jpg`,
     intro: `<p>I spent the summer of 2025 interning with BODYARMOR and Powerade in Queens. Day to day I reformatted brand creative into point-of-sale ads — window clings, cooler clings, end caps — and produced an original video ad for Powerade's fall football campaign.</p>
-<p>For my capstone I built an AI-generated BODYARMOR commercial end to end: Runway and Kling for imagery, Topaz for upscaling, ElevenLabs for voiceover, After Effects to assemble. It was presented to C-suite executives, and it was the one that got the CEO to look up.</p>`,
+<p>For my capstone I built an AI-generated BODYARMOR commercial end to end: generated imagery, Magnific for the upscale, voiceover, and After Effects to assemble. It was presented to C-suite executives, and it was the one that got the CEO to look up.</p>`,
     work: `<div class="project-video"><video src="projects/bodyarmor-powerade/pa-fall-football.mp4" controls playsinline preload="metadata" poster="projects/bodyarmor-powerade/pa-first.jpg" width="1920" height="1080"></video></div>
 <div class="project-video"><video src="projects/bodyarmor-powerade/kling.mp4" data-silent autoplay loop muted playsinline width="1900" height="1200"></video></div>
 <div class="project-video"><video src="projects/bodyarmor-powerade/aiba-commercial.mp4" controls playsinline preload="metadata" poster="projects/bodyarmor-powerade/aiba-poster.jpg" width="1280" height="720"></video></div>`
@@ -75,7 +75,7 @@ const projects = [
     slug: "university-union",
     title: "University Union",
     category: "Event Design",
-    tools: "Illustrator, Photoshop, After Effects",
+    tools: "Illustrator, Photoshop, After Effects, Magnific",
     year: "2024–2026",
     cover: `projects/university-union/cover.jpg`,
     hero: `projects/university-union/cover.jpg`,
