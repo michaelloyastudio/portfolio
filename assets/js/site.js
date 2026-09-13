@@ -132,6 +132,35 @@
     });
   }
 
+  /* ── Plugin grid (plugins page) ──────────────────────────────────
+     Same .tile markup as the Work grid so the two pages read as one
+     system. The only addition is a badge for anything not shipped —
+     a plugin with no download still gets a page, it just says so on
+     the tile instead of promising a button that isn't there. */
+  var pgrid = $('pluginGrid');
+  /* `const plugins` in plugins.js is a lexical global, not a window
+     property, so this has to be a typeof check rather than window.plugins. */
+  if (pgrid && typeof plugins !== 'undefined') {
+    plugins.forEach(function (p) {
+      var tile = document.createElement('a');
+      tile.className = 'tile';
+      tile.href = p.slug + '.html';
+      tile.innerHTML =
+        '<div class="tile-media">' +
+          '<img src="' + p.cover + '" alt="' + p.name + '" loading="lazy">' +
+          (p.download
+            ? '<span class="tile-badge">Free &middot; ' + p.version + '</span>'
+            : '<span class="tile-badge tile-badge--soon">In development</span>') +
+        '</div>' +
+        '<div class="tile-meta">' +
+          '<h2 class="tile-title">' + p.name + '</h2>' +
+          '<span class="tile-cat">' + p.host + '</span>' +
+        '</div>' +
+        '<p class="tile-desc">' + p.tagline + '</p>';
+      pgrid.appendChild(tile);
+    });
+  }
+
   /* ── Featured bands (studio page) ────────────────────────────────
      Edit data-featured on #bands to change which projects appear. */
   var bands = $('bands');

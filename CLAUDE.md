@@ -10,6 +10,7 @@ Michael Loya's portfolio. Static, multi-page, no build step and no dependencies.
 - **`index.html`** — Studio. The main page: video hero, three featured project bands, statement, closing CTA.
 - **`work.html`** — Work. All projects in a two-column grid; clicking one opens the detail overlay.
 - **`about.html`** — About. Bio, education, experience, skills, achievements, interests, resume.
+- **`plugins.html`** — Plugins. Same two-column `.tile` grid as Work, rendered from `plugins.js`; each tile opens `/<slug>.html` (`gh-midi.html`, `lookout.html`), which `plugin-page.js` fills in the same way `project-page.js` fills a project.
 
 ## Shared files
 - **`assets/css/site.css`** — every style on the site. Tokens at the top; the semantic block (`--bg`, `--fg`, `--accent`…) is the only thing a light mode would need to change.
@@ -37,6 +38,13 @@ Featured projects on the Studio page are set by `data-featured` on `#bands` in `
 Parchment replaces white. Black is `#0a0a0a`, never pure `#000`. Red is for links, hover, and active states only — it works because it's rationed.
 
 Type: **Space Grotesk** (Google Fonts) for UI, **IBM Plex Sans** for body copy, **DIN 2014 Rounded** (Typekit) for the hero wordmark only.
+
+## Plugins and downloads
+Binaries live in **`assets/downloads/`**, in this repo. GitHub's 100MB limit is **per file**, and the GH MIDI zip is 7.2MB, so shipping it with the site costs nothing and needs no second repo. Point a plugin's `download` field at the path and the button appears; leave it `null` and the page shows its status instead of a link that 404s. If a build ever gets near 100MB (Lookout will, it carries a model), cut a GitHub Release on that plugin's own repo and point `download` at the release asset.
+
+The plugin is **ad-hoc signed, not notarised**, so macOS quarantines it on download and the user has to run one `xattr` command. Skipping that needs an Apple Developer ID at $99/year. The install steps on the page say so plainly rather than hiding it.
+
+`gh-midi.html` is linked from inside the plugin itself — the JUCE editor's help overlay and the bundled README both point at `michaelloya.studio/gh-midi`. **That URL cannot move** without shipping a new build.
 
 ## Grids
 **Every row is justified, including the last, so a grid always comes out rectangular.** `layoutMosaic` in `project-page.js` collects the rows before laying any out, then rebalances the tail: if the last row is left with one tile, or would justify to an absurd height, it borrows tiles from the row above until it can fill the width sensibly. Never revert this to flushing rows as they fill, and never leave the trailing row unjustified — that is what produced the ragged bottoms.
