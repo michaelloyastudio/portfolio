@@ -37,7 +37,9 @@ Featured projects on the Studio page are set by `data-featured` on `#bands` in `
 
 Parchment replaces white. Black is `#0a0a0a`, never pure `#000`. Red is for links, hover, and active states only — it works because it's rationed.
 
-Type: **Space Grotesk** (Google Fonts) for UI, **IBM Plex Sans** for body copy, **DIN 2014 Rounded** (Typekit) for the hero wordmark only.
+Type: **Inter** (Google Fonts, variable 300-700 with a true italic axis) for everything outside the hero — UI and body copy both. The hero keeps its own faces: **Nimbus Sans** self-hosted, **Warbler Deck** (Typekit) for the serif italic, **DIN 2014 Rounded** (Typekit) for the loading wordmark.
+
+Inter is on trial, swapped in from Space Grotesk + IBM Plex on 2026-09-13. Note it contradicts the anti-slop rule below; Mike asked to see it. Both faces are set by `--font-display` / `--font-body` in one place, so reverting is a token edit.
 
 ## Plugins and downloads
 Binaries live in **`assets/downloads/`**, in this repo. GitHub's 100MB limit is **per file**, and the GH MIDI zip is 7.2MB, so shipping it with the site costs nothing and needs no second repo. Point a plugin's `download` field at the path and the button appears; leave it `null` and the page shows its status instead of a link that 404s. If a build ever gets near 100MB (Lookout will, it carries a model), cut a GitHub Release on that plugin's own repo and point `download` at the release asset.
