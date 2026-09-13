@@ -92,12 +92,17 @@
      separate so widening the hero never moves the logo or the burger. */
   --hero-x: clamp(1.5rem, 11.5vw, 14.5rem);
 
-  /* Space Grotesk carries headings, buttons, and labels.
-     IBM Plex Sans carries body copy — neutral and easy at small sizes, so
-     it stays out of the way of the display face.
-     Nimbus and Warbler are hero-only: the hero sets its faces directly
-     off --font-hero / --font-hero-serif, so nothing else inherits them. */
-  --font-display: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  /* Nimbus Sans carries headings, buttons, and labels — the same face the
+     hero uses, so the display voice is now one face top to bottom instead
+     of Space Grotesk everywhere and Nimbus in the hero.
+     IBM Plex Sans still carries body copy — neutral and easy at small
+     sizes, so it stays out of the way of the display face.
+
+     NIMBUS HAS TWO WEIGHTS, 400 and 700. Nothing else exists, so CSS
+     resolves 300 and 500 down to 400 and 600 up to 700, silently. Any
+     weight in this sheet that isn't 400 or 700 is therefore a lie about
+     what renders — don't tune a design against one. */
+  --font-display: 'Nimbus Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   --font-body: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
 
   /* Hero faces.
@@ -110,10 +115,13 @@
      Desktop activation does NOT license web use: for the live site the
      family has to be added to a web project on fonts.adobe.com, which
      serves it as 'warbler-deck' / 'warbler-banner'. Those names lead the
-     stack so it takes over the moment that's done. Playfair Display is
-     the fallback for every visitor until then. */
+     stack so it takes over the moment that's done. Nimbus Sans italic is
+     the fallback if it ever fails — note this is a SANS standing in for a
+     serif, so a Warbler outage now reads as a face change, not a weight
+     change. Warbler is loading fine today, so nothing below Warbler in
+     this stack is visible on the live site. */
   --font-hero: 'Nimbus Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  --font-hero-serif: 'warbler-deck', 'Warbler Deck', 'warbler-banner', 'Warbler Banner', 'Playfair Display', Georgia, serif;
+  --font-hero-serif: 'warbler-deck', 'Warbler Deck', 'warbler-banner', 'Warbler Banner', 'Nimbus Sans', 'Helvetica Neue', Helvetica, sans-serif;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
