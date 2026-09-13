@@ -72,6 +72,15 @@ The reel's window is sized against the deepest descender across *every* word on 
 ## Known issues
 - **The wordmark needs michaelloya.studio on the Typekit kit's allowed domains** (kit `vvj5gyy`, loaded on index.html). It resolves on localhost; if the live domain isn't listed it will silently fall back to Space Grotesk.
 
+## URLs
+**Links have no `.html`.** Files on disk are still `work.html`, `gh-midi.html` and so on — GitHub Pages resolves `/work` to `work.html` on its own. Verified live: `/work` is 200 with **no redirect**, and `/work/` is a 404, so Pages never appends a trailing slash. Internal links are root-relative (`/work`, `/` for home); asset paths stay relative and resolve correctly because there is never a trailing slash to change the base.
+
+`serve.py` reproduces that resolution locally in `translate_path`. Without it every link 404s on the dev server while working in production, which is the worst way for this to break. Don't remove it.
+
+Both `/work` and `/work.html` still resolve, so every page carries a `<link rel="canonical">` naming the extensionless form. Add one to any new page.
+
+Extensionless links mean the site no longer works over `file://` — opening an HTML file directly gives a page whose links all fail. Use `serve.py`.
+
 ## Deployment
 GitHub Pages from `michaelloyastudio/portfolio`, branch `main`, root. Cloudflare fronts it and terminates TLS. **Push to `main` = live.**
 

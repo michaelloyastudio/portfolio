@@ -52,8 +52,8 @@
   var prev = projects[(i - 1 + projects.length) % projects.length];
   var next = projects[(i + 1) % projects.length];
   var prevEl = $('projectPrev'), nextEl = $('projectNext');
-  if (prevEl) prevEl.href = prev.slug + '.html';
-  if (nextEl) nextEl.href = next.slug + '.html';
+  if (prevEl) prevEl.href = '/' + prev.slug;
+  if (nextEl) nextEl.href = '/' + next.slug;
 
   /* ── mosaic: justified rows ──────────────────────────────────────
      Greedily fill a row with tiles until scaling them to fit the

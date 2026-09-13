@@ -18,6 +18,20 @@ RANGE_RE = re.compile(r"bytes=(\d*)-(\d*)")
 
 
 class RangeHandler(SimpleHTTPRequestHandler):
+    def translate_path(self, path):
+        """Resolve /work to work.html, the way GitHub Pages does.
+
+        Pages serves an extensionless URL from the matching .html file and
+        does NOT redirect or add a trailing slash (/work is 200, /work/ is
+        404). SimpleHTTPRequestHandler doesn't do this, so without it every
+        link on the site 404s locally while working fine in production --
+        the worst possible split between dev and live.
+        """
+        fs = super().translate_path(path)
+        if not os.path.exists(fs) and not fs.endswith("/") and os.path.isfile(fs + ".html"):
+            return fs + ".html"
+        return fs
+
     def send_head(self):
         rng = self.headers.get("Range")
         if not rng:

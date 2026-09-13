@@ -1,7 +1,7 @@
 // Project data for michaelloya.studio
 //
 // Each entry:
-//   slug     — URL: /<slug>.html  (must match the filename)
+//   slug     — URL: /<slug>  (the file is <slug>.html; Pages drops the extension)
 //   title, category, tools, year
 //   cover    — grid tile / social image
 //   hero     — big media at the top of the project page. A .mp4/.mov renders

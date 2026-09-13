@@ -119,7 +119,7 @@
       // No scroll-reveal here: on the Work page the grid IS the content, and
       // fading tiles in made it look like only the first four existed.
       tile.className = 'tile';
-      tile.href = p.slug + '.html';
+      tile.href = '/' + p.slug;
       tile.innerHTML =
         '<div class="tile-media">' +
           '<img src="' + p.cover + '" alt="' + p.title + '" loading="lazy">' +
@@ -144,7 +144,7 @@
     plugins.forEach(function (p) {
       var tile = document.createElement('a');
       tile.className = 'tile';
-      tile.href = p.slug + '.html';
+      tile.href = '/' + p.slug;
       tile.innerHTML =
         '<div class="tile-media">' +
           '<img src="' + p.cover + '" alt="' + p.name + '" loading="lazy">' +
@@ -172,7 +172,7 @@
       if (!p) return;
       var el = document.createElement('a');
       el.className = 'band reveal';
-      el.href = p.slug + '.html';
+      el.href = '/' + p.slug;
       el.innerHTML =
         '<div class="band-media"><img src="' + p.cover + '" alt="' + p.title + '" loading="lazy"></div>' +
         '<div class="band-meta">' +

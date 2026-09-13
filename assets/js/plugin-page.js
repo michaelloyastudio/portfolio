@@ -66,10 +66,10 @@
      ships this reverts to the normal two-arrow behaviour on its own. */
   var prevEl = $('pluginPrev'), nextEl = $('pluginNext');
   if (prevEl) {
-    prevEl.href = plugins[(i - 1 + plugins.length) % plugins.length].slug + '.html';
+    prevEl.href = '/' + plugins[(i - 1 + plugins.length) % plugins.length].slug;
     prevEl.hidden = plugins.length < 3;
   }
-  if (nextEl) nextEl.href = plugins[(i + 1) % plugins.length].slug + '.html';
+  if (nextEl) nextEl.href = '/' + plugins[(i + 1) % plugins.length].slug;
 
   /* Shared with project-page.js but that file isn't loaded here, so the
      helper is duplicated. Pulls the last two words of every block together

@@ -1,7 +1,7 @@
 /* Plugin data for michaelloya.studio
  *
  * Same shape as projects.js so the two grids render from one pattern:
- *   slug      — URL: /<slug>.html  (must match the filename)
+ *   slug      — URL: /<slug>  (the file is <slug>.html; Pages drops the extension)
  *   name      — display name
  *   host      — shown where a project shows its category
  *   tagline   — one line under the name on the detail page
