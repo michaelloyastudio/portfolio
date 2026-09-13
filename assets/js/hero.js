@@ -228,7 +228,15 @@
   function bearings(probe) {
     var c = document.createElement('canvas').getContext('2d');
     c.textAlign = 'left';
-    c.font = '700 ' + probe + 'px "Nimbus Sans", sans-serif';
+    /* Read the face off the element instead of naming it. This was
+       hardcoded to Nimbus Sans 700, so changing the hero font left it
+       measuring the M of a face the page no longer draws — and it fails
+       silently, as a lockup that misses the margin by a bearing. */
+    var sans = document.querySelector('.studio-title .st-sans') ||
+               document.querySelector('.studio-title');
+    var cs = sans && getComputedStyle(sans);
+    c.font = cs ? cs.fontWeight + ' ' + probe + 'px ' + cs.fontFamily
+                : '700 ' + probe + 'px sans-serif';
     var first = c.measureText('M');
     c.font = 'italic 700 ' + probe + 'px "warbler-deck", "Warbler Deck", serif';
     var lastGlyph = c.measureText('o');
