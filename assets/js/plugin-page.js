@@ -66,6 +66,16 @@
         '<p class="product-meta">' +
           [p.version, p.size].filter(Boolean).join(' &nbsp;·&nbsp; ') +
         '</p>';
+      /* Count the download as a GoatCounter event, one line per plugin and
+         version. count.js loads async and skips localhost on its own, so
+         the guard is for the click that lands before it has arrived. */
+      dl.querySelector('.product-btn').addEventListener('click', function () {
+        if (window.goatcounter && goatcounter.count) {
+          goatcounter.count({ path: 'download/' + p.slug + '/' + p.version,
+                              title: p.name + ' ' + p.version + ' download',
+                              event: true });
+        }
+      });
     } else {
       /* Nothing at all rather than a dead button. The price line above
          already reads "Not released yet"; saying it twice is filler. */

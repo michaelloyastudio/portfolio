@@ -131,6 +131,15 @@ Both `/work` and `/work.html` still resolve, so every page carries a `<link rel=
 
 Extensionless links mean the site no longer works over `file://` — opening an HTML file directly gives a page whose links all fail. Use `serve.py`.
 
+## Analytics
+GoatCounter, site `michaelloya.goatcounter.com`, one script tag before `</body>`
+on every page. No cookies, so no banner. `count.js` refuses to count on
+localhost, which is why nothing shows up from the dev server.
+
+Downloads are counted as an **event** fired from the download button in
+`plugin-page.js`, path `download/<slug>/<version>` — so each version is its
+own line on the dashboard. It counts clicks, not completed downloads.
+
 ## Deployment
 GitHub Pages from `michaelloyastudio/portfolio`, branch `main`, root. Cloudflare fronts it and terminates TLS. **Push to `main` = live.**
 
