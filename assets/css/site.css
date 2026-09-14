@@ -906,6 +906,31 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   .hero--studio { min-height: 100svh; display: flex; flex-direction: column; }
   .hero-grid    { flex: 1; align-content: space-between; row-gap: 2.4rem; }
 
+  /* Everything centred, and the lede on two lines: the hard breaks come
+     off and the copy wraps naturally, sized so "A multifaceted creative
+     currently" fills the first line and "focusing on" plus the reel takes
+     the second, at any phone width (vw-scaled). */
+  .hero .studio-title, .hero-lede { text-align: center; }
+  .hero-copy {
+    width: auto; max-width: 100%;
+    white-space: normal;
+    margin-left: auto; margin-right: auto;
+    font-size: clamp(1rem, 4.9vw, 1.25rem);
+    line-height: 1.3;
+  }
+  .lede-line { display: inline; white-space: normal; }
+  /* The reel goes inline at the end of line two. 1.18em matches Warbler's
+     x-height (0.461em) to Inter's (0.546em), so the word reads the same
+     size as the sans instead of a step smaller. The window's baseline is
+     its bottom edge, so it hangs below the text baseline by --slot-desc,
+     which hero.js measures from the same font metrics as the window. */
+  .slot {
+    display: inline-block;
+    font-size: 1.18em;
+    margin-top: 0;
+    vertical-align: calc(-1 * var(--slot-desc, 0.3em));
+  }
+
 
   /* ── page + project headers ── */
   .page-head,

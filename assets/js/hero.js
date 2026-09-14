@@ -190,6 +190,10 @@
     var inkBaseline = (1 - W.fA - W.fD) / 2 + W.fA;
     var shift = PAD - (inkBaseline - W.iA);
     root.setProperty('--slot-shift', shift.toFixed(4) + 'em');
+    /* Inline on a phone, the window's baseline is its bottom edge (overflow
+       hidden), so it has to hang below the text baseline by exactly the
+       distance from the ink baseline to the bottom of the window. */
+    root.setProperty('--slot-desc', (W.iD + PAD).toFixed(4) + 'em');
 
     /* Pull the reel back up so the red line's BASELINE lands where a third
        line of the lede would, rather than wherever Warbler's line box
