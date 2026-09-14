@@ -899,6 +899,13 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   .hero-work         { order: 2; }
   .hero-lede         { order: 3; }
 
+  /* Fill the phone's height: the section becomes a column, the grid takes
+     what's left under the nav, and the three rows spread out — title at the
+     top, video in the middle, copy and button at the bottom. On a screen
+     shorter than the content it simply scrolls; the gap below is the floor. */
+  .hero--studio { min-height: 100svh; display: flex; flex-direction: column; }
+  .hero-grid    { flex: 1; align-content: space-between; row-gap: 2.4rem; }
+
 
   /* ── page + project headers ── */
   .page-head,
