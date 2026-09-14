@@ -136,7 +136,9 @@
      Same .tile markup as the Work grid so the two pages read as one
      system. The only addition is a badge for anything not shipped —
      a plugin with no download still gets a page, it just says so on
-     the tile instead of promising a button that isn't there. */
+     the tile instead of promising a button that isn't there.
+     Title and host only under the shot; the tagline lives on the
+     product page. */
   var pgrid = $('pluginGrid');
   /* `const plugins` in plugins.js is a lexical global, not a window
      property, so this has to be a typeof check rather than window.plugins. */
@@ -155,8 +157,7 @@
         '<div class="tile-meta">' +
           '<h2 class="tile-title">' + p.name + '</h2>' +
           '<span class="tile-cat">' + p.host + '</span>' +
-        '</div>' +
-        '<p class="tile-desc">' + p.tagline + '</p>';
+        '</div>';
       pgrid.appendChild(tile);
     });
   }

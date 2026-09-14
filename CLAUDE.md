@@ -10,7 +10,7 @@ Michael Loya's portfolio. Static, multi-page, no build step and no dependencies.
 - **`index.html`** — Studio. The main page: video hero, three featured project bands, statement, closing CTA.
 - **`work.html`** — Work. All projects in a two-column grid; clicking one opens the detail overlay.
 - **`about.html`** — About. Bio, education, experience, skills, achievements, interests, resume.
-- **`tools.html`** — Tools (was Plugins). Same two-column `.tile` grid as Work, rendered from `plugins.js`; each tile opens `/<slug>.html` (`gh-midi.html`, `lookout.html`), which `plugin-page.js` fills in the same way `project-page.js` fills a project.
+- **`tools.html`** — Tools (was Plugins). Same two-column `.tile` grid as Work, rendered from `plugins.js` — title and host under the shot, no description line; each tile opens `/<slug>.html` (`gh-midi.html`; Lookout is pulled for now, one revert away), which `plugin-page.js` fills in the same way `project-page.js` fills a project.
 
 ## Shared files
 - **`assets/css/site.css`** — every style on the site. Tokens at the top; the semantic block (`--bg`, `--fg`, `--accent`…) is the only thing a light mode would need to change.
@@ -42,9 +42,9 @@ Type: **Inter** (Google Fonts, variable 300-700 with a true italic axis) for eve
 Inter is on trial, swapped in from Space Grotesk + IBM Plex on 2026-09-13. Note it contradicts the anti-slop rule below; Mike asked to see it. Both faces are set by `--font-display` / `--font-body` in one place, so reverting is a token edit.
 
 ## Plugins and downloads
-Binaries live in **`assets/downloads/`**, in this repo. GitHub's 100MB limit is **per file**, and the GH MIDI zip is 7.2MB, so shipping it with the site costs nothing and needs no second repo. Point a plugin's `download` field at the path and the button appears; leave it `null` and the page shows its status instead of a link that 404s. If a build ever gets near 100MB (Lookout will, it carries a model), cut a GitHub Release on that plugin's own repo and point `download` at the release asset.
+Binaries live in **`assets/downloads/`**, in this repo. GitHub's 100MB limit is **per file**, and the GH MIDI zip is ~16MB, so shipping it with the site costs nothing and needs no second repo. Point a plugin's `download` field at the path and the button appears; leave it `null` and the page shows its status instead of a link that 404s. If a build ever gets near 100MB (Lookout will, it carries a model), cut a GitHub Release on that plugin's own repo and point `download` at the release asset.
 
-The plugin is **ad-hoc signed, not notarised**, so macOS quarantines it on download and the user has to run one `xattr` command. Skipping that needs an Apple Developer ID at $99/year. The install steps on the page say so plainly rather than hiding it.
+The plugin is **ad-hoc signed, not notarised**, so macOS blocks it on first open. On macOS 15+ the only way through is Done → System Settings → Privacy & Security → Open Anyway (right-click → Open no longer works for un-notarized apps). Skipping that needs an Apple Developer ID at $99/year. **Setup instructions live in `README.txt` inside the zip, not on the page** — the page sells, the README installs. The README is `release/README.txt` in the plugin repo; `make_release.py` there packages it with the current build, and the zip's URL on the site carries `?v=<first 8 of its md5>` so Cloudflare can't keep serving an older cut under the same filename.
 
 `gh-midi.html` is linked from inside the plugin itself — the JUCE editor's help overlay and the bundled README both point at `michaelloya.studio/gh-midi`. **That URL cannot move** without shipping a new build.
 
@@ -55,7 +55,7 @@ hierarchy comes from those being grey, **not** from dimming the prose. Don't
 reintroduce `opacity: 0.82` on a paragraph.
 
 ## Plugin product pages
-`/gh-midi` and `/lookout` are **product pages, not case studies**: shot left,
+`/gh-midi` is a **product page, not a case study**: shot left,
 name / price / button right, download above the fold. `plugin-page.js` renders
 that shape and it is deliberately not `project-page.js`.
 
@@ -68,7 +68,7 @@ the zip at the same time; its size is quoted on the page.
 ## Plugin product images
 Crop wide source images to roughly square BEFORE composing — the tool fits
 to the shorter side, so a 16:9 plate in a square card leaves a band of white
-top and bottom. That is why the Lookout plate is cropped first.
+top and bottom (that bit the Lookout plate, when it was on the site).
 
 Action shots come from the plugin's own demo mode, not from someone playing:
 `GHMIDI_DEMO=1 "…/GH MIDI.app/Contents/MacOS/GH MIDI"` runs a chord sequence
@@ -87,25 +87,16 @@ treatment for all of them, decided against alternatives:
 - **Square.** Plugin tiles are `aspect-ratio: 1/1`, unlike the 16:9 work grid.
   App windows are near-square and at 16:9 a third of the tile was padding.
 
-Gallery shots get the card. A screenshot used *inside* the guide (`.step-shot`)
+Gallery shots get the card. A screenshot used *inside* body copy (`.step-shot`)
 stays a raw crop — a white card mid-copy is a glaring block.
 
-**The setup steps show the hard part, not the app.** Nobody needs a picture of
-the plugin to know what the plugin looks like; they need the hidden `~/Library`
-folder, the Gatekeeper refusal, and where "Open Anyway" lives. Those five
-`setup-*.png` files are real captures taken by walking the actual flow with a
-quarantined copy (`xattr -w com.apple.quarantine "0083;…;Safari;…"` on a fresh
-unzip — without the flag Gatekeeper never fires). Crop Finder and System
-Settings to the content pane: the sidebars carry Mike's name, folders and
-family photo.
-
-**macOS 15+ Gatekeeper flow is Done → System Settings → Privacy & Security →
-Open Anyway.** Right-click → Open no longer bypasses Gatekeeper for un-notarized
-apps; any copy that still says so is wrong.
-
-`.step-shot` needs `height: auto`. The imgs carry width/height attributes so the
-page doesn't jump, and with `width: 100%` in CSS the height attribute otherwise
-survives as a presentational hint and squashes the shot.
+Setup screenshots were tried on the page and pulled — the page is just the
+product now. If they ever come back, the real flow was captured by walking it
+with a quarantined copy (`xattr -w com.apple.quarantine "0083;…;Safari;…"` on
+a fresh unzip; without the flag Gatekeeper never fires), and Finder / System
+Settings had to be cropped to the content pane because the sidebars carry
+Mike's name, folders and family photo. `.step-shot` needs `height: auto` or the
+img's height attribute survives as a presentational hint and squashes it.
 
 ## Grids
 **Every row is justified, including the last, so a grid always comes out rectangular.** `layoutMosaic` in `project-page.js` collects the rows before laying any out, then rebalances the tail: if the last row is left with one tile, or would justify to an absurd height, it borrows tiles from the row above until it can fill the width sensibly. Never revert this to flushing rows as they fill, and never leave the trailing row unjustified — that is what produced the ragged bottoms.

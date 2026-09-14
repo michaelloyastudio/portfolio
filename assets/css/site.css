@@ -1108,12 +1108,6 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   color: var(--muted);
   box-shadow: inset 0 0 0 1px var(--line);
 }
-.tile-desc {
-  margin: 0.55rem 0 0;
-  font-size: 0.92rem;
-  line-height: 1.5;
-  color: var(--muted);
-}
 
 /* ── the download row on a plugin page ── */
 .plugin-download {

@@ -67,10 +67,9 @@
           [p.version, p.size].filter(Boolean).join(' &nbsp;·&nbsp; ') +
         '</p>';
     } else {
-      /* No button at all rather than a dead one. The price line above
-         already says it isn't out, so this only has to say what's next. */
-      dl.innerHTML = '<p class="product-meta product-meta--soon">Still being built. ' +
-                     'It lands here when it runs on someone else’s machine.</p>';
+      /* Nothing at all rather than a dead button. The price line above
+         already reads "Not released yet"; saying it twice is filler. */
+      dl.innerHTML = '';
     }
   }
 
@@ -89,10 +88,13 @@
     function (el) { el.innerHTML = el.innerHTML.replace(/\s+([^\s<>]+)\s*$/, ' $1'); });
 
   /* ── prev / next ──
-     With only two plugins both arrows land on the same page, so below
-     three the pager collapses to a single Next. Once a third ships this
-     goes back to normal on its own. */
+     One plugin: no pager, there's nowhere to go. Two: a single Next, since
+     both arrows would land on the same page. Three or more: the normal
+     pair. All of it keys off plugins.length, so nothing here changes when
+     a plugin is added or pulled. */
   var prevEl = $('pluginPrev'), nextEl = $('pluginNext');
+  var pager = document.querySelector('.project-pager');
+  if (pager && plugins.length < 2) pager.hidden = true;   // nowhere to go
   if (prevEl) {
     prevEl.href = '/' + plugins[(i - 1 + plugins.length) % plugins.length].slug;
     prevEl.hidden = plugins.length < 3;
