@@ -345,6 +345,19 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 .menu-foot a:hover { color: var(--accent); }
 .menu-foot svg { width: 100%; height: 100%; fill: currentColor; display: block; }
 
+/* Contact row on About, under Based / Focus. Same icons and sizing as the
+   closing row; left-aligned because it sits inside the copy column. */
+.about-links {
+  display: flex;
+  align-items: center;
+  gap: 1.4rem;
+  margin-top: 1.6rem;
+  color: var(--muted);
+}
+.about-links a { width: 24px; height: 24px; color: var(--muted); transition: color 0.3s ease; }
+.about-links a:hover { color: var(--accent); }
+.about-links svg { width: 100%; height: 100%; fill: currentColor; display: block; }
+
 /* ══ ABOUT: portrait column on the right, copy on the left ══ */
 .about-top {
   /* Matches .page-head on Work, so About's title, category, photo and copy
