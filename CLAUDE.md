@@ -10,7 +10,7 @@ Michael Loya's portfolio. Static, multi-page, no build step and no dependencies.
 - **`index.html`** — Studio. The main page: video hero, three featured project bands, statement, closing CTA.
 - **`work.html`** — Work. All projects in a two-column grid; clicking one opens the detail overlay.
 - **`about.html`** — About. Bio, education, experience, skills, achievements, interests, resume.
-- **`plugins.html`** — Plugins. Same two-column `.tile` grid as Work, rendered from `plugins.js`; each tile opens `/<slug>.html` (`gh-midi.html`, `lookout.html`), which `plugin-page.js` fills in the same way `project-page.js` fills a project.
+- **`tools.html`** — Tools (was Plugins). Same two-column `.tile` grid as Work, rendered from `plugins.js`; each tile opens `/<slug>.html` (`gh-midi.html`, `lookout.html`), which `plugin-page.js` fills in the same way `project-page.js` fills a project.
 
 ## Shared files
 - **`assets/css/site.css`** — every style on the site. Tokens at the top; the semantic block (`--bg`, `--fg`, `--accent`…) is the only thing a light mode would need to change.
@@ -66,6 +66,15 @@ the standalone app, while the site still described the older build). Re-copy
 the zip at the same time; its size is quoted on the page.
 
 ## Plugin product images
+Crop wide source images to roughly square BEFORE composing — the tool fits
+to the shorter side, so a 16:9 plate in a square card leaves a band of white
+top and bottom. That is why the Lookout plate is cropped first.
+
+Action shots come from the plugin's own demo mode, not from someone playing:
+`GHMIDI_DEMO=1 "…/GH MIDI.app/Contents/MacOS/GH MIDI"` runs a chord sequence
+with whammy, and `/tmp/burst.py` ranks captured frames by how far they differ
+from an idle baseline to find the liveliest one.
+
 Run every plugin screenshot through `assets/tools/plugin_shot.py` — it is an
 asset-prep utility, **not** a build step (the site still has none). One
 treatment for all of them, decided against alternatives:

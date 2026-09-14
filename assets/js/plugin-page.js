@@ -64,7 +64,7 @@
           'Download for macOS' +
         '</a>' +
         '<p class="product-meta">' +
-          [p.version, p.size, 'no account'].filter(Boolean).join(' &nbsp;·&nbsp; ') +
+          [p.version, p.size].filter(Boolean).join(' &nbsp;·&nbsp; ') +
         '</p>';
     } else {
       /* No button at all rather than a dead one. The price line above
