@@ -42,7 +42,8 @@ const projects = [
     intro: `<p>My brother produces music under our last name, <a href="https://open.spotify.com/artist/5gNQpoYEBE1jxjCgFkLWce" target="_blank" rel="noopener">loya</a>, and runs LYRC, a company he started to make lyric videos for independent artists. I work with him on promoting his music and his personal brand, keyed to cinematic and viral content.</p>
 <p>We shape the idea together, then I execute it, shooting and editing it myself. My schooling and the work before this were graphic design; loya is where I'm building the video craft on top of it.</p>
 <p>The logo came out of his hat collection, set in Amador, a blackletter that balances elegance with edge.</p>`,
-    work: `<div class="project-video"><video src="projects/loya-and-co/intro.mp4" autoplay loop muted playsinline poster="projects/loya-and-co/intro-poster.jpg" width="1920" height="1080"></video></div>
+    work: `<div class="project-video"><video src="projects/loya-and-co/goodbye-3d.mp4" autoplay loop muted playsinline poster="projects/loya-and-co/goodbye-3d-poster.jpg" width="1920" height="1080"></video></div>
+<div class="project-video"><video src="projects/loya-and-co/intro.mp4" autoplay loop muted playsinline poster="projects/loya-and-co/intro-poster.jpg" width="1920" height="1080"></video></div>
 <div class="img-grid-3" data-exact>
 <div><video src="projects/loya-and-co/oh-no-promo-1.mp4" autoplay loop muted playsinline poster="projects/loya-and-co/oh-no-promo-1-poster.jpg" width="1280" height="960"></video></div>
 <div><video src="projects/loya-and-co/oh-no-promo-2.mp4" autoplay loop muted playsinline poster="projects/loya-and-co/oh-no-promo-2-poster.jpg" width="1280" height="960"></video></div>
