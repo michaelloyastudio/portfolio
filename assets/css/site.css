@@ -885,14 +885,6 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   .hero-work { width: 100%; }
   .hero-work img, .hero-work video { width: 100%; max-height: none; }
 
-  /* Stacked, the hero reads better as title / video / words / button, all
-     centred: the video is the thing, the button ends up where a thumb is,
-     and the copy isn't stranded above a frame it has nothing to do with.
-     The grid auto-places by `order`, so the markup stays as it is. */
-  .hero .studio-title { order: 1; text-align: center; }
-  .hero-work         { order: 2; margin-left: auto; margin-right: auto; }
-  .hero-lede         { order: 3; text-align: center; }
-  .hero-copy         { margin-left: auto; margin-right: auto; }
 
   /* ── page + project headers ── */
   .page-head,
