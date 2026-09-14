@@ -19,14 +19,31 @@ The treatment, decided against alternatives and worth keeping consistent:
   * Rounded corners and the drop shadow both derive from the window's own
     alpha, so they follow the rounding instead of being drawn separately.
 """
-import argparse
-from PIL import Image, ImageDraw, ImageFilter
+import argparse, io
+from PIL import Image, ImageDraw, ImageFilter, ImageCms
 
 GROUND   = (243, 243, 243)
 RADIUS   = 26      # on the 2x screenshot, so ~13pt
 FILL     = 0.86    # how much of the frame the window takes
 BLUR     = 40
 DROP     = 14      # shadow offset, px
+
+def _to_srgb(im):
+    """Convert a screenshot into real sRGB.
+
+    macOS `screencapture` tags its output Display P3 on these displays. Just
+    dropping the profile leaves P3 numbers in an untagged file, which every
+    browser then reads as sRGB — the saturated colours get pulled in toward
+    grey and the whole shot looks washed out. This was actually happening.
+    Convert through the embedded profile instead of discarding it.
+    """
+    prof = im.info.get('icc_profile')
+    if not prof:
+        return im.convert('RGB')
+    src = ImageCms.ImageCmsProfile(io.BytesIO(prof))
+    return ImageCms.profileToProfile(im.convert('RGB'), src,
+                                     ImageCms.createProfile('sRGB'),
+                                     outputMode='RGB')
 
 def _rounded(im, r):
     m = Image.new('L', im.size, 0)
@@ -36,7 +53,7 @@ def _rounded(im, r):
     return out
 
 def compose(shot, out, size=1400):
-    win = _rounded(Image.open(shot).convert('RGB'), RADIUS)
+    win = _rounded(_to_srgb(Image.open(shot)), RADIUS)
     bg = Image.new('RGBA', (size, size), GROUND + (255,))
 
     s = min(size / win.width, size / win.height) * FILL

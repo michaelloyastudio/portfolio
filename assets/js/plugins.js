@@ -35,32 +35,38 @@ const plugins = [
     hero: 'projects/plugins/gh-midi-ui.jpg',
     shots: [
       { src: 'projects/plugins/gh-midi-ui.jpg',       alt: 'Chord struck on the note highway' },
-      { src: 'projects/plugins/gh-midi-sustain.jpg',  alt: 'Notes sustaining above the frets' },
       { src: 'projects/plugins/gh-midi-settings.jpg', alt: 'Settings: device picker and mapping table' },
       { src: 'projects/plugins/gh-midi-help.jpg',     alt: 'The built-in How to Play card' }
     ],
-    intro: `<p>Plug in a plastic Guitar Hero controller and play it like an instrument. It reads the frets, strum bar, whammy and joystick straight off the device and turns them into MIDI, so the guitar drives whatever you have loaded instead of a game.</p>
+    intro: `<p>Plug in a Guitar Hero controller and play it for real. It reads the frets, strum bar, whammy and joystick straight off the device and turns them into MIDI, so it drives whatever you have loaded instead of a game.</p>
 <p>Three modes, from one where you cannot play a wrong note to one you actually have to learn. Runs as a plugin or on its own, so you don't need a DAW open to play.</p>`,
     facts: [
       ['Platform', 'macOS \u2014 Apple silicon and Intel'],
       ['Format', 'Standalone app + VST3'],
-      ['Controller', 'Any Guitar Hero controller']
+      ['Controller', 'Any USB controller']
     ],
     status: 'live',
     version: 'v1.1',
     download: 'assets/downloads/GH-MIDI-v1.1-macOS.zip',
-    size: '15.2 MB',
+    size: '16.5 MB',
     body: `
 <section class="plugin-section">
-  <h2>Install</h2>
+  <h2>Setup</h2>
   <ol class="plugin-steps">
     <li>Drag <code>GH MIDI.app</code> anywhere, or drop <code>GH MIDI.vst3</code> into <code>~/Library/Audio/Plug-Ins/VST3</code> and rescan. Run one at a time \u2014 whichever opens first takes the guitar.</li>
-    <li>First launch, right-click &rarr; Open. If macOS still refuses, paste this once:
+    <li>First launch, right-click &rarr; Open. If macOS still blocks it, paste this once:
       <pre class="plugin-code"><code>xattr -dr com.apple.quarantine ~/Library/Audio/Plug-Ins/VST3/"GH MIDI.vst3"</code></pre>
     </li>
-    <li>Plug in the guitar and play. Everything else is explained by the <strong>?</strong> button inside the app.</li>
+    <li>Open <strong>SETTINGS</strong> and pick your controller. Anything that isn't pre-mapped, hit <strong>LEARN</strong> on a row and press that control.
+      <img class="step-shot" src="projects/plugins/gh-midi-settings-raw.jpg" alt="Settings panel with the device picker and mapping table" loading="lazy">
+    </li>
+    <li>Play.
+      <img class="step-shot" src="projects/plugins/gh-midi-play-raw.jpg" alt="Playing a chord on the note highway" loading="lazy">
+    </li>
+    <li>Everything else is in the <strong>?</strong> button and the guide in the zip.
+      <img class="step-shot" src="projects/plugins/gh-midi-help-raw.jpg" alt="The built-in How to Play card" loading="lazy">
+    </li>
   </ol>
-  <p class="plugin-note">Step two is there because the build isn't notarized, and notarizing costs $99 a year.</p>
 </section>`
   },
   {
@@ -70,12 +76,10 @@ const plugins = [
     tagline: 'Detection HUD',
     cover: 'projects/plugins/lookout-cover.jpg',
     hero: 'projects/plugins/lookout-ui.jpg',
-    intro: `<p>An effect that finds things in your footage and draws them. Point it at a shot and it detects objects frame by frame, then renders a HUD over them — boxes, labels, tracking lines. Styled to look designed rather than like debug output.</p>
-<p>It runs an open-vocabulary detector, so it is not limited to a fixed list of classes. You type what to look for and it looks for that.</p>`,
+    intro: `<p>An effect that finds things in your footage and draws them. Point it at a shot and it detects objects frame by frame, then renders a HUD over them — boxes, labels, tracking lines. Styled to look designed rather than like debug output.</p>`,
     facts: [
       ['Platform', 'macOS, Apple silicon'],
-      ['Format', 'After Effects effect plugin'],
-      ['Detector', 'Open vocabulary \u2014 type what to look for']
+      ['Format', 'After Effects effect plugin']
     ],
     status: 'building',
     version: null,
@@ -84,7 +88,7 @@ const plugins = [
     body: `
 <section class="plugin-section">
   <h2>Where it's at</h2>
-  <p>The detection engine works and renders the HUD you see above. What's left is the part that makes it a plugin anyone can install: the After Effects SDK wrapper, and shrinking a model that currently ships at a quarter of a gigabyte down to something worth downloading.</p>
+  <p>The detection engine works and renders the HUD you see above. What's left is packaging it as an After Effects plugin.</p>
 </section>`
   }
 ];

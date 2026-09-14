@@ -1,13 +1,15 @@
 GH MIDI v1.1
 ============
 Turn a Guitar Hero controller into a real MIDI instrument.
-by Loya  ·  full guide: https://michaelloya.studio/gh-midi
+by Michael Loya Studio  ·  full guide: https://michaelloya.studio/gh-midi
 
 
 WHAT'S IN THE ZIP
 -----------------
-GH MIDI.app    standalone app - no DAW required to run it
-GH MIDI.vst3   plugin for VST3 hosts (FL Studio, Ableton, Reaper, ...)
+GH MIDI.app        standalone app - no DAW required to run it
+GH MIDI.vst3       plugin for VST3 hosts (FL Studio, Ableton, Reaper, ...)
+GH MIDI Guide.pdf  the full guide: install, every mode with charts, song
+                   patterns, settings, troubleshooting
 
 Both work on Apple Silicon and Intel. Run ONE of them at a time: whichever
 opens first grabs the guitar, and the other will say "controller not found".
