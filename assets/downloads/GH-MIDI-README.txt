@@ -38,3 +38,10 @@ HELP
 
   The ? button inside the app, or GH MIDI Guide.pdf.
   michaelloya.studio/gh-midi
+
+
+MADE WITH CLAUDE CODE
+
+  GH MIDI, this README and the guide were made with Claude Code. Some
+  details may be inaccurate. If something doesn't match what you see, trust
+  the plugin and tell me: hello@michaelloya.studio
