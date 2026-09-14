@@ -151,7 +151,7 @@
         '<div class="tile-media">' +
           '<img src="' + p.cover + '" alt="' + p.name + '" loading="lazy">' +
           (p.download
-            ? '<span class="tile-badge">Free &middot; ' + p.version + '</span>'
+            ? '<span class="tile-badge">Free</span>'
             : '<span class="tile-badge tile-badge--soon">In development</span>') +
         '</div>' +
         '<div class="tile-meta">' +
