@@ -136,6 +136,13 @@ GoatCounter, site `michaelloya.goatcounter.com`, one script tag before `</body>`
 on every page. No cookies, so no banner. `count.js` refuses to count on
 localhost, which is why nothing shows up from the dev server.
 
+**Never request a new zip URL before Pages reports the deploy built.** A fetch
+that lands between push and deploy gets the previous bytes from origin, and
+Cloudflare then caches that stale response under the brand-new `?v=` for four
+hours — which is precisely what the hash exists to prevent. Poll the Pages
+builds API for the new SHA first; only then fetch the zip, once. (Done it
+once; the fix was a fresh `?v=` value.)
+
 Downloads are counted as an **event** fired from the download button in
 `plugin-page.js`, path `download/<slug>/<version>` — so each version is its
 own line on the dashboard. It counts clicks, not completed downloads.
