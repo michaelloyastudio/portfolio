@@ -47,8 +47,7 @@ const plugins = [
     facts: [
       ['Platform', 'macOS \u2014 Apple silicon and Intel'],
       ['Format', 'Standalone app + VST3'],
-      ['Controller', 'Any USB controller'],
-      ['Charting', 'Clone Hero / Rock Band lanes, every difficulty at once']
+      ['Controller', 'Any USB controller']
     ],
     status: 'live',
     version: 'v1.1',
