@@ -919,10 +919,9 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
     line-height: 1.3;
   }
   .lede-line { display: inline; white-space: normal; }
-  /* Line two is "focusing on" plus the reel, all in red. The break in
-     front of "focusing" is forced rather than left to the wrap, so a wider
-     phone can't pull the word up onto line one. */
-  .lede-focus { color: var(--accent); }
+  /* Line two is "focusing on" plus the reel. The break in front of
+     "focusing" is forced rather than left to the wrap: on a real phone the
+     natural wrap put it on line one. */
   .lede-focus::before { content: "\A"; white-space: pre; }
   /* The reel goes inline at the end of line two. 1.18em matches Warbler's
      x-height (0.461em) to Inter's (0.546em), so the word reads the same
