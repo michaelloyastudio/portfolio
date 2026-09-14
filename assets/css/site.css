@@ -647,6 +647,10 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   font-family: var(--font-hero-serif);
   font-style: italic;
   font-weight: 700;
+  /* The dotted i is an inline-block, which is a legal break point, so on a
+     phone the title could wrap as "Michael Loya Stud" / "ıo". The word
+     stays whole; the only allowed break is in front of it. */
+  white-space: nowrap;
   /* the serif needs its tracking back — it sets tighter than the sans */
   letter-spacing: -0.01em;
   padding-left: 0.06em;
