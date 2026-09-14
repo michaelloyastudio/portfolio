@@ -161,7 +161,7 @@ body {
 /* Everything typographically "UI": headings, buttons, labels, nav. */
 h1, h2, h3,
 .btn, .menu-links a, .section-label, .tag-label,
-.band-title, .band-cat, .tile-title, .tile-cat,
+.band-title, .band-cat, .band-arrow, .tile-title, .tile-cat, .tile-arrow,
 .closing-mail, .closing .lead, .closing-links,
 .entry-role, .entry-date,
 .project-category, .project-facts dt, .project-facts dd, .project-pager,
@@ -1054,39 +1054,39 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 }
 .tile:hover .tile-media img { transform: scale(1.045); }
 
+/* Same treatment as the Studio bands: category over the title on the left,
+   an arrow on the right, and the hover is the title and the arrow, not a
+   line growing under the row. */
 .tile-meta {
   display: flex;
-  align-items: baseline;
+  align-items: flex-end;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 1.5rem;
   padding-top: 1rem;
-  position: relative;
 }
-.tile-meta::after {
-  content: '';
-  position: absolute;
-  left: 0; bottom: 0;
-  height: 1px; width: 0;
-  background: var(--accent);
-  transition: width 0.55s var(--ease);
+.tile-cat {
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 0.4rem;
 }
-.tile:hover .tile-meta::after { width: 100%; }
 .tile-title {
-  font-size: clamp(1.05rem, 2vw, 1.4rem);
-  font-weight: 500;
-  letter-spacing: -0.02em;
+  font-size: clamp(1.15rem, 2.2vw, 1.6rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
   margin: 0;
   transition: color 0.3s ease;
 }
 .tile:hover .tile-title { color: var(--accent); }
-.tile-cat {
-  font-size: 0.66rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+.tile-arrow {
+  font-size: 1.3rem;
   color: var(--muted);
-  text-align: right;
-  white-space: nowrap;
+  flex-shrink: 0;
+  transition: color 0.3s ease, transform 0.4s var(--ease);
 }
+.tile:hover .tile-arrow { color: var(--accent); transform: translateX(7px); }
 
 /* A hairline between sections of a project's work, so a page can break
    into groups instead of reading as one long column. Same rule weight as

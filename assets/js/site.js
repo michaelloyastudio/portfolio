@@ -125,8 +125,11 @@
           '<img src="' + p.cover + '" alt="' + p.title + '" loading="lazy" draggable="false">' +
         '</div>' +
         '<div class="tile-meta">' +
-          '<h2 class="tile-title">' + p.title + '</h2>' +
-          '<span class="tile-cat">' + p.category + '</span>' +
+          '<div>' +
+            '<p class="tile-cat">' + p.category + '</p>' +
+            '<h2 class="tile-title">' + p.title + '</h2>' +
+          '</div>' +
+          '<span class="tile-arrow">&rarr;</span>' +
         '</div>';
       grid.appendChild(tile);
     });
@@ -155,8 +158,11 @@
             : '<span class="tile-badge tile-badge--soon">In development</span>') +
         '</div>' +
         '<div class="tile-meta">' +
-          '<h2 class="tile-title">' + p.name + '</h2>' +
-          '<span class="tile-cat">' + p.host + '</span>' +
+          '<div>' +
+            '<p class="tile-cat">' + p.host + '</p>' +
+            '<h2 class="tile-title">' + p.name + '</h2>' +
+          '</div>' +
+          '<span class="tile-arrow">&rarr;</span>' +
         '</div>';
       pgrid.appendChild(tile);
     });
