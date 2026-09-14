@@ -319,9 +319,18 @@
          here was silently thrown away on the title, the layer with the
          strongest rate. translate is its own property: it composes with
          the animation's transform instead of fighting it. */
-      if (title) title.style.translate = '0 ' + (y * 0.34).toFixed(2) + 'px';
-      if (lede)  lede.style.translate  = '0 ' + (y * 0.19).toFixed(2) + 'px';
-      if (work)  work.style.translate  = '0 ' + (y * -0.16).toFixed(2) + 'px';
+      /* Depth is speed: the layer that lags the scroll most (largest
+         positive rate) reads furthest back; the one that runs ahead of
+         it (negative) reads closest. On desktop the title is the back,
+         the copy sits just in front of it, and the video on the right is
+         the foreground. Stacked on a phone the video is the MIDDLE row
+         and the copy-and-button is the bottom one, so the foreground
+         moves down to the copy and the video takes the middle depth. */
+      var rT = 0.34, rL = 0.19, rW = -0.16;
+      if (PHONE.matches) { rL = -0.16; rW = 0.08; }
+      if (title) title.style.translate = '0 ' + (y * rT).toFixed(2) + 'px';
+      if (lede)  lede.style.translate  = '0 ' + (y * rL).toFixed(2) + 'px';
+      if (work)  work.style.translate  = '0 ' + (y * rW).toFixed(2) + 'px';
     }
 
     window.addEventListener('scroll', parallax, { passive: true });
