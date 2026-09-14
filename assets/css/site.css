@@ -1382,6 +1382,9 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 }
 .product-intro p:last-child { margin-bottom: 0; }
 .plugin-guide { max-width: 780px; }
+/* A plugin with no guide (GH MIDI ships its setup as README.txt in the zip)
+   shouldn't leave the guide's bottom padding as a dead gap before the pager. */
+.plugin-guide:empty { display: none; }
 
 /* A screenshot inside a guide step, so the setup walkthrough can show the
    thing it is describing instead of only naming it. */

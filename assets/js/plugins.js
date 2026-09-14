@@ -49,30 +49,11 @@ const plugins = [
     ],
     status: 'live',
     version: 'v1.1',
-    download: 'assets/downloads/GH-MIDI-v1.1-macOS.zip?v=f931266f',
+    download: 'assets/downloads/GH-MIDI-v1.1-macOS.zip?v=d2d83ae4',
     size: '16.5 MB',
-    body: `
-<section class="plugin-section">
-  <h2>Setup</h2>
-  <ol class="plugin-steps">
-    <li>Unzip. You get the app, the plugin, and the guide.
-      <img class="step-shot" src="projects/plugins/setup-unzipped.png" alt="The unzipped folder: GH MIDI app, GH MIDI.vst3, the guide and a README" loading="lazy" width="1840" height="872">
-    </li>
-    <li>The plugin goes in <code>~/Library/Audio/Plug-Ins/VST3</code>. That folder is hidden, so in Finder press <kbd>&#8679;&#8984;G</kbd>, paste the path, hit return, and drop <code>GH MIDI.vst3</code> in. Then rescan plugins in your DAW.
-      <img class="step-shot" src="projects/plugins/setup-goto.png" alt="Finder's Go to Folder panel with the VST3 path typed in" loading="lazy" width="1840" height="872">
-      <img class="step-shot" src="projects/plugins/setup-vst3.png" alt="GH MIDI.vst3 sitting in the VST3 folder" loading="lazy" width="1840" height="872">
-    </li>
-    <li>The first time you open the app, macOS will refuse. Hit <strong>Done</strong> \u2014 not Move to Trash.
-      <img class="step-shot step-shot--dialog" src="projects/plugins/setup-gatekeeper.png" alt="macOS: GH MIDI Not Opened. Apple could not verify GH MIDI is free of malware. Buttons: Move to Trash, Done" loading="lazy" width="520" height="536">
-    </li>
-    <li>Open <strong>System Settings &rarr; Privacy &amp; Security</strong>, scroll down to Security, and click <strong>Open Anyway</strong>. Once. It opens normally from then on.
-      <img class="step-shot step-shot--card" src="projects/plugins/setup-open-anyway.png" alt="System Settings, Privacy & Security: GH MIDI was blocked to protect your Mac, with an Open Anyway button" loading="lazy" width="936" height="360">
-    </li>
-    <li>If the plugin won't load in your DAW either, this clears it:
-      <pre class="plugin-code"><code>xattr -dr com.apple.quarantine ~/Library/Audio/Plug-Ins/VST3/"GH MIDI.vst3"</code></pre>
-    </li>
-  </ol>
-</section>`
+    /* No setup on the page. It ships as README.txt in the zip, where it's
+       next to the files it talks about. The page sells; the README installs. */
+    body: ''
   },
   {
     slug: 'lookout',
