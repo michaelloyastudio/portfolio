@@ -51,8 +51,8 @@ const plugins = [
     ],
     status: 'live',
     version: 'v1.1',
-    download: 'assets/downloads/GH-MIDI-v1.1-macOS.zip?v=89500bfd',
-    size: '16.7 MB',
+    download: 'assets/downloads/GH-MIDI-v1.1-macOS.zip?v=37bc1f84',
+    size: '16.8 MB',
     /* No setup on the page. It ships as README.txt in the zip, where it's
        next to the files it talks about. The page sells; the README installs. */
     body: ''
