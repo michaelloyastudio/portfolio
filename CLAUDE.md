@@ -88,8 +88,24 @@ treatment for all of them, decided against alternatives:
   App windows are near-square and at 16:9 a third of the tile was padding.
 
 Gallery shots get the card. A screenshot used *inside* the guide (`.step-shot`)
-stays a raw crop — a white card mid-copy is a glaring block. That is why
-`gh-midi-settings.jpg` and `gh-midi-settings-raw.jpg` both exist.
+stays a raw crop — a white card mid-copy is a glaring block.
+
+**The setup steps show the hard part, not the app.** Nobody needs a picture of
+the plugin to know what the plugin looks like; they need the hidden `~/Library`
+folder, the Gatekeeper refusal, and where "Open Anyway" lives. Those five
+`setup-*.png` files are real captures taken by walking the actual flow with a
+quarantined copy (`xattr -w com.apple.quarantine "0083;…;Safari;…"` on a fresh
+unzip — without the flag Gatekeeper never fires). Crop Finder and System
+Settings to the content pane: the sidebars carry Mike's name, folders and
+family photo.
+
+**macOS 15+ Gatekeeper flow is Done → System Settings → Privacy & Security →
+Open Anyway.** Right-click → Open no longer bypasses Gatekeeper for un-notarized
+apps; any copy that still says so is wrong.
+
+`.step-shot` needs `height: auto`. The imgs carry width/height attributes so the
+page doesn't jump, and with `width: 100%` in CSS the height attribute otherwise
+survives as a presentational hint and squashes the shot.
 
 ## Grids
 **Every row is justified, including the last, so a grid always comes out rectangular.** `layoutMosaic` in `project-page.js` collects the rows before laying any out, then rebalances the tail: if the last row is left with one tile, or would justify to an absurd height, it borrows tiles from the row above until it can fill the width sensibly. Never revert this to flushing rows as they fill, and never leave the trailing row unjustified — that is what produced the ragged bottoms.

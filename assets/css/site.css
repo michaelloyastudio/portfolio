@@ -1388,10 +1388,28 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 .step-shot {
   display: block;
   width: 100%;
+  /* The imgs carry width/height attributes so the page doesn't jump while
+     they load. With width overridden here and no height rule, the height
+     ATTRIBUTE still applies as a presentational hint and the shot gets
+     squashed to 100% x 872px. This is what stops that. */
+  height: auto;
   margin: 0.9rem 0 0;
   border: 1px solid var(--line);
-  border-radius: 4px;
+  border-radius: 12px;
   background: var(--panel);
+}
+/* The Gatekeeper alert is 260pt wide. Stretching it to the column would
+   just blur it, so it renders at its real size and stands on the left. */
+.step-shot--dialog { width: auto; max-width: 260px; }
+.step-shot--card   { width: auto; max-width: 468px; }
+.plugin-steps kbd {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.82em;
+  padding: 0.12em 0.42em;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  white-space: nowrap;
 }
 
 /* ══ STATEMENT + CLOSING CTA ══ */
