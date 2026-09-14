@@ -1097,6 +1097,9 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
    Everything below is the two things a plugin tile needs that a project
    tile doesn't: a badge saying whether you can actually download it, and
    a line of description under the title. */
+/* Three across, not two: a tool tile is a product card, not a poster, and
+   the grid should hold three before anything has to wrap. */
+.plugin-grid { grid-template-columns: repeat(3, 1fr); }
 /* Square, unlike the work grid. Plugin shots are app windows, which are
    near-square — at 16/9 about a third of the tile was empty padding. */
 .plugin-grid .tile-media { aspect-ratio: 1 / 1; background: #f3f3f3; }
@@ -1843,6 +1846,10 @@ footer {
 /* ══ RESPONSIVE (desktop-first; full mobile pass still to come) ══ */
 @media (max-width: 900px) {
   .work-grid { grid-template-columns: 1fr; }
+  .plugin-grid { grid-template-columns: repeat(2, 1fr); }
+  /* nested so it sits after the two-across rule; the standalone 640px
+     block is earlier in the file and would lose on source order */
+  @media (max-width: 640px) { .plugin-grid { grid-template-columns: 1fr; } }
   .product-top { grid-template-columns: minmax(0, 1fr); gap: 2rem; }
   .product-buy { position: static; }
   .product-specs > div { grid-template-columns: 1fr; gap: 0.2rem; }
