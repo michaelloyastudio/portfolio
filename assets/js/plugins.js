@@ -41,9 +41,9 @@ const plugins = [
       { src: 'projects/plugins/gh-midi-settings.jpg', alt: 'Settings: device picker and mapping table' },
       { src: 'projects/plugins/gh-midi-help.jpg',     alt: 'The built-in How to Play card' }
     ],
-    intro: `<p>Plug one in and play it for real. It reads the frets, strum bar, whammy and joystick straight off the device and turns them into MIDI, so it drives whatever you have loaded instead of a game.</p>
-<p>Four modes, from one where you cannot play a wrong note to one you actually have to learn. Runs as a VST3 inside your DAW, or as a standalone app that shows up as a MIDI input in anything that makes sound \u2014 GarageBand, Logic, any synth.</p>
-<p><strong>It charts, too.</strong> CHART mode turns the five frets into Clone Hero lanes \u2014 green through orange, all four difficulties written at once. Play the song, record the MIDI, and you have a rough chart to clean up instead of a blank one.</p>`,
+    intro: `<p>Turns the controller into a MIDI instrument. It reads the frets, strum bar, whammy and joystick directly from the hardware and sends them as MIDI to whatever instrument you have loaded.</p>
+<p>Four modes cover everything from chords in a key, where a wrong note is not possible, to a fully chromatic layout. It runs as a VST3 in your DAW, or as a standalone app that appears as a MIDI input in GarageBand, Logic, or any synth.</p>
+<p>CHART mode maps the five frets to Clone Hero lanes, with all four difficulties written at once. Play the song, record the MIDI, and you have a first draft of the chart.</p>`,
     facts: [
       ['Platform', 'macOS \u2014 Apple silicon and Intel'],
       ['Format', 'Standalone app + VST3'],
