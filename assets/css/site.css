@@ -357,7 +357,7 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 .about-top .about-copy { max-width: 60ch; margin-left: auto; }
 .about-top .project-intro p { margin-bottom: 1.2rem; }
 .about-figure { margin: 0; }   /* UA default is 16px 40px, which broke the alignment */
-.about-figure img { width: 100%; height: auto; border-radius: 3px; display: block; }
+.about-figure img { width: 100%; height: auto; display: block; }
 .about-figure figcaption {
   margin-top: 0.7rem;
   font-size: 0.78rem;
@@ -410,7 +410,7 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 }
 .cv-org { font-size: 0.9rem; color: var(--accent); margin-top: 0.15rem; }
 .cv-note { font-size: 0.95rem; opacity: 1; margin-top: 0.45rem; line-height: 1.6; max-width: 62ch; }
-.cv-role .entry-link img { width: 22px; height: 22px; border-radius: 3px; object-fit: cover; opacity: 0.55; transition: opacity 0.3s ease, transform 0.3s ease; }
+.cv-role .entry-link img { width: 22px; height: 22px; object-fit: cover; opacity: 0.55; transition: opacity 0.3s ease, transform 0.3s ease; }
 .cv-role .entry-link:hover img { opacity: 1; transform: scale(1.12); }
 
 /* ══ HERO ══ */
@@ -818,7 +818,6 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   height: auto;
   margin-left: auto;
   display: block;
-  border-radius: 2px;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -986,7 +985,6 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   position: relative;
   aspect-ratio: 16 / 9;
   overflow: hidden;
-  border-radius: 3px;
   background: var(--panel);
 }
 .band-media img {
@@ -1044,7 +1042,6 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   position: relative;
   aspect-ratio: 16 / 9;
   overflow: hidden;
-  border-radius: 3px;
   background: var(--panel);
 }
 .tile-media img {
@@ -1290,7 +1287,6 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   width: 100%;
   aspect-ratio: 1 / 1;
   object-fit: cover;
-  border-radius: 4px;
   background: var(--panel);
   border: 1px solid var(--line);
 }
@@ -1304,7 +1300,6 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   width: 78px;
   padding: 0;
   border: 1px solid var(--line);
-  border-radius: 3px;
   background: var(--panel);
   cursor: pointer;
   overflow: hidden;
@@ -1420,7 +1415,6 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   height: auto;
   margin: 0.9rem 0 0;
   border: 1px solid var(--line);
-  border-radius: 12px;
   background: var(--panel);
 }
 /* The Gatekeeper alert is 260pt wide. Stretching it to the column would
@@ -1514,7 +1508,6 @@ footer {
 }
 .about-portrait {
   width: 100%;
-  border-radius: 3px;
   cursor: zoom-in;
   filter: grayscale(1);
   transition: filter 0.7s var(--ease);
@@ -1579,7 +1572,6 @@ footer {
 .entry-sub { font-size: 0.98rem; opacity: 0.75; margin-top: 0.2rem; }
 .entry-link img {
   width: 22px; height: 22px;
-  border-radius: 3px;
   object-fit: cover;
   opacity: 0.55;
   transition: opacity 0.3s ease, transform 0.3s ease;
@@ -1654,7 +1646,6 @@ footer {
 .project-hero video {
   width: 100%;
   height: auto;
-  border-radius: 3px;
   display: block;
 }
 /* Square or portrait heroes only: going full width would make them
@@ -1760,7 +1751,6 @@ footer {
      width/height attributes — without it the browser honours the literal
      height attribute and stretches the image into a very tall box. */
   height: auto;
-  border-radius: 3px;
   background: var(--panel);
 }
 /* ── mosaic ──────────────────────────────────────────────────────
@@ -1778,7 +1768,6 @@ footer {
 .project-work [class^="img-grid"] > *,
 .project-video {
   overflow: hidden;
-  border-radius: 3px;
   position: relative;    /* anchors the sound button */
 }
 
