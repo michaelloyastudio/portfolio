@@ -13,14 +13,16 @@
  *   facts     — array of [label, value] rows, rendered as the facts list
  *   status    — 'live' | 'beta' | 'building'
  *   version   — shown on the download button
- *   download  — path to the file. NULL means no button: the page shows the
- *               status instead of a link that 404s. Fill this in and the
- *               button appears; nothing else has to change.
+ *   download  — path to the file, with ?v=<first 8 of the zip's md5>. The
+ *               filename never changes between cuts and Cloudflare caches by
+ *               URL for four hours, so without the hash a re-cut zip keeps
+ *               serving the OLD bytes live. NULL means no button: the page
+ *               shows the status instead of a link that 404s.
  *   size      — human-readable, shown next to the button
  *   body      — the guide below the download. Plain HTML.
  *
  * Hosting: the file lives in this repo under assets/downloads/. GitHub's
- * hard limit is 100MB PER FILE and the zip is 7.2MB, so it ships with the
+ * hard limit is 100MB PER FILE and the zip is ~16MB, so it ships with the
  * site — no second repo, no release plumbing, and Cloudflare caches it.
  * If a build ever approaches 100MB (Lookout will), cut a GitHub Release on
  * that plugin's own repo and point `download` at the release asset instead.
@@ -47,7 +49,7 @@ const plugins = [
     ],
     status: 'live',
     version: 'v1.1',
-    download: 'assets/downloads/GH-MIDI-v1.1-macOS.zip',
+    download: 'assets/downloads/GH-MIDI-v1.1-macOS.zip?v=f931266f',
     size: '16.5 MB',
     body: `
 <section class="plugin-section">

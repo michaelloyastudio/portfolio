@@ -18,8 +18,9 @@ opens first grabs the guitar, and the other will say "controller not found".
 STANDALONE APP (no DAW needed)
 ------------------------------
 1. Drag "GH MIDI.app" to Applications (or anywhere).
-2. First launch: right-click the app > Open > Open (it isn't notarized).
-   If macOS still refuses, open Terminal and run:
+2. Open it. macOS says it can't verify the app (it isn't notarized): click
+   Done, then System Settings > Privacy & Security > scroll down > Open Anyway,
+   and open it again. Or clear the block for good in Terminal:
        xattr -dr com.apple.quarantine /Applications/"GH MIDI.app"
 3. While the app is running, a MIDI input called "GH MIDI" shows up in every
    DAW and synth app on your Mac (Logic, GarageBand, Ableton, FL, Reaper,
