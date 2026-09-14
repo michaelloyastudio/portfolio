@@ -42,7 +42,7 @@ const plugins = [
       { src: 'projects/plugins/gh-midi-help.jpg',     alt: 'The built-in How to Play card' }
     ],
     intro: `<p>Plug one in and play it for real. It reads the frets, strum bar, whammy and joystick straight off the device and turns them into MIDI, so it drives whatever you have loaded instead of a game.</p>
-<p>Three modes, from one where you cannot play a wrong note to one you actually have to learn. Runs as a plugin or on its own, so you don't need a DAW open to play.</p>`,
+<p>Three modes, from one where you cannot play a wrong note to one you actually have to learn. Runs as a VST3 inside your DAW, or as a standalone app that shows up as a MIDI input in anything that makes sound \u2014 GarageBand, Logic, any synth.</p>`,
     facts: [
       ['Platform', 'macOS \u2014 Apple silicon and Intel'],
       ['Format', 'Standalone app + VST3'],
@@ -50,7 +50,7 @@ const plugins = [
     ],
     status: 'live',
     version: 'v1.1',
-    download: 'assets/downloads/GH-MIDI-v1.1-macOS.zip?v=d2d83ae4',
+    download: 'assets/downloads/GH-MIDI-v1.1-macOS.zip?v=4d792a6b',
     size: '16.5 MB',
     /* No setup on the page. It ships as README.txt in the zip, where it's
        next to the files it talks about. The page sells; the README installs. */

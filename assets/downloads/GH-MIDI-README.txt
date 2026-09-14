@@ -5,7 +5,9 @@ Play a Guitar Hero controller like a real instrument.
 
 WHAT'S IN HERE
 
-  GH MIDI.app         the app. No DAW needed.
+  GH MIDI.app         the app. Shows up as a MIDI input named "GH MIDI" in
+                      anything that makes sound: GarageBand, Logic, Ableton,
+                      FL, any synth app. It makes no sound on its own.
   GH MIDI.vst3        the plugin. FL Studio, Ableton, Reaper, any VST3 host.
   GH MIDI Guide.pdf   everything else.
 
@@ -22,7 +24,8 @@ SETUP
           System Settings > Privacy & Security > scroll down > Open Anyway
       Once. It opens normally after that.
 
-  3.  Plug in the guitar. Play.
+  3.  Plug in the guitar. Open something that makes sound, pick an
+      instrument, set its MIDI input to "GH MIDI". Play.
       Run the app OR the plugin, not both. Whichever opens first gets the guitar.
 
 
