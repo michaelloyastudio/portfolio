@@ -122,7 +122,7 @@
       tile.href = '/' + p.slug;
       tile.innerHTML =
         '<div class="tile-media">' +
-          '<img src="' + p.cover + '" alt="' + p.title + '" loading="lazy">' +
+          '<img src="' + p.cover + '" alt="' + p.title + '" loading="lazy" draggable="false">' +
         '</div>' +
         '<div class="tile-meta">' +
           '<h2 class="tile-title">' + p.title + '</h2>' +
@@ -149,7 +149,7 @@
       tile.href = '/' + p.slug;
       tile.innerHTML =
         '<div class="tile-media">' +
-          '<img src="' + p.cover + '" alt="' + p.name + '" loading="lazy">' +
+          '<img src="' + p.cover + '" alt="' + p.name + '" loading="lazy" draggable="false">' +
           (p.download
             ? '<span class="tile-badge">Free</span>'
             : '<span class="tile-badge tile-badge--soon">In development</span>') +

@@ -1015,6 +1015,9 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 }
 .band:hover .band-arrow { color: var(--accent); transform: translateX(7px); }
 
+/* Same for the featured bands on Studio: linked thumbnails never drag. */
+.band-media img { -webkit-user-drag: none; user-select: none; pointer-events: none; }
+
 /* ══ WORK GRID (work page) ══ */
 .work-grid {
   display: grid;
@@ -1035,6 +1038,9 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 .tile-media img {
   width: 100%; height: 100%;
   object-fit: cover;
+  /* A fast click that moves a pixel starts an image drag instead of
+     following the link. The image is never the thing being clicked. */
+  -webkit-user-drag: none; user-select: none; pointer-events: none;
   transition: transform 0.8s var(--ease);
 }
 .tile:hover .tile-media img { transform: scale(1.045); }
@@ -1259,7 +1265,10 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   align-items: start;
   max-width: var(--maxw);
   margin: 0 auto;
-  padding: calc(6rem + var(--pad)) var(--pad) clamp(3rem, 7vh, 5rem);
+  /* 7rem, the same first-element offset as .page-head and .project-head,
+     so the shot lands where a title does on every other page. 6rem sat
+     one rem higher than the rest of the site. */
+  padding: calc(7rem + var(--pad)) var(--pad) clamp(3rem, 7vh, 5rem);
 }
 
 .product-shot img {
