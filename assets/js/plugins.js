@@ -66,7 +66,7 @@ const plugins = [
 
 <section class="plugin-section">
   <h2>Your controller</h2>
-  <img class="step-shot" src="projects/plugins/gh-midi-settings.jpg" alt="The settings panel, with the device picker and the LEARN mapping table" loading="lazy">
+  <img class="step-shot" src="projects/plugins/gh-midi-settings-raw.jpg" alt="The settings panel, with the device picker and the LEARN mapping table" loading="lazy">
   <p>Pre-mapped for a Wii Guitar Hero guitar on a raphnet WUSBMote adapter. For anything else, open <strong>SETTINGS</strong>, pick your device, then hit <strong>LEARN</strong> on a row and press that control on the guitar. Every row can be re-learned or cleared on its own, and each controller keeps its own setup \u2014 switch devices and your mappings follow.</p>
 </section>
 

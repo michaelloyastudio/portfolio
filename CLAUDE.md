@@ -65,6 +65,23 @@ modes were renamed CHORDS/PRO/SOLO → CHORDS/NOTES/SOLO and the zip gained
 the standalone app, while the site still described the older build). Re-copy
 the zip at the same time; its size is quoted on the page.
 
+## Plugin product images
+Run every plugin screenshot through `assets/tools/plugin_shot.py` — it is an
+asset-prep utility, **not** a build step (the site still has none). One
+treatment for all of them, decided against alternatives:
+
+- **Keep the macOS title bar.** It is what makes the image read as a real app
+  rather than a render.
+- **Light ground (#f3f3f3).** These UIs are dark; on a dark card the window
+  dissolves into the page. White is the loudest thing on a black site, which
+  is what a shop tile wants.
+- **Square.** Plugin tiles are `aspect-ratio: 1/1`, unlike the 16:9 work grid.
+  App windows are near-square and at 16:9 a third of the tile was padding.
+
+Gallery shots get the card. A screenshot used *inside* the guide (`.step-shot`)
+stays a raw crop — a white card mid-copy is a glaring block. That is why
+`gh-midi-settings.jpg` and `gh-midi-settings-raw.jpg` both exist.
+
 ## Grids
 **Every row is justified, including the last, so a grid always comes out rectangular.** `layoutMosaic` in `project-page.js` collects the rows before laying any out, then rebalances the tail: if the last row is left with one tile, or would justify to an absurd height, it borrows tiles from the row above until it can fill the width sensibly. Never revert this to flushing rows as they fill, and never leave the trailing row unjustified — that is what produced the ragged bottoms.
 
