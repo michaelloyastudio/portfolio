@@ -94,7 +94,11 @@
      a plugin is added or pulled. */
   var prevEl = $('pluginPrev'), nextEl = $('pluginNext');
   var pager = document.querySelector('.project-pager');
-  if (pager && plugins.length < 2) pager.hidden = true;   // nowhere to go
+  /* Removed, not hidden: .project-pager carries its own display rule in
+     the stylesheet, and an author `display` beats the UA rule behind the
+     hidden attribute — so pager.hidden = true set the attribute and the
+     bar rendered anyway. Nothing can restyle an element that isn't there. */
+  if (pager && plugins.length < 2) { pager.remove(); return; }
   if (prevEl) {
     prevEl.href = '/' + plugins[(i - 1 + plugins.length) % plugins.length].slug;
     prevEl.hidden = plugins.length < 3;
