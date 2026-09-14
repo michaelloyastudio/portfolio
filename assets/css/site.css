@@ -849,6 +849,13 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
    same width and lets the stylesheet wrap it instead.
    ══════════════════════════════════════════════════════════════ */
 @media (max-width: 640px) {
+  /* Two Tools tiles across a phone leaves ~140px each. The category and
+     title were wrapping into the arrow, so they get a size the column
+     can hold. Work tiles are one column here and don't need this. */
+  .plugin-grid .tile-cat   { font-size: 0.6rem; letter-spacing: 0.12em; white-space: nowrap; }
+  .plugin-grid .tile-title { font-size: 1rem; }
+  .plugin-grid .tile-meta  { gap: 0.6rem; }
+  .plugin-grid .tile-arrow { font-size: 1.1rem; }
   :root {
     --logo-h: 34px;
     --frame-y: 1.3rem;
@@ -1846,10 +1853,7 @@ footer {
 /* ══ RESPONSIVE (desktop-first; full mobile pass still to come) ══ */
 @media (max-width: 900px) {
   .work-grid { grid-template-columns: 1fr; }
-  .plugin-grid { grid-template-columns: repeat(2, 1fr); }
-  /* nested so it sits after the two-across rule; the standalone 640px
-     block is earlier in the file and would lose on source order */
-  @media (max-width: 640px) { .plugin-grid { grid-template-columns: 1fr; } }
+  .plugin-grid { grid-template-columns: repeat(2, 1fr); }   /* two across all the way down to a phone */
   .product-top { grid-template-columns: minmax(0, 1fr); gap: 2rem; }
   .product-buy { position: static; }
   .product-specs > div { grid-template-columns: 1fr; gap: 0.2rem; }
