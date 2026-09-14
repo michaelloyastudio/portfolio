@@ -891,6 +891,14 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   .hero-work { width: 100%; }
   .hero-work img, .hero-work video { width: 100%; max-height: none; }
 
+  /* Stacked: title, then the video, then the copy and the button — the
+     video is the thing, and the button ends up where a thumb is. Left
+     aligned like the rest of the page. Grid auto-places by `order`, so the
+     markup and the desktop layout are untouched. */
+  .hero .studio-title { order: 1; }
+  .hero-work         { order: 2; }
+  .hero-lede         { order: 3; }
+
 
   /* ── page + project headers ── */
   .page-head,
