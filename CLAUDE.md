@@ -48,6 +48,23 @@ The plugin is **ad-hoc signed, not notarised**, so macOS quarantines it on downl
 
 `gh-midi.html` is linked from inside the plugin itself — the JUCE editor's help overlay and the bundled README both point at `michaelloya.studio/gh-midi`. **That URL cannot move** without shipping a new build.
 
+## Contrast
+Body copy is full parchment, `opacity: 1`. Labels, captions, subheads, tile
+descriptions and small print stay on `--muted` or a lower opacity — the
+hierarchy comes from those being grey, **not** from dimming the prose. Don't
+reintroduce `opacity: 0.82` on a paragraph.
+
+## Plugin product pages
+`/gh-midi` and `/lookout` are **product pages, not case studies**: shot left,
+name / price / button right, download above the fold. `plugin-page.js` renders
+that shape and it is deliberately not `project-page.js`.
+
+The page copy has to be rewritten from `release/README.txt` in the plugin's
+own repo whenever the plugin is rebuilt — they drifted once already (the
+modes were renamed CHORDS/PRO/SOLO → CHORDS/NOTES/SOLO and the zip gained
+the standalone app, while the site still described the older build). Re-copy
+the zip at the same time; its size is quoted on the page.
+
 ## Grids
 **Every row is justified, including the last, so a grid always comes out rectangular.** `layoutMosaic` in `project-page.js` collects the rows before laying any out, then rebalances the tail: if the last row is left with one tile, or would justify to an absurd height, it borrows tiles from the row above until it can fill the width sensibly. Never revert this to flushing rows as they fill, and never leave the trailing row unjustified — that is what produced the ragged bottoms.
 

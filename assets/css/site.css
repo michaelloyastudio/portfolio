@@ -412,7 +412,7 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   flex-wrap: wrap;
 }
 .cv-org { font-size: 0.9rem; color: var(--accent); margin-top: 0.15rem; }
-.cv-note { font-size: 0.95rem; opacity: 0.72; margin-top: 0.45rem; line-height: 1.6; max-width: 62ch; }
+.cv-note { font-size: 0.95rem; opacity: 1; margin-top: 0.45rem; line-height: 1.6; max-width: 62ch; }
 .cv-role .entry-link img { width: 22px; height: 22px; border-radius: 3px; object-fit: cover; opacity: 0.55; transition: opacity 0.3s ease, transform 0.3s ease; }
 .cv-role .entry-link:hover img { opacity: 1; transform: scale(1.12); }
 
@@ -937,7 +937,7 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 .page-head p {
   font-size: clamp(1rem, 1.7vw, 1.18rem);
   color: var(--fg);
-  opacity: 0.72;
+  opacity: 1;
   max-width: 56ch;
   margin: 0;
 }
@@ -1160,7 +1160,7 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 .plugin-section p {
   font-size: 1rem;
   line-height: 1.7;
-  opacity: 0.82;
+  opacity: 1;
   margin: 0 0 1rem;
 }
 .plugin-section p:last-child { margin-bottom: 0; }
@@ -1178,7 +1178,7 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   padding-left: 2.25rem;
   font-size: 1rem;
   line-height: 1.7;
-  opacity: 0.82;
+  opacity: 1;
   margin-bottom: 1.1rem;
 }
 .plugin-steps li::before {
@@ -1245,7 +1245,149 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   margin: 0;
   font-size: 0.97rem;
   line-height: 1.65;
-  opacity: 0.82;
+  opacity: 1;
+}
+
+/* ══ PLUGIN PRODUCT PAGE ══ */
+/* Shot left, name / price / button right, and the button above the fold.
+   That's the whole idea — a project page argues, a product page sells. */
+.product { padding-bottom: clamp(3rem, 8vh, 6rem); }
+.product-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: start;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: calc(6rem + var(--pad)) var(--pad) clamp(3rem, 7vh, 5rem);
+}
+
+.product-shot img {
+  width: 100%;
+  border-radius: 4px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+}
+.product-thumbs {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 0.7rem;
+  flex-wrap: wrap;
+}
+.product-thumb {
+  width: 78px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: var(--panel);
+  cursor: pointer;
+  overflow: hidden;
+  line-height: 0;
+  opacity: 0.55;
+  transition: opacity 0.25s ease, border-color 0.25s ease;
+}
+.product-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.product-thumb:hover { opacity: 0.85; }
+.product-thumb.is-on { opacity: 1; border-color: var(--accent); }
+
+/* ── the buy column ── */
+.product-buy { position: sticky; top: calc(var(--logo-h) + var(--frame-y) * 2); }
+.product-host {
+  font-family: var(--font-display);
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 0.9rem;
+}
+.product-buy h1 {
+  font-size: clamp(2.1rem, 4.4vw, 3.2rem);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+  margin: 0;
+}
+.product-tagline {
+  font-size: clamp(1rem, 1.6vw, 1.16rem);
+  color: var(--fg);
+  margin: 0.7rem 0 0;
+}
+.product-price {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 1.6rem 0 0;
+}
+.product-cta { margin-top: 1.25rem; }
+/* Full width and solid red. Nothing else on the page is allowed to be
+   this loud — that is what makes it read as THE action. */
+.product-btn {
+  display: block;
+  width: 100%;
+  text-align: center;
+  font-size: 0.82rem;
+  padding: 1.15rem 1.5rem;
+}
+.product-meta {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0.85rem 0 0;
+}
+.product-meta--soon {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.product-specs {
+  margin: 1.9rem 0 0;
+  padding-top: 1.4rem;
+  border-top: 1px solid var(--line);
+}
+.product-specs > div {
+  display: grid;
+  grid-template-columns: 7.5rem 1fr;
+  gap: 1rem;
+  padding: 0.5rem 0;
+}
+.product-specs dt {
+  font-family: var(--font-display);
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding-top: 0.25em;
+}
+.product-specs dd { margin: 0; font-size: 0.94rem; }
+
+/* ── the pitch, under the fold ── */
+.product-body {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 0 var(--pad) clamp(2.5rem, 6vh, 4rem);
+}
+.product-intro p {
+  font-size: clamp(1.08rem, 1.7vw, 1.24rem);
+  line-height: 1.7;
+  margin: 0 0 1.1rem;
+}
+.product-intro p:last-child { margin-bottom: 0; }
+.plugin-guide { max-width: 780px; }
+
+/* A screenshot inside a guide step, so the setup walkthrough can show the
+   thing it is describing instead of only naming it. */
+.step-shot {
+  display: block;
+  width: 100%;
+  margin: 0.9rem 0 0;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--panel);
 }
 
 /* ══ STATEMENT + CLOSING CTA ══ */
@@ -1383,7 +1525,7 @@ footer {
 .entry-org { font-size: 0.88rem; color: var(--accent); margin-top: 0.15rem; }
 .entry-desc {
   font-size: 1rem;
-  opacity: 0.72;
+  opacity: 1;
   margin-top: 0.5rem;
   max-width: 68ch;
   line-height: 1.6;
@@ -1517,7 +1659,7 @@ footer {
 .project-intro p {
   font-size: clamp(1.14rem, 1.9vw, 1.32rem);
   line-height: 1.7;
-  opacity: 0.82;
+  opacity: 1;
   margin: 0 0 1.1rem;
 }
 .project-intro p:last-child { margin-bottom: 0; }
@@ -1669,6 +1811,10 @@ footer {
 /* ══ RESPONSIVE (desktop-first; full mobile pass still to come) ══ */
 @media (max-width: 900px) {
   .work-grid { grid-template-columns: 1fr; }
+  .product-top { grid-template-columns: minmax(0, 1fr); gap: 2rem; }
+  .product-buy { position: static; }
+  .product-specs > div { grid-template-columns: 1fr; gap: 0.2rem; }
+  .product-specs dt { padding-top: 0; }
   .plugin-keys > div { grid-template-columns: 1fr; gap: 0.3rem; }
   .plugin-keys dt { padding-top: 0; }
   .plugin-download { gap: 0.9rem; }

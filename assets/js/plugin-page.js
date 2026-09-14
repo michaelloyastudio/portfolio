@@ -1,9 +1,13 @@
 /* ══════════════════════════════════════════════════════════════
-   Plugin page renderer.
-   Mirrors project-page.js: each /<slug>.html sets window.PLUGIN_SLUG
-   and this fills in the hero, title, copy, facts, download and guide
-   from plugins.js. Content lives in one place; the per-plugin HTML
-   files stay thin.
+   Plugin PRODUCT page renderer.
+
+   Deliberately NOT shaped like project-page.js. A project page is a case
+   study — here is a thing I made, here is how. This is a product page:
+   the shot, the name, the price, the button, in that order and above the
+   fold. Everything else lives below it.
+
+   Each /<slug>.html sets window.PLUGIN_SLUG and this fills it in from
+   plugins.js.
    ══════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
@@ -18,68 +22,80 @@
 
   document.title = p.name + ' — Michael Loya Studio';
 
-  // ── hero ──
-  var hero = $('pluginHero');
-  if (hero) hero.innerHTML = '<img src="' + p.hero + '" alt="' + p.name + '">';
+  /* ── the shot ──
+     Extra shots become thumbnails under the main one and swap it on click.
+     With only one shot the strip doesn't render at all, so a plugin with a
+     single screenshot doesn't get a stray lone thumbnail. */
+  var shots = (p.shots && p.shots.length) ? p.shots : [{ src: p.hero, alt: p.name }];
+  var shot = $('pluginShot');
+  if (shot) {
+    shot.innerHTML =
+      '<img id="pluginShotMain" src="' + shots[0].src + '" alt="' + shots[0].alt + '">' +
+      (shots.length > 1
+        ? '<div class="product-thumbs">' + shots.map(function (s, n) {
+            return '<button class="product-thumb' + (n ? '' : ' is-on') +
+                   '" data-src="' + s.src + '" aria-label="' + s.alt + '">' +
+                   '<img src="' + s.src + '" alt="" loading="lazy"></button>';
+          }).join('') + '</div>'
+        : '');
 
-  // ── title block ──
-  $('pluginTitle').textContent = p.name;
-  $('pluginHost').textContent = p.host + ' — ' + p.tagline;
-  $('pluginIntro').innerHTML = p.intro;
-  noWidows($('pluginIntro'));
-
-  // ── facts ──
-  var facts = $('pluginFacts');
-  if (facts) {
-    facts.innerHTML = p.facts.map(function (row) {
-      return '<div><dt>' + row[0] + '</dt><dd>' + row[1] + '</dd></div>';
-    }).join('');
+    var main = $('pluginShotMain');
+    shot.addEventListener('click', function (e) {
+      var b = e.target.closest && e.target.closest('.product-thumb');
+      if (!b) return;
+      main.src = b.getAttribute('data-src');
+      [].forEach.call(shot.querySelectorAll('.product-thumb'), function (t) {
+        t.classList.toggle('is-on', t === b);
+      });
+    });
   }
 
-  /* ── download ──
-     No `download` field means the build isn't out yet. Show the status
-     rather than a button that 404s, so an unreleased plugin can sit on
-     the site without anyone hitting a dead link. */
+  // ── the buy column ──
+  $('pluginTitle').textContent = p.name;
+  $('pluginHost').textContent = p.host;
+  $('pluginTagline').textContent = p.tagline;
+  $('pluginPrice').textContent = p.download ? 'Free' : 'Not released yet';
+
   var dl = $('pluginDownload');
   if (dl) {
     if (p.download) {
       dl.innerHTML =
-        '<a class="btn btn-solid plugin-btn" href="' + p.download + '" download>' +
-          'Download ' + p.version +
+        '<a class="btn btn-solid product-btn" href="' + p.download + '" download>' +
+          'Download for macOS' +
         '</a>' +
-        '<span class="plugin-meta">macOS' + (p.size ? ' &middot; ' + p.size : '') + ' &middot; free</span>';
+        '<p class="product-meta">' +
+          [p.version, p.size, 'no account'].filter(Boolean).join(' &nbsp;·&nbsp; ') +
+        '</p>';
     } else {
-      dl.innerHTML = '<span class="plugin-status">In development</span>';
+      /* No button at all rather than a dead one. The price line above
+         already says it isn't out, so this only has to say what's next. */
+      dl.innerHTML = '<p class="product-meta product-meta--soon">Still being built. ' +
+                     'It lands here when it runs on someone else’s machine.</p>';
     }
   }
 
-  // ── guide ──
-  var body = $('pluginBody');
-  if (body) {
-    body.innerHTML = p.body || '';
-    [].forEach.call(body.querySelectorAll('p, dd'), function (el) { noWidows(el); });
+  var facts = $('pluginFacts');
+  if (facts) {
+    facts.innerHTML = p.facts.map(function (r) {
+      return '<div><dt>' + r[0] + '</dt><dd>' + r[1] + '</dd></div>';
+    }).join('');
   }
 
-  /* ── prev / next, wrapping like the project pager ──
-     With only two plugins both arrows would land on the same page, so
-     below three the pager collapses to a single Next. Once a third one
-     ships this reverts to the normal two-arrow behaviour on its own. */
+  // ── copy ──
+  $('pluginIntro').innerHTML = p.intro;
+  var body = $('pluginBody');
+  if (body) body.innerHTML = p.body || '';
+  [].forEach.call(document.querySelectorAll('#pluginIntro p, #pluginBody p, #pluginBody dd'),
+    function (el) { el.innerHTML = el.innerHTML.replace(/\s+([^\s<>]+)\s*$/, ' $1'); });
+
+  /* ── prev / next ──
+     With only two plugins both arrows land on the same page, so below
+     three the pager collapses to a single Next. Once a third ships this
+     goes back to normal on its own. */
   var prevEl = $('pluginPrev'), nextEl = $('pluginNext');
   if (prevEl) {
     prevEl.href = '/' + plugins[(i - 1 + plugins.length) % plugins.length].slug;
     prevEl.hidden = plugins.length < 3;
   }
   if (nextEl) nextEl.href = '/' + plugins[(i + 1) % plugins.length].slug;
-
-  /* Shared with project-page.js but that file isn't loaded here, so the
-     helper is duplicated. Pulls the last two words of every block together
-     with a non-breaking space, which keeps a one-word orphan line from
-     hanging under a paragraph. */
-  function noWidows(el) {
-    if (!el) return;
-    [].forEach.call(el.querySelectorAll ? el.querySelectorAll('p') : [], function (n) {
-      n.innerHTML = n.innerHTML.replace(/\s+([^\s<>]+)\s*$/, ' $1');
-    });
-    if (el.tagName === 'DD') el.innerHTML = el.innerHTML.replace(/\s+([^\s<>]+)\s*$/, ' $1');
-  }
 })();
