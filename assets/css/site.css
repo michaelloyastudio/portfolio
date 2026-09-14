@@ -934,6 +934,9 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   line-height: 1;
   margin: 0 0 1.1rem;
 }
+/* Work and Tools have no strapline now, so the title's bottom margin
+   (there to space it off the paragraph) shouldn't hang below it alone. */
+.page-head h1:last-child { margin-bottom: 0; }
 .page-head p {
   font-size: clamp(1rem, 1.7vw, 1.18rem);
   color: var(--fg);
