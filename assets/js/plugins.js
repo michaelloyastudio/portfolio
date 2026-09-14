@@ -38,7 +38,6 @@ const plugins = [
     hero: 'projects/plugins/gh-midi-ui.jpg',
     shots: [
       { src: 'projects/plugins/gh-midi-ui.jpg',       alt: 'Chord struck on the note highway' },
-      { src: 'projects/plugins/gh-midi-settings.jpg', alt: 'Settings: device picker and mapping table' },
       { src: 'projects/plugins/gh-midi-help.jpg',     alt: 'The built-in How to Play card' }
     ],
     intro: `<p>Plug one in and play it for real. It reads the frets, strum bar, whammy and joystick straight off the device and turns them into MIDI, so it drives whatever you have loaded instead of a game.</p>
