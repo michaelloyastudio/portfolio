@@ -47,15 +47,24 @@ const plugins = [
     facts: [
       ['Platform', 'macOS \u2014 Apple silicon and Intel'],
       ['Format', 'Standalone app + VST3'],
-      ['Controller', 'Any USB controller']
+      ['Controller', 'Any USB controller'],
+      ['Source', '<a href="https://github.com/michaelloyastudio/gh-midi" target="_blank" rel="noopener">github.com/michaelloyastudio/gh-midi</a>'],
+      ['License', 'AGPL-3.0, open source']
     ],
     status: 'live',
     version: 'v1.1',
     download: 'assets/downloads/GH-MIDI-v1.1-macOS.zip?v=739e104109a8',
     size: '16.7 MB',
     /* No setup on the page. It ships as README.txt in the zip, where it's
-       next to the files it talks about. The page sells; the README installs. */
-    body: ''
+       next to the files it talks about. The page sells; the README installs.
+       The one thing below the fold is the source: where it is, and that
+       changing it and sending changes back is the point. */
+    body: `<section class="plugin-section">
+<h2>Open source</h2>
+<p>All of it is on GitHub under the AGPL: the plugin, the app, the guide, the packaging. Read it, build it, change it. Keep your version to yourself or send it back.</p>
+<p>Want it on Windows or Linux, a different chord map, a sixth mode? The engine is plain JUCE and hidapi, so it ports. Open a pull request and I will read it. Bugs and crash reports go to the repo's issues or <a href="mailto:hello@michaelloya.studio">hello@michaelloya.studio</a>.</p>
+<p><a href="https://github.com/michaelloyastudio/gh-midi" target="_blank" rel="noopener">github.com/michaelloyastudio/gh-midi</a></p>
+</section>`
   }
 
 ];

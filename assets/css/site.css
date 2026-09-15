@@ -1450,6 +1450,11 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 }
 .product-intro p:last-child { margin-bottom: 0; }
 .plugin-guide { max-width: 780px; }
+/* The open-source blurb and the Source spec row carry real links. Links are
+   colour: inherit site-wide (nav, tiles), so these two spots opt in to the
+   accent: a URL in prose has to read as a link. */
+.plugin-guide a, .product-specs a { color: var(--accent); }
+.plugin-guide a:hover, .product-specs a:hover { text-decoration: underline; }
 /* A plugin with no guide (GH MIDI ships its setup as README.txt in the zip)
    shouldn't leave the guide's bottom padding as a dead gap before the pager. */
 .plugin-guide:empty { display: none; }
