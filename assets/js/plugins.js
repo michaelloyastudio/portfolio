@@ -42,14 +42,12 @@ const plugins = [
       { src: 'projects/plugins/gh-midi-help.jpg',     alt: 'The built-in How to Play card' }
     ],
     intro: `<p>Turns the controller into a MIDI instrument. It reads the frets, strum bar, whammy and joystick directly from the hardware and sends them as MIDI to whatever instrument you have loaded.</p>
-<p>Four modes cover everything from chords in a key, where a wrong note is not possible, to a fully chromatic layout. It runs as a VST3 in your DAW, or as a standalone app that appears as a MIDI input in GarageBand, Logic, or any synth.</p>
-<p>CHART mode maps the five frets to Clone Hero lanes, with all four difficulties written at once. Play the song, record the MIDI, and you have a first draft of the chart.</p>`,
+<p>Four modes cover everything from chords in a key, where a wrong note is not possible, to a fully chromatic layout. It runs as a VST3 in your DAW, or as a standalone app that appears as a MIDI input in GarageBand, Logic, or any synth.</p>`,
     facts: [
       ['Platform', 'macOS \u2014 Apple silicon and Intel'],
       ['Format', 'Standalone app + VST3'],
       ['Controller', 'Any USB controller'],
-      ['Source', '<a href="https://github.com/michaelloyastudio/gh-midi" target="_blank" rel="noopener">github.com/michaelloyastudio/gh-midi</a>'],
-      ['License', 'AGPL-3.0, open source']
+      ['Source', '<a href="https://github.com/michaelloyastudio/gh-midi" target="_blank" rel="noopener">github.com/michaelloyastudio/gh-midi</a>']
     ],
     status: 'live',
     version: 'v1.1',
@@ -57,13 +55,10 @@ const plugins = [
     size: '16.7 MB',
     /* No setup on the page. It ships as README.txt in the zip, where it's
        next to the files it talks about. The page sells; the README installs.
-       The one thing below the fold is the source: where it is, and that
-       changing it and sending changes back is the point. */
-    body: `<section class="plugin-section">
+       Below the fold, one quiet line: the source is open, here it is. */
+    body: `<section class="plugin-section plugin-section--quiet">
 <h2>Open source</h2>
-<p>All of it is on GitHub under the AGPL: the plugin, the app, the guide, the packaging. Read it, build it, change it. Keep your version to yourself or send it back.</p>
-<p>Want it on Windows or Linux, a different chord map, a sixth mode? The engine is plain JUCE and hidapi, so it ports. Open a pull request and I will read it. Bugs and crash reports go to the repo's issues or <a href="mailto:hello@michaelloya.studio">hello@michaelloya.studio</a>.</p>
-<p><a href="https://github.com/michaelloyastudio/gh-midi" target="_blank" rel="noopener">github.com/michaelloyastudio/gh-midi</a></p>
+<p>The code is on <a href="https://github.com/michaelloyastudio/gh-midi" target="_blank" rel="noopener">GitHub</a> under the AGPL. Build it, change it, port it. Pull requests are read.</p>
 </section>`
   }
 

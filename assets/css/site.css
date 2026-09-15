@@ -1455,6 +1455,12 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
    accent: a URL in prose has to read as a link. */
 .plugin-guide a, .product-specs a { color: var(--accent); }
 .plugin-guide a:hover, .product-specs a:hover { text-decoration: underline; }
+/* The open-source note is meant to be found, not noticed: muted, a step
+   smaller, link underlined in the same grey. */
+.plugin-section--quiet { color: var(--muted); font-size: 0.88rem; }
+.plugin-section--quiet h2 { color: var(--muted); }
+.plugin-section--quiet a { color: inherit; text-decoration: underline; text-underline-offset: 0.15em; }
+.plugin-section--quiet a:hover { color: var(--accent); }
 /* A plugin with no guide (GH MIDI ships its setup as README.txt in the zip)
    shouldn't leave the guide's bottom padding as a dead gap before the pager. */
 .plugin-guide:empty { display: none; }
