@@ -14,12 +14,16 @@
  *   facts     — array of [label, value] rows, rendered as the facts list
  *   status    — 'live' | 'beta' | 'building'
  *   version   — shown on the download button
- *   download  — path to the file, with ?v=<first 8 of the zip's md5>. The
- *               filename never changes between cuts and Cloudflare caches by
- *               URL for four hours, so without the hash a re-cut zip keeps
- *               serving the OLD bytes live. NULL means no button: the page
- *               shows the status instead of a link that 404s.
- *   size      — human-readable, shown next to the button
+ *   downloads — one entry per platform: {os, file, size, note?}. `file` is
+ *               the path with ?v=<first 12 of the zip's md5>. The filename
+ *               never changes between cuts and Cloudflare caches by URL for
+ *               four hours, so without the hash a re-cut zip keeps serving
+ *               the OLD bytes live. The page lists the visitor's own OS
+ *               first with the solid button; the rest are outlines. An
+ *               empty list means no button: the page shows the status
+ *               instead of a link that 404s. (The older single `download`
+ *               + `size` pair still renders as one macOS button.)
+ *   note      — optional word after the size on the meta line ('beta')
  *   body      — the guide below the download. Plain HTML.
  *
  * Hosting: the file lives in this repo under assets/downloads/. GitHub's
@@ -44,15 +48,21 @@ const plugins = [
     intro: `<p>Turns the controller into a MIDI instrument. It reads the frets, strum bar, whammy and joystick directly from the hardware and sends them as MIDI to whatever instrument you have loaded.</p>
 <p>Four modes cover everything from chords in a key, where a wrong note is not possible, to a fully chromatic layout. It runs as a VST3 in your DAW, or as a standalone app that appears as a MIDI input in GarageBand, Logic, or any synth.</p>`,
     facts: [
-      ['Platform', 'macOS \u2014 Apple silicon and Intel'],
+      ['Platform', 'macOS (Apple silicon and Intel) and Windows (x64, beta)'],
       ['Format', 'Standalone app + VST3'],
       ['Controller', 'Any USB controller'],
       ['Source', '<a href="https://github.com/michaelloyastudio/gh-midi" target="_blank" rel="noopener">github.com/michaelloyastudio/gh-midi</a>']
     ],
     status: 'live',
     version: 'v1.1',
-    download: 'assets/downloads/GH-MIDI-v1.1-macOS.zip?v=739e104109a8',
-    size: '16.7 MB',
+    /* The Windows zip is built by GitHub Actions in the gh-midi repo (its
+       `release` job attaches it to the GitHub release); the copy here is
+       that exact asset. Windows is a beta: built and smoke-tested on
+       GitHub's runners, not yet played with a guitar on a real PC. */
+    downloads: [
+      { os: 'macOS',   file: 'assets/downloads/GH-MIDI-v1.1-macOS.zip?v=739e104109a8',   size: '16.7 MB' },
+      { os: 'Windows', file: 'assets/downloads/GH-MIDI-v1.1-Windows.zip?v=e2d939ad9e74', size: '6.2 MB', note: 'beta' }
+    ],
     /* No setup on the page. It ships as README.txt in the zip, where it's
        next to the files it talks about. The page sells; the README installs.
        Below the fold, one quiet line: the source is open, here it is. */

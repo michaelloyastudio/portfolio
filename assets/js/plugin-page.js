@@ -54,27 +54,42 @@
   $('pluginTitle').textContent = p.name;
   $('pluginHost').textContent = p.host;
   $('pluginTagline').textContent = p.tagline;
-  $('pluginPrice').textContent = p.download ? 'Free' : 'Not released yet';
+  /* One button per platform. The visitor's own OS is listed first and is
+     the only solid button; the other platform is an outline, so the page
+     still has exactly one loud action. The older single `download` + `size`
+     shape still renders as one macOS button. */
+  var downloads = p.downloads || (p.download ? [{ os: 'macOS', file: p.download, size: p.size }] : []);
+  var ua = navigator.userAgent || '';
+  var mine = /Windows/i.test(ua) ? 'Windows' : /Mac|iPhone|iPad/i.test(ua) ? 'macOS' : '';
+  downloads = downloads.slice().sort(function (a, b) {
+    return (b.os === mine ? 1 : 0) - (a.os === mine ? 1 : 0);
+  });
+  $('pluginPrice').textContent = downloads.length ? 'Free' : 'Not released yet';
 
   var dl = $('pluginDownload');
   if (dl) {
-    if (p.download) {
-      dl.innerHTML =
-        '<a class="btn btn-solid product-btn" href="' + p.download + '" download>' +
-          'Download for macOS' +
-        '</a>' +
-        '<p class="product-meta">' +
-          [p.version, p.size].filter(Boolean).join(' &nbsp;·&nbsp; ') +
-        '</p>';
-      /* Count the download as a GoatCounter event, one line per plugin and
-         version. count.js loads async and skips localhost on its own, so
-         the guard is for the click that lands before it has arrived. */
-      dl.querySelector('.product-btn').addEventListener('click', function () {
-        if (window.goatcounter && goatcounter.count) {
-          goatcounter.count({ path: 'download/' + p.slug + '/' + p.version,
-                              title: p.name + ' ' + p.version + ' download',
-                              event: true });
-        }
+    if (downloads.length) {
+      dl.innerHTML = downloads.map(function (d, n) {
+        return '<div class="product-dl">' +
+          '<a class="btn ' + (n ? '' : 'btn-solid ') + 'product-btn" href="' + d.file +
+            '" download data-os="' + d.os + '">Download for ' + d.os + '</a>' +
+          '<p class="product-meta">' +
+            [p.version, d.size, d.note].filter(Boolean).join(' &nbsp;·&nbsp; ') +
+          '</p>' +
+        '</div>';
+      }).join('');
+      /* Count the download as a GoatCounter event, one line per plugin,
+         version and OS. count.js loads async and skips localhost on its
+         own, so the guard is for the click that lands before it has arrived. */
+      [].forEach.call(dl.querySelectorAll('.product-btn'), function (a) {
+        a.addEventListener('click', function () {
+          if (window.goatcounter && goatcounter.count) {
+            var os = a.getAttribute('data-os').toLowerCase();
+            goatcounter.count({ path: 'download/' + p.slug + '/' + p.version + '/' + os,
+                                title: p.name + ' ' + p.version + ' ' + os + ' download',
+                                event: true });
+          }
+        });
       });
     } else {
       /* Nothing at all rather than a dead button. The price line above

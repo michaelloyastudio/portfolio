@@ -44,6 +44,8 @@ Inter is on trial, swapped in from Space Grotesk + IBM Plex on 2026-09-13. Note 
 ## Plugins and downloads
 Binaries live in **`assets/downloads/`**, in this repo. GitHub's 100MB limit is **per file**, and the GH MIDI zip is ~16MB, so shipping it with the site costs nothing and needs no second repo. Point a plugin's `download` field at the path and the button appears; leave it `null` and the page shows its status instead of a link that 404s. If a build ever gets near 100MB (Lookout will, it carries a model), cut a GitHub Release on that plugin's own repo and point `download` at the release asset.
 
+**Windows (since 2026-09-20):** the gh-midi repo's GitHub Actions workflow builds the Windows zip, smoke-tests the exe on the runner, and attaches `GH-MIDI-vX.Y-Windows.zip` to the GitHub release. The copy in `assets/downloads/` is that exact asset, hashed the same way. A plugin's `downloads` field is a list, one per platform; `plugin-page.js` puts the visitor's own OS first with the solid button and renders the other as an outline. Windows is labelled beta until someone has played it with a real guitar.
+
 The plugin is **ad-hoc signed, not notarised**, so macOS blocks it on first open. On macOS 15+ the only way through is Done → System Settings → Privacy & Security → Open Anyway (right-click → Open no longer works for un-notarized apps). Skipping that needs an Apple Developer ID at $99/year. **Setup instructions live in `README.txt` inside the zip, not on the page** — the page sells, the README installs. The README is `release/README.txt` in the plugin repo; `make_release.py` there packages it with the current build, and the zip's URL on the site carries `?v=<first 8 of its md5>` so Cloudflare can't keep serving an older cut under the same filename.
 
 `gh-midi.html` is linked from inside the plugin itself — the JUCE editor's help overlay and the bundled README both point at `michaelloya.studio/gh-midi`. **That URL cannot move** without shipping a new build.
@@ -144,8 +146,10 @@ builds API for the new SHA first; only then fetch the zip, once. (Done it
 once; the fix was a fresh `?v=` value.)
 
 Downloads are counted as an **event** fired from the download button in
-`plugin-page.js`, path `download/<slug>/<version>` — so each version is its
-own line on the dashboard. It counts clicks, not completed downloads.
+`plugin-page.js`, path `download/<slug>/<version>/<os>` (macos or windows) —
+so each version and platform is its own line on the dashboard. Clicks before
+2026-09-20 sit on the older `download/<slug>/<version>` line. It counts
+clicks, not completed downloads.
 
 ## Deployment
 GitHub Pages from `michaelloyastudio/portfolio`, branch `main`, root. Cloudflare fronts it and terminates TLS. **Push to `main` = live.**
