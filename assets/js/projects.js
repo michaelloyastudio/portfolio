@@ -161,7 +161,7 @@ const projects = [
 <div><img src="projects/miscellaneous/jumpscare.jpg" alt="Jumpscare poster" loading="lazy" width="1164" height="1800"></div>
 <div><img src="projects/miscellaneous/logic.jpg" alt="Logic-inspired design" loading="lazy" width="1080" height="1867"></div>
 <div><img src="projects/miscellaneous/scene-2.jpg" alt="Django Unchained poster" loading="lazy" width="1190" height="1768"></div>
-<div><video src="projects/miscellaneous/penjamin.mp4" data-silent autoplay loop muted playsinline width="1920" height="1080"></video></div>
+<div><video src="projects/miscellaneous/penjamin.mp4" autoplay loop muted playsinline width="1920" height="1080"></video></div>
 <div><video src="projects/miscellaneous/smiski-dress.mp4" autoplay loop muted playsinline width="1280" height="1024"></video></div>
 <div><video src="projects/miscellaneous/homelander.mp4" autoplay loop muted playsinline width="1280" height="720"></video></div>
 <div><video src="projects/miscellaneous/web-story.mp4" autoplay loop muted playsinline width="1080" height="1920"></video></div>
