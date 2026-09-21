@@ -42,7 +42,10 @@ const projects = [
     intro: `<p>My brother produces music under our last name, <a href="https://open.spotify.com/artist/5gNQpoYEBE1jxjCgFkLWce" target="_blank" rel="noopener">loya</a>, and runs LYRC, a company he started to make lyric videos for independent artists. I work with him on promoting his music and his personal brand, keyed to cinematic and viral content.</p>
 <p>We shape the idea together, then I execute it, shooting and editing it myself. My schooling and the work before this were graphic design; loya is where I'm building the video craft on top of it.</p>
 <p>The logo came out of his hat collection, set in Amador, a blackletter that balances elegance with edge.</p>`,
-    work: `<div class="project-video"><video src="projects/loya-and-co/goodbye-3d.mp4" autoplay loop muted playsinline poster="projects/loya-and-co/goodbye-3d-poster.jpg" width="1920" height="1080"></video></div>
+    work: `<div class="img-grid-2" data-exact>
+<div><video src="projects/loya-and-co/oh-no-3d.mp4" autoplay loop muted playsinline poster="projects/loya-and-co/oh-no-3d-poster.jpg" width="1920" height="1080"></video></div>
+<div><video src="projects/loya-and-co/goodbye-3d.mp4" autoplay loop muted playsinline poster="projects/loya-and-co/goodbye-3d-poster.jpg" width="1920" height="1080"></video></div>
+</div>
 <div class="img-grid-3" data-exact>
 <div><video src="projects/loya-and-co/oh-no-promo-1.mp4" autoplay loop muted playsinline poster="projects/loya-and-co/oh-no-promo-1-poster.jpg" width="1280" height="960"></video></div>
 <div><video src="projects/loya-and-co/oh-no-promo-2.mp4" autoplay loop muted playsinline poster="projects/loya-and-co/oh-no-promo-2-poster.jpg" width="1280" height="960"></video></div>
@@ -140,9 +143,9 @@ const projects = [
        ranking, and where a new piece goes is decided by where he places it
        in this list, not by when it was made:
          felly, fuji, random element, lust, Z poster (sabt), jumpscare,
-         logic, django, homelander, sketch (smiski), basketball video
-         (web story), the other videos, steph curry, final four, freshmen,
-         sweezy, then the rest.
+         logic, django, penjamin, sketch (smiski), homelander, basketball
+         video (web story), the other videos, steph curry, final four,
+         freshmen, sweezy, then the rest.
        "Tyler the Creator" is mm-print.jpg, the Artist or Rapper magazine
        spread. Mike wants it left down in the rest, next to the characters
        sketchbook, rather than ranked up with steph curry.
@@ -158,8 +161,9 @@ const projects = [
 <div><img src="projects/miscellaneous/jumpscare.jpg" alt="Jumpscare poster" loading="lazy" width="1164" height="1800"></div>
 <div><img src="projects/miscellaneous/logic.jpg" alt="Logic-inspired design" loading="lazy" width="1080" height="1867"></div>
 <div><img src="projects/miscellaneous/scene-2.jpg" alt="Django Unchained poster" loading="lazy" width="1190" height="1768"></div>
-<div><video src="projects/miscellaneous/homelander.mp4" autoplay loop muted playsinline width="1280" height="720"></video></div>
+<div><video src="projects/miscellaneous/penjamin.mp4" data-silent autoplay loop muted playsinline width="1920" height="1080"></video></div>
 <div><video src="projects/miscellaneous/smiski-dress.mp4" autoplay loop muted playsinline width="1280" height="1024"></video></div>
+<div><video src="projects/miscellaneous/homelander.mp4" autoplay loop muted playsinline width="1280" height="720"></video></div>
 <div><video src="projects/miscellaneous/web-story.mp4" autoplay loop muted playsinline width="1080" height="1920"></video></div>
 <div><video src="projects/miscellaneous/ml-anim.mp4" autoplay loop muted playsinline width="1920" height="1080"></video></div>
 <div><video src="projects/miscellaneous/truck-circle.mp4" data-silent autoplay loop muted playsinline width="1920" height="1080"></video></div>
