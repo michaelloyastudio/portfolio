@@ -48,7 +48,7 @@ const plugins = [
     intro: `<p>Turns the controller into a MIDI instrument. It reads the frets, strum bar, whammy and joystick directly from the hardware and sends them as MIDI to whatever instrument you have loaded.</p>
 <p>Four modes cover everything from chords in a key, where a wrong note is not possible, to a fully chromatic layout. It runs as a VST3 in your DAW, or as a standalone app that appears as a MIDI input in GarageBand, Logic, or any synth.</p>`,
     facts: [
-      ['Platform', 'macOS (Apple silicon and Intel) and Windows (x64)'],
+      ['Platform', 'macOS and Windows'],
       ['Format', 'Standalone app + VST3'],
       ['Controller', 'Any USB controller'],
       ['Source', '<a href="https://github.com/michaelloyastudio/gh-midi" target="_blank" rel="noopener">github.com/michaelloyastudio/gh-midi</a>']
