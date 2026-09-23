@@ -153,7 +153,7 @@
       tile.innerHTML =
         '<div class="tile-media">' +
           '<img src="' + p.cover + '" alt="' + p.name + '" loading="lazy" draggable="false">' +
-          (p.download
+          ((p.downloads && p.downloads.length) || p.download
             ? '<span class="tile-badge">Free</span>'
             : '<span class="tile-badge tile-badge--soon">In development</span>') +
         '</div>' +

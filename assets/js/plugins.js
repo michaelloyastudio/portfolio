@@ -38,17 +38,17 @@ const plugins = [
     name: 'Guitar Hero MIDI',
     host: 'Standalone \u00b7 VST3',
     tagline: 'Play a Guitar Hero controller like a real instrument',
-    cover: 'projects/plugins/gh-midi-cover.jpg',
-    hero: 'projects/plugins/gh-midi-ui.jpg',
+    cover: 'projects/plugins/gh-midi-cover.jpg?v=2',
+    hero: 'projects/plugins/gh-midi-ui.jpg?v=2',
     shots: [
-      { src: 'projects/plugins/gh-midi-ui.jpg',       alt: 'Chord struck on the note highway' },
-      { src: 'projects/plugins/gh-midi-settings.jpg', alt: 'Settings: device picker and mapping table' },
-      { src: 'projects/plugins/gh-midi-help.jpg',     alt: 'The built-in How to Play card' }
+      { src: 'projects/plugins/gh-midi-ui.jpg?v=2',       alt: 'Chord struck on the note highway' },
+      { src: 'projects/plugins/gh-midi-settings.jpg?v=2', alt: 'Settings: device picker and mapping table' },
+      { src: 'projects/plugins/gh-midi-help.jpg?v=2',     alt: 'The built-in How to Play card' }
     ],
     intro: `<p>Turns the controller into a MIDI instrument. It reads the frets, strum bar, whammy and joystick directly from the hardware and sends them as MIDI to whatever instrument you have loaded.</p>
 <p>Four modes cover everything from chords in a key, where a wrong note is not possible, to a fully chromatic layout. It runs as a VST3 in your DAW, or as a standalone app that appears as a MIDI input in GarageBand, Logic, or any synth.</p>`,
     facts: [
-      ['Platform', 'macOS (Apple silicon and Intel) and Windows (x64, beta)'],
+      ['Platform', 'macOS (Apple silicon and Intel) and Windows (x64)'],
       ['Format', 'Standalone app + VST3'],
       ['Controller', 'Any USB controller'],
       ['Source', '<a href="https://github.com/michaelloyastudio/gh-midi" target="_blank" rel="noopener">github.com/michaelloyastudio/gh-midi</a>']
@@ -57,11 +57,11 @@ const plugins = [
     version: 'v1.1',
     /* The Windows zip is built by GitHub Actions in the gh-midi repo (its
        `release` job attaches it to the GitHub release); the copy here is
-       that exact asset. Windows is a beta: built and smoke-tested on
-       GitHub's runners, not yet played with a guitar on a real PC. */
+       that exact asset. It was smoke-tested on GitHub's runners rather than
+       played on a real PC, but Mike doesn't want it labelled beta (2026-09-22). */
     downloads: [
       { os: 'macOS',   file: 'assets/downloads/GH-MIDI-v1.1-macOS.zip?v=739e104109a8',   size: '16.7 MB' },
-      { os: 'Windows', file: 'assets/downloads/GH-MIDI-v1.1-Windows.zip?v=e2d939ad9e74', size: '6.2 MB', note: 'beta' }
+      { os: 'Windows', file: 'assets/downloads/GH-MIDI-v1.1-Windows.zip?v=e2d939ad9e74', size: '6.2 MB' }
     ],
     /* No setup on the page. It ships as README.txt in the zip, where it's
        next to the files it talks about. The page sells; the README installs.
