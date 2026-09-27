@@ -115,15 +115,11 @@ const projects = [
     cover: `projects/album-covers/commercial-break.jpg`,
     hero: `projects/album-covers/commercial-break.jpg`,
     intro: `<p>Covers I made back when I was producing my own music. Each one shot and designed from scratch in Photoshop and Illustrator.</p>`,
-    work: `<div class="img-grid-3">
+    work: `<div class="img-grid-3" data-exact>
 <div><img src="projects/album-covers/loya-passion-update.jpg" alt="Passion update" loading="lazy" width="2500" height="2500"></div>
 <div><img src="projects/album-covers/loya-passion-4.jpg" alt="Passion series 4" loading="lazy" width="2500" height="2500"></div>
 <div><img src="projects/album-covers/whitenoise.jpg" alt="White Noise" loading="lazy" width="1280" height="1280"></div>
-</div>
-<div class="img-grid-2">
 <div><img src="projects/album-covers/loya-passion-1.jpg" alt="Passion series 1" loading="lazy" width="2500" height="2500"></div>
-</div>
-<div class="img-grid-3">
 <div><img src="projects/album-covers/swim.jpg" alt="Swim" loading="lazy" width="1800" height="1800"></div>
 <div><img src="projects/album-covers/getting-loud.jpg" alt="Getting Loud" loading="lazy" width="1600" height="1600"></div>
 </div>`
