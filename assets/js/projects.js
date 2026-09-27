@@ -121,13 +121,11 @@ const projects = [
 <div><img src="projects/album-covers/whitenoise.jpg" alt="White Noise" loading="lazy" width="1280" height="1280"></div>
 </div>
 <div class="img-grid-2">
-<div><img src="projects/album-covers/scribbleboy.jpg" alt="Scribbleboy" loading="lazy" width="2500" height="2500"></div>
 <div><img src="projects/album-covers/loya-passion-1.jpg" alt="Passion series 1" loading="lazy" width="2500" height="2500"></div>
 </div>
 <div class="img-grid-3">
 <div><img src="projects/album-covers/swim.jpg" alt="Swim" loading="lazy" width="1800" height="1800"></div>
 <div><img src="projects/album-covers/getting-loud.jpg" alt="Getting Loud" loading="lazy" width="1600" height="1600"></div>
-<div><img src="projects/album-covers/loya-passion-6.jpg" alt="Passion series 6, Fade Away" loading="lazy" width="1800" height="1800"></div>
 </div>`
   },
   {
@@ -142,7 +140,7 @@ const projects = [
     /* ORDER IS DELIBERATE — most important first, least last. Mike's
        ranking, and where a new piece goes is decided by where he places it
        in this list, not by when it was made:
-         felly, fuji, random element, lust, Z poster (sabt), jumpscare,
+         felly, fuji, random element, Z poster (sabt), jumpscare,
          logic, django, penjamin, sketch (smiski), homelander, basketball
          video (web story), the other videos, steph curry, final four,
          freshmen, sweezy, then the rest.
@@ -156,7 +154,6 @@ const projects = [
 <div><img src="projects/miscellaneous/felly-wildfire.jpg" alt="Wildfire, an album by Felly" loading="lazy" width="1650" height="2550"></div>
 <div><img src="projects/miscellaneous/fuji.jpg" alt="Fuji poster" loading="lazy" width="1800" height="2700"></div>
 <div><img src="projects/miscellaneous/random-element.jpg" alt="Random Element poster" loading="lazy" width="1164" height="1800"></div>
-<div><img src="projects/miscellaneous/lust.jpg" alt="LUST experimental design" loading="lazy" width="1333" height="2000"></div>
 <div><img src="projects/miscellaneous/sabt.jpg" alt="Sweet American Boy Tour, a poster for Z" loading="lazy" width="1200" height="1600"></div>
 <div><img src="projects/miscellaneous/jumpscare.jpg" alt="Jumpscare poster" loading="lazy" width="1164" height="1800"></div>
 <div><img src="projects/miscellaneous/logic.jpg" alt="Logic-inspired design" loading="lazy" width="1080" height="1867"></div>
@@ -166,7 +163,6 @@ const projects = [
 <div><video src="projects/miscellaneous/homelander.mp4" autoplay loop muted playsinline width="1280" height="720"></video></div>
 <div><video src="projects/miscellaneous/web-story.mp4" autoplay loop muted playsinline width="1080" height="1920"></video></div>
 <div><video src="projects/miscellaneous/ml-anim.mp4" autoplay loop muted playsinline width="1920" height="1080"></video></div>
-<div><video src="projects/miscellaneous/truck-circle.mp4" data-silent autoplay loop muted playsinline width="1920" height="1080"></video></div>
 <div><img src="projects/miscellaneous/scene-3.png" alt="Steph Curry poster" loading="lazy" width="1292" height="1762"></div>
 <div><img src="projects/miscellaneous/volleyball-final-four.jpg" alt="2024 Volleyball Final Four" loading="lazy" width="1200" height="1600"></div>
 <div><img src="projects/miscellaneous/freshmen.jpg" alt="Mixtape Magazine 2023 Freshman" loading="lazy" width="1600" height="1600"></div>
