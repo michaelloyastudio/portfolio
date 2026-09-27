@@ -137,8 +137,13 @@ const projects = [
        ranking, and where a new piece goes is decided by where he places it
        in this list, not by when it was made:
          felly, fuji, random element, Z poster (sabt), jumpscare,
-         logic, django, sketch (smiski), homelander, basketball
-         video (web story), the other videos, steph curry, final four,
+         logic, django, sketch (smiski), homelander, the other videos,
+         basketball video (web story), steph curry, final four,
+       The basketball video is 9:16. Placed right after homelander it shared
+       a row with the two 16:9 loops and came out 132px wide; after them, the
+       two loops break into a row of their own and it lands in the tall row
+       with steph curry, at twice the size. Same tier, one step later, and
+       that step is what buys the size.
          freshmen, sweezy, then the rest.
        "Tyler the Creator" is mm-print.jpg, the Artist or Rapper magazine
        spread. Mike wants it left down in the rest, next to the characters
@@ -156,9 +161,9 @@ const projects = [
 <div><img src="projects/miscellaneous/scene-2.jpg" alt="Django Unchained poster" loading="lazy" width="1190" height="1768"></div>
 <div><video src="projects/miscellaneous/smiski-dress.mp4" autoplay loop muted playsinline width="1280" height="1024"></video></div>
 <div><video src="projects/miscellaneous/homelander.mp4" autoplay loop muted playsinline width="1280" height="720"></video></div>
-<div><video src="projects/miscellaneous/web-story.mp4" autoplay loop muted playsinline width="1080" height="1920"></video></div>
 <div><video src="projects/miscellaneous/ml-anim.mp4" autoplay loop muted playsinline width="1920" height="1080"></video></div>
 <div><video src="projects/miscellaneous/truck-circle.mp4" data-silent autoplay loop muted playsinline width="1920" height="1080"></video></div>
+<div><video src="projects/miscellaneous/web-story.mp4" autoplay loop muted playsinline width="1080" height="1920"></video></div>
 <div><img src="projects/miscellaneous/scene-3.png" alt="Steph Curry poster" loading="lazy" width="1292" height="1762"></div>
 <div><img src="projects/miscellaneous/volleyball-final-four.jpg" alt="2024 Volleyball Final Four" loading="lazy" width="1200" height="1600"></div>
 <div><img src="projects/miscellaneous/freshmen.jpg" alt="Mixtape Magazine 2023 Freshman" loading="lazy" width="1600" height="1600"></div>
