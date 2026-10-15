@@ -314,7 +314,7 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 .btn .ltr { will-change: transform; }
 @keyframes navWave {
   0%   { transform: translateY(0); }
-  40%  { transform: translateY(-5px); }
+  40%  { transform: translateY(var(--wave-lift, -5px)); }
   100% { transform: translateY(0); }
 }
 
@@ -370,6 +370,82 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   padding-top: 1.5rem;
   gap: 2.5rem;
 }
+
+/* ══ ABOUT: the statement up top ══
+   Same sans + italic-serif pairing as the Studio lockup, so About reads as
+   the same voice as the homepage. The serif word ripples once on load and
+   again on hover (data-wave in site.js); --wave-lift scales the jump to
+   the type, since navWave's default 5px is invisible at this size. */
+.about-head {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: calc(7rem + var(--pad)) var(--pad) clamp(2.75rem, 6vh, 4.5rem);
+}
+.about-kicker {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 1.4rem;
+}
+.about-statement {
+  font-family: var(--font-hero);
+  font-size: clamp(2.8rem, 9vw, 7.4rem);
+  font-weight: 675;
+  letter-spacing: -0.06em;
+  line-height: 0.95;
+  margin: 0;
+}
+.about-move {
+  font-family: var(--font-hero-serif);
+  font-style: italic;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  padding-left: 0.04em;
+  color: var(--accent);
+  white-space: nowrap;
+  cursor: default;
+  --wave-lift: -0.14em;
+}
+
+/* Now / I build / Off the clock: three short columns between the bio and
+   the CV, so the personality sits above the résumé rather than in it. */
+.about-now {
+  max-width: var(--maxw);
+  margin: 0 auto clamp(3.5rem, 8vh, 5.5rem);
+  padding: 0 var(--pad);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1.75rem, 3vw, 3rem);
+}
+.about-now > div {
+  border-top: 1px solid var(--line);
+  padding-top: 1.25rem;
+}
+.about-now h2 {
+  font-size: 0.7rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 0.9rem;
+}
+.about-now p {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  margin: 0;
+}
+.about-now a,
+.about-copy .project-intro a {
+  color: var(--fg);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--accent);
+  transition: color 0.3s ease;
+}
+.about-now a:hover,
+.about-copy .project-intro a:hover { color: var(--accent); }
+.cv-note--flush { margin-top: 0; }
 
 /* ══ RESUME: a dated rail instead of a flat list ══ */
 .cv-section { margin-bottom: clamp(2.75rem, 6vh, 4rem); }
@@ -1676,7 +1752,9 @@ footer {
 
 
 /* About reuses the project-page shell. These are the bits unique to it. */
-.about-detail { max-width: var(--maxw); }
+/* Doubled class: .project-work sets 1100px further down and would win on
+   source order, which inset the CV from the bio above it. */
+.project-work.about-detail { max-width: var(--maxw); }
 .photo-credit-line {
   font-size: 0.8rem !important;
   color: var(--muted);
@@ -1945,6 +2023,7 @@ footer {
   .plugin-download { gap: 0.9rem; }
   .about-hero { grid-template-columns: 1fr; }
   .about-top { grid-template-columns: 1fr; }
+  .about-now { grid-template-columns: 1fr; }
   .cv-item { grid-template-columns: 1fr; gap: 0.35rem; }
   .about-portrait { max-width: 260px; }
   .two-col { grid-template-columns: 1fr; }

@@ -87,6 +87,10 @@
       }, 50);
     });
     link.addEventListener('mouseleave', function () { clearInterval(timer); });
+    // data-wave-auto: ripple once on its own after the page fades in.
+    if (link.hasAttribute('data-wave-auto')) {
+      setTimeout(function () { link.dispatchEvent(new Event('mouseenter')); }, 900);
+    }
   });
 
   /* ── Nav background on scroll ────────────────────────────────────*/
