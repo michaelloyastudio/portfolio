@@ -381,14 +381,6 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   margin: 0 auto;
   padding: calc(7rem + var(--pad)) var(--pad) clamp(2.75rem, 6vh, 4.5rem);
 }
-.about-kicker {
-  font-family: var(--font-display);
-  font-size: 0.72rem;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin: 0 0 1.4rem;
-}
 .about-statement {
   font-family: var(--font-hero);
   font-size: clamp(2.8rem, 9vw, 7.4rem);
