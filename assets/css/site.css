@@ -255,7 +255,7 @@ a { color: inherit; text-decoration: none; }
   from { clip-path: inset(0 100% 0 0 round 999px); }
   to   { clip-path: inset(0 0 0 0 round 999px); }
 }
-body:has(.hero--studio) .burger span { animation: barDraw 0.6s linear 0.35s backwards; }
+body:has(.hero--studio) .burger span { animation: barDraw 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.35s backwards; }
 body:has(.hero--studio) .burger span:nth-child(2) { animation-delay: 0.5s; }
 body:has(.hero--studio) .burger span:nth-child(3) { animation-delay: 0.62s; }
 @media (prefers-reduced-motion: reduce) {
@@ -1571,6 +1571,19 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 }
 .browse-link:hover { color: var(--accent); }
 
+/* Short pages (Tools, About) would leave the footer floating mid-window.
+   The body is a column at least a window tall and the footer takes the
+   slack above it, so it always sits on the bottom edge. Every in-flow
+   child is given full width explicitly: as a flex item, anything centred
+   with margin: 0 auto would otherwise shrink to its content. */
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+}
+body > * { width: 100%; flex-shrink: 0; }
+.site-foot { margin-top: auto; }
+
 /* One footer on every page, one row: small print left, the email and
    social icons right. No rule above it. Sits on the
    same --frame-x inset as the nav so it lines up with the logo and burger. */
@@ -1757,6 +1770,15 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   height: auto;
   display: block;
 }
+/* 2.5D hero: project-page.js lays a WebGL canvas exactly over the img
+   (same box, measured) once its depth map has loaded. */
+.project-hero { position: relative; }
+.depth-canvas {
+  position: absolute;
+  display: block;
+  pointer-events: none;
+}
+
 /* Square or portrait heroes only: going full width would make them
    absurdly tall, so cap the height and centre instead. project-page.js
    adds this class from the hero's real aspect ratio. */

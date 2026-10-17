@@ -62,9 +62,9 @@
 
   /* ── Logo draw-on (Studio page) ───────────────────────────────────
      Same move as the brand's logo animation (04_Admin/07_Brand.../
-     Logo_Animation): the stroke draws left to right at a constant
-     HORIZONTAL rate, not along its length, so the tall spike doesn't slow
-     it down. The path is clipped at a moving x and rebuilt each frame,
+     Logo_Animation): the stroke draws left to right, driven by HORIZONTAL
+     position rather than length so the tall spike doesn't stall it, and
+     eased out (fast, then slowing into the end) rather than linear. The path is clipped at a moving x and rebuilt each frame,
      which keeps the round cap on the leading edge; a dash offset would
      draw by arc length instead. */
   var markPath = document.querySelector('.nav-logo path');
@@ -97,7 +97,9 @@
       if (p > 0) {
         markPath.style.visibility = '';
         if (p >= 1) { markPath.setAttribute('d', full); return; }
-        markPath.setAttribute('d', cut(X0 + p * (X1 - X0)));
+        // ease-out: the sweep starts fast and slows into the end
+        var e = 1 - Math.pow(1 - p, 3);
+        markPath.setAttribute('d', cut(X0 + e * (X1 - X0)));
       }
       requestAnimationFrame(drawStep);
     };

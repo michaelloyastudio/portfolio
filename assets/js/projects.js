@@ -6,6 +6,8 @@
 //   cover    — grid tile / social image
 //   hero     — big media at the top of the project page. A .mp4/.mov renders
 //              as a poster-backed player; anything else renders as an image.
+//   heroDepth — optional depth map for an image hero (white = near), made with
+//              ~/Developer/depth/still_depth.py. Turns on the 2.5D parallax.
 //   intro    — ONE short block of copy. Keep it tight.
 //   work     — the media below the copy. No prose here.
 const projects = [
@@ -17,6 +19,7 @@ const projects = [
     year: "2026",
     cover: `projects/capstone/cover.jpg`,
     hero: `projects/capstone/hero.jpg`,
+    heroDepth: `projects/capstone/hero-depth.png`,
     intro: `<p>A music visualizer for <a href="https://open.spotify.com/artist/" target="_blank" rel="noopener">Z</a>'s track <em>where it hurts.</em>, made as my senior capstone. Z isn't based in NY, so the piece had to be built rather than shot, and I art directed it end to end.</p>
 <p>I storyboarded the scenes and wrote the direction, then composed each frame from AI-generated assets, broke the stills apart in Photoshop, and animated them in After Effects. The imagery stays abstract on purpose. Z gave me the freedom, and I'd rather leave room for the viewer than push a narrative he wasn't comfortable carrying.</p>
 <p>I take in a lot of media, and the things I love end up shaping how I direct. The look here came out of that, <em>Spider-Man: Into the Spider-Verse</em> and <em>Invincible</em> most of all.</p>`,
@@ -39,6 +42,7 @@ const projects = [
     year: "2023–Present",
     cover: `projects/loya-and-co/cover.jpg`,
     hero: `projects/loya-and-co/cover.jpg`,
+    heroDepth: `projects/loya-and-co/cover-depth.png`,
     intro: `<p>My brother produces music under our last name, <a href="https://open.spotify.com/artist/5gNQpoYEBE1jxjCgFkLWce" target="_blank" rel="noopener">loya</a>, and runs LYRC, a company he started to make lyric videos for independent artists. I work with him on promoting his music and his personal brand, keyed to cinematic and viral content.</p>
 <p>We shape the idea together, then I execute it, shooting and editing it myself. My schooling and the work before this were graphic design; loya is where I'm building the video craft on top of it.</p>
 <p>The logo came out of his hat collection, set in Amador, a blackletter that balances elegance with edge.</p>`,
@@ -71,6 +75,7 @@ const projects = [
     year: "2025",
     cover: `projects/bodyarmor-powerade/cover.jpg`,
     hero: `projects/bodyarmor-powerade/cover.jpg`,
+    heroDepth: `projects/bodyarmor-powerade/cover-depth.png`,
     intro: `<p>I spent the summer of 2025 interning with BODYARMOR and Powerade in Queens. Day to day I reformatted brand creative into point-of-sale ads — window clings, cooler clings, end caps — and produced an original video ad for Powerade's fall football campaign.</p>
 <p>For my capstone I built an AI-generated BODYARMOR commercial end to end: generated imagery, Magnific for the upscale, voiceover, and After Effects to assemble. It was presented to C-suite executives, and it was the one that got the CEO to look up.</p>`,
     work: `<div class="project-video"><video src="projects/bodyarmor-powerade/pa-fall-football.mp4" controls playsinline preload="metadata" poster="projects/bodyarmor-powerade/pa-first.jpg" width="1920" height="1080"></video></div>
@@ -85,6 +90,7 @@ const projects = [
     year: "2024–2026",
     cover: `projects/university-union/cover.jpg`,
     hero: `projects/university-union/cover.jpg`,
+    heroDepth: `projects/university-union/cover-depth.png`,
     intro: `<p>I was Co-Director of Design Board at University Union, Syracuse's largest programming organization, through May 2026. Concert posters, festival identity, large-format signage, and social assets reaching 12,000+ followers.</p>
 <p>The biggest piece was Juice Jam 2025, the full visual identity for Syracuse's annual outdoor festival, built on a retro risograph look with bold gold type.</p>
 <p>I also spent two years trying to get a logo approved for Block Party, our spring concert. I love it. Everybody else hates it.</p>`,
@@ -98,12 +104,12 @@ const projects = [
 <div class="img-grid-3">
 <div><img src="projects/university-union/block-party-2026.jpg" alt="Block Party 2026" loading="lazy" width="1553" height="2400"></div>
 <div><img src="projects/university-union/block-party-earlier.jpg" alt="Block Party earlier version" loading="lazy" width="1164" height="1800"></div>
-<div><img src="projects/university-union/calenton.jpg" alt="Calentón Latin Music Festival" loading="lazy" width="1553" height="2400"></div>
+<div><img src="projects/university-union/sarah-sherman.jpg" alt="A Night with Sarah Sherman" loading="lazy" width="1164" height="1800"></div>
 </div>
 <div class="project-video"><video src="projects/university-union/block-party-anim.mp4" data-silent autoplay loop muted playsinline onloadedmetadata="this.playbackRate=1.5" width="1280" height="720"></video></div>
 <div class="img-grid-5">
 <div><img src="projects/university-union/connor-wood.jpg" alt="A Night with Connor Wood" loading="lazy" width="1553" height="2400"></div>
-<div><img src="projects/university-union/sarah-sherman.jpg" alt="A Night with Sarah Sherman" loading="lazy" width="1164" height="1800"></div>
+<div><img src="projects/university-union/calenton.jpg" alt="Calentón Latin Music Festival" loading="lazy" width="1553" height="2400"></div>
 <div><img src="projects/university-union/talent-show.jpg" alt="Talent Show" loading="lazy" width="1164" height="1800"></div>
 <div><img src="projects/university-union/danielle-brooks.jpg" alt="Danielle Brooks" loading="lazy" width="1553" height="2400"></div>
 <div><img src="projects/university-union/comedy-knockout.jpg" alt="Comedy Knockout" loading="lazy" width="1118" height="1727"></div>
@@ -117,6 +123,7 @@ const projects = [
     year: "2022–2024",
     cover: `projects/album-covers/commercial-break.jpg`,
     hero: `projects/album-covers/commercial-break.jpg`,
+    heroDepth: `projects/album-covers/commercial-break-depth.png`,
     intro: `<p>Covers I made back when I was producing my own music. Each one shot and designed from scratch in Photoshop and Illustrator.</p>`,
     work: `<div class="img-grid-3" data-exact>
 <div><img src="projects/album-covers/loya-passion-update.jpg" alt="Passion update" loading="lazy" width="2500" height="2500"></div>
@@ -135,6 +142,7 @@ const projects = [
     year: "2022–Present",
     cover: `projects/miscellaneous/you-cover.jpg?v=2`,
     hero: `projects/miscellaneous/you-hero.jpg?v=2`,
+    heroDepth: `projects/miscellaneous/you-hero-depth.png`,
     intro: `<p>A mix of passion projects, school assignments, professional work, and collaborations. Not every concept made it to production, but each one shaped my process.</p>`,
     /* ORDER IS DELIBERATE — most important first, least last. Mike's
        ranking, and where a new piece goes is decided by where he places it
