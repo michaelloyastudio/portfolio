@@ -401,33 +401,6 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   --wave-lift: -0.14em;
 }
 
-/* Now / I build / Off the clock: three short columns between the bio and
-   the CV, so the personality sits above the résumé rather than in it. */
-.about-now {
-  max-width: var(--maxw);
-  margin: 0 auto clamp(3.5rem, 8vh, 5.5rem);
-  padding: 0 var(--pad);
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(1.75rem, 3vw, 3rem);
-}
-.about-now > div {
-  border-top: 1px solid var(--line);
-  padding-top: 1.25rem;
-}
-.about-now h2 {
-  font-size: 0.7rem;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin: 0 0 0.9rem;
-}
-.about-now p {
-  font-size: 1.05rem;
-  line-height: 1.6;
-  margin: 0;
-}
-.about-now a,
 .about-copy .project-intro a {
   color: var(--fg);
   text-decoration: underline;
@@ -435,9 +408,8 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   text-decoration-color: var(--accent);
   transition: color 0.3s ease;
 }
-.about-now a:hover,
 .about-copy .project-intro a:hover { color: var(--accent); }
-.cv-note--flush { margin-top: 0; }
+.about-resume { margin-top: 2.25rem; }
 
 /* ══ RESUME: a dated rail instead of a flat list ══ */
 .cv-section { margin-bottom: clamp(2.75rem, 6vh, 4rem); }
@@ -2015,7 +1987,6 @@ footer {
   .plugin-download { gap: 0.9rem; }
   .about-hero { grid-template-columns: 1fr; }
   .about-top { grid-template-columns: 1fr; }
-  .about-now { grid-template-columns: 1fr; }
   .cv-item { grid-template-columns: 1fr; gap: 0.35rem; }
   .about-portrait { max-width: 260px; }
   .two-col { grid-template-columns: 1fr; }
