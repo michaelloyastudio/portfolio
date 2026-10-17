@@ -64,12 +64,13 @@
      Split each label into per-letter spans and hop them 50ms apart, so the
      word ripples rather than moving as a block. Anything with data-wave
      opts in, which is how the buttons get the same interaction as the menu.
-     The hop is LIFT x the letter's own font size, so a 5rem menu title
-     jumps as far, in proportion, as a small button label does.
+     The hop scales with the label's font size: LIFT for the small button
+     labels, a lower MENU_LIFT for the 5rem menu titles, where the same
+     ratio reads as far too much.
      Web Animations, not a restarted CSS animation: restarting meant
      animation:none + a forced reflow per letter, which is part of what
      made the solid buttons flash mid-wiggle. */
-  var LIFT = 0.36;
+  var LIFT = 0.36, MENU_LIFT = 0.13;
   document.querySelectorAll('.menu-links a, [data-wave]').forEach(function (link) {
     var text = link.textContent;
     link.innerHTML = text.split('').map(function (ch) {
@@ -81,7 +82,8 @@
 
     link.addEventListener('mouseenter', function () {
       var i = 0;
-      var y = -LIFT * (parseFloat(getComputedStyle(link).fontSize) || 16);
+      var k = link.closest('.menu-links') ? MENU_LIFT : LIFT;
+      var y = -k * (parseFloat(getComputedStyle(link).fontSize) || 16);
       clearInterval(timer);
       timer = setInterval(function () {
         if (i >= letters.length) { clearInterval(timer); return; }

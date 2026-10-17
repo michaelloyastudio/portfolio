@@ -162,7 +162,6 @@ body {
 h1, h2, h3,
 .btn, .menu-links a, .section-label, .tag-label,
 .band-title, .band-cat, .band-arrow, .tile-title, .tile-cat, .tile-arrow,
-.closing-mail, .foot-lead, .closing-links,
 .entry-role, .entry-date,
 .project-category, .project-facts dt, .project-facts dd, .project-pager,
 .scroll-cue, .browse-link, footer {
@@ -1020,7 +1019,6 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   /* ── bands, tiles, closing ── */
   .band-meta { margin-top: 1rem; }
   .band-arrow { display: none; }   /* nothing to hover on a phone */
-  .closing-mail { font-size: clamp(1.25rem, 7vw, 2rem); word-break: break-word; }
 
   /* ── menu ── */
   .menu-links a { margin: 0.45rem 0; }
@@ -1571,53 +1569,29 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 }
 .browse-link:hover { color: var(--accent); }
 
-/* One footer on every page: the email CTA and socials on top, the small
-   print underneath, inside a single border. Both rows sit on --frame-x so
-   they line up with the logo and burger. */
+/* One footer on every page: email and social icons centred on top, the
+   small print underneath, inside a single border. The small print sits on
+   --frame-x so it lines up with the logo and burger. */
 .site-foot {
   border-top: 1px solid var(--line);
-  padding: clamp(3.5rem, 10vh, 6.5rem) var(--frame-x) var(--frame-y);
+  padding: clamp(3rem, 8vh, 5rem) var(--frame-x) var(--frame-y);
   color: var(--muted);
 }
-.foot-cta {
+.foot-links {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 2rem;
-  flex-wrap: wrap;
-  margin-bottom: clamp(3rem, 9vh, 5.5rem);
-}
-.foot-lead {
-  font-family: var(--font-display);
-  font-size: 0.7rem;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin: 0 0 1rem;
-}
-.closing-mail {
-  display: inline-block;
-  font-size: clamp(1.4rem, 5vw, 3.2rem);
-  font-weight: 600;
-  letter-spacing: -0.035em;
-  color: var(--fg);
-  transition: color 0.3s ease;
-}
-.closing-mail:hover { color: var(--accent); }
-.closing-links {
-  display: flex;
+  justify-content: center;
   align-items: center;
   gap: 1.6rem;
-  /* sit on the email's baseline rather than the bottom of its line box */
-  padding-bottom: 0.55rem;
+  margin-bottom: clamp(2.5rem, 7vh, 4rem);
 }
-.closing-links a {
+/* same size, colour and hover as the icon row in the menu */
+.foot-links a {
   width: 26px; height: 26px;
   color: var(--muted);
   transition: color 0.3s ease;
 }
-.closing-links a:hover { color: var(--accent); }
-.closing-links svg { width: 100%; height: 100%; fill: currentColor; display: block; }
+.foot-links a:hover { color: var(--accent); }
+.foot-links svg { width: 100%; height: 100%; fill: currentColor; display: block; }
 .foot-base {
   display: flex;
   justify-content: space-between;
@@ -1973,31 +1947,6 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   transition: color 0.3s ease;
 }
 .project-pager a:hover { color: var(--accent); }
-
-/* ── back link ──
-   "← Work" above a project title, "← Tools" above the plugin shot. Same
-   voice as the pager links. On a project page it is a full-width flex row
-   ahead of the title; the negative margin pulls the title back up through
-   most of .project-head's 2rem gap. On the product page it spans both grid
-   columns, and the margin cancels all but 1rem of .product-top's gap (the
-   clamp is that gap, copied). */
-.page-back {
-  font-family: var(--font-display);
-  font-size: 0.74rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  line-height: 1;
-  color: var(--muted);
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-.page-back:hover { color: var(--accent); }
-.project-head .page-back { flex: 0 0 100%; margin-bottom: -1.25rem; }
-.product-top .page-back {
-  grid-column: 1 / -1;
-  justify-self: start;
-  margin-bottom: calc(1rem - clamp(2rem, 5vw, 4.5rem));
-}
 
 /* ══ RESPONSIVE (desktop-first; full mobile pass still to come) ══ */
 @media (max-width: 900px) {
