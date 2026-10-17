@@ -1779,7 +1779,9 @@ body > * { width: 100%; flex-shrink: 0; }
   overflow: hidden;
   pointer-events: none;
 }
-.hero-layers .hero-layer {
+/* .project-hero.is-tall img caps every img in a square hero at 100% wide,
+   which squeezed padded layers back into the frame; three classes outrank it */
+.project-hero .hero-layers .hero-layer {
   position: absolute;
   inset: 0;
   width: 100%;

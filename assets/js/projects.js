@@ -19,18 +19,18 @@ const projects = [
     category: "Music Video",
     tools: "Photoshop, After Effects, Magnific, Higgsfield",
     year: "2026",
-    cover: `projects/capstone/hero.jpg?v=2`,
-    hero: `projects/capstone/hero.jpg?v=2`,
+    cover: `projects/capstone/hero.jpg?v=3`,
+    hero: `projects/capstone/hero.jpg?v=3`,
     /* Depths follow Mike's own parallax comp (S10.mp4): across that move the
        stars barely shift, the small Saturn and two little planets travel
        30px, most planets 130px, the blurred corner planets 358px. Scaled so
        the mid layer travels 1.2% of the width. */
     heroLayers: [
-      { src: `projects/capstone/wih-0-sky.jpg`, k: 0 },
-      { src: `projects/capstone/wih-1-far.webp?v=2`, k: 0.0028 },
-      { src: `projects/capstone/wih-2-mid.webp?v=2`, k: 0.012 },
-      { src: `projects/capstone/wih-3-astronaut.webp`, k: 0.019 },
-      { src: `projects/capstone/wih-4-near.webp?v=3`, k: 0.033, s: 1.12 }
+      { src: `projects/capstone/wih-0-sky.jpg?v=2`, k: 0 },
+      { src: `projects/capstone/wih-1-far.webp?v=3`, k: 0.0028 },
+      { src: `projects/capstone/wih-2-mid.webp?v=3`, k: 0.012 },
+      { src: `projects/capstone/wih-3-astronaut.webp?v=2`, k: 0.019 },
+      { src: `projects/capstone/wih-4-near.webp?v=4`, k: 0.033, s: 1.12 }
     ],
     intro: `<p>A music visualizer for <a href="https://open.spotify.com/artist/" target="_blank" rel="noopener">Z</a>'s track <em>where it hurts.</em>, made as my senior capstone. Z isn't based in NY, so the piece had to be built rather than shot, and I art directed it end to end.</p>
 <p>I storyboarded the scenes and wrote the direction, then composed each frame from AI-generated assets, broke the stills apart in Photoshop, and animated them in After Effects. The imagery stays abstract on purpose. Z gave me the freedom, and I'd rather leave room for the viewer than push a narrative he wasn't comfortable carrying.</p>
@@ -121,7 +121,7 @@ const projects = [
     intro: `<p>I was Co-Director of Design Board at University Union, Syracuse's largest programming organization, through May 2026. Concert posters, festival identity, large-format signage, and social assets reaching 12,000+ followers.</p>
 <p>The biggest piece was Juice Jam 2025, the full visual identity for Syracuse's annual outdoor festival, built on a retro risograph look with bold gold type.</p>
 <p>I also spent two years trying to get a logo approved for Block Party, our spring concert. I love it. Everybody else hates it.</p>`,
-    work: `<div class="project-video"><video src="projects/university-union/jj-timelapse.mp4?v=5" data-silent autoplay loop muted playsinline width="1600" height="900"></video></div>
+    work: `<div class="project-video"><video src="projects/university-union/jj-timelapse.mp4?v=6" data-silent autoplay loop muted playsinline width="1600" height="900"></video></div>
 <div class="img-grid-3">
 <div><img src="projects/university-union/jj-kiosk.jpg?v=3" alt="Juice Jam vertical kiosk" loading="lazy" width="1520" height="2688"></div>
 <div><img src="projects/university-union/jj-merch.jpg" alt="Juice Jam merch mockup" loading="lazy" width="1696" height="2528"></div>
@@ -150,14 +150,15 @@ const projects = [
     year: "2022–2024",
     cover: `projects/album-covers/commercial-break.jpg`,
     hero: `projects/album-covers/commercial-break.jpg`,
-    /* Mike's layers: the jet cabin with him gone (his cleaned-up plate), him
-       and the chips, the signature and sticker (nudged in from the corners
-       and unscaled so they never crop), the ransom letters in front. */
+    /* Mike's layers: the jet cabin with him gone (his cleaned-up plate), the
+       signature and sticker just in front of it (where they are on the
+       cover, moving only slightly), him and the chips, the ransom letters.
+       Padded back layers so the resting state is the cover exactly. */
     heroLayers: [
-      { src: `projects/album-covers/cb-0-cabin.jpg?v=2`, k: 0.004 },
-      { src: `projects/album-covers/cb-1-subject.webp?v=2`, k: 0.016 },
-      { src: `projects/album-covers/cb-3-sign-sticker.webp?v=3`, k: 0.022, s: 1 },
-      { src: `projects/album-covers/cb-2-letters.webp?v=2`, k: 0.028 }
+      { src: `projects/album-covers/cb-0-cabin.jpg?v=3`, k: 0.004, pad: 0.06 },
+      { src: `projects/album-covers/cb-3-sign-sticker.webp?v=4`, k: 0.006, s: 1 },
+      { src: `projects/album-covers/cb-1-subject.webp?v=3`, k: 0.016, pad: 0.06 },
+      { src: `projects/album-covers/cb-2-letters.webp?v=2`, k: 0.028, s: 1 }
     ],
     intro: `<p>Covers I made back when I was producing my own music. Each one shot and designed from scratch in Photoshop and Illustrator.</p>`,
     work: `<div class="img-grid-3" data-exact>
@@ -175,14 +176,14 @@ const projects = [
     category: "Selected Works",
     tools: "Various",
     year: "2022–Present",
-    cover: `projects/miscellaneous/you-cover.jpg?v=3`,
-    hero: `projects/miscellaneous/you-hero.jpg?v=3`,
-    /* Mike's layers: the sunburst, the starburst, the Y and U, the meal. */
+    cover: `projects/miscellaneous/you-cover.jpg?v=4`,
+    hero: `projects/miscellaneous/you-hero.jpg?v=4`,
+    /* Mike's layers: the sunburst, the Y and U, the starburst, the meal. */
     heroLayers: [
-      { src: `projects/miscellaneous/you-hero-bg.jpg`, k: 0.004 },
-      { src: `projects/miscellaneous/you-1-star.webp`, k: 0.012 },
-      { src: `projects/miscellaneous/you-2-yu.webp`, k: 0.02 },
-      { src: `projects/miscellaneous/you-3-meal.webp`, k: 0.03 }
+      { src: `projects/miscellaneous/you-hero-bg.jpg?v=2`, k: 0.004, pad: 0.06 },
+      { src: `projects/miscellaneous/you-2-yu.webp`, k: 0.012, s: 1 },
+      { src: `projects/miscellaneous/you-1-star.webp`, k: 0.02, s: 1 },
+      { src: `projects/miscellaneous/you-3-meal.webp`, k: 0.03, s: 1 }
     ],
     intro: `<p>A mix of passion projects, school assignments, professional work, and collaborations. Not every concept made it to production, but each one shaped my process.</p>`,
     /* ORDER IS DELIBERATE — most important first, least last. Mike's
