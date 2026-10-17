@@ -27,10 +27,10 @@ const projects = [
        the mid layer travels 1.2% of the width. */
     heroLayers: [
       { src: `projects/capstone/wih-0-sky.jpg`, k: 0 },
-      { src: `projects/capstone/wih-1-far.webp`, k: 0.0028 },
-      { src: `projects/capstone/wih-2-mid.webp`, k: 0.012 },
+      { src: `projects/capstone/wih-1-far.webp?v=2`, k: 0.0028 },
+      { src: `projects/capstone/wih-2-mid.webp?v=2`, k: 0.012 },
       { src: `projects/capstone/wih-3-astronaut.webp`, k: 0.019 },
-      { src: `projects/capstone/wih-4-near.webp?v=2`, k: 0.033, s: 1.12 }
+      { src: `projects/capstone/wih-4-near.webp?v=3`, k: 0.033, s: 1.12 }
     ],
     intro: `<p>A music visualizer for <a href="https://open.spotify.com/artist/" target="_blank" rel="noopener">Z</a>'s track <em>where it hurts.</em>, made as my senior capstone. Z isn't based in NY, so the piece had to be built rather than shot, and I art directed it end to end.</p>
 <p>I storyboarded the scenes and wrote the direction, then composed each frame from AI-generated assets, broke the stills apart in Photoshop, and animated them in After Effects. The imagery stays abstract on purpose. Z gave me the freedom, and I'd rather leave room for the viewer than push a narrative he wasn't comfortable carrying.</p>
@@ -52,17 +52,17 @@ const projects = [
     category: "Creative Direction",
     tools: "Canon EOS R8, Premiere, After Effects, Illustrator, Photoshop, Blender, Magnific, Higgsfield, Claude",
     year: "2023–Present",
-    cover: `projects/loya-and-co/cover.jpg?v=3`,
-    hero: `projects/loya-and-co/cover.jpg?v=3`,
+    cover: `projects/loya-and-co/cover.jpg?v=4`,
+    hero: `projects/loya-and-co/cover.jpg?v=4`,
     /* The empty room with the light, Mike's cut of the record on its shelf,
        and dust in the beam on three planes, made procedurally
        (~/Developer/depth/hero_layers/loya_dust.py). */
     heroLayers: [
       { src: `projects/loya-and-co/loya-0-room.jpg?v=2`, k: 0.004 },
-      { src: `projects/loya-and-co/loya-1-record.webp?v=2`, k: 0.016 },
-      { src: `projects/loya-and-co/loya-2-dust-far.webp`, k: 0.008 },
-      { src: `projects/loya-and-co/loya-3-dust-mid.webp`, k: 0.022 },
-      { src: `projects/loya-and-co/loya-4-dust-near.webp`, k: 0.04 }
+      { src: `projects/loya-and-co/loya-1-record.webp?v=3`, k: 0.016 },
+      { src: `projects/loya-and-co/loya-2-dust-far.webp?v=2`, k: 0.008 },
+      { src: `projects/loya-and-co/loya-3-dust-mid.webp?v=2`, k: 0.022 },
+      { src: `projects/loya-and-co/loya-4-dust-near.webp?v=2`, k: 0.04 }
     ],
     intro: `<p>My brother produces music under our last name, <a href="https://open.spotify.com/artist/5gNQpoYEBE1jxjCgFkLWce" target="_blank" rel="noopener">loya</a>, and runs LYRC, a company he started to make lyric videos for independent artists. I work with him on promoting his music and his personal brand, keyed to cinematic and viral content.</p>
 <p>We shape the idea together, then I execute it, shooting and editing it myself. My schooling and the work before this were graphic design; loya is where I'm building the video craft on top of it.</p>
@@ -100,9 +100,9 @@ const projects = [
        logo floating in front, the fine print pinned to the frame. */
     heroLayers: [
       { src: `projects/bodyarmor-powerade/pa-0-gym.jpg`, k: 0.004 },
-      { src: `projects/bodyarmor-powerade/pa-1-bottles.webp`, k: 0.016 },
-      { src: `projects/bodyarmor-powerade/pa-2-logo.webp`, k: 0.026 },
-      { src: `projects/bodyarmor-powerade/pa-3-legal.webp`, k: 0 }
+      { src: `projects/bodyarmor-powerade/pa-1-bottles.webp?v=2`, k: 0.016 },
+      { src: `projects/bodyarmor-powerade/pa-2-logo.webp?v=2`, k: 0.026 },
+      { src: `projects/bodyarmor-powerade/pa-3-legal.webp?v=2`, k: 0 }
     ],
     intro: `<p>I spent the summer of 2025 interning with BODYARMOR and Powerade in Queens. Day to day I reformatted brand creative into point-of-sale ads — window clings, cooler clings, end caps — and produced an original video ad for Powerade's fall football campaign.</p>
 <p>For my capstone I built an AI-generated BODYARMOR commercial end to end: generated imagery, Magnific for the upscale, voiceover, and After Effects to assemble. It was presented to C-suite executives, and it was the one that got the CEO to look up.</p>`,
@@ -125,7 +125,7 @@ const projects = [
 <div class="img-grid-3">
 <div><img src="projects/university-union/jj-kiosk.jpg?v=3" alt="Juice Jam vertical kiosk" loading="lazy" width="1520" height="2688"></div>
 <div><img src="projects/university-union/jj-merch.jpg" alt="Juice Jam merch mockup" loading="lazy" width="1696" height="2528"></div>
-<div><img src="projects/university-union/jj-poster.jpg?v=2" alt="Juice Jam printed poster" loading="lazy" width="1360" height="2048"></div>
+<div><img src="projects/university-union/jj-poster.jpg?v=3" alt="Juice Jam printed poster" loading="lazy" width="1360" height="2048"></div>
 </div>
 <div><img src="projects/university-union/jj-social.jpg?v=2" alt="Juice Jam social post" loading="lazy" width="2000" height="2000"></div>
 <div class="img-grid-3">
@@ -155,9 +155,9 @@ const projects = [
        to the frame. */
     heroLayers: [
       { src: `projects/album-covers/cb-0-cabin.jpg?v=2`, k: 0.004 },
-      { src: `projects/album-covers/cb-1-subject.webp`, k: 0.016 },
-      { src: `projects/album-covers/cb-2-letters.webp`, k: 0.028 },
-      { src: `projects/album-covers/cb-3-sign-sticker.webp`, k: 0 }
+      { src: `projects/album-covers/cb-1-subject.webp?v=2`, k: 0.016 },
+      { src: `projects/album-covers/cb-2-letters.webp?v=2`, k: 0.028 },
+      { src: `projects/album-covers/cb-3-sign-sticker.webp?v=2`, k: 0 }
     ],
     intro: `<p>Covers I made back when I was producing my own music. Each one shot and designed from scratch in Photoshop and Illustrator.</p>`,
     work: `<div class="img-grid-3" data-exact>
@@ -177,7 +177,7 @@ const projects = [
     year: "2022–Present",
     cover: `projects/miscellaneous/you-cover.jpg?v=3`,
     hero: `projects/miscellaneous/you-hero.jpg?v=3`,
-    heroLayers: { bg: `projects/miscellaneous/you-hero-bg.jpg`, fg: `projects/miscellaneous/you-hero-fg.webp` },
+    heroLayers: { bg: `projects/miscellaneous/you-hero-bg.jpg`, fg: `projects/miscellaneous/you-hero-fg.webp?v=2` },
     intro: `<p>A mix of passion projects, school assignments, professional work, and collaborations. Not every concept made it to production, but each one shaped my process.</p>`,
     /* ORDER IS DELIBERATE — most important first, least last. Mike's
        ranking, and where a new piece goes is decided by where he places it
