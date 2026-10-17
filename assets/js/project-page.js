@@ -35,6 +35,84 @@
     };
     hm.addEventListener(hm.tagName === 'VIDEO' ? 'loadedmetadata' : 'load', flag);
     flag();
+
+    if (!isVideo && p.heroLayers) layeredHero(hero, hm, p.heroLayers);
+  }
+
+  /* ── Layered hero ────────────────────────────────────────────────
+     The hero split into stacked layers, back to front, each with its own
+     depth k: how far it travels at the extremes, as a fraction of the
+     hero's width. Stacked at rest they are the hero image exactly. As the
+     hero scrolls through the window and the pointer moves over it, near
+     layers slide further than far ones, so the scene separates.
+     heroLayers is either [{ src, k }, ...] back to front, or the two-layer
+     shorthand { bg, fg }.
+     The <img> stays for layout, alt text and as the fallback; the stack
+     only appears once every layer has loaded. Reduced motion: no stack. */
+  function layeredHero(wrap, img, layers) {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!Array.isArray(layers)) layers = [{ src: layers.bg, k: 0.006 }, { src: layers.fg, k: 0.024 }];
+    var SCALE = 1.06;             // every layer zooms in a touch so the back one never shows an edge
+
+    var stack = document.createElement('div');
+    stack.className = 'hero-layers';
+    stack.setAttribute('aria-hidden', 'true');
+    var els = layers.map(function (l) {
+      var im = new Image();
+      im.alt = ''; im.className = 'hero-layer';
+      stack.appendChild(im);
+      return im;
+    });
+
+    var loaded = 0;
+    function onLoad() {
+      if (++loaded < els.length) return;
+      wrap.appendChild(stack);
+      place();
+      start();
+    }
+    els.forEach(function (im, n) { im.onload = onLoad; im.src = layers[n].src; });
+
+    // the stack covers the img exactly, wherever CSS has put it
+    function place() {
+      stack.style.left = img.offsetLeft + 'px';
+      stack.style.top = img.offsetTop + 'px';
+      stack.style.width = img.offsetWidth + 'px';
+      stack.style.height = img.offsetHeight + 'px';
+    }
+    window.addEventListener('resize', place);
+
+    // pointer target in -1..1 across the hero, eased toward on each frame
+    var px = 0, py = 0, cx = 0, cy = 0;
+    wrap.addEventListener('pointermove', function (e) {
+      var r = stack.getBoundingClientRect();
+      px = ((e.clientX - r.left) / r.width) * 2 - 1;
+      py = ((e.clientY - r.top) / r.height) * 2 - 1;
+    });
+    wrap.addEventListener('pointerleave', function () { px = 0; py = 0; });
+
+    var visible = true, running = false;
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (es) {
+        visible = es[0].isIntersecting;
+        if (visible) start();
+      }).observe(wrap);
+    }
+    function start() { if (!running) { running = true; requestAnimationFrame(frame); } }
+    function frame() {
+      if (!visible) { running = false; return; }
+      cx += (px - cx) * 0.06;
+      cy += (py - cy) * 0.06;
+      // -1 when the hero's centre is at the bottom of the window, +1 at the top
+      var r = stack.getBoundingClientRect(), vh = window.innerHeight;
+      var t = Math.max(-1, Math.min(1, (vh / 2 - (r.top + r.height / 2)) / vh));
+      els.forEach(function (el, n) {
+        var k = layers[n].k * r.width;
+        var x = -cx * k, y = (-cy * 0.7 + t) * k;
+        el.style.transform = 'translate3d(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px,0) scale(' + SCALE + ')';
+      });
+      requestAnimationFrame(frame);
+    }
   }
 
   // ── title block ──

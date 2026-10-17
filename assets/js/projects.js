@@ -6,6 +6,10 @@
 //   cover    — grid tile / social image
 //   hero     — big media at the top of the project page. A .mp4/.mov renders
 //              as a poster-backed player; anything else renders as an image.
+//   heroLayers — optional parallax split of an image hero: [{ src, k }, ...]
+//              back to front (k = travel as a fraction of width), or the
+//              two-layer shorthand { bg, fg }. Stacked they must equal the
+//              hero exactly.
 //   intro    — ONE short block of copy. Keep it tight.
 //   work     — the media below the copy. No prose here.
 const projects = [
@@ -15,8 +19,19 @@ const projects = [
     category: "Music Video",
     tools: "Photoshop, After Effects, Magnific, Higgsfield",
     year: "2026",
-    cover: `projects/capstone/hero.jpg`,
-    hero: `projects/capstone/hero.jpg`,
+    cover: `projects/capstone/hero.jpg?v=2`,
+    hero: `projects/capstone/hero.jpg?v=2`,
+    /* Depths follow Mike's own parallax comp (S10.mp4): across that move the
+       stars barely shift, the small Saturn and two little planets travel
+       30px, most planets 130px, the blurred corner planets 358px. Scaled so
+       the mid layer travels 1.2% of the width. */
+    heroLayers: [
+      { src: `projects/capstone/wih-0-sky.jpg`, k: 0 },
+      { src: `projects/capstone/wih-1-far.webp`, k: 0.0028 },
+      { src: `projects/capstone/wih-2-mid.webp`, k: 0.012 },
+      { src: `projects/capstone/wih-3-astronaut.webp`, k: 0.019 },
+      { src: `projects/capstone/wih-4-near.webp`, k: 0.033 }
+    ],
     intro: `<p>A music visualizer for <a href="https://open.spotify.com/artist/" target="_blank" rel="noopener">Z</a>'s track <em>where it hurts.</em>, made as my senior capstone. Z isn't based in NY, so the piece had to be built rather than shot, and I art directed it end to end.</p>
 <p>I storyboarded the scenes and wrote the direction, then composed each frame from AI-generated assets, broke the stills apart in Photoshop, and animated them in After Effects. The imagery stays abstract on purpose. Z gave me the freedom, and I'd rather leave room for the viewer than push a narrative he wasn't comfortable carrying.</p>
 <p>I take in a lot of media, and the things I love end up shaping how I direct. The look here came out of that, <em>Spider-Man: Into the Spider-Verse</em> and <em>Invincible</em> most of all.</p>`,
@@ -133,8 +148,9 @@ const projects = [
     category: "Selected Works",
     tools: "Various",
     year: "2022–Present",
-    cover: `projects/miscellaneous/you-cover.jpg?v=2`,
-    hero: `projects/miscellaneous/you-hero.jpg?v=2`,
+    cover: `projects/miscellaneous/you-cover.jpg?v=3`,
+    hero: `projects/miscellaneous/you-hero.jpg?v=3`,
+    heroLayers: { bg: `projects/miscellaneous/you-hero-bg.jpg`, fg: `projects/miscellaneous/you-hero-fg.webp` },
     intro: `<p>A mix of passion projects, school assignments, professional work, and collaborations. Not every concept made it to production, but each one shaped my process.</p>`,
     /* ORDER IS DELIBERATE — most important first, least last. Mike's
        ranking, and where a new piece goes is decided by where he places it
