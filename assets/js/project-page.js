@@ -46,7 +46,9 @@
      hero scrolls through the window and the pointer moves over it, near
      layers slide further than far ones, so the scene separates.
      heroLayers is either [{ src, k }, ...] back to front, or the two-layer
-     shorthand { bg, fg }.
+     shorthand { bg, fg }. A layer whose content is cut off at the frame edge
+     (the corner planets) can take its own scale s, so that edge stays out of
+     view when the layer slides in.
      The <img> stays for layout, alt text and as the fallback; the stack
      only appears once every layer has loaded. Reduced motion: no stack. */
   function layeredHero(wrap, img, layers) {
@@ -109,7 +111,7 @@
       els.forEach(function (el, n) {
         var k = layers[n].k * r.width;
         var x = -cx * k, y = (-cy * 0.7 + t) * k;
-        el.style.transform = 'translate3d(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px,0) scale(' + SCALE + ')';
+        el.style.transform = 'translate3d(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px,0) scale(' + (layers[n].s || SCALE) + ')';
       });
       requestAnimationFrame(frame);
     }
