@@ -150,11 +150,13 @@ const projects = [
     year: "2022–2024",
     cover: `projects/album-covers/commercial-break.jpg`,
     hero: `projects/album-covers/commercial-break.jpg`,
-    /* Mike's layers: the jet cabin with him gone (his cleaned-up plate), him
-       and the chips, the ransom letters, and the signature and sticker pinned
-       to the frame. */
+    /* Mike's layers: the jet cabin with him gone (his cleaned-up plate), the
+       front officer (scaled up 4% about his own centre so his slight travel
+       never shows the officer still printed on the plate), him and the
+       chips, the ransom letters, the signature and sticker pinned. */
     heroLayers: [
       { src: `projects/album-covers/cb-0-cabin.jpg?v=2`, k: 0.004 },
+      { src: `projects/album-covers/cb-1-cop.webp`, k: 0.009 },
       { src: `projects/album-covers/cb-1-subject.webp?v=2`, k: 0.016 },
       { src: `projects/album-covers/cb-2-letters.webp?v=2`, k: 0.028 },
       { src: `projects/album-covers/cb-3-sign-sticker.webp?v=2`, k: 0 }
