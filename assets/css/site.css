@@ -246,6 +246,22 @@ a { color: inherit; text-decoration: none; }
   transition: transform 0.4s var(--ease), opacity 0.25s ease;
 }
 
+/* Studio page: the bars draw on left to right like the mark beside them,
+   top first, then the middle, then the bottom. clip-path inset with a
+   round keeps the leading end rounded as it travels, where scaleX would
+   squash the cap. backwards fill only, so nothing lingers on the bars to
+   fight the X transform once the menu opens. */
+@keyframes barDraw {
+  from { clip-path: inset(0 100% 0 0 round 999px); }
+  to   { clip-path: inset(0 0 0 0 round 999px); }
+}
+body:has(.hero--studio) .burger span { animation: barDraw 0.6s linear 0.35s backwards; }
+body:has(.hero--studio) .burger span:nth-child(2) { animation-delay: 0.5s; }
+body:has(.hero--studio) .burger span:nth-child(3) { animation-delay: 0.62s; }
+@media (prefers-reduced-motion: reduce) {
+  body:has(.hero--studio) .burger span { animation: none; }
+}
+
 /* Offset = span height + gap, so the two bars meet exactly at centre.
    Derived rather than hardcoded, so it survives --logo-h changing. */
 body.menu-open .burger span:nth-child(1) { transform: translateY(calc(var(--bar-h) + var(--bar-gap))) rotate(45deg); }
@@ -794,9 +810,7 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 .slot-reel {
   display: block;
   will-change: transform;
-  /* the spin itself — one long decelerating travel rather than a series
-     of instant jumps between positions */
-  transition: transform 2200ms cubic-bezier(0.08, 0.72, 0.12, 1);
+  /* the spin's timing and easing are set by hero.js */
 }
 /* The glyphs, placed inside the step box rather than by line-height.
    line-height:1 gives a predictable baseline to measure from; the shift
@@ -1558,11 +1572,11 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 .browse-link:hover { color: var(--accent); }
 
 /* One footer on every page, one row: small print left, the email and
-   social icons centred, location right. No rule above it. Sits on the
+   social icons right. No rule above it. Sits on the
    same --frame-x inset as the nav so it lines up with the logo and burger. */
 .site-foot {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
   gap: 1rem;
   padding: clamp(3rem, 8vh, 5rem) var(--frame-x) var(--frame-y);
@@ -1571,7 +1585,6 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   letter-spacing: 0.1em;
   color: var(--muted);
 }
-.site-foot > :last-child { justify-self: end; }
 .foot-links {
   display: flex;
   align-items: center;
@@ -1585,12 +1598,11 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 }
 .foot-links a:hover { color: var(--accent); }
 .foot-links svg { width: 100%; height: 100%; fill: currentColor; display: block; }
-/* Phone: the icons get their own centred row above the small print.
-   Here rather than in the PHONE block, which sits earlier in the sheet
-   and would lose to the rules above on source order. */
+/* Phone: the line and the icons don't fit side by side, so the icons sit
+   centred above the small print. After the base rule on purpose; the
+   PHONE block is earlier in the sheet and would lose on source order. */
 @media (max-width: 640px) {
-  .site-foot { grid-template-columns: 1fr 1fr; row-gap: 2rem; }
-  .foot-links { grid-column: 1 / -1; grid-row: 1; justify-self: center; }
+  .site-foot { flex-direction: column-reverse; gap: 1.5rem; }
 }
 
 /* ══ ABOUT ══ */

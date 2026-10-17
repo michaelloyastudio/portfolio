@@ -61,24 +61,22 @@
      to the bottom of the list and travels back to 0, so the words fall
      downward through the window and it settles on the first one — the way
      a real reel reads. Building it the other way scrolls upward. */
-  /* Two spins. The reel runs through SPIN, stops on FIRST for a beat, then
-     runs through SPIN again and settles on LAND. Read top to bottom the
-     reel is: LAND, SPIN, FIRST, SPIN. */
-  var FIRST = 'art direction';
-  var order = SPIN.concat([FIRST], SPIN);
+  /* Two full turns of the wheel in one continuous spin. One turn is every
+     word plus LAND, so read top to bottom the reel is LAND, SPIN, LAND,
+     SPIN: the landing word flicks past once halfway, the way it would on
+     a real reel, before it comes round again and stops. */
+  var order = SPIN.concat([LAND], SPIN);
   var html = word(LAND);
   for (var i = 0; i < order.length; i++) html += word(order[i]);
   reel.innerHTML = html;
-  var STOP = SPIN.length + 1;          // index of FIRST on the reel
 
   var words = reel.querySelectorAll('.slot-word');
   var last = words.length - 1;
 
   function settle() {
     if (!work) return;
-    // Float the work in with the rest of the hero (the title, copy and
-    // button do it in CSS), and start the loop on the same beat so it
-    // isn't playing behind a blur nobody can see.
+    // Float the work in once the reel has landed, and start the loop on
+    // the same beat so it isn't playing behind a blur nobody can see.
     work.classList.add('is-in');
     var v = work.querySelector('video');
     if (v) {
@@ -97,38 +95,28 @@
     reel.style.transform = 'translateY(0)';
     settle();
   } else {
-    /* Each spin is one continuous travel, eased so it runs fast and slows
-       into the stop. Stepping the transform word by word is what made it
-       jump-cut. The first travel goes from the far end to FIRST, the
-       second from FIRST to LAND. */
-    function spin(to, ms, done) {
-      reel.style.transition = 'transform ' + ms + 'ms cubic-bezier(0.12, 0.7, 0.16, 1)';
-      reel.style.transform = at(to);
-      var fired = false;
-      function end() { if (fired) return; fired = true; done && done(); }
-      reel.addEventListener('transitionend', end, { once: true });
-      // transitionend can be missed if the tab is throttled
-      setTimeout(end, ms + 120);
-    }
-
     /* Positions are in steps of --slot-h, not pixels. tuneToFont rewrites
        --slot-h when the web font arrives, often mid-spin, and a pixel
-       offset taken before that left the first stop parked between two
-       words. */
+       offset taken before that can leave the reel parked between words. */
     function at(n) { return 'translateY(calc(var(--slot-h, 1.36em) * ' + (-n) + '))'; }
 
     reel.style.transition = 'none';
     reel.style.transform = at(last);
     void reel.offsetHeight;                      // commit the start position
 
+    /* One travel from the far end back to 0, slow enough that the words
+       read as they pass and easing out into the stop. The work floats in
+       only once it has landed. */
+    var SPIN_MS = 4200;
     requestAnimationFrame(function () {
-      spin(STOP, 1300, function () {
-        setTimeout(function () { spin(0, 1700); }, 320);
-      });
+      reel.style.transition = 'transform ' + SPIN_MS + 'ms cubic-bezier(0.22, 0.45, 0.25, 1)';
+      reel.style.transform = at(0);
     });
 
-    // Last in the float-in stagger: title 0.1s, copy 0.3s, button 0.45s.
-    setTimeout(settle, 600);
+    /* The ease-out's last stretch moves less than half a word, so to the
+       eye the reel has stopped well before transitionend. Bring the work
+       in at that moment instead of a second later. */
+    setTimeout(settle, Math.round(SPIN_MS * 0.8));
   }
 
 
