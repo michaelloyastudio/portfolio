@@ -177,7 +177,13 @@ const projects = [
     year: "2022–Present",
     cover: `projects/miscellaneous/you-cover.jpg?v=3`,
     hero: `projects/miscellaneous/you-hero.jpg?v=3`,
-    heroLayers: { bg: `projects/miscellaneous/you-hero-bg.jpg`, fg: `projects/miscellaneous/you-hero-fg.webp?v=2` },
+    /* Mike's layers: the sunburst, the starburst, the Y and U, the meal. */
+    heroLayers: [
+      { src: `projects/miscellaneous/you-hero-bg.jpg`, k: 0.004 },
+      { src: `projects/miscellaneous/you-1-star.webp`, k: 0.012 },
+      { src: `projects/miscellaneous/you-2-yu.webp`, k: 0.02 },
+      { src: `projects/miscellaneous/you-3-meal.webp`, k: 0.03 }
+    ],
     intro: `<p>A mix of passion projects, school assignments, professional work, and collaborations. Not every concept made it to production, but each one shaped my process.</p>`,
     /* ORDER IS DELIBERATE — most important first, least last. Mike's
        ranking, and where a new piece goes is decided by where he places it
