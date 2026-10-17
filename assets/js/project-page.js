@@ -36,113 +36,54 @@
     hm.addEventListener(hm.tagName === 'VIDEO' ? 'loadedmetadata' : 'load', flag);
     flag();
 
-    if (!isVideo && p.heroDepth) depthHero(hero, hm, p.heroDepth);
+    if (!isVideo && p.heroLayers) layeredHero(hero, hm, p.heroLayers);
   }
 
-  /* ── 2.5D hero ─────────────────────────────────────────────────────
-     A depth map (white = near) made from the hero by Depth Anything —
-     ~/Developer/depth/still_depth.py — drives a small WebGL shader that
-     shifts each pixel by how near it is. Near things slide further than
-     far ones as the hero scrolls through the window and as the pointer
-     moves over it, so a flat still reads as layers.
-     The <img> stays in the page for layout, alt text and as the fallback;
-     the canvas sits exactly on top of it and only shows once both
-     textures are in. No WebGL, reduced motion, or a failed load: the
-     plain image is what you get. */
-  function depthHero(wrap, img, depthSrc) {
+  /* ── Layered hero ────────────────────────────────────────────────
+     Each image hero is split into two layers: the subject cut out (fg, the
+     original pixels with an AI mask) and the scene behind it with the
+     subject removed (bg, the original everywhere except under the subject,
+     which an AI plate fills). Stacked, at rest they are the original image.
+     As the hero scrolls through the window and the pointer moves over it,
+     the subject slides further than the background, so it lifts off it.
+     The <img> stays for layout, alt text and as the fallback; the stack
+     only appears once both layers have loaded. Reduced motion: no stack. */
+  function layeredHero(wrap, img, layers) {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    var canvas = document.createElement('canvas');
-    canvas.className = 'depth-canvas';
-    canvas.setAttribute('aria-hidden', 'true');
-    var gl = canvas.getContext('webgl', { premultipliedAlpha: false, antialias: false });
-    if (!gl) return;
+    var BG = 0.006, FG = 0.024;   // travel at the extremes, as a fraction of the hero's width
+    var SCALE = 1.06;             // both layers zoom in a touch so the bg never shows an edge
 
-    var SCROLL = 0.035;   // uv shift at the extremes of the scroll range
-    var POINT = 0.022;    // uv shift at the edges of the hero under the pointer
-    var FOCUS = 0.4;      // depth that stays put; nearer moves one way, farther the other
-    var ZOOM = 1 + 2 * (SCROLL + POINT) * (1 - FOCUS);  // crop in so the shift never samples past the edge
+    var stack = document.createElement('div');
+    stack.className = 'hero-layers';
+    stack.setAttribute('aria-hidden', 'true');
+    var bg = new Image(), fg = new Image();
+    bg.alt = fg.alt = '';
+    bg.className = 'hero-layer'; fg.className = 'hero-layer';
+    stack.appendChild(bg); stack.appendChild(fg);
 
-    var vs = 'attribute vec2 a; varying vec2 uv;' +
-      'void main(){ uv = vec2(a.x, -a.y) * 0.5 + 0.5; gl_Position = vec4(a, 0.0, 1.0); }';
-    var fs = 'precision mediump float; varying vec2 uv;' +
-      'uniform sampler2D img, dep; uniform vec2 off; uniform float focus, zoom;' +
-      'void main(){' +
-      '  vec2 q = (uv - 0.5) / zoom + 0.5;' +
-      '  float d = texture2D(dep, q).r;' +
-      '  vec2 s = q + off * (d - focus);' +
-      // a second look-up at the shifted point keeps edges from smearing
-      '  d = texture2D(dep, s).r;' +
-      '  s = q + off * (d - focus);' +
-      '  gl_FragColor = texture2D(img, clamp(s, 0.0, 1.0));' +
-      '}';
-    function sh(type, src) {
-      var s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
-      return gl.getShaderParameter(s, gl.COMPILE_STATUS) ? s : null;
-    }
-    var v = sh(gl.VERTEX_SHADER, vs), f = sh(gl.FRAGMENT_SHADER, fs);
-    if (!v || !f) return;
-    var prog = gl.createProgram();
-    gl.attachShader(prog, v); gl.attachShader(prog, f); gl.linkProgram(prog);
-    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return;
-    gl.useProgram(prog);
-
-    var buf = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
-    var loc = gl.getAttribLocation(prog, 'a');
-    gl.enableVertexAttribArray(loc);
-    gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-    var uOff = gl.getUniformLocation(prog, 'off');
-    gl.uniform1f(gl.getUniformLocation(prog, 'focus'), FOCUS);
-    gl.uniform1f(gl.getUniformLocation(prog, 'zoom'), ZOOM);
-    gl.uniform1i(gl.getUniformLocation(prog, 'img'), 0);
-    gl.uniform1i(gl.getUniformLocation(prog, 'dep'), 1);
-
-    function texture(unit, image) {
-      var t = gl.createTexture();
-      gl.activeTexture(gl.TEXTURE0 + unit);
-      gl.bindTexture(gl.TEXTURE_2D, t);
-      // NPOT-safe: no mipmaps, clamp at the edges
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-    }
-
-    var depthImg = new Image();
-    var ready = 0;
-    function onReady() {
-      if (++ready < 2) return;
-      try { texture(0, img); texture(1, depthImg); } catch (e) { return; }
-      wrap.classList.add('has-depth');
-      wrap.appendChild(canvas);
+    var loaded = 0;
+    function onLoad() {
+      if (++loaded < 2) return;
+      wrap.appendChild(stack);
       place();
       start();
     }
-    depthImg.onload = onReady;
-    depthImg.src = depthSrc;
-    if (img.complete && img.naturalWidth) onReady();
-    else img.addEventListener('load', onReady);
+    bg.onload = fg.onload = onLoad;
+    bg.src = layers.bg; fg.src = layers.fg;
 
-    // the canvas covers the img exactly, wherever CSS has put it
+    // the stack covers the img exactly, wherever CSS has put it
     function place() {
-      var dpr = Math.min(window.devicePixelRatio || 1, 2);
-      var w = img.offsetWidth, h = img.offsetHeight;
-      canvas.style.left = img.offsetLeft + 'px';
-      canvas.style.top = img.offsetTop + 'px';
-      canvas.style.width = w + 'px';
-      canvas.style.height = h + 'px';
-      canvas.width = Math.round(w * dpr);
-      canvas.height = Math.round(h * dpr);
-      gl.viewport(0, 0, canvas.width, canvas.height);
+      stack.style.left = img.offsetLeft + 'px';
+      stack.style.top = img.offsetTop + 'px';
+      stack.style.width = img.offsetWidth + 'px';
+      stack.style.height = img.offsetHeight + 'px';
     }
     window.addEventListener('resize', place);
 
     // pointer target in -1..1 across the hero, eased toward on each frame
     var px = 0, py = 0, cx = 0, cy = 0;
     wrap.addEventListener('pointermove', function (e) {
-      var r = canvas.getBoundingClientRect();
+      var r = stack.getBoundingClientRect();
       px = ((e.clientX - r.left) / r.width) * 2 - 1;
       py = ((e.clientY - r.top) / r.height) * 2 - 1;
     });
@@ -156,15 +97,19 @@
       }).observe(wrap);
     }
     function start() { if (!running) { running = true; requestAnimationFrame(frame); } }
+    function move(el, k, w, t) {
+      var x = -cx * k * w, y = (-cy * 0.7 + t) * k * w;
+      el.style.transform = 'translate3d(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px,0) scale(' + SCALE + ')';
+    }
     function frame() {
       if (!visible) { running = false; return; }
       cx += (px - cx) * 0.06;
       cy += (py - cy) * 0.06;
       // -1 when the hero's centre is at the bottom of the window, +1 at the top
-      var r = canvas.getBoundingClientRect(), vh = window.innerHeight;
+      var r = stack.getBoundingClientRect(), vh = window.innerHeight;
       var t = Math.max(-1, Math.min(1, (vh / 2 - (r.top + r.height / 2)) / vh));
-      gl.uniform2f(uOff, -cx * POINT, -cy * POINT + t * SCROLL);
-      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      move(bg, BG, r.width, t);
+      move(fg, FG, r.width, t);
       requestAnimationFrame(frame);
     }
   }
