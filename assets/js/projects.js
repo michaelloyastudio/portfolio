@@ -58,7 +58,10 @@ const projects = [
 </div>
 <hr class="work-rule">
 <div class="project-video"><video src="projects/loya-and-co/canvases.mp4" data-silent autoplay loop muted playsinline width="1920" height="1080"></video></div>
-<div><img src="projects/loya-and-co/loya-hat-mockup.jpeg" alt="loya hat mockup" loading="lazy" width="2752" height="1536"></div>`
+<div class="img-grid-2" data-exact>
+<div><img src="projects/loya-and-co/loya-hat-mockup.jpeg" alt="loya hat mockup" loading="lazy" width="2752" height="1536"></div>
+<div><img src="projects/miscellaneous/lyrc-hat.jpeg" alt="LYRC hat" loading="lazy" width="2752" height="1536"></div>
+</div>`
   },
   {
     slug: "bodyarmor-powerade",
@@ -130,8 +133,8 @@ const projects = [
     category: "Selected Works",
     tools: "Various",
     year: "2022–Present",
-    cover: `projects/miscellaneous/lyrc-hat.jpeg`,
-    hero: `projects/miscellaneous/lyrc-hat.jpeg`,
+    cover: `projects/miscellaneous/you-cover.jpg`,
+    hero: `projects/miscellaneous/you-hero.jpg`,
     intro: `<p>A mix of passion projects, school assignments, professional work, and collaborations. Not every concept made it to production, but each one shaped my process.</p>`,
     /* ORDER IS DELIBERATE — most important first, least last. Mike's
        ranking, and where a new piece goes is decided by where he places it
@@ -170,7 +173,6 @@ const projects = [
 <div><img src="projects/miscellaneous/freshmen.jpg" alt="Mixtape Magazine 2023 Freshman" loading="lazy" width="1600" height="1600"></div>
 <div><img src="projects/miscellaneous/exotic-sweezy.jpg" alt="Exotic, an album by Sweezy" loading="lazy" width="1800" height="1800"></div>
 <div><img src="projects/miscellaneous/cartoon.jpg" alt="Cartoon illustration" loading="lazy" width="1002" height="1986"></div>
-<div><img src="projects/miscellaneous/billboard.jpg" alt="2023 Billboard design" loading="lazy" width="2500" height="2500"></div>
 <div><img src="projects/miscellaneous/mm-print.jpg" alt="Mixtape Magazine, Artist or Rapper" loading="lazy" width="1976" height="1525"></div>
 <div><img src="projects/miscellaneous/characters-sketchbook.jpeg" alt="Character sketchbook mockup" loading="lazy" width="2272" height="1888"></div>
 </div>`

@@ -17,7 +17,7 @@
      see, and SPIN[0] is the one that flicks past immediately before the
      reel settles. The four that matter are the four at the top. */
   var SPIN = [
-    'motion design',        // last thing seen before it lands
+    'video production',     // last thing seen before it lands
     'creative direction',
     'music production',
     'event design',
@@ -28,7 +28,7 @@
     'art direction',
     'title sequences'
   ];
-  var LAND = 'video production.';
+  var LAND = 'motion design.';
 
   /* Star pip on the "i", same treatment as the title: a dotless i with the
      star absolutely placed where the tittle would sit. Every i on the reel
@@ -70,9 +70,9 @@
 
   function settle() {
     if (!work) return;
-    // Reveal the work once the reel has landed, and start the loop on the
-    // same beat — it holds on its poster until then rather than playing
-    // behind a blur nobody can see.
+    // Float the work in with the rest of the hero (the title, copy and
+    // button do it in CSS), and start the loop on the same beat so it
+    // isn't playing behind a blur nobody can see.
     work.classList.add('is-in');
     var v = work.querySelector('video');
     if (v) {
@@ -104,15 +104,8 @@
       reel.style.transform = 'translateY(0)';
     });
 
-    var landed = false;
-    function onLanded() {
-      if (landed) return;
-      landed = true;
-      settle();
-    }
-    reel.addEventListener('transitionend', onLanded, { once: true });
-    // belt and braces: transitionend can be missed if the tab is throttled
-    setTimeout(onLanded, 2600);
+    // Last in the float-in stagger: title 0.1s, copy 0.3s, button 0.45s.
+    setTimeout(settle, 600);
   }
 
 

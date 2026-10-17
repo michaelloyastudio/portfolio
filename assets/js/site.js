@@ -61,10 +61,15 @@
   }
 
   /* ── Letter jump ─────────────────────────────────────────────────
-     Split each label into per-letter spans and run navWave across them
-     50ms apart, so the word ripples rather than moving as a block.
-     Same timing as the old nav. Anything with data-wave opts in, which
-     is how the hero button gets the same interaction as the menu. */
+     Split each label into per-letter spans and hop them 50ms apart, so the
+     word ripples rather than moving as a block. Anything with data-wave
+     opts in, which is how the buttons get the same interaction as the menu.
+     The hop is LIFT x the letter's own font size, so a 5rem menu title
+     jumps as far, in proportion, as a small button label does.
+     Web Animations, not a restarted CSS animation: restarting meant
+     animation:none + a forced reflow per letter, which is part of what
+     made the solid buttons flash mid-wiggle. */
+  var LIFT = 0.36;
   document.querySelectorAll('.menu-links a, [data-wave]').forEach(function (link) {
     var text = link.textContent;
     link.innerHTML = text.split('').map(function (ch) {
@@ -76,21 +81,21 @@
 
     link.addEventListener('mouseenter', function () {
       var i = 0;
+      var y = -LIFT * (parseFloat(getComputedStyle(link).fontSize) || 16);
       clearInterval(timer);
       timer = setInterval(function () {
         if (i >= letters.length) { clearInterval(timer); return; }
-        var l = letters[i];
-        l.style.animation = 'none';
-        void l.offsetHeight;          // reflow so the animation can replay
-        l.style.animation = 'navWave 0.4s ease forwards';
+        if (letters[i].animate) {
+          letters[i].animate([
+            { transform: 'translateY(0)', easing: 'ease' },
+            { transform: 'translateY(' + y + 'px)', offset: 0.4, easing: 'ease' },
+            { transform: 'translateY(0)' }
+          ], { duration: 400 });
+        }
         i++;
       }, 50);
     });
     link.addEventListener('mouseleave', function () { clearInterval(timer); });
-    // data-wave-auto: ripple once on its own after the page fades in.
-    if (link.hasAttribute('data-wave-auto')) {
-      setTimeout(function () { link.dispatchEvent(new Event('mouseenter')); }, 900);
-    }
   });
 
   /* ── Nav background on scroll ────────────────────────────────────*/

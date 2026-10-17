@@ -162,7 +162,7 @@ body {
 h1, h2, h3,
 .btn, .menu-links a, .section-label, .tag-label,
 .band-title, .band-cat, .band-arrow, .tile-title, .tile-cat, .tile-arrow,
-.closing-mail, .closing .lead, .closing-links,
+.closing-mail, .foot-lead, .closing-links,
 .entry-role, .entry-date,
 .project-category, .project-facts dt, .project-facts dd, .project-pager,
 .scroll-cue, .browse-link, footer {
@@ -311,12 +311,6 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 /* Letter-jump on hover, carried over from the old nav: the text is split
    into spans and site.js fires this across them 50ms apart. */
 .ltr { display: inline-block; }
-.btn .ltr { will-change: transform; }
-@keyframes navWave {
-  0%   { transform: translateY(0); }
-  40%  { transform: translateY(var(--wave-lift, -5px)); }
-  100% { transform: translateY(0); }
-}
 
 .menu-foot {
   max-width: var(--maxw);
@@ -371,11 +365,7 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   gap: 2.5rem;
 }
 
-/* ══ ABOUT: the statement up top ══
-   Same sans + italic-serif pairing as the Studio lockup, so About reads as
-   the same voice as the homepage. The serif word ripples once on load and
-   again on hover (data-wave in site.js); --wave-lift scales the jump to
-   the type, since navWave's default 5px is invisible at this size. */
+/* ══ ABOUT: the page title, in the Studio lockup's sans ══ */
 .about-head {
   max-width: var(--maxw);
   margin: 0 auto;
@@ -388,17 +378,6 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   letter-spacing: -0.06em;
   line-height: 0.95;
   margin: 0;
-}
-.about-move {
-  font-family: var(--font-hero-serif);
-  font-style: italic;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  padding-left: 0.04em;
-  color: var(--accent);
-  white-space: nowrap;
-  cursor: default;
-  --wave-lift: -0.14em;
 }
 
 .about-copy .project-intro a {
@@ -568,14 +547,30 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   transition: border-color 0.3s ease, color 0.3s ease, background 0.3s ease;
 }
 .btn:hover { border-color: var(--accent); color: var(--accent); }
-/* Filled orange at rest, hollows out on hover. */
+/* Filled red at rest, hollows out on hover.
+   The fill is a pseudo-element faded on opacity, NOT a background
+   transition on the button. Repainting the button's own background while
+   the letters wiggle on their own layers let Chrome composite a stale
+   tile now and then: mid-wiggle the pill flashed back to solid red for a
+   frame. Opacity runs on the compositor and never repaints the button. */
 .btn-solid {
-  background: var(--accent);
+  position: relative;
+  isolation: isolate;
   border-color: var(--accent);
   color: var(--black);
   font-weight: 500;
 }
-.btn-solid:hover { background: transparent; color: var(--accent); }
+.btn-solid::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: var(--accent);
+  z-index: -1;
+  transition: opacity 0.3s ease;
+}
+.btn-solid:hover { color: var(--accent); }
+.btn-solid:hover::before { opacity: 0; }
 
 .scroll-cue {
   position: absolute;
@@ -759,7 +754,6 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   white-space: nowrap;
 }
 .hero--studio .btn-solid {
-  background: var(--accent);
   border-color: var(--accent);
   color: var(--black);
   font-family: var(--font-hero);
@@ -781,7 +775,6 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
    rule above and loses on source order, so the hero button had no hover
    state at all. Restating it here, scoped, is what makes it fire. */
 .hero--studio .btn-solid:hover {
-  background: transparent;
   color: var(--accent);
 }
 
@@ -838,14 +831,39 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   max-width: 100%;
   margin-left: auto;
   align-self: start;
-  /* revealed once the slot lands: opacity plus a defocus that resolves */
+  /* floats in last, like the rest of the hero: up from smaller, opacity
+     rising and the defocus resolving. hero.js adds .is-in. */
   opacity: 0;
-  filter: blur(18px);
-  transition: opacity 1s var(--ease), filter 1.1s var(--ease);
+  filter: blur(16px);
+  transform: scale(0.88);
+  transition: opacity 1.3s var(--ease), filter 1.4s var(--ease), transform 1.6s var(--ease);
 }
 .hero-work.is-in {
   opacity: 1;
   filter: blur(0);
+  transform: none;
+}
+
+/* ── load-in ──
+   Everything in the hero floats toward the viewer: it starts a little
+   small, transparent and out of focus, and eases up to full size, full
+   opacity and sharp. Staggered title, copy, button, then the work. */
+@keyframes floatIn {
+  from { opacity: 0; transform: scale(0.88); filter: blur(16px); }
+  to   { opacity: 1; transform: none; filter: none; }
+}
+.hero--studio .studio-title { animation: floatIn 1.6s var(--ease) 0.1s both; }
+.hero--studio .hero-copy    { animation: floatIn 1.6s var(--ease) 0.3s both; transform-origin: left center; }
+.hero--studio .btn-solid    { animation: floatIn 1.6s var(--ease) 0.45s both; transform-origin: left center; }
+
+/* The slightest chromatic split on the lockup: a red fringe left and a
+   cyan one right, a hair wide. The star is SVG, so it gets the same
+   offsets as drop-shadows. */
+.hero .studio-title {
+  text-shadow: -0.008em 0 rgba(255, 30, 40, 0.42), 0.008em 0 rgba(0, 200, 255, 0.36);
+}
+.hero .studio-title .pip {
+  filter: drop-shadow(-0.008em 0 rgba(255, 30, 40, 0.42)) drop-shadow(0.008em 0 rgba(0, 200, 255, 0.36));
 }
 .hero-work img,
 .hero-work video {
@@ -1002,7 +1020,6 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   /* ── bands, tiles, closing ── */
   .band-meta { margin-top: 1rem; }
   .band-arrow { display: none; }   /* nothing to hover on a phone */
-  .closing { padding-left: var(--pad); padding-right: var(--pad); }
   .closing-mail { font-size: clamp(1.25rem, 7vw, 2rem); word-break: break-word; }
 
   /* ── menu ── */
@@ -1554,33 +1571,45 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 }
 .browse-link:hover { color: var(--accent); }
 
-.closing {
+/* One footer on every page: the email CTA and socials on top, the small
+   print underneath, inside a single border. Both rows sit on --frame-x so
+   they line up with the logo and burger. */
+.site-foot {
   border-top: 1px solid var(--line);
-  text-align: center;
-  padding: clamp(4.5rem, 12vh, 8.5rem) var(--pad);
+  padding: clamp(3.5rem, 10vh, 6.5rem) var(--frame-x) var(--frame-y);
+  color: var(--muted);
 }
-.closing .lead {
+.foot-cta {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin-bottom: clamp(3rem, 9vh, 5.5rem);
+}
+.foot-lead {
+  font-family: var(--font-display);
   font-size: 0.7rem;
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--muted);
-  margin: 0 0 1.6rem;
+  margin: 0 0 1rem;
 }
 .closing-mail {
   display: inline-block;
   font-size: clamp(1.4rem, 5vw, 3.2rem);
   font-weight: 600;
   letter-spacing: -0.035em;
-  margin-bottom: 2.2rem;
+  color: var(--fg);
   transition: color 0.3s ease;
 }
 .closing-mail:hover { color: var(--accent); }
 .closing-links {
   display: flex;
-  justify-content: center;
   align-items: center;
   gap: 1.6rem;
-  color: var(--muted);
+  /* sit on the email's baseline rather than the bottom of its line box */
+  padding-bottom: 0.55rem;
 }
 .closing-links a {
   width: 26px; height: 26px;
@@ -1589,17 +1618,13 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 }
 .closing-links a:hover { color: var(--accent); }
 .closing-links svg { width: 100%; height: 100%; fill: currentColor; display: block; }
-
-footer {
-  border-top: 1px solid var(--line);
-  padding: var(--frame-y) var(--frame-x);   /* matches .nav */
+.foot-base {
   display: flex;
   justify-content: space-between;
   gap: 1rem;
   flex-wrap: wrap;
   font-size: 0.68rem;
   letter-spacing: 0.1em;
-  color: var(--muted);
 }
 
 /* ══ ABOUT ══ */
