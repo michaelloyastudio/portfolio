@@ -99,10 +99,10 @@ const projects = [
     /* Mike's layers: the empty gym and rack, the bottles on the bench, the
        logo floating in front, the fine print pinned to the frame. */
     heroLayers: [
-      { src: `projects/bodyarmor-powerade/pa-0-gym.jpg`, k: 0.004 },
-      { src: `projects/bodyarmor-powerade/pa-1-bottles.webp?v=2`, k: 0.016 },
-      { src: `projects/bodyarmor-powerade/pa-2-logo.webp?v=2`, k: 0.026 },
-      { src: `projects/bodyarmor-powerade/pa-3-legal.webp?v=2`, k: 0 }
+      { src: `projects/bodyarmor-powerade/pa-0-gym.jpg?v=2`, k: 0.004, pad: 0.06 },
+      { src: `projects/bodyarmor-powerade/pa-1-bottles.webp?v=3`, k: 0.016, pad: 0.06 },
+      { src: `projects/bodyarmor-powerade/pa-2-logo.webp?v=2`, k: 0.026, s: 1 },
+      { src: `projects/bodyarmor-powerade/pa-3-legal.webp?v=2`, k: 0, s: 1 }
     ],
     intro: `<p>I spent the summer of 2025 interning with BODYARMOR and Powerade in Queens. Day to day I reformatted brand creative into point-of-sale ads — window clings, cooler clings, end caps — and produced an original video ad for Powerade's fall football campaign.</p>
 <p>For my capstone I built an AI-generated BODYARMOR commercial end to end: generated imagery, Magnific for the upscale, voiceover, and After Effects to assemble. It was presented to C-suite executives, and it was the one that got the CEO to look up.</p>`,
@@ -150,16 +150,14 @@ const projects = [
     year: "2022–2024",
     cover: `projects/album-covers/commercial-break.jpg`,
     hero: `projects/album-covers/commercial-break.jpg`,
-    /* Mike's layers: the jet cabin with him gone (his cleaned-up plate), the
-       front officer (scaled up 4% about his own centre so his slight travel
-       never shows the officer still printed on the plate), him and the
-       chips, the ransom letters, the signature and sticker pinned. */
+    /* Mike's layers: the jet cabin with him gone (his cleaned-up plate), him
+       and the chips, the signature and sticker (nudged in from the corners
+       and unscaled so they never crop), the ransom letters in front. */
     heroLayers: [
       { src: `projects/album-covers/cb-0-cabin.jpg?v=2`, k: 0.004 },
-      { src: `projects/album-covers/cb-1-cop.webp`, k: 0.009 },
       { src: `projects/album-covers/cb-1-subject.webp?v=2`, k: 0.016 },
-      { src: `projects/album-covers/cb-2-letters.webp?v=2`, k: 0.028 },
-      { src: `projects/album-covers/cb-3-sign-sticker.webp?v=2`, k: 0 }
+      { src: `projects/album-covers/cb-3-sign-sticker.webp?v=3`, k: 0.022, s: 1 },
+      { src: `projects/album-covers/cb-2-letters.webp?v=2`, k: 0.028 }
     ],
     intro: `<p>Covers I made back when I was producing my own music. Each one shot and designed from scratch in Photoshop and Illustrator.</p>`,
     work: `<div class="img-grid-3" data-exact>

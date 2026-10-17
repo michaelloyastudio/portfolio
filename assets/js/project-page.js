@@ -62,6 +62,13 @@
     var els = layers.map(function (l) {
       var im = new Image();
       im.alt = ''; im.className = 'hero-layer';
+      if (l.pad) {
+        // the file carries pad (a fraction of each side) of extra picture
+        // beyond the frame, so the layer can sit 1:1 at rest and still
+        // never show an edge when it travels
+        var o = (-l.pad * 100) + '%', sz = ((1 + 2 * l.pad) * 100) + '%';
+        im.style.left = im.style.top = o; im.style.width = im.style.height = sz;
+      }
       stack.appendChild(im);
       return im;
     });
@@ -101,17 +108,23 @@
       }).observe(wrap);
     }
     function start() { if (!running) { running = true; requestAnimationFrame(frame); } }
+    /* scroll position the page loaded at: the resting state, with no
+       pointer over it, is the hero exactly as composed */
+    var t0 = null;
     function frame() {
       if (!visible) { running = false; return; }
       cx += (px - cx) * 0.06;
       cy += (py - cy) * 0.06;
       // -1 when the hero's centre is at the bottom of the window, +1 at the top
       var r = stack.getBoundingClientRect(), vh = window.innerHeight;
-      var t = Math.max(-1, Math.min(1, (vh / 2 - (r.top + r.height / 2)) / vh));
+      var raw = (vh / 2 - (r.top + r.height / 2)) / vh;
+      if (t0 === null) t0 = raw;
+      var t = Math.max(-1, Math.min(1, raw - t0));
       els.forEach(function (el, n) {
         var k = layers[n].k * r.width;
         var x = -cx * k, y = (-cy * 0.7 + t) * k;
-        el.style.transform = 'translate3d(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px,0) scale(' + (layers[n].s || SCALE) + ')';
+        var sc = layers[n].s || (layers[n].pad ? 1 : SCALE);
+        el.style.transform = 'translate3d(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px,0) scale(' + sc + ')';
       });
       requestAnimationFrame(frame);
     }
