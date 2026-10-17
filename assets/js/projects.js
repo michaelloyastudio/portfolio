@@ -84,8 +84,16 @@ const projects = [
     category: "Brand Campaign",
     tools: "Photoshop, Illustrator, Premiere, After Effects, Magnific, ChatGPT",
     year: "2025",
-    cover: `projects/bodyarmor-powerade/cover.jpg`,
-    hero: `projects/bodyarmor-powerade/cover.jpg`,
+    cover: `projects/bodyarmor-powerade/cover.jpg?v=2`,
+    hero: `projects/bodyarmor-powerade/cover.jpg?v=2`,
+    /* Mike's layers: the empty gym and rack, the bottles on the bench, the
+       logo floating in front, the fine print pinned to the frame. */
+    heroLayers: [
+      { src: `projects/bodyarmor-powerade/pa-0-gym.jpg`, k: 0.004 },
+      { src: `projects/bodyarmor-powerade/pa-1-bottles.webp`, k: 0.016 },
+      { src: `projects/bodyarmor-powerade/pa-2-logo.webp`, k: 0.026 },
+      { src: `projects/bodyarmor-powerade/pa-3-legal.webp`, k: 0 }
+    ],
     intro: `<p>I spent the summer of 2025 interning with BODYARMOR and Powerade in Queens. Day to day I reformatted brand creative into point-of-sale ads — window clings, cooler clings, end caps — and produced an original video ad for Powerade's fall football campaign.</p>
 <p>For my capstone I built an AI-generated BODYARMOR commercial end to end: generated imagery, Magnific for the upscale, voiceover, and After Effects to assemble. It was presented to C-suite executives, and it was the one that got the CEO to look up.</p>`,
     work: `<div class="project-video"><video src="projects/bodyarmor-powerade/pa-fall-football.mp4" controls playsinline preload="metadata" poster="projects/bodyarmor-powerade/pa-first.jpg" width="1920" height="1080"></video></div>
