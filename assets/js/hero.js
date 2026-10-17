@@ -10,6 +10,11 @@
 
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  /* A reload lands at the top, so the hero's load-in plays every time
+     instead of the browser restoring a scroll position halfway down. */
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  window.scrollTo(0, 0);
+
   /* Categories the reel spins through before landing on LAND.
      READ THIS LIST BACKWARDS to picture the spin. The reel is built with
      LAND first and travels from the far end back to index 0, so the DOM
@@ -56,17 +61,18 @@
      to the bottom of the list and travels back to 0, so the words fall
      downward through the window and it settles on the first one — the way
      a real reel reads. Building it the other way scrolls upward. */
-  var order = SPIN.concat(SPIN);
+  /* Two spins. The reel runs through SPIN, stops on FIRST for a beat, then
+     runs through SPIN again and settles on LAND. Read top to bottom the
+     reel is: LAND, SPIN, FIRST, SPIN. */
+  var FIRST = 'art direction';
+  var order = SPIN.concat([FIRST], SPIN);
   var html = word(LAND);
   for (var i = 0; i < order.length; i++) html += word(order[i]);
   reel.innerHTML = html;
+  var STOP = SPIN.length + 1;          // index of FIRST on the reel
 
   var words = reel.querySelectorAll('.slot-word');
   var last = words.length - 1;
-
-  function stepHeight() {
-    return words[0].getBoundingClientRect().height || 0;
-  }
 
   function settle() {
     if (!work) return;
@@ -91,17 +97,34 @@
     reel.style.transform = 'translateY(0)';
     settle();
   } else {
-    /* One continuous travel from the far end of the reel back to index 0,
-       eased so it spins fast and then slows into the landing. Stepping the
-       transform position by position is what made it jump-cut — each write
-       snapped instead of scrolling. */
+    /* Each spin is one continuous travel, eased so it runs fast and slows
+       into the stop. Stepping the transform word by word is what made it
+       jump-cut. The first travel goes from the far end to FIRST, the
+       second from FIRST to LAND. */
+    function spin(to, ms, done) {
+      reel.style.transition = 'transform ' + ms + 'ms cubic-bezier(0.12, 0.7, 0.16, 1)';
+      reel.style.transform = at(to);
+      var fired = false;
+      function end() { if (fired) return; fired = true; done && done(); }
+      reel.addEventListener('transitionend', end, { once: true });
+      // transitionend can be missed if the tab is throttled
+      setTimeout(end, ms + 120);
+    }
+
+    /* Positions are in steps of --slot-h, not pixels. tuneToFont rewrites
+       --slot-h when the web font arrives, often mid-spin, and a pixel
+       offset taken before that left the first stop parked between two
+       words. */
+    function at(n) { return 'translateY(calc(var(--slot-h, 1.36em) * ' + (-n) + '))'; }
+
     reel.style.transition = 'none';
-    reel.style.transform = 'translateY(' + (-last * stepHeight()) + 'px)';
+    reel.style.transform = at(last);
     void reel.offsetHeight;                      // commit the start position
-    reel.style.transition = '';                  // hand back to the stylesheet
 
     requestAnimationFrame(function () {
-      reel.style.transform = 'translateY(0)';
+      spin(STOP, 1300, function () {
+        setTimeout(function () { spin(0, 1700); }, 320);
+      });
     });
 
     // Last in the float-in stagger: title 0.1s, copy 0.3s, button 0.45s.
@@ -268,7 +291,12 @@
     title.style.fontSize = probe + 'px';
     var rng = document.createRange();
     rng.selectNodeContents(title);
-    var advance = rng.getBoundingClientRect().width;
+    /* Range rects include transforms, and the title is scaled down while
+       it floats in on load. Measured mid-animation the string read 12%
+       short, the fit came out 12% too big and the lockup ran off the
+       page. Divide the live scale back out. */
+    var live = title.getBoundingClientRect().width / title.offsetWidth || 1;
+    var advance = rng.getBoundingClientRect().width / live;
     if (!advance) { title.style.fontSize = ''; return; }
 
     var b = bearings(probe);

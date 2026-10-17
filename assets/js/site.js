@@ -60,6 +60,50 @@
     });
   }
 
+  /* ── Logo draw-on (Studio page) ───────────────────────────────────
+     Same move as the brand's logo animation (04_Admin/07_Brand.../
+     Logo_Animation): the stroke draws left to right at a constant
+     HORIZONTAL rate, not along its length, so the tall spike doesn't slow
+     it down. The path is clipped at a moving x and rebuilt each frame,
+     which keeps the round cap on the leading edge; a dash offset would
+     draw by arc length instead. */
+  var markPath = document.querySelector('.nav-logo path');
+  if (markPath && document.querySelector('.hero--studio') &&
+      !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    var full = markPath.getAttribute('d');
+    var P = (full.match(/-?[\d.]+,-?[\d.]+/g) || []).map(function (xy) {
+      return xy.split(',').map(Number);
+    });
+    var X0 = P[0][0], X1 = P[P.length - 1][0];
+    var DELAY = 350, DRAW = 1268;   // ms; the draw length is the animation's
+    var cut = function (xt) {
+      var out = [P[0]];
+      for (var k = 1; k < P.length; k++) {
+        var a = P[k - 1], b = P[k];
+        if (b[0] <= xt) { out.push(b); continue; }
+        if (xt > a[0]) {
+          var t = (xt - a[0]) / (b[0] - a[0]);
+          out.push([a[0] + t * (b[0] - a[0]), a[1] + t * (b[1] - a[1])]);
+        }
+        break;
+      }
+      return 'M' + out.map(function (q) { return q[0].toFixed(2) + ',' + q[1].toFixed(2); }).join(' L');
+    };
+    markPath.style.visibility = 'hidden';
+    var t0 = null;
+    var drawStep = function (now) {
+      if (t0 === null) t0 = now;
+      var p = (now - t0 - DELAY) / DRAW;
+      if (p > 0) {
+        markPath.style.visibility = '';
+        if (p >= 1) { markPath.setAttribute('d', full); return; }
+        markPath.setAttribute('d', cut(X0 + p * (X1 - X0)));
+      }
+      requestAnimationFrame(drawStep);
+    };
+    requestAnimationFrame(drawStep);
+  }
+
   /* ── Letter jump ─────────────────────────────────────────────────
      Split each label into per-letter spans and hop them 50ms apart, so the
      word ripples rather than moving as a block. Anything with data-wave

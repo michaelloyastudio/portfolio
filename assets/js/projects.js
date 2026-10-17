@@ -133,8 +133,8 @@ const projects = [
     category: "Selected Works",
     tools: "Various",
     year: "2022–Present",
-    cover: `projects/miscellaneous/you-cover.jpg`,
-    hero: `projects/miscellaneous/you-hero.jpg`,
+    cover: `projects/miscellaneous/you-cover.jpg?v=2`,
+    hero: `projects/miscellaneous/you-hero.jpg?v=2`,
     intro: `<p>A mix of passion projects, school assignments, professional work, and collaborations. Not every concept made it to production, but each one shaped my process.</p>`,
     /* ORDER IS DELIBERATE — most important first, least last. Mike's
        ranking, and where a new piece goes is decided by where he places it

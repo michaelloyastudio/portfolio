@@ -203,28 +203,25 @@ a { color: inherit; text-decoration: none; }
   pointer-events: none;
 }
 .nav > * { pointer-events: auto; }
-.nav-logo img {
-  height: var(--logo-h);
-  width: auto;
+/* The mark is inline SVG, a stroked centreline, so site.js can draw it
+   on: the path's d is rebuilt each frame from a left-to-right sweep, the
+   same as the logo animation in 04_Admin/07_Brand.../Logo_Animation. */
+.nav-logo {
   display: block;
+  height: var(--logo-h);
+  aspect-ratio: 98.52 / 78.75;   /* the mark's viewBox */
+  color: var(--accent);
 }
-
-/* Tint the mark on hover. An <img> can't be recoloured with CSS, so where
-   masks are supported the anchor becomes the shape and the SVG supplies
-   only its alpha — the fill then comes from background-color, which means
-   it tracks --accent automatically instead of needing a second SVG file.
-   The <img> stays as the fallback for anything without mask support. */
-@supports ((-webkit-mask-image: url('../brand/logo-cream.svg?v=84')) or (mask-image: url('../brand/logo-cream.svg?v=84'))) {
-  .nav-logo {
-    display: block;
-    height: var(--logo-h);
-    aspect-ratio: 98.52 / 78.75;   /* the mark's viewBox */
-    background-color: var(--accent);
-    -webkit-mask: url('../brand/logo-cream.svg?v=84') no-repeat center / contain;
-    mask: url('../brand/logo-cream.svg?v=84') no-repeat center / contain;
-    transition: background-color 0.3s ease;
-  }
-  .nav-logo img { display: none; }
+.nav-logo svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 9.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 /* Hamburger */
@@ -852,18 +849,9 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   to   { opacity: 1; transform: none; filter: none; }
 }
 .hero--studio .studio-title { animation: floatIn 1.6s var(--ease) 0.1s both; }
-.hero--studio .hero-copy    { animation: floatIn 1.6s var(--ease) 0.3s both; transform-origin: left center; }
-.hero--studio .btn-solid    { animation: floatIn 1.6s var(--ease) 0.45s both; transform-origin: left center; }
+.hero--studio .hero-copy    { animation: floatIn 1.6s var(--ease) 0.3s both; }
+.hero--studio .btn-solid    { animation: floatIn 1.6s var(--ease) 0.45s both; }
 
-/* The slightest chromatic split on the lockup: a red fringe left and a
-   cyan one right, a hair wide. The star is SVG, so it gets the same
-   offsets as drop-shadows. */
-.hero .studio-title {
-  text-shadow: -0.008em 0 rgba(255, 30, 40, 0.42), 0.008em 0 rgba(0, 200, 255, 0.36);
-}
-.hero .studio-title .pip {
-  filter: drop-shadow(-0.008em 0 rgba(255, 30, 40, 0.42)) drop-shadow(0.008em 0 rgba(0, 200, 255, 0.36));
-}
 .hero-work img,
 .hero-work video {
   /* Capped by HEIGHT so the hero stays on one screen. Both maxes with
@@ -1569,36 +1557,40 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 }
 .browse-link:hover { color: var(--accent); }
 
-/* One footer on every page: email and social icons centred on top, the
-   small print underneath, inside a single border. The small print sits on
-   --frame-x so it lines up with the logo and burger. */
+/* One footer on every page, one row: small print left, the email and
+   social icons centred, location right. No rule above it. Sits on the
+   same --frame-x inset as the nav so it lines up with the logo and burger. */
 .site-foot {
-  border-top: 1px solid var(--line);
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 1rem;
   padding: clamp(3rem, 8vh, 5rem) var(--frame-x) var(--frame-y);
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
   color: var(--muted);
 }
+.site-foot > :last-child { justify-self: end; }
 .foot-links {
   display: flex;
-  justify-content: center;
   align-items: center;
-  gap: 1.6rem;
-  margin-bottom: clamp(2.5rem, 7vh, 4rem);
+  gap: 1.4rem;
 }
-/* same size, colour and hover as the icon row in the menu */
+/* same shapes, colour and hover as the icon row in the menu */
 .foot-links a {
-  width: 26px; height: 26px;
+  width: 22px; height: 22px;
   color: var(--muted);
   transition: color 0.3s ease;
 }
 .foot-links a:hover { color: var(--accent); }
 .foot-links svg { width: 100%; height: 100%; fill: currentColor; display: block; }
-.foot-base {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
-  font-size: 0.68rem;
-  letter-spacing: 0.1em;
+/* Phone: the icons get their own centred row above the small print.
+   Here rather than in the PHONE block, which sits earlier in the sheet
+   and would lose to the rules above on source order. */
+@media (max-width: 640px) {
+  .site-foot { grid-template-columns: 1fr 1fr; row-gap: 2rem; }
+  .foot-links { grid-column: 1 / -1; grid-row: 1; justify-self: center; }
 }
 
 /* ══ ABOUT ══ */
