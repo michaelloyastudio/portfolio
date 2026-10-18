@@ -13,6 +13,8 @@
 //              just enough to cover its own travel, see layerRestScale) or
 //              `pad` (the file carries that fraction of extra picture past
 //              each side). `s` overrides the scale outright.
+//   heroLoop — a video hero that plays like a gif (autoplay, muted, loop, no
+//              controls); heroPoster is its first paint.
 //   heroFit  — 'content' keeps the hero to the width of the work column.
 //   intro    — ONE short block of copy. Keep it tight.
 //   work     — the media below the copy. No prose here.
@@ -121,17 +123,18 @@ const projects = [
     tools: "Illustrator, Photoshop, After Effects, Magnific",
     year: "2024–2026",
     cover: `projects/university-union/cover.jpg?v=2`,
-    hero: `projects/university-union/cover.jpg?v=2`,
+    hero: `projects/university-union/jj-timelapse.mp4?v=8`,
+    heroPoster: `projects/university-union/cover.jpg?v=2`,
+    heroLoop: true,       // plays like a gif: muted, looping, no controls
     intro: `<p>I was Co-Director of Design Board at University Union, Syracuse's largest programming organization, through May 2026. Concert posters, festival identity, large-format signage, and social assets reaching 12,000+ followers.</p>
 <p>The biggest piece was Juice Jam 2025, the full visual identity for Syracuse's annual outdoor festival, built on a retro risograph look with bold gold type.</p>
 <p>I also spent two years trying to get a logo approved for Block Party, our spring concert. I love it. Everybody else hates it.</p>`,
-    work: `<div class="project-video"><video src="projects/university-union/jj-timelapse.mp4?v=8" data-silent autoplay loop muted playsinline width="1600" height="900"></video></div>
-<div class="img-grid-3">
+    work: `<div class="img-grid-2" data-exact>
 <div><img src="projects/university-union/jj-kiosk.jpg?v=3" alt="Juice Jam vertical kiosk" loading="lazy" width="1520" height="2688"></div>
 <div><img src="projects/university-union/jj-merch.jpg" alt="Juice Jam merch mockup" loading="lazy" width="1696" height="2528"></div>
 <div><img src="projects/university-union/jj-poster.jpg?v=3" alt="Juice Jam printed poster" loading="lazy" width="1360" height="2048"></div>
-</div>
 <div><img src="projects/university-union/jj-social.jpg?v=2" alt="Juice Jam social post" loading="lazy" width="2000" height="2000"></div>
+</div>
 <div class="img-grid-3">
 <div><img src="projects/university-union/block-party-2026.jpg" alt="Block Party 2026" loading="lazy" width="1553" height="2400"></div>
 <div><img src="projects/university-union/block-party-earlier.jpg" alt="Block Party earlier version" loading="lazy" width="1164" height="1800"></div>

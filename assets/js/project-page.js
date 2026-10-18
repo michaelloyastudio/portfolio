@@ -14,7 +14,7 @@
 
   var p = projects[i];
   var $ = function (id) { return document.getElementById(id); };
-  var isVideo = /\.(mp4|mov|webm)$/i.test(p.hero || '');
+  var isVideo = /\.(mp4|mov|webm)(\?|$)/i.test(p.hero || '');
 
   document.title = p.title + ' — Michael Loya Studio';
 
@@ -23,7 +23,8 @@
   if (hero) {
     if (p.heroFit === 'content') hero.classList.add('is-content');
     hero.innerHTML = isVideo
-      ? '<video src="' + p.hero + '" controls playsinline preload="metadata"' +
+      ? '<video src="' + p.hero + '" playsinline ' +
+        (p.heroLoop ? 'autoplay loop muted preload="auto"' : 'controls preload="metadata"') +
         (p.heroPoster ? ' poster="' + p.heroPoster + '"' : '') + '></video>'
       : '<img src="' + p.hero + '" alt="' + p.title + '">';
 
