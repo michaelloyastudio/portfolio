@@ -223,6 +223,33 @@
     window.addEventListener('resize', fit);
   }
 
+  /* ── Video thumbnails ──────────────────────────────────────────────
+     A project whose hero is a looping video (heroLoop) has nothing to
+     parallax, so hovering its thumbnail plays the loop over the still
+     instead. Leaving cross-dissolves back to the still, then rewinds, so
+     the next hover starts from the same frame the still shows. */
+  function videoThumb(p, media, hoverEl) {
+    if (!p.heroLoop || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var v = document.createElement('video');
+    v.className = 'thumb-video';
+    v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'none';
+    v.setAttribute('aria-hidden', 'true');
+    v.src = p.hero;
+    media.appendChild(v);
+    var leaving = null;
+    hoverEl.addEventListener('mouseenter', function () {
+      clearTimeout(leaving);
+      var q = v.play();
+      var show = function () { v.classList.add('is-on'); };
+      if (q && q.then) q.then(show).catch(function () {}); else show();
+    });
+    hoverEl.addEventListener('mouseleave', function () {
+      v.classList.remove('is-on');
+      // after the dissolve (0.6s in site.css) the still is all that shows
+      leaving = setTimeout(function () { v.pause(); v.currentTime = 0; }, 650);
+    });
+  }
+
   /* ── Work grid (work page) ───────────────────────────────────────
      Static covers only — no hover video. */
   var grid = $('workGrid');
@@ -246,6 +273,7 @@
         '</div>';
       grid.appendChild(tile);
       layeredThumb(p, tile.querySelector('.tile-media'), tile, 0.045);
+      videoThumb(p, tile.querySelector('.tile-media'), tile);
     });
   }
 
@@ -305,6 +333,7 @@
         '</div>';
       bands.appendChild(el);
       layeredThumb(p, el.querySelector('.band-media'), el, 0.035);
+      videoThumb(p, el.querySelector('.band-media'), el);
     });
   }
 
