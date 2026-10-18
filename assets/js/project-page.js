@@ -7,6 +7,7 @@
 (function () {
   'use strict';
 
+  var pageStart = performance.now();   // ~ when the CSS load-in starts
   var slug = window.PROJECT_SLUG;
   var i = -1;
   projects.forEach(function (p, n) { if (p.slug === slug) i = n; });
@@ -120,7 +121,9 @@
       els.forEach(function (el) { el.style.opacity = '0'; });
       wrap.appendChild(stack);
       place();
-      introStart = performance.now();
+      // the title goes first; the build starts a beat after it (see the
+      // project load-in in site.css), or straight away if loading was slow
+      introStart = Math.max(performance.now(), pageStart + 250);
       start();
       // once the last layer is in, the flat image underneath can come back
       setTimeout(function () { img.style.visibility = ''; }, STAGGER * els.length + INTRO);

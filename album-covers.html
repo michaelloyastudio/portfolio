@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Album Covers — Michael Loya Studio</title>
 <meta name="description" content="Album Covers — Cover Art. Michael Loya Studio.">
-<link rel="icon" type="image/svg+xml" href="favicon.svg?v=226">
+<link rel="icon" type="image/svg+xml" href="favicon.svg?v=227">
 
 <link rel="canonical" href="https://michaelloya.studio/album-covers">
 
@@ -19,12 +19,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300..700;1,300..700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/site.css?v=226">
+<link rel="stylesheet" href="assets/css/site.css?v=227">
 <style>
+  /* First paint: the header (logo + menu) stays put from page to page; the
+     project itself builds top down (site.css, .project load-in). */
   html { background: #0a0a0a; }
-  body { opacity: 0; animation: pageIn 0.4s ease 0.03s forwards; }
+  body > *:not(.nav):not(.menu):not(.project) { opacity: 0; animation: pageIn 0.4s ease 0.03s forwards; }
   @keyframes pageIn { to { opacity: 1; } }
-  @media (prefers-reduced-motion: reduce) { body { opacity: 1; animation: none; } }
+  @media (prefers-reduced-motion: reduce) { body > *:not(.nav):not(.menu):not(.project) { opacity: 1; animation: none; } }
 </style>
 </head>
 <body>
@@ -91,9 +93,9 @@
 </footer>
 
 <script>window.PROJECT_SLUG = "album-covers";</script>
-<script src="assets/js/projects.js?v=226"></script>
-<script src="assets/js/project-page.js?v=226"></script>
-<script src="assets/js/site.js?v=226"></script>
+<script src="assets/js/projects.js?v=227"></script>
+<script src="assets/js/project-page.js?v=227"></script>
+<script src="assets/js/site.js?v=227"></script>
 <!-- GoatCounter: page views, no cookies. Skips itself on localhost. -->
 <script data-goatcounter="https://michaelloya.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>

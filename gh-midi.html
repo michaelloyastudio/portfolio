@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GH MIDI — Michael Loya Studio</title>
 <meta name="description" content="GH MIDI turns a Guitar Hero controller into a real MIDI instrument. Free VST3 and standalone for macOS and Windows.">
-<link rel="icon" type="image/svg+xml" href="favicon.svg?v=226">
+<link rel="icon" type="image/svg+xml" href="favicon.svg?v=227">
 
 <link rel="canonical" href="https://michaelloya.studio/gh-midi">
 
@@ -18,16 +18,18 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="assets/css/site.css?v=226">
+<link rel="stylesheet" href="assets/css/site.css?v=227">
 <style>
   /* First-paint guard. Applies before anything else resolves, so the page
      never flashes raw content before the load-in animations start.
-     Pure CSS — no JS dependency, so it can't leave the page stuck hidden. */
+     Pure CSS — no JS dependency, so it can't leave the page stuck hidden.
+     The header (logo + menu) is left out: it stays put from page to page
+     instead of blinking on every load. */
   html { background: #0a0a0a; }
-  body { opacity: 0; animation: pageIn 0.4s ease 0.03s forwards; }
+  body > *:not(.nav):not(.menu) { opacity: 0; animation: pageIn 0.4s ease 0.03s forwards; }
   @keyframes pageIn { to { opacity: 1; } }
   @media (prefers-reduced-motion: reduce) {
-    body { opacity: 1; animation: none; }
+    body > *:not(.nav):not(.menu) { opacity: 1; animation: none; }
   }
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300..700;1,300..700&display=swap" rel="stylesheet">
@@ -99,9 +101,9 @@
 </footer>
 
 <script>window.PLUGIN_SLUG = "gh-midi";</script>
-<script src="assets/js/plugins.js?v=226"></script>
-<script src="assets/js/plugin-page.js?v=226"></script>
-<script src="assets/js/site.js?v=226"></script>
+<script src="assets/js/plugins.js?v=227"></script>
+<script src="assets/js/plugin-page.js?v=227"></script>
+<script src="assets/js/site.js?v=227"></script>
 <!-- GoatCounter: page views, no cookies. Skips itself on localhost. -->
 <script data-goatcounter="https://michaelloya.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>

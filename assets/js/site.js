@@ -60,6 +60,21 @@
     });
   }
 
+  /* ── Heading home ──────────────────────────────────────────────────
+     The header stays put between pages. Going back to the Studio page
+     (the logo, or Studio in the menu) is the one exception: the logo and
+     menu fade out quickly first, so the Studio page can draw them in again. */
+  if (!document.querySelector('.hero--studio')) {
+    document.querySelectorAll('a.nav-logo, .menu-links a[href="/"]').forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+        e.preventDefault();
+        document.body.classList.add('nav-leaving');
+        setTimeout(function () { window.location.href = a.href; }, 180);
+      });
+    });
+  }
+
   /* ── Logo draw-on (Studio page) ───────────────────────────────────
      Same move as the brand's logo animation (04_Admin/07_Brand.../
      Logo_Animation): the stroke draws left to right, driven by HORIZONTAL
@@ -163,8 +178,19 @@
     });
   }, { threshold: 0.1, rootMargin: '0px 0px -6% 0px' });
 
+  /* The Studio page's project bands wait until they're well into the
+     window (a fifth of the way up from the bottom) before revealing, so
+     each one gets a beat of scroll to itself. */
+  var bandIo = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add('in'); bandIo.unobserve(e.target); }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -22% 0px' });
+
   function observeReveals() {
-    document.querySelectorAll('.reveal:not(.in)').forEach(function (el) { io.observe(el); });
+    document.querySelectorAll('.reveal:not(.in)').forEach(function (el) {
+      (el.classList.contains('band') ? bandIo : io).observe(el);
+    });
   }
 
   /* ── Layered thumbnails ────────────────────────────────────────────

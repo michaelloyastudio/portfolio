@@ -107,7 +107,7 @@
     /* One travel from the far end back to 0, slow enough that the words
        read as they pass and easing out into the stop. The work floats in
        only once it has landed. */
-    var SPIN_MS = 2500;
+    var SPIN_MS = 2150;
     requestAnimationFrame(function () {
       reel.style.transition = 'transform ' + SPIN_MS + 'ms cubic-bezier(0.22, 0.45, 0.25, 1)';
       reel.style.transform = at(0);
