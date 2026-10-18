@@ -77,7 +77,7 @@
        arrive one by one from the back, each floating up to full size as it
        fades in and sharpens. If the layers are slow (or one fails), the
        flat image comes back after a moment so the slot is never empty. */
-    var STAGGER = 220, INTRO = 900;          // ms between layers, ms per layer
+    var STAGGER = 150, INTRO = 650;          // ms between layers, ms per layer
     var introStart = null;
     img.style.visibility = 'hidden';
     var fallback = setTimeout(function () { img.style.visibility = ''; }, 2500);
