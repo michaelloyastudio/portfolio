@@ -192,7 +192,7 @@ const projects = [
       { src: `projects/miscellaneous/you-1-star.webp?v=2`, k: 0.02, s: 1 },
       { src: `projects/miscellaneous/you-3-meal.webp`, k: 0.03, s: 1 }
     ],
-    intro: `<p>A mix of passion projects, school assignments, professional work, and collaborations. Not every concept made it to production, but each one shaped my process.</p>`,
+    intro: `<p>A mix of passion projects, school assignments, professional work, and collaborations. Not every concept made it to production, but each one shaped my process.</p><p>Every piece here was art directed solo, by me, start to finish.</p>`,
     /* ORDER IS DELIBERATE — most important first, least last. Mike's
        ranking, and where a new piece goes is decided by where he places it
        in this list, not by when it was made:

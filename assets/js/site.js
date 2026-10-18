@@ -63,8 +63,9 @@
   /* ── Heading home ──────────────────────────────────────────────────
      The header stays put between pages. Going back to the Studio page
      (the logo, or Studio in the menu) is the one exception: the logo and
-     menu fade out quickly first, so the Studio page can draw them in again. */
-  if (!document.querySelector('.hero--studio')) {
+     menu fade out quickly first, so the Studio page can draw them in again.
+     That holds on the Studio page itself too, where it reloads. */
+  {
     document.querySelectorAll('a.nav-logo, .menu-links a[href="/"]').forEach(function (a) {
       a.addEventListener('click', function (e) {
         if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
@@ -185,7 +186,7 @@
     entries.forEach(function (e) {
       if (e.isIntersecting) { e.target.classList.add('in'); bandIo.unobserve(e.target); }
     });
-  }, { threshold: 0.1, rootMargin: '0px 0px -14% 0px' });
+  }, { threshold: 0.1, rootMargin: '0px 0px -10% 0px' });
 
   function observeReveals() {
     document.querySelectorAll('.reveal:not(.in)').forEach(function (el) {
