@@ -60,7 +60,12 @@
   --panel:  #121212;
   --line:   rgba(232, 224, 212, 0.14);
 
-  --maxw: 1240px;
+  /* Content widths scale with the screen up to their caps, so a laptop
+     shows the same proportions as the Studio Display rather than running
+     nearly edge to edge. The floors keep tablets from getting skinny. */
+  --maxw: min(1240px, max(66vw, 760px));
+  --workw: min(1100px, max(58vw, 700px));
+  --herow: min(1600px, max(74vw, 760px));
   --pad: clamp(1.25rem, 4vw, 3.5rem);
   /* Menu title size, shared so the social row can offset itself against
      the same number the titles are set in. */
@@ -89,7 +94,7 @@
      straight off favicon.svg / logo-cream.svg — if the mark's stroke-width
      changes, change them here too or the bars stop matching it.
      Change --logo-h alone and the whole header rescales, correctly. */
-  --logo-h: 45px;
+  --logo-h: clamp(32px, 2.2vw, 45px);   /* 45 on the Studio Display, ~33 on a laptop */
   --bar-h: calc(var(--logo-h) * 9.5 / 78.75);   /* = 5.43px at 45 */
   --bar-gap: calc(var(--logo-h) * 0.2);         /* = 9px    at 45 */
 
@@ -287,9 +292,11 @@ body.menu-open .burger span:nth-child(3) {
 /* The middle bar trims out instead of fading, from its start toward its
    end, quickly enough to be gone before the other two cross it; it draws
    back in when the menu closes. */
-.burger span:nth-child(2) {
+/* All three carry an explicit full clip so a bar caught mid draw-on can
+   transition from its partial clip to whole (site.js hands it over). */
+.burger span {
   clip-path: inset(0 0 0 0 round 999px);
-  transition: transform 0.4s var(--ease), clip-path 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 0.4s var(--ease), opacity 0.25s ease, clip-path 0.2s cubic-bezier(0.22, 1, 0.36, 1);
 }
 body.menu-open .burger span:nth-child(2) { clip-path: inset(0 0 0 100% round 999px); }
 
@@ -312,7 +319,8 @@ body.menu-open .menu { opacity: 1; visibility: visible; }
 .menu, .burger { -webkit-user-select: none; user-select: none; }
 
 .menu-links {
-  max-width: var(--maxw);
+  /* narrower than the page column, so the menu sits in toward the centre */
+  max-width: calc(var(--maxw) * 0.8);
   margin: 0 auto;
   width: 100%;
 }
@@ -352,7 +360,7 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 .ltr { display: inline-block; }
 
 .menu-foot {
-  max-width: var(--maxw);
+  max-width: calc(var(--maxw) * 0.8);
   margin: 3.5rem auto 0;
   /* Optical alignment, not box alignment. The icons are SVGs whose ink
      runs to the edge of their box, while the titles are text: every
@@ -381,16 +389,18 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
      all sit on the same grid as the Work page. */
   max-width: var(--maxw);
   margin: 0 auto;
-  padding: 0 var(--pad) clamp(3rem, 7vh, 5rem);
+  padding: 0 var(--pad) clamp(1rem, 3vh, 3rem);
   display: grid;
-  grid-template-columns: minmax(0, 420px) minmax(0, 1fr);
-  gap: clamp(2rem, 5vw, 5rem);
+  /* the portrait column is as wide as the height-capped photo makes it */
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: clamp(2rem, 4vw, 5rem);
   align-items: start;
 }
 .about-top .about-copy { max-width: 60ch; margin-left: auto; }
 .about-top .project-intro p { margin-bottom: 1.2rem; }
 .about-figure { margin: 0; }   /* UA default is 16px 40px, which broke the alignment */
-.about-figure img { width: 100%; height: auto; display: block; }
+/* capped by height so the whole page fits one screen on a laptop */
+.about-figure img { display: block; width: auto; height: min(54svh, 590px); aspect-ratio: 910 / 1280; }
 .about-figure figcaption {
   margin-top: 0.7rem;
   font-size: 0.78rem;
@@ -408,11 +418,11 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 .about-head {
   max-width: var(--maxw);
   margin: 0 auto;
-  padding: var(--head-top) var(--pad) clamp(2.75rem, 6vh, 4.5rem);
+  padding: var(--head-top) var(--pad) clamp(1.75rem, 4.5vh, 4.5rem);
 }
 .about-statement {
   font-family: var(--font-hero);
-  font-size: clamp(2.8rem, 9vw, 7.4rem);
+  font-size: clamp(2.8rem, min(5.5vw, 8vh), 7.4rem);
   font-weight: 675;
   letter-spacing: -0.06em;
   line-height: 0.95;
@@ -1064,7 +1074,7 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   padding: var(--head-top) var(--pad) clamp(2.5rem, 6vw, 4rem);
 }
 .page-head h1 {
-  font-size: clamp(2.6rem, min(8vw, 8.5vh), 5.4rem);
+  font-size: clamp(2.6rem, min(4.6vw, 6.6vh), 5.4rem);
   font-weight: 700;
   letter-spacing: -0.04em;
   line-height: 1;
@@ -1182,7 +1192,7 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   margin: 0 0 0.5rem;
 }
 .band-title {
-  font-size: clamp(1.5rem, 4vw, 2.6rem);
+  font-size: clamp(1.4rem, 2.2vw, 2.6rem);
   font-weight: 600;
   letter-spacing: -0.03em;
   line-height: 1.05;
@@ -1245,7 +1255,7 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   margin: 0 0 0.4rem;
 }
 .tile-title {
-  font-size: clamp(1.15rem, 2.2vw, 1.6rem);
+  font-size: clamp(1.1rem, 1.5vw, 1.6rem);
   font-weight: 600;
   letter-spacing: -0.03em;
   line-height: 1.05;
@@ -1485,7 +1495,6 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 .product-thumb.is-on { opacity: 1; border-color: var(--accent); }
 
 /* ── the buy column ── */
-.product-buy { position: sticky; top: calc(var(--logo-h) + var(--frame-y) * 2); }
 .product-host {
   font-family: var(--font-display);
   font-size: 0.66rem;
@@ -1650,6 +1659,8 @@ body {
 }
 body > * { width: 100%; flex-shrink: 0; }
 .site-foot { margin-top: auto; }
+/* About is one screen: the footer tucks up under it */
+main.about + .site-foot { padding-top: 1.5rem; }
 
 /* One footer on every page, one row: small print left, the email and
    social icons right. No rule above it. Sits on the
@@ -1661,18 +1672,18 @@ body > * { width: 100%; flex-shrink: 0; }
   gap: 1rem;
   padding: clamp(3rem, 8vh, 5rem) var(--frame-x) var(--frame-y);
   font-family: var(--font-display);
-  font-size: 0.68rem;
+  font-size: clamp(0.6rem, 0.45vw, 0.68rem);
   letter-spacing: 0.1em;
   color: var(--muted);
 }
 .foot-links {
   display: flex;
   align-items: center;
-  gap: 1.4rem;
+  gap: clamp(1rem, 0.9vw, 1.4rem);
 }
 /* same shapes, colour and hover as the icon row in the menu */
 .foot-links a {
-  width: 22px; height: 22px;
+  width: clamp(17px, 1.1vw, 22px); height: clamp(17px, 1.1vw, 22px);
   color: var(--muted);
   transition: color 0.3s ease;
 }
@@ -1832,6 +1843,7 @@ body.nav-leaving .nav { opacity: 0; }
   to   { opacity: 1; transform: none; }
 }
 main.project > .project-head { animation: projIn 0.4s var(--ease) 0s both; }
+main.project > .project-head.head-wait { animation-play-state: paused; }
 main.project > .project-body,
 main.project > .project-work,
 main.project > .project-pager { animation: projIn 0.55s var(--ease) 0.65s both; }
@@ -1845,7 +1857,7 @@ main.project > .project-pager { animation: projIn 0.55s var(--ease) 0.65s both; 
 
 .project-hero {
   width: 100%;
-  max-width: 1600px;
+  max-width: var(--herow);
   margin: 0 auto;
   padding: 0 var(--pad);
 }
@@ -1897,7 +1909,7 @@ main.project > .project-pager { animation: projIn 0.55s var(--ease) 0.65s both; 
 /* heroFit: 'content' — the hero runs to the same margins as the work
    column under it (.project-work), so it reads as a piece on the page
    rather than a full-bleed banner. */
-.project-hero.is-content { max-width: 1100px; }
+.project-hero.is-content { max-width: var(--workw); }
 
 /* project-page.js fitHero sets the max-height; the media keeps its own
    aspect and centres, so a wide hero gets a touch narrower on a short
@@ -1923,7 +1935,7 @@ main.project > .project-pager { animation: projIn 0.55s var(--ease) 0.65s both; 
 /* Title + category sit above the hero. Category is pushed right and sits
    on the title's baseline. */
 .project-head {
-  max-width: 1600px;
+  max-width: var(--herow);
 }
 /* About uses the narrower Work-page frame. */
 .project-head--narrow { max-width: var(--maxw); }
@@ -1951,14 +1963,14 @@ main.project > .project-pager { animation: projIn 0.55s var(--ease) 0.65s both; 
 .project-head h1 {
   /* scales with the narrower of width and height, so a short laptop
      screen gets a proportionally smaller title, as a narrow one does */
-  font-size: clamp(3rem, min(8.5vw, 9.5vh), 6rem);
+  font-size: clamp(2.6rem, min(4.8vw, 7vh), 6rem);
   font-weight: 700;
   letter-spacing: -0.04em;
   line-height: 1;
   margin: 0;
 }
 .project-intro p {
-  font-size: clamp(1.14rem, 1.9vw, 1.32rem);
+  font-size: clamp(1.02rem, 1.1vw, 1.32rem);
   line-height: 1.7;
   opacity: 1;
   margin: 0 0 1.1rem;
@@ -2001,7 +2013,7 @@ main.project > .project-pager { animation: projIn 0.55s var(--ease) 0.65s both; 
 /* ── the work ── */
 .project-work {
   --tile-gap: clamp(0.6rem, 1.2vw, 1rem);
-  max-width: 1100px;
+  max-width: var(--workw);
   margin: 0 auto;
   padding: 0 var(--pad);
 }
@@ -2091,7 +2103,7 @@ main.project > .project-pager { animation: projIn 0.55s var(--ease) 0.65s both; 
 /* ── prev / next ── */
 /* Plain text buttons with arrows. No rule, no project names. */
 .project-pager {
-  max-width: 1100px;
+  max-width: var(--workw);
   margin: clamp(3rem, 8vh, 5rem) auto 0;
   padding: 0 var(--pad);
   display: flex;
@@ -2120,6 +2132,7 @@ main.project > .project-pager { animation: projIn 0.55s var(--ease) 0.65s both; 
   .plugin-download { gap: 0.9rem; }
   .about-hero { grid-template-columns: 1fr; }
   .about-top { grid-template-columns: 1fr; }
+  .about-figure img { width: 100%; max-width: 420px; height: auto; }
   .cv-item { grid-template-columns: 1fr; gap: 0.35rem; }
   .about-portrait { max-width: 260px; }
   .two-col { grid-template-columns: 1fr; }

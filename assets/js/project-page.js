@@ -52,6 +52,22 @@
       var avail = window.innerHeight - top - gap;
       hm.style.maxHeight = Math.max(avail, 240).toFixed(0) + 'px';
       hero.classList.add('is-fit');
+      alignHead();
+    };
+    /* The title and category run to the hero's edges: the head takes the
+       hero's rendered width (plus the same side padding both carry). */
+    var head = document.querySelector('.project-head');
+    /* The head holds its load-in until it knows that width, so it never
+       appears at one width and then jumps to another (fallback 700ms). */
+    var release = function () { if (head) head.classList.remove('head-wait'); };
+    if (head) { head.classList.add('head-wait'); setTimeout(release, 700); }
+    var alignHead = function () {
+      if (!head) return;
+      var mw = hm.getBoundingClientRect().width;
+      if (window.innerWidth <= 640 || !mw) { head.style.maxWidth = ''; release(); return; }
+      var pad = parseFloat(getComputedStyle(head).paddingLeft) || 0;
+      head.style.maxWidth = (mw + 2 * pad).toFixed(1) + 'px';
+      release();
     };
     hm.addEventListener(hm.tagName === 'VIDEO' ? 'loadedmetadata' : 'load', fitHero);
     fitHero();

@@ -24,6 +24,18 @@
   var burger = $('burger');
   if (burger) {
     burger.addEventListener('click', function () {
+      /* Clicked while the bars are still drawing on (Studio page load): hand
+         each bar's current clip over to its transition, so the middle bar
+         trims out from wherever it got to instead of finishing the draw
+         first and then snapping. */
+      burger.querySelectorAll('span').forEach(function (s) {
+        var a = s.getAnimations ? s.getAnimations().filter(function (x) { return x.animationName; }) : [];
+        if (!a.length) return;
+        s.style.clipPath = getComputedStyle(s).clipPath;
+        a.forEach(function (x) { x.cancel(); });
+        void s.offsetWidth;
+        s.style.clipPath = '';
+      });
       var open = document.body.classList.toggle('menu-open');
       burger.setAttribute('aria-expanded', open ? 'true' : 'false');
       lockScroll(open);
