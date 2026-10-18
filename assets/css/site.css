@@ -1103,7 +1103,8 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 .band:hover .band-media img { transform: scale(1.035); }
 
 /* Video thumbnails (site.js videoThumb): the loop sits over the still,
-   appears at once on hover and is gone at once on leave. It zooms
+   appears at once on the first hover and from then on just pauses and
+   resumes, holding whatever frame it stopped on. It zooms
    with the still, so the hover feels the same as every other tile. */
 .thumb-video {
   position: absolute;

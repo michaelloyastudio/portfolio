@@ -227,8 +227,7 @@
      A project whose hero is a looping video (heroLoop) has nothing to
      parallax, so hovering its thumbnail plays the loop over the still
      instead: it appears at once (the still is its own first frame) and
-     plays. Leaving cuts straight back to the still and rewinds, so the
-     next hover starts from the same frame the still shows. */
+     plays. Leaving pauses it where it is; hovering again resumes. */
   function videoThumb(p, media, hoverEl) {
     if (!p.heroLoop || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     var v = document.createElement('video');
@@ -244,10 +243,9 @@
       else v.addEventListener('playing', function () { v.classList.add('is-on'); }, { once: true });
       var q = v.play(); if (q && q.catch) q.catch(function () {});
     });
-    hoverEl.addEventListener('mouseleave', function () {
-      v.classList.remove('is-on');
-      v.pause(); v.currentTime = 0;
-    });
+    // leaving just pauses: the frame it stopped on stays up, and the next
+    // hover carries on from there
+    hoverEl.addEventListener('mouseleave', function () { v.pause(); });
   }
 
   /* ── Work grid (work page) ───────────────────────────────────────
