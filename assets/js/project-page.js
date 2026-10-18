@@ -91,8 +91,14 @@
     }
     window.addEventListener('resize', place);
 
-    // pointer target in -1..1 across the hero, eased toward on each frame
-    var px = 0, py = 0, cx = 0, cy = 0;
+    /* Pointer target in -1..1 across the picture. Three things keep it calm:
+       the pointer's pull (on) fades in over about half a second after it
+       arrives and out after it leaves, so landing on the very edge doesn't
+       fling the layers to full travel; and the motion is smoothed twice
+       (target -> m -> c), so it starts gently and settles gently rather than
+       jumping off at full speed. Time-based, so it feels the same at any
+       frame rate. */
+    var px = 0, py = 0, mx = 0, my = 0, cx = 0, cy = 0, on = 0, inside = 0, last = 0;
     // only over the picture itself: a square hero sits in a wide slot, and
     // reading the pointer across the whole slot pushed layers past their
     // edges
@@ -100,10 +106,10 @@
       var r = stack.getBoundingClientRect();
       var x = ((e.clientX - r.left) / r.width) * 2 - 1;
       var y = ((e.clientY - r.top) / r.height) * 2 - 1;
-      if (Math.abs(x) > 1 || Math.abs(y) > 1) { px = 0; py = 0; return; }
-      px = x; py = y;
+      if (Math.abs(x) > 1 || Math.abs(y) > 1) { inside = 0; return; }
+      inside = 1; px = x; py = y;
     });
-    wrap.addEventListener('pointerleave', function () { px = 0; py = 0; });
+    wrap.addEventListener('pointerleave', function () { inside = 0; });
 
     var visible = true, running = false;
     if ('IntersectionObserver' in window) {
@@ -118,8 +124,14 @@
     var t0 = null;
     function frame() {
       if (!visible) { running = false; return; }
-      cx += (px - cx) * 0.06;
-      cy += (py - cy) * 0.06;
+      var now = performance.now(), dt = last ? Math.min(0.05, (now - last) / 1000) : 0.016;
+      last = now;
+      var ease = function (tau) { return 1 - Math.exp(-dt / tau); };
+      on += (inside - on) * ease(0.35);
+      mx += (px * on - mx) * ease(0.22);
+      my += (py * on - my) * ease(0.22);
+      cx += (mx - cx) * ease(0.22);
+      cy += (my - cy) * ease(0.22);
       // -1 when the hero's centre is at the bottom of the window, +1 at the top
       var r = stack.getBoundingClientRect(), vh = window.innerHeight;
       var raw = (vh / 2 - (r.top + r.height / 2)) / vh;
