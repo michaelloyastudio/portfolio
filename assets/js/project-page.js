@@ -38,6 +38,24 @@
     hm.addEventListener(hm.tagName === 'VIDEO' ? 'loadedmetadata' : 'load', flag);
     flag();
 
+    /* Fit to the first screen: the hero's height is whatever the window has
+       left under the title, less a small gap that scales with the screen,
+       so every screen shows the whole hero the same way. Its width follows
+       from its own aspect. Phones keep full width. */
+    var fitHero = function () {
+      var w = hm.naturalWidth || hm.videoWidth, h = hm.naturalHeight || hm.videoHeight;
+      if (!w || !h) return;
+      if (window.innerWidth <= 640) { hm.style.maxHeight = ''; return; }
+      var top = hero.getBoundingClientRect().top + window.scrollY;
+      var gap = Math.max(16, Math.min(32, window.innerHeight * 0.025));
+      var avail = window.innerHeight - top - gap;
+      hm.style.maxHeight = Math.max(avail, 240).toFixed(0) + 'px';
+      hero.classList.add('is-fit');
+    };
+    hm.addEventListener(hm.tagName === 'VIDEO' ? 'loadedmetadata' : 'load', fitHero);
+    fitHero();
+    window.addEventListener('resize', fitHero);
+
     if (!isVideo && p.heroLayers) layeredHero(hero, hm, p.heroLayers);
     /* A looping video hero has no layers, but builds in the same way a
        layer does: once its first frame is ready it fades up, sharpens and

@@ -77,6 +77,11 @@
      Expressed as a fraction of --frame-y so it tracks the phone override
      rather than needing its own. */
   --nav-y: calc(var(--frame-y) * 0.74);
+  /* Where page titles start: just under the nav (its top inset plus the
+     burger, which is the taller of the two), plus a gap that scales with
+     the screen's height. Was a flat 7rem + --pad, which left ~80px of dead
+     space on a laptop and pushed heroes off the first screen. */
+  --head-top: calc(var(--nav-y) + var(--logo-h) * 1.4 + clamp(1.25rem, 3.4vh, 3rem));
 
   /* The mark's rendered height. The burger is built entirely out of this
      so the two never drift: the bars take their weight from the mark's
@@ -381,7 +386,7 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 .about-head {
   max-width: var(--maxw);
   margin: 0 auto;
-  padding: calc(7rem + var(--pad)) var(--pad) clamp(2.75rem, 6vh, 4.5rem);
+  padding: var(--head-top) var(--pad) clamp(2.75rem, 6vh, 4.5rem);
 }
 .about-statement {
   font-family: var(--font-hero);
@@ -1034,10 +1039,10 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 .page-head {
   max-width: var(--maxw);
   margin: 0 auto;
-  padding: calc(7rem + var(--pad)) var(--pad) clamp(2.5rem, 6vw, 4rem);
+  padding: var(--head-top) var(--pad) clamp(2.5rem, 6vw, 4rem);
 }
 .page-head h1 {
-  font-size: clamp(2.6rem, 8vw, 5.4rem);
+  font-size: clamp(2.6rem, min(8vw, 8.5vh), 5.4rem);
   font-weight: 700;
   letter-spacing: -0.04em;
   line-height: 1;
@@ -1426,7 +1431,7 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   /* 7rem, the same first-element offset as .page-head and .project-head,
      so the shot lands where a title does on every other page. 6rem sat
      one rem higher than the rest of the site. */
-  padding: calc(7rem + var(--pad)) var(--pad) clamp(3rem, 7vh, 5rem);
+  padding: var(--head-top) var(--pad) clamp(3rem, 7vh, 5rem);
 }
 
 .product-shot img {
@@ -1844,6 +1849,16 @@ body > * { width: 100%; flex-shrink: 0; }
    rather than a full-bleed banner. */
 .project-hero.is-content { max-width: 1100px; }
 
+/* project-page.js fitHero sets the max-height; the media keeps its own
+   aspect and centres, so a wide hero gets a touch narrower on a short
+   screen instead of running off the bottom. */
+.project-hero.is-fit img,
+.project-hero.is-fit video {
+  width: auto;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
 /* Square or portrait heroes only: going full width would make them
    absurdly tall, so cap the height and centre instead. project-page.js
    adds this class from the hero's real aspect ratio. */
@@ -1865,8 +1880,9 @@ body > * { width: 100%; flex-shrink: 0; }
 .project-head {
   margin: 0 auto;
   /* Same top offset as .page-head on Work/About so titles sit at a
-     consistent height across the site. */
-  padding: calc(7rem + var(--pad)) var(--pad) clamp(2.75rem, 6vh, 4.5rem);
+     consistent height across the site. The gap under it scales with the
+     screen's height: the hero below is sized to fit what's left. */
+  padding: var(--head-top) var(--pad) clamp(1rem, 2.6vh, 2.25rem);
   display: flex;
   align-items: baseline;
   justify-content: space-between;
@@ -1883,7 +1899,9 @@ body > * { width: 100%; flex-shrink: 0; }
   white-space: nowrap;
 }
 .project-head h1 {
-  font-size: clamp(3rem, 8.5vw, 6rem);
+  /* scales with the narrower of width and height, so a short laptop
+     screen gets a proportionally smaller title, as a narrow one does */
+  font-size: clamp(3rem, min(8.5vw, 9.5vh), 6rem);
   font-weight: 700;
   letter-spacing: -0.04em;
   line-height: 1;
