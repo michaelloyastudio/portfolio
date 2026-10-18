@@ -227,7 +227,7 @@
      A project whose hero is a looping video (heroLoop) has nothing to
      parallax, so hovering its thumbnail plays the loop over the still
      instead: it appears at once (the still is its own first frame) and
-     plays. Leaving cross-dissolves back to the still, then rewinds, so the
+     plays. Leaving cuts straight back to the still and rewinds, so the
      next hover starts from the same frame the still shows. */
   function videoThumb(p, media, hoverEl) {
     if (!p.heroLoop || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -237,19 +237,16 @@
     v.setAttribute('aria-hidden', 'true');
     v.src = p.hero;
     media.appendChild(v);
-    var leaving = null;
     // no fade in: the still is the loop's first frame, so the video can
     // simply appear on top of it and start moving
     hoverEl.addEventListener('mouseenter', function () {
-      clearTimeout(leaving);
       if (v.readyState >= 2) v.classList.add('is-on');
       else v.addEventListener('playing', function () { v.classList.add('is-on'); }, { once: true });
       var q = v.play(); if (q && q.catch) q.catch(function () {});
     });
     hoverEl.addEventListener('mouseleave', function () {
       v.classList.remove('is-on');
-      // after the dissolve (0.6s in site.css) the still is all that shows
-      leaving = setTimeout(function () { v.pause(); v.currentTime = 0; }, 650);
+      v.pause(); v.currentTime = 0;
     });
   }
 
