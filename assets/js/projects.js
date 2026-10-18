@@ -7,9 +7,12 @@
 //   hero     — big media at the top of the project page. A .mp4/.mov renders
 //              as a poster-backed player; anything else renders as an image.
 //   heroLayers — optional parallax split of an image hero: [{ src, k }, ...]
-//              back to front (k = travel as a fraction of width), or the
-//              two-layer shorthand { bg, fg }. Stacked they must equal the
-//              hero exactly.
+//              back to front, k = travel as a fraction of width. Layers sit
+//              1:1 at rest, so the stack is the hero exactly. A layer whose
+//              picture runs to the frame edge takes `edge: true` (scaled
+//              just enough to cover its own travel, see layerRestScale) or
+//              `pad` (the file carries that fraction of extra picture past
+//              each side). `s` overrides the scale outright.
 //   intro    — ONE short block of copy. Keep it tight.
 //   work     — the media below the copy. No prose here.
 const projects = [
@@ -26,11 +29,11 @@ const projects = [
        30px, most planets 130px, the blurred corner planets 358px. Scaled so
        the mid layer travels 1.2% of the width. */
     heroLayers: [
-      { src: `projects/capstone/wih-0-sky.jpg?v=2`, k: 0 },
+      { src: `projects/capstone/wih-0-sky.jpg?v=2`, k: 0, edge: true },
       { src: `projects/capstone/wih-1-far.webp?v=3`, k: 0.0028 },
       { src: `projects/capstone/wih-2-mid.webp?v=3`, k: 0.012 },
       { src: `projects/capstone/wih-3-astronaut.webp?v=2`, k: 0.019 },
-      { src: `projects/capstone/wih-4-near.webp?v=4`, k: 0.033, s: 1.12 }
+      { src: `projects/capstone/wih-4-near.webp?v=4`, k: 0.033, edge: true }
     ],
     intro: `<p>A music visualizer for <a href="https://open.spotify.com/artist/" target="_blank" rel="noopener">Z</a>'s track <em>where it hurts.</em>, made as my senior capstone. Z isn't based in NY, so the piece had to be built rather than shot, and I art directed it end to end.</p>
 <p>I storyboarded the scenes and wrote the direction, then composed each frame from AI-generated assets, broke the stills apart in Photoshop, and animated them in After Effects. The imagery stays abstract on purpose. Z gave me the freedom, and I'd rather leave room for the viewer than push a narrative he wasn't comfortable carrying.</p>
@@ -58,8 +61,8 @@ const projects = [
        and dust in the beam on three planes, made procedurally
        (~/Developer/depth/hero_layers/loya_dust.py). */
     heroLayers: [
-      { src: `projects/loya-and-co/loya-0-room.jpg?v=2`, k: 0.004 },
-      { src: `projects/loya-and-co/loya-1-record.webp?v=3`, k: 0.016 },
+      { src: `projects/loya-and-co/loya-0-room.jpg?v=2`, k: 0.004, edge: true },
+      { src: `projects/loya-and-co/loya-1-record.webp?v=3`, k: 0.016, edge: true },
       { src: `projects/loya-and-co/loya-2-dust-far.webp?v=2`, k: 0.008 },
       { src: `projects/loya-and-co/loya-3-dust-mid.webp?v=2`, k: 0.022 },
       { src: `projects/loya-and-co/loya-4-dust-near.webp?v=2`, k: 0.04 }
@@ -121,7 +124,7 @@ const projects = [
     intro: `<p>I was Co-Director of Design Board at University Union, Syracuse's largest programming organization, through May 2026. Concert posters, festival identity, large-format signage, and social assets reaching 12,000+ followers.</p>
 <p>The biggest piece was Juice Jam 2025, the full visual identity for Syracuse's annual outdoor festival, built on a retro risograph look with bold gold type.</p>
 <p>I also spent two years trying to get a logo approved for Block Party, our spring concert. I love it. Everybody else hates it.</p>`,
-    work: `<div class="project-video"><video src="projects/university-union/jj-timelapse.mp4?v=6" data-silent autoplay loop muted playsinline width="1600" height="900"></video></div>
+    work: `<div class="project-video"><video src="projects/university-union/jj-timelapse.mp4?v=7" data-silent autoplay loop muted playsinline width="1600" height="900"></video></div>
 <div class="img-grid-3">
 <div><img src="projects/university-union/jj-kiosk.jpg?v=3" alt="Juice Jam vertical kiosk" loading="lazy" width="1520" height="2688"></div>
 <div><img src="projects/university-union/jj-merch.jpg" alt="Juice Jam merch mockup" loading="lazy" width="1696" height="2528"></div>
@@ -155,9 +158,9 @@ const projects = [
        cover, moving only slightly), him and the chips, the ransom letters.
        Padded back layers so the resting state is the cover exactly. */
     heroLayers: [
-      { src: `projects/album-covers/cb-0-cabin.jpg?v=3`, k: 0.004, pad: 0.06 },
+      { src: `projects/album-covers/cb-0-cabin.jpg?v=4`, k: 0.004, edge: true },
       { src: `projects/album-covers/cb-3-sign-sticker.webp?v=4`, k: 0.006, s: 1 },
-      { src: `projects/album-covers/cb-1-subject.webp?v=3`, k: 0.016, pad: 0.06 },
+      { src: `projects/album-covers/cb-1-subject.webp?v=4`, k: 0.016, edge: true },
       { src: `projects/album-covers/cb-2-letters.webp?v=2`, k: 0.028, s: 1 }
     ],
     intro: `<p>Covers I made back when I was producing my own music. Each one shot and designed from scratch in Photoshop and Illustrator.</p>`,
@@ -180,7 +183,7 @@ const projects = [
     hero: `projects/miscellaneous/you-hero.jpg?v=4`,
     /* Mike's layers: the sunburst, the Y and U, the starburst, the meal. */
     heroLayers: [
-      { src: `projects/miscellaneous/you-hero-bg.jpg?v=2`, k: 0.004, pad: 0.06 },
+      { src: `projects/miscellaneous/you-hero-bg.jpg?v=3`, k: 0.004, edge: true },
       { src: `projects/miscellaneous/you-2-yu.webp`, k: 0.012, s: 1 },
       { src: `projects/miscellaneous/you-1-star.webp`, k: 0.02, s: 1 },
       { src: `projects/miscellaneous/you-3-meal.webp`, k: 0.03, s: 1 }
@@ -228,3 +231,13 @@ const projects = [
 </div>`
   }
 ];
+
+/* Resting scale of a hero layer in a box of aspect ar (w / h). Travel is at
+   most k x width on both axes (project-page.js caps it there), so a layer
+   that reaches the frame edge needs 2k of extra width, and 2k x ar of extra
+   height, plus a little margin. Shared by the project hero and the tiles. */
+function layerRestScale(l, ar) {
+  if (l.s) return l.s;
+  if (l.pad || !l.edge) return 1;
+  return 1 + 2 * l.k * Math.max(1, ar) * 1.08;
+}

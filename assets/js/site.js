@@ -167,6 +167,62 @@
     document.querySelectorAll('.reveal:not(.in)').forEach(function (el) { io.observe(el); });
   }
 
+  /* ── Layered thumbnails ────────────────────────────────────────────
+     A project with heroLayers gets its layers stacked inside the thumbnail
+     instead of the flat cover. At rest they are the cover exactly; on
+     hover the stack zooms in like the old scale-up, but each layer by a
+     different amount (the back least, the front most), so the zoom has a
+     little depth to it. The cover <img> stays underneath until every layer
+     has loaded, and stays as the only thing for flat projects. */
+  // zoom = the flat cover's own hover scale there: 4.5% on Work, 3.5% on the Studio bands
+  function layeredThumb(p, media, hoverEl, zoom) {
+    var layers = p.heroLayers;
+    if (!layers || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!Array.isArray(layers)) layers = [{ src: layers.bg, k: 0.006, edge: true }, { src: layers.fg, k: 0.024 }];
+    var box = document.createElement('div');
+    box.className = 'thumb-stack';
+    box.setAttribute('aria-hidden', 'true');
+    var inner = document.createElement('div');
+    inner.className = 'thumb-stack-inner';
+    box.appendChild(inner);
+    var n = layers.length, loaded = 0, ar = 0;
+    var els = layers.map(function (l, i) {
+      var im = new Image();
+      im.alt = ''; im.draggable = false;
+      if (l.pad) {
+        var o = (-l.pad * 100) + '%', sz = ((1 + 2 * l.pad) * 100) + '%';
+        im.style.left = im.style.top = o; im.style.width = im.style.height = sz;
+      }
+      im.onload = function () {
+        if (!ar) ar = im.naturalWidth / im.naturalHeight;   // padding is symmetric, so this is the hero's aspect
+        if (++loaded === n) { media.appendChild(box); fit(); set(false); }
+      };
+      im.src = l.src;
+      inner.appendChild(im);
+      return im;
+    });
+    // the inner box is the hero, cover-fitted to the thumbnail like object-fit
+    function fit() {
+      var w = media.clientWidth, h = media.clientHeight;
+      if (!w || !h || !ar) return;
+      var bw = w, bh = w / ar;
+      if (bh < h) { bh = h; bw = h * ar; }
+      inner.style.width = bw + 'px'; inner.style.height = bh + 'px';
+      inner.style.left = ((w - bw) / 2) + 'px'; inner.style.top = ((h - bh) / 2) + 'px';
+    }
+    function set(on) {
+      var bar = ar || 16 / 9;
+      els.forEach(function (el, i) {
+        var depth = n > 1 ? 0.5 + i / (n - 1) : 1;      // 0.5 at the back to 1.5 at the front
+        var z = layerRestScale(layers[i], bar) * (on ? 1 + zoom * depth : 1);
+        el.style.transform = 'scale(' + z.toFixed(4) + ')';
+      });
+    }
+    hoverEl.addEventListener('mouseenter', function () { set(true); });
+    hoverEl.addEventListener('mouseleave', function () { set(false); });
+    window.addEventListener('resize', fit);
+  }
+
   /* ── Work grid (work page) ───────────────────────────────────────
      Static covers only — no hover video. */
   var grid = $('workGrid');
@@ -189,6 +245,7 @@
           '<span class="tile-arrow">&rarr;</span>' +
         '</div>';
       grid.appendChild(tile);
+      layeredThumb(p, tile.querySelector('.tile-media'), tile, 0.045);
     });
   }
 
@@ -247,6 +304,7 @@
           '<span class="band-arrow">→</span>' +
         '</div>';
       bands.appendChild(el);
+      layeredThumb(p, el.querySelector('.band-media'), el, 0.035);
     });
   }
 

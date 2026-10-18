@@ -53,8 +53,7 @@
      only appears once every layer has loaded. Reduced motion: no stack. */
   function layeredHero(wrap, img, layers) {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    if (!Array.isArray(layers)) layers = [{ src: layers.bg, k: 0.006 }, { src: layers.fg, k: 0.024 }];
-    var SCALE = 1.06;             // every layer zooms in a touch so the back one never shows an edge
+    if (!Array.isArray(layers)) layers = [{ src: layers.bg, k: 0.006, edge: true }, { src: layers.fg, k: 0.024 }];
 
     var stack = document.createElement('div');
     stack.className = 'hero-layers';
@@ -93,10 +92,15 @@
 
     // pointer target in -1..1 across the hero, eased toward on each frame
     var px = 0, py = 0, cx = 0, cy = 0;
+    // only over the picture itself: a square hero sits in a wide slot, and
+    // reading the pointer across the whole slot pushed layers past their
+    // edges
     wrap.addEventListener('pointermove', function (e) {
       var r = stack.getBoundingClientRect();
-      px = ((e.clientX - r.left) / r.width) * 2 - 1;
-      py = ((e.clientY - r.top) / r.height) * 2 - 1;
+      var x = ((e.clientX - r.left) / r.width) * 2 - 1;
+      var y = ((e.clientY - r.top) / r.height) * 2 - 1;
+      if (Math.abs(x) > 1 || Math.abs(y) > 1) { px = 0; py = 0; return; }
+      px = x; py = y;
     });
     wrap.addEventListener('pointerleave', function () { px = 0; py = 0; });
 
@@ -122,8 +126,10 @@
       var t = Math.max(-1, Math.min(1, raw - t0));
       els.forEach(function (el, n) {
         var k = layers[n].k * r.width;
-        var x = -cx * k, y = (-cy * 0.7 + t) * k;
-        var sc = layers[n].s || (layers[n].pad ? 1 : SCALE);
+        // pointer and scroll share the vertical budget, so no layer ever
+        // travels more than k x width in either direction
+        var x = -cx * k, y = Math.max(-1, Math.min(1, -cy * 0.6 + t * 0.4)) * k;
+        var sc = layerRestScale(layers[n], r.width / r.height);
         el.style.transform = 'translate3d(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px,0) scale(' + sc + ')';
       });
       requestAnimationFrame(frame);
