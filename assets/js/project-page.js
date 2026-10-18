@@ -78,6 +78,10 @@
        fades in and sharpens. If the layers are slow (or one fails), the
        flat image comes back after a moment so the slot is never empty. */
     var STAGGER = 150, INTRO = 650;          // ms between layers, ms per layer
+    // build order is depth, back to front: the layer that travels least first
+    var order = layers.map(function (l, i) { return i; })
+      .sort(function (a, b) { return (layers[a].k - layers[b].k) || (a - b); })
+      .reduce(function (o, li, rank) { o[li] = rank; return o; }, []);
     var introStart = null;
     img.style.visibility = 'hidden';
     var fallback = setTimeout(function () { img.style.visibility = ''; }, 2500);
@@ -156,7 +160,7 @@
       var t = Math.max(-1, Math.min(1, raw - t0));
       els.forEach(function (el, n) {
         // build-in progress for this layer, 0..1, eased out
-        var q = introStart === null ? 1 : Math.max(0, Math.min(1, (now - introStart - n * STAGGER) / INTRO));
+        var q = introStart === null ? 1 : Math.max(0, Math.min(1, (now - introStart - order[n] * STAGGER) / INTRO));
         q = 1 - Math.pow(1 - q, 3);
         if (q < 1 || el.style.opacity !== '') {
           el.style.opacity = q < 1 ? q.toFixed(3) : '';

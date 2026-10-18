@@ -63,8 +63,8 @@ const projects = [
        (~/Developer/depth/hero_layers/loya_dust.py). */
     heroLayers: [
       { src: `projects/loya-and-co/loya-0-room.jpg?v=2`, k: 0.004, edge: true },
-      { src: `projects/loya-and-co/loya-1-record.webp?v=3`, k: 0.016, edge: true },
       { src: `projects/loya-and-co/loya-2-dust-far.webp?v=2`, k: 0.008 },
+      { src: `projects/loya-and-co/loya-1-record.webp?v=3`, k: 0.016, edge: true },
       { src: `projects/loya-and-co/loya-3-dust-mid.webp?v=2`, k: 0.022 },
       { src: `projects/loya-and-co/loya-4-dust-near.webp?v=2`, k: 0.04 }
     ],
