@@ -73,14 +73,31 @@
       return im;
     });
 
+    /* Build-in: the flat hero stays hidden while the layers load, then they
+       arrive one by one from the back, each floating up to full size as it
+       fades in and sharpens. If the layers are slow (or one fails), the
+       flat image comes back after a moment so the slot is never empty. */
+    var STAGGER = 220, INTRO = 900;          // ms between layers, ms per layer
+    var introStart = null;
+    img.style.visibility = 'hidden';
+    var fallback = setTimeout(function () { img.style.visibility = ''; }, 2500);
     var loaded = 0;
     function onLoad() {
       if (++loaded < els.length) return;
+      clearTimeout(fallback);
+      els.forEach(function (el) { el.style.opacity = '0'; });
       wrap.appendChild(stack);
       place();
+      introStart = performance.now();
       start();
+      // once the last layer is in, the flat image underneath can come back
+      setTimeout(function () { img.style.visibility = ''; }, STAGGER * els.length + INTRO);
     }
-    els.forEach(function (im, n) { im.onload = onLoad; im.src = layers[n].src; });
+    els.forEach(function (im, n) {
+      im.onload = onLoad;
+      im.onerror = function () { clearTimeout(fallback); img.style.visibility = ''; };
+      im.src = layers[n].src;
+    });
 
     // the stack covers the img exactly, wherever CSS has put it
     function place() {
@@ -138,11 +155,18 @@
       if (t0 === null) t0 = raw;
       var t = Math.max(-1, Math.min(1, raw - t0));
       els.forEach(function (el, n) {
+        // build-in progress for this layer, 0..1, eased out
+        var q = introStart === null ? 1 : Math.max(0, Math.min(1, (now - introStart - n * STAGGER) / INTRO));
+        q = 1 - Math.pow(1 - q, 3);
+        if (q < 1 || el.style.opacity !== '') {
+          el.style.opacity = q < 1 ? q.toFixed(3) : '';
+          el.style.filter = q < 1 ? 'blur(' + ((1 - q) * 10).toFixed(2) + 'px)' : '';
+        }
         var k = layers[n].k * r.width;
         // pointer and scroll share the vertical budget, so no layer ever
         // travels more than k x width in either direction
         var x = -cx * k, y = Math.max(-1, Math.min(1, -cy * 0.6 + t * 0.4)) * k;
-        var sc = layerRestScale(layers[n], r.width / r.height);
+        var sc = layerRestScale(layers[n], r.width / r.height) * (0.94 + 0.06 * q);
         el.style.transform = 'translate3d(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px,0) scale(' + sc + ')';
       });
       requestAnimationFrame(frame);
