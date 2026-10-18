@@ -215,8 +215,10 @@
         }
         var k = layers[n].k * r.width;
         // pointer and scroll share the vertical budget, so no layer ever
-        // travels more than k x width in either direction
-        var x = -cx * k, y = Math.max(-1, Math.min(1, -cy * 0.6 + t * 0.4)) * k;
+        // travels more than k x width in either direction. The layers move
+        // WITH the pointer (near ones furthest), so the scene follows the
+        // mouse rather than the camera dodging it.
+        var x = cx * k, y = Math.max(-1, Math.min(1, cy * 0.6 + t * 0.4)) * k;
         var sc = layerRestScale(layers[n], r.width / r.height) * (0.94 + 0.06 * q);
         el.style.transform = 'translate3d(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px,0) scale(' + sc + ')';
       });
