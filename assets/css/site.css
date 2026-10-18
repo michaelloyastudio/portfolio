@@ -267,20 +267,22 @@ body:has(.hero--studio) .burger span:nth-child(3) { animation-delay: 0.62s; }
   body:has(.hero--studio) .burger span { animation: none; }
 }
 
-/* The X. The top and bottom bars pivot on their left ends: with the
-   origin there, the translate below is what lands each bar's centre on the
-   middle of the button at 45 degrees, so the end state is the same
-   centred X as before; only the path there changes. With W the bar width
-   and d the bar spacing (bar + gap): rotating about the left end moves the
-   centre by (W/2 cos45 - W/2, +-W/2 sin45), hence the offsets.
-   Derived, not hardcoded, so it survives --logo-h changing. */
+/* The X. The top and bottom bars pivot on their right ends: the right
+   ends stay (almost) put and the left ends swing in, top bar down and
+   bottom bar up, so the top bar turns -45 and the bottom +45. The
+   translate lands each bar's centre on the middle of the button, so the
+   end state is the same centred X. With W the bar width and d the bar
+   spacing (bar + gap): rotating about the right end moves the centre by
+   (W/2 - W/2 cos45, +-W/2 sin45), hence the offsets. It's small, which is
+   why the right ends read as fixed. Derived, not hardcoded, so it
+   survives --logo-h changing. */
 .burger span:nth-child(1),
-.burger span:nth-child(3) { transform-origin: left center; }
+.burger span:nth-child(3) { transform-origin: right center; }
 body.menu-open .burger span:nth-child(1) {
-  transform: translate(calc(var(--logo-h) * 0.8 * 0.1464), calc(var(--bar-h) + var(--bar-gap) - var(--logo-h) * 0.8 * 0.3536)) rotate(45deg);
+  transform: translate(calc(var(--logo-h) * -0.8 * 0.1464), calc(var(--bar-h) + var(--bar-gap) - var(--logo-h) * 0.8 * 0.3536)) rotate(-45deg);
 }
 body.menu-open .burger span:nth-child(3) {
-  transform: translate(calc(var(--logo-h) * 0.8 * 0.1464), calc((var(--bar-h) + var(--bar-gap) - var(--logo-h) * 0.8 * 0.3536) * -1)) rotate(-45deg);
+  transform: translate(calc(var(--logo-h) * -0.8 * 0.1464), calc((var(--bar-h) + var(--bar-gap) - var(--logo-h) * 0.8 * 0.3536) * -1)) rotate(45deg);
 }
 /* The middle bar trims out instead of fading, from its start toward its
    end, quickly enough to be gone before the other two cross it; it draws
