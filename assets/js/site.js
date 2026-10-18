@@ -226,22 +226,25 @@
   /* ── Video thumbnails ──────────────────────────────────────────────
      A project whose hero is a looping video (heroLoop) has nothing to
      parallax, so hovering its thumbnail plays the loop over the still
-     instead. Leaving cross-dissolves back to the still, then rewinds, so
-     the next hover starts from the same frame the still shows. */
+     instead: it appears at once (the still is its own first frame) and
+     plays. Leaving cross-dissolves back to the still, then rewinds, so the
+     next hover starts from the same frame the still shows. */
   function videoThumb(p, media, hoverEl) {
     if (!p.heroLoop || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     var v = document.createElement('video');
     v.className = 'thumb-video';
-    v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'none';
+    v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'auto';
     v.setAttribute('aria-hidden', 'true');
     v.src = p.hero;
     media.appendChild(v);
     var leaving = null;
+    // no fade in: the still is the loop's first frame, so the video can
+    // simply appear on top of it and start moving
     hoverEl.addEventListener('mouseenter', function () {
       clearTimeout(leaving);
-      var q = v.play();
-      var show = function () { v.classList.add('is-on'); };
-      if (q && q.then) q.then(show).catch(function () {}); else show();
+      if (v.readyState >= 2) v.classList.add('is-on');
+      else v.addEventListener('playing', function () { v.classList.add('is-on'); }, { once: true });
+      var q = v.play(); if (q && q.catch) q.catch(function () {});
     });
     hoverEl.addEventListener('mouseleave', function () {
       v.classList.remove('is-on');

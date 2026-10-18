@@ -121,9 +121,9 @@ const projects = [
     category: "Event Design",
     tools: "Illustrator, Photoshop, After Effects, Magnific",
     year: "2024–2026",
-    cover: `projects/university-union/cover.jpg?v=2`,
+    cover: `projects/university-union/jj-timelapse-poster.jpg`,   // the loop's own first frame, so hover-play starts seamlessly
     hero: `projects/university-union/jj-timelapse.mp4?v=8`,
-    heroPoster: `projects/university-union/cover.jpg?v=2`,
+    heroPoster: `projects/university-union/jj-timelapse-poster.jpg`,
     heroLoop: true,       // plays like a gif: muted, looping, no controls
     intro: `<p>I was Co-Director of Design Board at University Union, Syracuse's largest programming organization, through May 2026. Concert posters, festival identity, large-format signage, and social assets reaching 12,000+ followers.</p>
 <p>The biggest piece was Juice Jam 2025, the full visual identity for Syracuse's annual outdoor festival, built on a retro risograph look with bold gold type.</p>
