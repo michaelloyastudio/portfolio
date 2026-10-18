@@ -39,6 +39,15 @@
     flag();
 
     if (!isVideo && p.heroLayers) layeredHero(hero, hm, p.heroLayers);
+    /* A looping video hero has no layers, but builds in the same way a
+       layer does: once its first frame is ready it fades up, sharpens and
+       floats to size (heroBuild in site.css matches layeredHero's 650ms). */
+    if (isVideo && p.heroLoop && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      hm.classList.add('hero-pre');
+      var go = function () { hm.classList.remove('hero-pre'); hm.classList.add('hero-build'); };
+      if (hm.readyState >= 2) go(); else hm.addEventListener('loadeddata', go, { once: true });
+      setTimeout(go, 2500);
+    }
   }
 
   /* ── Layered hero ────────────────────────────────────────────────
