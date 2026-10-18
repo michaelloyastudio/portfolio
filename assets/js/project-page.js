@@ -106,7 +106,7 @@
        arrive one by one from the back, each floating up to full size as it
        fades in and sharpens. If the layers are slow (or one fails), the
        flat image comes back after a moment so the slot is never empty. */
-    var STAGGER = 150, INTRO = 650;          // ms between layers, ms per layer
+    var STAGGER = 95, INTRO = 480;          // ms between layers, ms per layer
     // build order is depth, back to front: the layer that travels least first
     var order = layers.map(function (l, i) { return i; })
       .sort(function (a, b) { return (layers[a].k - layers[b].k) || (a - b); })
@@ -123,7 +123,7 @@
       place();
       // the title goes first; the build starts a beat after it (see the
       // project load-in in site.css), or straight away if loading was slow
-      introStart = Math.max(performance.now(), pageStart + 250);
+      introStart = Math.max(performance.now(), pageStart + 120);
       start();
       // once the last layer is in, the flat image underneath can come back
       setTimeout(function () { img.style.visibility = ''; }, STAGGER * els.length + INTRO);

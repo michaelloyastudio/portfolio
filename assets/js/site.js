@@ -70,7 +70,7 @@
         if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
         e.preventDefault();
         document.body.classList.add('nav-leaving');
-        setTimeout(function () { window.location.href = a.href; }, 180);
+        setTimeout(function () { window.location.href = a.href; }, 170);
       });
     });
   }
@@ -110,7 +110,7 @@
       if (t0 === null) t0 = now;
       var p = (now - t0 - DELAY) / DRAW;
       if (p > 0) {
-        markPath.style.visibility = '';
+        markPath.style.visibility = 'visible';
         if (p >= 1) { markPath.setAttribute('d', full); return; }
         // ease-out: the sweep starts fast and slows into the end
         var e = 1 - Math.pow(1 - p, 3);
@@ -179,13 +179,13 @@
   }, { threshold: 0.1, rootMargin: '0px 0px -6% 0px' });
 
   /* The Studio page's project bands wait until they're well into the
-     window (a fifth of the way up from the bottom) before revealing, so
+     window (about a seventh of the way up from the bottom) before revealing, so
      each one gets a beat of scroll to itself. */
   var bandIo = new IntersectionObserver(function (entries) {
     entries.forEach(function (e) {
       if (e.isIntersecting) { e.target.classList.add('in'); bandIo.unobserve(e.target); }
     });
-  }, { threshold: 0.1, rootMargin: '0px 0px -22% 0px' });
+  }, { threshold: 0.1, rootMargin: '0px 0px -14% 0px' });
 
   function observeReveals() {
     document.querySelectorAll('.reveal:not(.in)').forEach(function (el) {
