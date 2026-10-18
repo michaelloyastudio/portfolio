@@ -21,6 +21,7 @@
   // ── hero ──
   var hero = $('projectHero');
   if (hero) {
+    if (p.heroFit === 'content') hero.classList.add('is-content');
     hero.innerHTML = isVideo
       ? '<video src="' + p.hero + '" controls playsinline preload="metadata"' +
         (p.heroPoster ? ' poster="' + p.heroPoster + '"' : '') + '></video>'

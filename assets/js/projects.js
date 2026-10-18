@@ -13,6 +13,7 @@
 //              just enough to cover its own travel, see layerRestScale) or
 //              `pad` (the file carries that fraction of extra picture past
 //              each side). `s` overrides the scale outright.
+//   heroFit  — 'content' keeps the hero to the width of the work column.
 //   intro    — ONE short block of copy. Keep it tight.
 //   work     — the media below the copy. No prose here.
 const projects = [
@@ -179,13 +180,14 @@ const projects = [
     category: "Selected Works",
     tools: "Various",
     year: "2022–Present",
-    cover: `projects/miscellaneous/you-cover.jpg?v=4`,
-    hero: `projects/miscellaneous/you-hero.jpg?v=4`,
+    cover: `projects/miscellaneous/you-cover.jpg?v=5`,
+    hero: `projects/miscellaneous/you-hero.jpg?v=5`,
+    heroFit: 'content',   // as wide as the work below it, not the full-bleed slot
     /* Mike's layers: the sunburst, the Y and U, the starburst, the meal. */
     heroLayers: [
       { src: `projects/miscellaneous/you-hero-bg.jpg?v=3`, k: 0.004, edge: true },
       { src: `projects/miscellaneous/you-2-yu.webp`, k: 0.012, s: 1 },
-      { src: `projects/miscellaneous/you-1-star.webp`, k: 0.02, s: 1 },
+      { src: `projects/miscellaneous/you-1-star.webp?v=2`, k: 0.02, s: 1 },
       { src: `projects/miscellaneous/you-3-meal.webp`, k: 0.03, s: 1 }
     ],
     intro: `<p>A mix of passion projects, school assignments, professional work, and collaborations. Not every concept made it to production, but each one shaped my process.</p>`,

@@ -1812,6 +1812,11 @@ body > * { width: 100%; flex-shrink: 0; }
   will-change: transform;
 }
 
+/* heroFit: 'content' — the hero runs to the same margins as the work
+   column under it (.project-work), so it reads as a piece on the page
+   rather than a full-bleed banner. */
+.project-hero.is-content { max-width: 1100px; }
+
 /* Square or portrait heroes only: going full width would make them
    absurdly tall, so cap the height and centre instead. project-page.js
    adds this class from the hero's real aspect ratio. */
