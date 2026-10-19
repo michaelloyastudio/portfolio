@@ -8,6 +8,17 @@
   'use strict';
 
   var pageStart = performance.now();   // ~ when the CSS load-in starts
+
+  /* The hero loads first. The work below holds its images and videos
+     (Misc alone is tens of MB of loops) until the hero is in, or 3s,
+     so they don't crowd the hero's layers off the connection. */
+  var heroDone = false, onHeroDone = [];
+  function heroReady() {
+    if (heroDone) return;
+    heroDone = true;
+    onHeroDone.forEach(function (f) { f(); });
+  }
+  setTimeout(heroReady, 3000);
   var slug = window.PROJECT_SLUG;
   var i = -1;
   projects.forEach(function (p, n) { if (p.slug === slug) i = n; });
@@ -70,6 +81,11 @@
       release();
     };
     hm.addEventListener(hm.tagName === 'VIDEO' ? 'loadedmetadata' : 'load', fitHero);
+    // a layered hero is ready when its layers are (layeredHero says so)
+    if (!(p.heroLayers && !isVideo)) {
+      if (isVideo ? hm.readyState >= 2 : hm.complete) heroReady();
+      else hm.addEventListener(isVideo ? 'loadeddata' : 'load', heroReady, { once: true });
+    }
     fitHero();
     window.addEventListener('resize', fitHero);
 
@@ -98,7 +114,10 @@
      The <img> stays for layout, alt text and as the fallback; the stack
      only appears once every layer has loaded. Reduced motion: no stack. */
   function layeredHero(wrap, img, layers) {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      if (img.complete) heroReady(); else img.addEventListener('load', heroReady, { once: true });
+      return;
+    }
     if (!Array.isArray(layers)) layers = [{ src: layers.bg, k: 0.006, edge: true }, { src: layers.fg, k: 0.024 }];
 
     var stack = document.createElement('div');
@@ -134,6 +153,7 @@
     function onLoad() {
       if (++loaded < els.length) return;
       clearTimeout(fallback);
+      heroReady();
       els.forEach(function (el) { el.style.opacity = '0'; });
       wrap.appendChild(stack);
       place();
@@ -146,7 +166,8 @@
     }
     els.forEach(function (im, n) {
       im.onload = onLoad;
-      im.onerror = function () { clearTimeout(fallback); img.style.visibility = ''; };
+      im.onerror = function () { clearTimeout(fallback); img.style.visibility = ''; heroReady(); };
+      im.fetchPriority = 'high';
       im.src = layers[n].src;
     });
 
@@ -235,7 +256,24 @@
   $('projectYear').textContent = p.year;
 
   // ── media ──
-  $('projectWork').innerHTML = p.work;
+  var tpl = document.createElement('template');
+  tpl.innerHTML = p.work;                      // parsed inert: nothing fetches yet
+  if (!heroDone) {
+    tpl.content.querySelectorAll('img, video, source').forEach(function (m) {
+      ['src', 'poster'].forEach(function (a) {
+        if (m.hasAttribute(a)) { m.setAttribute('data-held-' + a, m.getAttribute(a)); m.removeAttribute(a); }
+      });
+    });
+    onHeroDone.push(function () {
+      document.querySelectorAll('#projectWork [data-held-src], #projectWork [data-held-poster]').forEach(function (m) {
+        ['poster', 'src'].forEach(function (a) {
+          var v = m.getAttribute('data-held-' + a);
+          if (v !== null) { m.setAttribute(a, v); m.removeAttribute('data-held-' + a); }
+        });
+      });
+    });
+  }
+  $('projectWork').appendChild(tpl.content);
 
   // ── prev / next ──
   var prev = projects[(i - 1 + projects.length) % projects.length];
