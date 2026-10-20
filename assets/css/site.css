@@ -1879,7 +1879,9 @@ main[data-in] .product-body  { animation: projIn 0.55s var(--ease) 0.3s both; }
   from { opacity: 1; transform: none; }
   to   { opacity: 0; transform: translateY(-10px); }
 }
-body.page-leaving > *:not(.nav):not(.menu) { animation: pageOut 0.2s cubic-bezier(0.4, 0, 1, 1) forwards; }
+/* html + body.page-leaving: one notch more specific than each page's
+   inline first-paint rule, which would otherwise win on source order */
+html body.page-leaving > *:not(.nav):not(.menu) { animation: pageOut 0.2s cubic-bezier(0.4, 0, 1, 1) forwards; }
 body.page-leaving .menu-links,
 body.page-leaving .menu-foot { opacity: 0; transform: translateY(-10px); transition: opacity 0.2s ease-in, transform 0.2s ease-in; }
 

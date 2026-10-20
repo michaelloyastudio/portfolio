@@ -152,6 +152,12 @@
     var loaded = 0;
     function onLoad() {
       if (++loaded < els.length) return;
+      // the flat img sets the stack's box, so it has to have loaded (and
+      // been fitted) first; the layers often win that race
+      if (!(img.complete && img.naturalWidth)) {
+        img.addEventListener('load', function () { loaded--; onLoad(); }, { once: true });
+        return;
+      }
       clearTimeout(fallback);
       heroReady();
       els.forEach(function (el) { el.style.opacity = '0'; });
@@ -179,6 +185,11 @@
       stack.style.height = img.offsetHeight + 'px';
     }
     window.addEventListener('resize', place);
+    /* and follows it whenever its box changes for any other reason: fitHero
+       or is-tall landing after the stack was placed, fonts settling the
+       title above. Without this the stack could keep a stale full-width
+       square and spill over the copy below. */
+    if ('ResizeObserver' in window) new ResizeObserver(place).observe(img);
 
     /* Pointer target in -1..1 across the picture. Three things keep it calm:
        the pointer's pull (on) fades in over about half a second after it
