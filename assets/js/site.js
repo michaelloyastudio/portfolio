@@ -405,9 +405,6 @@
         '<div class="tile-media">' +
           '<img src="' + p.cover + '" alt="' + p.name + '" loading="lazy" draggable="false">' +
           '<div class="tile-badges">' +
-            ((p.downloads && p.downloads.length) || p.download
-              ? '<span class="tile-badge">Free</span>'
-              : '<span class="tile-badge tile-badge--soon">In development</span>') +
             (p.updateBadge && new Date() < new Date(p.updateBadge.until)
               ? '<span class="tile-badge tile-badge--new">' + STAR + p.updateBadge.text + '</span>'
               : '') +
@@ -415,7 +412,8 @@
         '</div>' +
         '<div class="tile-meta">' +
           '<div>' +
-            '<p class="tile-cat">' + p.host + '</p>' +
+            // the price where a project shows its category
+            '<p class="tile-cat">' + ((p.downloads && p.downloads.length) || p.download ? 'Free' : 'In development') + '</p>' +
             '<h2 class="tile-title">' + p.name + '</h2>' +
           '</div>' +
           '<span class="tile-arrow">' + CHEV + '</span>' +

@@ -39,8 +39,8 @@ const projects = [
       { src: `projects/capstone/wih-3-astronaut.webp?v=2`, k: 0.019 },
       { src: `projects/capstone/wih-4-near.webp?v=4`, k: 0.033, edge: true }
     ],
-    intro: `<p>A music visualizer for <a href="https://open.spotify.com/artist/" target="_blank" rel="noopener">Z</a>'s track <em>where it hurts.</em>, made as my senior capstone. Z isn't based in NY, so the piece had to be built rather than shot, and I art directed it end to end.</p>
-<p>I storyboarded the scenes and wrote the direction, then composed each frame from AI-generated assets, broke the stills apart in Photoshop, and animated them in After Effects. The imagery stays abstract on purpose. Z gave me the freedom, and I'd rather leave room for the viewer than push a narrative he wasn't comfortable carrying.</p>
+    intro: `<p>A music visualizer for <a href="https://open.spotify.com/artist/" target="_blank" rel="noopener">Z</a>'s track <em>where it hurts.</em>, made as my senior capstone at Syracuse University. Z isn't based in NY, so the piece had to be built rather than shot, and I art directed it end to end.</p>
+<p>I storyboarded the scenes and wrote the direction, then composed each frame from AI-generated assets, broke the stills apart in Photoshop, and animated them in After Effects. The imagery stays abstract on purpose. Z gave me freedom to direct the whole thing, so I'd rather leave room for the viewer than push a narrative he wasn't comfortable carrying.</p>
 <p>I take in a lot of media, and the things I love end up shaping how I direct. The look here came out of that, <em>Spider-Man: Into the Spider-Verse</em> and <em>Invincible</em> most of all.</p>`,
     work: `<div class="project-video"><video src="projects/capstone/visualizer.mp4" controls playsinline preload="metadata" poster="projects/capstone/poster.jpg" width="1920" height="1080"></video></div>
 <div class="img-grid-2">
@@ -55,7 +55,7 @@ const projects = [
   },
   {
     slug: "loya",
-    title: "loya",
+    title: "Loya",
     category: "Creative Direction",
     tools: "Canon EOS R8, Premiere, After Effects, Illustrator, Photoshop, Blender, Magnific, Higgsfield, Claude",
     year: "2023–Present",
@@ -72,9 +72,8 @@ const projects = [
       { src: `projects/loya-and-co/loya-3-dust-mid.webp?v=2`, k: 0.022 },
       { src: `projects/loya-and-co/loya-4-dust-near.webp?v=2`, k: 0.04 }
     ],
-    intro: `<p>My brother produces music under our last name, <a href="https://open.spotify.com/artist/5gNQpoYEBE1jxjCgFkLWce" target="_blank" rel="noopener">loya</a>, and runs LYRC, a company he started to make lyric videos for independent artists. I work with him on promoting his music and his personal brand, keyed to cinematic and viral content.</p>
-<p>We shape the idea together, then I execute it, shooting and editing it myself. My schooling and the work before this were graphic design; loya is where I'm building the video craft on top of it.</p>
-<p>The logo came out of his hat collection, set in Amador, a blackletter that balances elegance with edge.</p>`,
+    intro: `<p>My brother produces music under our last name, <a href="https://open.spotify.com/artist/5gNQpoYEBE1jxjCgFkLWce" target="_blank" rel="noopener">Loya</a>, and runs LYRC, a company he started to make lyric videos for independent artists. I work with him on promoting his music and his personal brand, keyed to cinematic and viral content. We shape the idea together, then I execute it, shooting and editing it myself.</p>
+<p>His personal brand logo was inspired by one of his many hats, but LYRC's logo took time. A mix between a video camera and a microphone, the favicon represents LYRC's mission of simple and accessible creative for independent artists.</p>`,
     work: `<div class="img-grid-2" data-exact>
 <div><video src="projects/loya-and-co/goodbye-3d.mp4" autoplay loop muted playsinline poster="projects/loya-and-co/goodbye-3d-poster.jpg" width="1920" height="1080"></video></div>
 <div><video src="projects/loya-and-co/oh-no-3d.mp4" autoplay loop muted playsinline poster="projects/loya-and-co/oh-no-3d-poster.jpg" width="1920" height="1080"></video></div>
@@ -112,8 +111,8 @@ const projects = [
       { src: `projects/bodyarmor-powerade/pa-3-legal.webp?v=2`, k: 0.019, s: 1 },
       { src: `projects/bodyarmor-powerade/pa-2-logo.webp?v=3`, k: 0.026, s: 1 }
     ],
-    intro: `<p>I spent the summer of 2025 interning with BODYARMOR and Powerade in Queens. Day to day I reformatted brand creative into point-of-sale ads — window clings, cooler clings, end caps — and produced an original video ad for Powerade's fall football campaign.</p>
-<p>For my capstone I built an AI-generated BODYARMOR commercial end to end: generated imagery, Magnific for the upscale, voiceover, and After Effects to assemble. It was presented to C-suite executives, and it was the one that got the CEO to look up.</p>`,
+    intro: `<p>I spent the summer of 2025 interning with BODYARMOR and Powerade in Queens, NY. Day to day I reformatted brand creative into point-of-sale ads (window clings, cooler clings, end caps) and produced an original video ad for Powerade's fall football campaign.</p>
+<p>Every intern had to complete a capstone project over their two-month tenure, and my manager wanted me to explore AI-generated creative. In only a few days, I built an entire AI-generated BODYARMOR commercial with generated imagery, pixel upscale, and voiceover, assembling it all in After Effects. It was presented to C-suite executives and it was, humbly, the one that got the CEO to look up from his phone.</p>`,
     work: `<div class="project-video"><video src="projects/bodyarmor-powerade/pa-fall-football.mp4" controls playsinline preload="metadata" poster="projects/bodyarmor-powerade/pa-first.jpg" width="1920" height="1080"></video></div>
 <div class="project-video"><video src="projects/bodyarmor-powerade/kling.mp4" data-silent autoplay loop muted playsinline width="1900" height="1200"></video></div>
 <div class="project-video"><video src="projects/bodyarmor-powerade/aiba-commercial.mp4" controls playsinline preload="metadata" poster="projects/bodyarmor-powerade/aiba-poster.jpg" width="1280" height="720"></video></div>`
@@ -129,7 +128,7 @@ const projects = [
     heroSize: [1600, 900],   // the hero file's own size: lays it out before it loads
     heroPoster: `projects/university-union/jj-timelapse-poster.jpg`,
     heroLoop: true,       // plays like a gif: muted, looping, no controls
-    intro: `<p>I was Co-Director of Design Board at University Union, Syracuse's largest programming organization, through May 2026. Concert posters, festival identity, large-format signage, and social assets reaching 12,000+ followers.</p>
+    intro: `<p>My senior year of college, I was Co-Director of the design board at University Union, Syracuse's largest programming organization. Over my time there, I had the opportunity to create concert posters, an entire music festival identity, other large-format event signage, and social assets reaching 12,000+ followers.</p>
 <p>The biggest piece was Juice Jam 2025, the full visual identity for Syracuse's annual outdoor festival, built on a retro risograph look with bold gold type.</p>
 <p>I also spent two years trying to get a logo approved for Block Party, our spring concert. I love it. Everybody else hates it.</p>`,
     work: `<div class="img-grid-2" data-exact>

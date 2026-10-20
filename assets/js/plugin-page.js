@@ -52,7 +52,8 @@
 
   // ── the buy column ──
   $('pluginTitle').textContent = p.name;
-  $('pluginHost').textContent = p.host;
+  var host = $('pluginHost');
+  if (host) { if (p.host) host.textContent = p.host; else host.remove(); }
   $('pluginTagline').textContent = p.tagline;
   /* One button per platform. The visitor's own OS is listed first and is
      the only solid button; the other platform is an outline, so the page
@@ -107,9 +108,28 @@
 
   // ── copy ──
   $('pluginIntro').innerHTML = p.intro;
+  /* What's new (the newest version) and the version history (the rest,
+     collapsed), above the open-source note. */
+  var CHEV = '<svg viewBox="0 0 20 36" aria-hidden="true"><path d="M4 3 L16 18 L4 33"/></svg>';
+  var list = function (items) { return '<ul class="changelog-list">' + items.map(function (t) { return '<li>' + t + '</li>'; }).join('') + '</ul>'; };
+  var log = p.changelog || [], logHtml = '';
+  if (log.length) {
+    logHtml += '<section class="plugin-section plugin-changelog">' +
+      '<h2>What\'s new in ' + log[0].version + '</h2>' +
+      '<p class="changelog-date">' + log[0].date + '</p>' + list(log[0].items) + '</section>';
+    if (log.length > 1) {
+      logHtml += '<section class="plugin-section plugin-history"><h2>Version history</h2>' +
+        log.slice(1).map(function (v) {
+          return '<details class="changelog-version"><summary>' +
+            '<span class="changelog-v">' + v.version + '</span>' +
+            '<span class="changelog-date">' + v.date + '</span>' +
+            '<span class="changelog-chev">' + CHEV + '</span></summary>' + list(v.items) + '</details>';
+        }).join('') + '</section>';
+    }
+  }
   var body = $('pluginBody');
-  if (body) body.innerHTML = p.body || '';
-  [].forEach.call(document.querySelectorAll('#pluginIntro p, #pluginBody p, #pluginBody dd'),
+  if (body) body.innerHTML = logHtml + (p.body || '');
+  [].forEach.call(document.querySelectorAll('#pluginIntro p, #pluginBody p, #pluginBody dd, #pluginBody li'),
     function (el) { el.innerHTML = el.innerHTML.replace(/\s+([^\s<>]+)\s*$/, ' $1'); });
 
   /* ── prev / next ──

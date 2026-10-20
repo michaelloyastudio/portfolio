@@ -10,7 +10,7 @@ Michael Loya's portfolio. Static, multi-page, no build step and no dependencies.
 - **`index.html`** — Studio. The main page: video hero, three featured project bands, statement, closing CTA.
 - **`work.html`** — Work. All projects in a two-column grid; clicking one opens the detail overlay.
 - **`about.html`** — About. Bio, education, experience, skills, achievements, interests, resume.
-- **`tools.html`** — Tools (was Plugins). Same two-column `.tile` grid as Work, rendered from `plugins.js` — title and host under the shot, no description line; each tile opens `/<slug>.html` (`gh-midi.html`; Lookout is pulled for now, one revert away), which `plugin-page.js` fills in the same way `project-page.js` fills a project.
+- **`tools.html`** — Tools (was Plugins). Same two-column `.tile` grid as Work, rendered from `plugins.js` — title and price under the shot, no description line; each tile opens `/<slug>.html` (`gh-midi.html`; Lookout is pulled for now, one revert away), which `plugin-page.js` fills in the same way `project-page.js` fills a project.
 
 ## Shared files
 - **`assets/css/site.css`** — every style on the site. Tokens at the top; the semantic block (`--bg`, `--fg`, `--accent`…) is the only thing a light mode would need to change.

@@ -1539,7 +1539,7 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   margin: 0 0 0.9rem;
 }
 .product-buy h1 {
-  font-size: clamp(2.1rem, 4.4vw, 3.2rem);
+  font-size: clamp(1.9rem, 2.4vw, 3.2rem);   /* one line in the buy column on a laptop */
   font-weight: 700;
   letter-spacing: -0.035em;
   line-height: 1.02;
@@ -1618,6 +1618,43 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 }
 .product-intro p:last-child { margin-bottom: 0; }
 .plugin-guide { max-width: 780px; }
+/* What's new + version history (plugin-page.js, from plugins.js changelog) */
+.changelog-date { color: var(--muted); font-size: 0.82rem; margin: -0.5rem 0 1rem; }
+.changelog-list { list-style: none; margin: 0; padding: 0; }
+.changelog-list li {
+  position: relative;
+  padding-left: 1.1rem;
+  font-size: 1rem;
+  line-height: 1.65;
+  margin: 0 0 0.6rem;
+}
+.changelog-list li::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0.72em;
+  width: 0.38rem; height: 2px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+.changelog-list strong { font-weight: 600; }
+.changelog-version { border-top: 1px solid var(--line); }
+.changelog-version:last-child { border-bottom: 1px solid var(--line); }
+.changelog-version summary {
+  list-style: none;
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.9rem 0;
+  cursor: pointer;
+}
+.changelog-version summary::-webkit-details-marker { display: none; }
+.changelog-v { font-weight: 600; font-size: 1rem; }
+.changelog-version summary .changelog-date { margin: 0; }
+.changelog-chev { margin-left: auto; align-self: center; width: 0.5rem; height: 0.85rem; color: var(--accent); transition: transform 0.3s var(--ease); }
+.changelog-chev svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.changelog-chev path { fill: none; stroke: currentColor; stroke-width: 2px; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.changelog-version[open] .changelog-chev { transform: rotate(90deg); }
+.changelog-version .changelog-list { padding-bottom: 1rem; }
 /* The open-source blurb and the Source spec row carry real links. Links are
    colour: inherit site-wide (nav, tiles), so these two spots opt in to the
    accent: a URL in prose has to read as a link. */

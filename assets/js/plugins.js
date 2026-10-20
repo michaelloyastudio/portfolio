@@ -3,7 +3,9 @@
  * Same shape as projects.js so the two grids render from one pattern:
  *   slug      — URL: /<slug>  (the file is <slug>.html; Pages drops the extension)
  *   name      — display name
- *   host      — shown where a project shows its category
+ *   host      — optional small red line above the name on the product
+ *               page. GH MIDI has none: "Standalone · VST3" meant little on
+ *               its own. The Tools tile shows the price in that spot.
  *   tagline   — one line under the name on the product page only; the
  *               Tools grid shows title and host, nothing under them
  *   cover     — 16:9 grid tile
@@ -24,6 +26,9 @@
  *               instead of a link that 404s. (The older single `download`
  *               + `size` pair still renders as one macOS button.)
  *   note      — optional word after the size on the meta line ('beta')
+ *   changelog — [{version, date, items: [html]}], newest first. The newest
+ *               renders as "What's new", the rest as a collapsed version
+ *               history. Rewrite it from the GitHub release notes per cut.
  *   body      — the guide below the download. Plain HTML.
  *
  * Hosting: the file lives in this repo under assets/downloads/. GitHub's
@@ -36,7 +41,6 @@ const plugins = [
   {
     slug: 'gh-midi',
     name: 'Guitar Hero MIDI',
-    host: 'Standalone \u00b7 VST3',
     tagline: 'Play a Guitar Hero controller like a real instrument',
     cover: 'projects/plugins/gh-midi-cover.jpg?v=2',
     hero: 'projects/plugins/gh-midi-ui.jpg?v=2',
@@ -56,6 +60,24 @@ const plugins = [
     status: 'live',
     version: 'v1.2',
     updateBadge: { text: 'New update', until: '2026-11-20' },   // v1.2 shipped 2026-10-20
+    changelog: [
+      { version: '1.2', date: 'October 20, 2026', items: [
+        '<strong>Change what any fret plays.</strong> The new FRETS editor swaps the chord or note on any fret and on all ten two-fret pairs. Your key\'s chords are listed first, and your picks follow the key.',
+        '<strong>Lower lag.</strong> The guitar is read every millisecond instead of every four, strums settle faster, and notes reach your DAW a full audio block sooner.',
+        '<strong>Lefty flip.</strong> Mirrors the highway and reverses the strum bar and joystick.',
+        '<strong>Palm mute.</strong> Hold the whammy and strum for short, chunky power-chord chugs.',
+        '<strong>SOLO range.</strong> The joystick slides the five frets up or down the scale, one note at a time.',
+        'Your settings and mappings from 1.1 carry over.'
+      ] },
+      { version: '1.1', date: 'September 13, 2026', items: [
+        '<strong>Standalone app.</strong> Play without a DAW. It shows up as a MIDI input in any DAW or synth app.',
+        '<strong>On-screen controls</strong> for mode, strum spread, key and octave, with octaves from \u22123 to +3.',
+        '<strong>Polyphonic SOLO</strong>, and chord combos in CHORDS.',
+        '<strong>CHART mode.</strong> Record a rough Clone Hero chart in your DAW and finish it in Moonscraper.',
+        '<strong>User guide</strong> in the download.',
+        '<strong>Windows</strong> build added September 20.'
+      ] }
+    ],
     /* The Windows zip is built by GitHub Actions in the gh-midi repo (its
        `release` job attaches it to the GitHub release); the copy here is
        that exact asset. It was smoke-tested on GitHub's runners rather than
