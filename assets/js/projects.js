@@ -196,7 +196,7 @@ const projects = [
     /* ORDER IS DELIBERATE — most important first, least last. Mike's
        ranking, and where a new piece goes is decided by where he places it
        in this list, not by when it was made:
-         YOU! (the McDonald's video), felly, fuji, random element, Z poster (sabt), jumpscare,
+         YOU! (the McDonald's video), Control Me (261016_ControlMe, Wii-menu CRT piece), felly, fuji, random element, Z poster (sabt), jumpscare,
          logic, django, sketch (smiski), homelander, the other videos,
          basketball video (web story), steph curry, final four,
        The basketball video is 9:16. Placed right after homelander it shared
@@ -213,6 +213,7 @@ const projects = [
        reintroduce ragged edges between the pieces. */
     work: `<div class="img-grid-3">
 <div><video src="projects/miscellaneous/you-mcdonalds.mp4" autoplay loop muted playsinline width="1440" height="1080"></video></div>
+<div><video src="projects/miscellaneous/control-me.mp4" autoplay loop muted playsinline width="1440" height="1080"></video></div>
 <div><img src="projects/miscellaneous/felly-wildfire.jpg" alt="Wildfire, an album by Felly" loading="lazy" width="1650" height="2550"></div>
 <div><img src="projects/miscellaneous/fuji.jpg" alt="Fuji poster" loading="lazy" width="1800" height="2700"></div>
 <div><img src="projects/miscellaneous/random-element.jpg" alt="Random Element poster" loading="lazy" width="1164" height="1800"></div>
