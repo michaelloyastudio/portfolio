@@ -94,8 +94,30 @@
      page can draw them in again. Delegated, so tiles built later count.
      New tabs, downloads, files, other sites and same-page anchors are left
      alone. */
+  /* The site's arrow: the same chevron as the side arrows on project
+     pages, for the "go to" arrow on tiles and bands. */
+  var CHEV = '<svg viewBox="0 0 20 36" aria-hidden="true"><path d="M4 3 L16 18 L4 33"/></svg>';
+
+  /* Side arrows on project pages: a click bounces the chevron out the way
+     it points and back, while the page fades behind it. Only the glyph
+     moves; the link's box stays put. */
+  document.querySelectorAll('.side-arrow').forEach(function (a) {
+    a.addEventListener('click', function () {
+      var g = a.querySelector('svg');
+      if (!g || !g.animate || calmMotion()) return;
+      var dx = a.classList.contains('side-arrow--prev') ? -6 : 6;
+      // eased per leg (out, then back), so the peak lands at the offset
+      g.animate([
+        { transform: 'none', easing: 'cubic-bezier(0.3, 0, 0.2, 1)' },
+        { transform: 'translateX(' + dx + 'px)', offset: 0.4, easing: 'cubic-bezier(0.4, 0, 0.2, 1)' },
+        { transform: 'none' }
+      ], { duration: 280 });
+    });
+  });
+
   var LEAVE_MS = 200;
   var calm = window.matchMedia('(prefers-reduced-motion: reduce)');
+  function calmMotion() { return calm.matches; }
   document.addEventListener('click', function (e) {
     if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     var a = e.target.closest && e.target.closest('a[href]');
@@ -344,7 +366,7 @@
             '<p class="tile-cat">' + p.category + '</p>' +
             '<h2 class="tile-title">' + p.title + '</h2>' +
           '</div>' +
-          '<span class="tile-arrow">&rarr;</span>' +
+          '<span class="tile-arrow">' + CHEV + '</span>' +
         '</div>';
       grid.appendChild(tile);
       layeredThumb(p, tile.querySelector('.tile-media'), tile, 0.045);
@@ -381,7 +403,7 @@
             '<p class="tile-cat">' + p.host + '</p>' +
             '<h2 class="tile-title">' + p.name + '</h2>' +
           '</div>' +
-          '<span class="tile-arrow">&rarr;</span>' +
+          '<span class="tile-arrow">' + CHEV + '</span>' +
         '</div>';
       pgrid.appendChild(tile);
     });
@@ -406,7 +428,7 @@
             '<p class="band-cat">' + p.category + '</p>' +
             '<h3 class="band-title">' + p.title + '</h3>' +
           '</div>' +
-          '<span class="band-arrow">→</span>' +
+          '<span class="band-arrow">' + CHEV + '</span>' +
         '</div>';
       bands.appendChild(el);
       layeredThumb(p, el.querySelector('.band-media'), el, 0.035);

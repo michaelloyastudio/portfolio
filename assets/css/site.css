@@ -1270,6 +1270,24 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   transition: color 0.3s ease, transform 0.4s var(--ease);
 }
 .tile:hover .tile-arrow { color: var(--accent); transform: translateX(7px); }
+/* The tile and band arrows are the site's chevron (site.js CHEV), sized
+   off the arrow's font size so the phone overrides still scale it, with a
+   stroke in the same proportion to its height as the side arrows'. */
+.tile-arrow svg, .band-arrow svg {
+  display: block;
+  height: 0.78em;
+  width: 0.57em;
+  margin-bottom: 0.12em;
+  overflow: visible;
+}
+.tile-arrow path, .band-arrow path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 0.135em;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
 
 /* A hairline between sections of a project's work, so a page can break
    into groups instead of reading as one long column. Same rule weight as
