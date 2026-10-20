@@ -77,6 +77,14 @@ const plugins = [
         '<strong>CHART mode.</strong> Record a rough Clone Hero chart in your DAW and finish it in Moonscraper.',
         '<strong>User guide</strong> in the download.',
         '<strong>Windows</strong> build added September 20.'
+      ] },
+      { version: '1.0', date: 'September 13, 2026', items: [
+        '<strong>First release.</strong> A VST3 plugin for macOS, Apple Silicon and Intel.',
+        '<strong>Three modes:</strong> chords in a key, a chromatic layout, and a pentatonic scale.',
+        '<strong>3D note highway</strong> that lights up as you play.',
+        '<strong>Any USB controller,</strong> set up by pressing each control once.',
+        '<strong>Whammy</strong> bends the pitch.',
+        '<strong>GH MIDI input</strong> so your DAW can record what you play.'
       ] }
     ],
     /* The Windows zip is built by GitHub Actions in the gh-midi repo (its

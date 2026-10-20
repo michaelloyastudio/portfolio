@@ -115,7 +115,8 @@
   var log = p.changelog || [], logHtml = '';
   if (log.length) {
     logHtml += '<section class="plugin-section plugin-changelog">' +
-      '<div class="changelog-head"><h2>What\'s new in ' + log[0].version + '</h2>' +
+      '<h2 class="changelog-title">What\'s New</h2>' +
+      '<div class="changelog-row"><span class="changelog-v">' + log[0].version + '</span>' +
       '<span class="changelog-date">' + log[0].date + '</span></div>' + list(log[0].items) + '</section>';
     if (log.length > 1) {
       logHtml += '<section class="plugin-section plugin-history"><h2>Version history</h2>' +

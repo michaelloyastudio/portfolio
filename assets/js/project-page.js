@@ -222,7 +222,7 @@
     if ('ResizeObserver' in window) watch(new ResizeObserver(place)).observe(img);
 
     /* Pointer target in -1..1 across the picture. Three things keep it calm:
-       the pointer's pull (on) fades in over about half a second after it
+       the pointer's pull (on) fades in over about a third of a second after it
        arrives and out after it leaves, so landing on the very edge doesn't
        fling the layers to full travel; and the motion is smoothed twice
        (target -> m -> c), so it starts gently and settles gently rather than
@@ -257,11 +257,12 @@
       var now = performance.now(), dt = last ? Math.min(0.05, (now - last) / 1000) : 0.016;
       last = now;
       var ease = function (tau) { return 1 - Math.exp(-dt / tau); };
-      on += (inside - on) * ease(0.35);
-      mx += (px * on - mx) * ease(0.22);
-      my += (py * on - my) * ease(0.22);
-      cx += (mx - cx) * ease(0.22);
-      cy += (my - cy) * ease(0.22);
+      // tighter than it was (0.35 / 0.22): Mike found it sluggish to the mouse
+      on += (inside - on) * ease(0.25);
+      mx += (px * on - mx) * ease(0.13);
+      my += (py * on - my) * ease(0.13);
+      cx += (mx - cx) * ease(0.13);
+      cy += (my - cy) * ease(0.13);
       // -1 when the hero's centre is at the bottom of the window, +1 at the top
       var r = stack.getBoundingClientRect(), vh = window.innerHeight;
       var raw = (vh / 2 - (r.top + r.height / 2)) / vh;
