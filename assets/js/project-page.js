@@ -87,20 +87,6 @@
       if (window.innerWidth <= 640 || !mw) { head.style.maxWidth = ''; return; }
       var pad = parseFloat(getComputedStyle(head).paddingLeft) || 0;
       head.style.maxWidth = (mw + 2 * pad).toFixed(1) + 'px';
-      /* The side arrows sit just outside a full-width 16:9 hero, the widest
-         a hero gets, and stay there on every project, so they don't jump
-         about between a wide page and a square or narrower one. Measured
-         against the arrows' own fixed layer, which can differ from
-         clientWidth by the scrollbar. */
-      var arrows = document.querySelector('.side-arrows');
-      if (arrows) {
-        var ar = arrows.getBoundingClientRect();
-        var slot = Math.min(1600, Math.max(0.74 * window.innerWidth, 760), ar.width) - 2 * pad;
-        var wide = Math.min(slot, (parseFloat(hm.style.maxHeight) || Infinity) * 16 / 9);
-        var inset = ((ar.width - wide) / 2).toFixed(1) + 'px';
-        arrows.style.setProperty('--hero-l', inset);
-        arrows.style.setProperty('--hero-r', inset);
-      }
     };
     hm.addEventListener(hm.tagName === 'VIDEO' ? 'loadedmetadata' : 'load', fitHero);
     // a layered hero is ready when its layers are (layeredHero says so)

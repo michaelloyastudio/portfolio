@@ -2168,12 +2168,11 @@ body.page-leaving .menu-foot { opacity: 0; transform: translateY(-10px); transit
   --arrow-gap: clamp(14px, 1.8vw, 36px);   /* glyph to the hero's edge */
 }
 /* The link is a still box; only the glyph inside it moves on hover, so
-   the hit area never slides out from under the pointer. project-page.js
-   sets --hero-l / --hero-r to where a full-width 16:9 hero's edges fall,
-   so the arrows sit just outside the picture in the same spot on every
-   project (a narrower hero doesn't pull them in). They never go further
-   out than the logo and burger, and they stay put through the page fade,
-   like the header. */
+   the hit area never slides out from under the pointer. The arrows sit
+   just outside a full-width hero, in the same spot on every project (a
+   narrower hero doesn't pull them in), never further out than the logo
+   and burger, and they don't fade on the way in or out: constant, like
+   the header. */
 .side-arrow {
   position: absolute;
   top: 50%;
@@ -2185,8 +2184,12 @@ body.page-leaving .menu-foot { opacity: 0; transform: translateY(-10px); transit
   color: var(--accent);
   pointer-events: auto;
 }
-.side-arrow--prev { left:  max(calc(var(--frame-x) - var(--arrow-hit)), calc(var(--hero-l, 0px) - var(--arrow-gap) - var(--arrow-w) - var(--arrow-hit))); }
-.side-arrow--next { right: max(calc(var(--frame-x) - var(--arrow-hit)), calc(var(--hero-r, 0px) - var(--arrow-gap) - var(--arrow-w) - var(--arrow-hit))); }
+/* the edge of a full-width hero: half of what the hero slot leaves of the
+   window, plus the slot's own padding. Pure CSS, so it's in place on the
+   very first paint and identical on every project. */
+.side-arrows { --hero-edge: calc((100% - min(var(--herow), 100%)) / 2 + var(--pad)); }
+.side-arrow--prev { left:  max(calc(var(--frame-x) - var(--arrow-hit)), calc(var(--hero-edge) - var(--arrow-gap) - var(--arrow-w) - var(--arrow-hit))); }
+.side-arrow--next { right: max(calc(var(--frame-x) - var(--arrow-hit)), calc(var(--hero-edge) - var(--arrow-gap) - var(--arrow-w) - var(--arrow-hit))); }
 .side-arrow svg {
   width: 100%; height: 100%; display: block; overflow: visible;
   transition: transform 0.35s var(--ease);
