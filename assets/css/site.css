@@ -1879,7 +1879,8 @@ main[data-in] .product-body  { animation: projIn 0.55s var(--ease) 0.3s both; }
 }
 /* html + body.page-leaving: one notch more specific than each page's
    inline first-paint rule, which would otherwise win on source order */
-html body.page-leaving > *:not(.nav):not(.menu):not(.side-arrows) { animation: pageOut 0.2s cubic-bezier(0.4, 0, 1, 1) forwards; }
+html body.page-leaving > *:not(.nav):not(.menu):not(.side-arrows),
+html body.page-leaving.arrows-leaving > .side-arrows { animation: pageOut 0.2s cubic-bezier(0.4, 0, 1, 1) forwards; }
 body.page-leaving .menu-links,
 body.page-leaving .menu-foot { opacity: 0; transform: translateY(-10px); transition: opacity 0.2s ease-in, transform 0.2s ease-in; }
 
@@ -2167,12 +2168,13 @@ body.page-leaving .menu-foot { opacity: 0; transform: translateY(-10px); transit
   --arrow-hit: 14px;                       /* extra hit area round the glyph */
   --arrow-gap: clamp(14px, 1.8vw, 36px);   /* glyph to the hero's edge */
 }
-/* The link is a still box; only the glyph inside it moves on hover, so
-   the hit area never slides out from under the pointer. The arrows sit
-   just outside a full-width hero, in the same spot on every project (a
-   narrower hero doesn't pull them in), never further out than the logo
-   and burger, and they don't fade on the way in or out: constant, like
-   the header. */
+/* The arrows sit just outside a full-width hero, in the same spot on
+   every project (a narrower hero doesn't pull them in), never further out
+   than the logo and burger. Between projects they're constant, like the
+   header: no fade, no movement. Arriving from anywhere else they come in
+   with the title; leaving for anywhere else they go out with the page
+   (site.js sets arrows-leaving, and arrowsStay for the next project's
+   inline head script). The link box carries extra hit area round the glyph. */
 .side-arrow {
   position: absolute;
   top: 50%;
@@ -2192,7 +2194,6 @@ body.page-leaving .menu-foot { opacity: 0; transform: translateY(-10px); transit
 .side-arrow--next { right: max(calc(var(--frame-x) - var(--arrow-hit)), calc(var(--hero-edge) - var(--arrow-gap) - var(--arrow-w) - var(--arrow-hit))); }
 .side-arrow svg {
   width: 100%; height: 100%; display: block; overflow: visible;
-  transition: transform 0.35s var(--ease);
 }
 .side-arrow path {
   fill: none;
@@ -2202,8 +2203,9 @@ body.page-leaving .menu-foot { opacity: 0; transform: translateY(-10px); transit
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
 }
-.side-arrow--prev:hover svg { transform: translateX(-4px); }
-.side-arrow--next:hover svg { transform: translateX(4px); }
+.side-arrows { animation: projIn 0.4s var(--ease) 0s both; }
+html.arrows-stay .side-arrows { animation: none; }
+@media (prefers-reduced-motion: reduce) { .side-arrows { animation: none; } }
 @media (max-width: 900px) {
   .side-arrows {
     position: static;

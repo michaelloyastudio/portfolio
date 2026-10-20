@@ -106,13 +106,20 @@
     if (calm.matches) return;
     e.preventDefault();
     document.body.classList.add('page-leaving');
+    // project to project, the side arrows stay put; anywhere else they go too
+    if (document.querySelector('.side-arrows')) {
+      var dest = a.pathname.replace(/\.html$/, '');
+      var toProject = typeof projects !== 'undefined' && projects.some(function (p) { return '/' + p.slug === dest; });
+      if (toProject) { try { sessionStorage.setItem('arrowsStay', '1'); } catch (_) {} }
+      else document.body.classList.add('arrows-leaving');
+    }
     if (a.pathname === '/' || a.pathname === '/index.html') document.body.classList.add('nav-leaving');
     setTimeout(function () { window.location.href = a.href; }, LEAVE_MS);
   });
   // Back/forward can restore this page from the cache mid-leave: undo it.
   window.addEventListener('pageshow', function (e) {
     if (!e.persisted) return;
-    document.body.classList.remove('page-leaving', 'nav-leaving', 'menu-open');
+    document.body.classList.remove('page-leaving', 'nav-leaving', 'arrows-leaving', 'menu-open');
     if (burger) burger.setAttribute('aria-expanded', 'false');
     lockScroll(false);
   });
