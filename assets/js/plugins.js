@@ -89,11 +89,9 @@ const plugins = [
     ],
     /* No setup on the page. It ships as README.txt in the zip, where it's
        next to the files it talks about. The page sells; the README installs.
-       Below the fold, one quiet line: the source is open, here it is. */
-    body: `<section class="plugin-section plugin-section--quiet">
-<h2>Open source</h2>
-<p>The code is on <a href="https://github.com/michaelloyastudio/gh-midi" target="_blank" rel="noopener">GitHub</a> under the AGPL. Build it, change it, port it. Pull requests are read.</p>
-</section>`
+       The source link lives in the specs list; Mike cut the open-source
+       blurb below the changelog (2026-10-20). */
+    body: ''
   }
 
 ];

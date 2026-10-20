@@ -115,20 +115,49 @@
   var log = p.changelog || [], logHtml = '';
   if (log.length) {
     logHtml += '<section class="plugin-section plugin-changelog">' +
-      '<h2>What\'s new in ' + log[0].version + '</h2>' +
-      '<p class="changelog-date">' + log[0].date + '</p>' + list(log[0].items) + '</section>';
+      '<div class="changelog-head"><h2>What\'s new in ' + log[0].version + '</h2>' +
+      '<span class="changelog-date">' + log[0].date + '</span></div>' + list(log[0].items) + '</section>';
     if (log.length > 1) {
       logHtml += '<section class="plugin-section plugin-history"><h2>Version history</h2>' +
         log.slice(1).map(function (v) {
           return '<details class="changelog-version"><summary>' +
             '<span class="changelog-v">' + v.version + '</span>' +
             '<span class="changelog-date">' + v.date + '</span>' +
-            '<span class="changelog-chev">' + CHEV + '</span></summary>' + list(v.items) + '</details>';
+            '<span class="changelog-chev">' + CHEV + '</span></summary>' +
+            '<div class="changelog-body">' + list(v.items) + '</div></details>';
         }).join('') + '</section>';
     }
   }
   var body = $('pluginBody');
   if (body) body.innerHTML = logHtml + (p.body || '');
+
+  /* The version rows open and close with a slide: <details> on its own
+     snaps, so the summary click is taken over and the body's height is
+     animated, open set before opening and cleared after closing. */
+  [].forEach.call(document.querySelectorAll('.changelog-version'), function (d) {
+    var sum = d.querySelector('summary'), bodyEl = d.querySelector('.changelog-body');
+    var anim = null;
+    sum.addEventListener('click', function (e) {
+      if (!bodyEl.animate || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      e.preventDefault();
+      var opening = !d.open || d.classList.contains('is-closing');
+      // a closed row still reports its full height in Chrome, so start from 0
+      var from = d.open ? bodyEl.getBoundingClientRect().height : 0;
+      if (anim) anim.cancel();
+      if (opening) { d.open = true; d.classList.remove('is-closing'); d.classList.add('is-opening'); }
+      else { d.classList.add('is-closing'); d.classList.remove('is-opening'); }
+      var to = opening ? bodyEl.scrollHeight : 0;
+      anim = bodyEl.animate([
+        { height: from + 'px', opacity: opening ? 0 : 1 },
+        { height: to + 'px', opacity: opening ? 1 : 0 }
+      ], { duration: opening ? 380 : 300, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' });
+      anim.onfinish = function () {
+        anim = null;
+        d.classList.remove('is-opening', 'is-closing');
+        if (!opening) d.open = false;
+      };
+    });
+  });
   [].forEach.call(document.querySelectorAll('#pluginIntro p, #pluginBody p, #pluginBody dd, #pluginBody li'),
     function (el) { el.innerHTML = el.innerHTML.replace(/\s+([^\s<>]+)\s*$/, ' $1'); });
 
