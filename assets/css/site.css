@@ -2112,54 +2112,14 @@ body.page-leaving .menu-foot { opacity: 0; transform: translateY(-10px); transit
 .project-work [class^="img-grid"] > *,
 .project-video {
   overflow: hidden;
-  position: relative;    /* anchors the sound button */
+  position: relative;
 }
 
-/* ── Sound toggle on autoplaying grid video ────────────────────────
-   The videos start muted because no browser will autoplay with sound.
-   This is the way back: hover a tile and the control fades in, click it
-   and that one clip gets the audio. Only ever one at a time — see
-   project-page.js, which mutes the others rather than letting two
-   soundtracks fight. */
-.sound-toggle {
-  position: absolute;
-  right: 0.7rem;
-  bottom: 0.7rem;
-  width: 2.6rem;
-  height: 2.6rem;
-  display: grid;
-  place-items: center;
-  border: none;
-  border-radius: 999px;
-  background: rgba(10, 10, 10, 0.55);
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
-  color: var(--fg);
-  cursor: pointer;
-  padding: 0;
-  opacity: 0;
-  transform: translateY(4px);
-  transition: opacity 0.28s var(--ease), transform 0.28s var(--ease),
-              background 0.25s ease, color 0.25s ease;
-}
-.project-work [class^="img-grid"] > *:hover .sound-toggle,
-.project-video:hover .sound-toggle,
-.sound-toggle:focus-visible { opacity: 1; transform: none; }
-/* The one with sound stays visible, so you can see where the audio is
-   coming from without hunting for it. */
-.sound-toggle.is-live {
-  opacity: 1;
-  transform: none;
-  background: var(--accent);
-  color: var(--black);
-}
-.sound-toggle:hover { background: var(--accent); color: var(--black); }
-.sound-toggle svg { width: 1.15rem; height: 1.15rem; fill: currentColor; display: block; }
+/* Work media opens in the lightbox (project-page.js): anything that isn't
+   a player with its own controls, or inside a link. */
+.project-work img:not(a img),
+.project-work video:not([controls]):not(a video) { cursor: zoom-in; }
 
-@media (hover: none) {
-  /* No hover on a phone, so the control is simply always there. */
-  .sound-toggle { opacity: 1; transform: none; }
-}
 .project-work [class^="img-grid"] img,
 .project-work [class^="img-grid"] video {
   width: 100%;
@@ -2193,15 +2153,17 @@ body.page-leaving .menu-foot { opacity: 0; transform: translateY(-10px); transit
    layer (not each arrow) so the page fade, which transforms body's
    children, can't pull them out of place. Below 900 the margins are too
    thin, so they drop to a row at the end of the page. ── */
+.side-arrows, .lightbox {
+  --arrow-w: calc(var(--logo-h) * 0.5);
+  --arrow-h: calc(var(--logo-h) * 0.68);
+  --arrow-hit: 14px;                       /* extra hit area round the glyph */
+  --arrow-gap: clamp(14px, 1.8vw, 36px);   /* glyph to the hero's edge */
+}
 .side-arrows {
   position: fixed;
   inset: 0;
   z-index: 80;
   pointer-events: none;
-  --arrow-w: calc(var(--logo-h) * 0.5);
-  --arrow-h: calc(var(--logo-h) * 0.68);
-  --arrow-hit: 14px;                       /* extra hit area round the glyph */
-  --arrow-gap: clamp(14px, 1.8vw, 36px);   /* glyph to the hero's edge */
 }
 /* The arrows sit just outside a full-width hero, in the same spot on
    every project (a narrower hero doesn't pull them in), never further out
@@ -2224,7 +2186,7 @@ body.page-leaving .menu-foot { opacity: 0; transform: translateY(-10px); transit
 /* the edge of a full-width hero: half of what the hero slot leaves of the
    window, plus the slot's own padding. Pure CSS, so it's in place on the
    very first paint and identical on every project. */
-.side-arrows { --hero-edge: calc((100% - min(var(--herow), 100%)) / 2 + var(--pad)); }
+.side-arrows, .lightbox { --hero-edge: calc((100% - min(var(--herow), 100%)) / 2 + var(--pad)); }
 .side-arrow--prev { left:  max(calc(var(--frame-x) - var(--arrow-hit)), calc(var(--hero-edge) - var(--arrow-gap) - var(--arrow-w) - var(--arrow-hit))); }
 .side-arrow--next { right: max(calc(var(--frame-x) - var(--arrow-hit)), calc(var(--hero-edge) - var(--arrow-gap) - var(--arrow-w) - var(--arrow-hit))); }
 .side-arrow svg {
@@ -2248,7 +2210,7 @@ html.arrows-stay .side-arrows { animation: none; }
     justify-content: space-between;
     padding: 0 var(--pad);   /* .project already leaves the gap above */
   }
-  .side-arrow { position: static; margin: 0 calc(var(--arrow-hit) * -1); }
+  .side-arrows .side-arrow { position: static; margin: 0 calc(var(--arrow-hit) * -1); }
 }
 
 /* ══ RESPONSIVE (desktop-first; full mobile pass still to come) ══ */
@@ -2272,4 +2234,88 @@ html.arrows-stay .side-arrows { animation: none; }
   .project-head { padding-bottom: 1.25rem; }
   .project-facts { gap: 1.5rem; }
   .band-meta { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+}
+
+/* ══ LIGHTBOX ══
+   A work image or clip, opened over everything (project-page.js). The
+   frame repeats the page's: the X where the burger sits, the chevrons where
+   the side arrows sit (they step through the project's work), and for a
+   clip with sound, a speaker in the burger's column at the bottom. All of
+   it drawn in the mark's stroke. The piece sits inside the hero's width,
+   clear of the X and speaker rows. */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 95;
+  display: grid;
+  place-items: center;
+  --lb-y: calc(var(--nav-y) + var(--logo-h) * 1.4 + clamp(12px, 2vh, 24px));
+  padding: var(--lb-y) var(--hero-edge);
+  background: var(--bg);   /* solid, like the menu: just the piece */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s;
+  -webkit-user-select: none; user-select: none;
+}
+.lightbox.is-open { opacity: 1; visibility: visible; }
+.lightbox-media {
+  display: block;
+  max-width: 100%;
+  max-height: calc(100vh - 2 * var(--lb-y));
+  max-height: calc(100svh - 2 * var(--lb-y));
+  width: auto;
+  height: auto;
+  cursor: zoom-out;
+}
+.lightbox-media.is-in { animation: lbIn 0.4s var(--ease) both; }
+@keyframes lbIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: none; }
+}
+.lightbox button {
+  position: absolute;
+  background: none;
+  border: 0;
+  padding: var(--arrow-hit);
+  color: var(--accent);
+  cursor: pointer;
+  box-sizing: content-box;
+}
+.lightbox:focus, .lightbox button:focus { outline: none; }
+.lightbox button:focus-visible { outline: 1px solid var(--accent); outline-offset: 2px; }
+.lightbox svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.lightbox path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: var(--bar-h);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+/* the X: same size and spot as the burger */
+.lightbox-close {
+  top: calc(var(--nav-y) + var(--logo-h) * 0.7 - var(--logo-h) * 0.3 - var(--arrow-hit));
+  right: calc(var(--frame-x) + var(--logo-h) * 0.4 - var(--arrow-hit));
+  width: calc(var(--logo-h) * 0.6);
+  height: calc(var(--logo-h) * 0.6);
+}
+/* the speaker: the burger's column, the frame's bottom inset */
+.lightbox-sound {
+  bottom: calc(var(--frame-y) - var(--arrow-hit));
+  right: calc(var(--frame-x) + var(--logo-h) * 0.3 - var(--arrow-hit));
+  width: calc(var(--logo-h) * 0.8);
+  height: calc(var(--logo-h) * 0.62);
+}
+.lightbox-sound[hidden] { display: none; }
+.lightbox .side-arrow { width: var(--arrow-w); height: var(--arrow-h); }
+.lightbox .side-arrow[hidden] { display: none; }
+@media (max-width: 900px) {
+  .lightbox { padding-left: var(--pad); padding-right: var(--pad); }
+  .lightbox .side-arrow { top: auto; margin: 0; bottom: calc(var(--frame-y) - var(--arrow-hit)); }
+  .lightbox .side-arrow--prev { left: calc(var(--frame-x) - var(--arrow-hit)); }
+  .lightbox .side-arrow--next { right: auto; left: calc(var(--frame-x) + var(--arrow-w) + 2rem); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lightbox { transition: none; }
+  .lightbox-media.is-in { animation: none; }
 }

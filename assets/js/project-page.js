@@ -466,57 +466,6 @@
     clearTimeout(rt); rt = later(layoutMosaic, 120);
   }, sig);
 
-  /* ── Sound, one clip at a time ────────────────────────────────────
-     Autoplay only works muted, so every looping clip starts silent. This
-     is the way back in: hover it, hit the button, that clip gets the
-     audio. Full-width blocks are included as well as grid tiles — a clip
-     shouldn't lose its sound just because it isn't sharing a row. Unmuting one mutes whatever was playing before — two
-     soundtracks over each other is never what you want, and the user
-     shouldn't have to go hunting for the one they left on.
-     The audio survives the scroll pause below: the clip is paused when it
-     leaves the screen and resumes still unmuted, which keeps sound from
-     playing for something nobody can see. */
-  var ICON_OFF = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.2-3.9v2.2l2.1 2.1c.06-.13.1-.26.1-.4zm2.5 0c0 .94-.2 1.83-.55 2.63l1.5 1.5A8.9 8.9 0 0 0 21 12a9 9 0 0 0-6.7-8.7v2.1A6.9 6.9 0 0 1 19 12zM2.3 2.3 1 3.6l4.4 4.4H3v8h4l5 5v-6.7l4.2 4.2c-.66.5-1.4.9-2.2 1.15v2.06a9 9 0 0 0 3.66-1.78L20.4 22l1.3-1.3L2.3 2.3zM12 4 9.9 6.1 12 8.2V4z"/></svg>';
-  var ICON_ON  = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05A4.5 4.5 0 0 0 16.5 12zM14 3.23v2.06a6.99 6.99 0 0 1 0 13.42v2.06a9 9 0 0 0 0-17.54z"/></svg>';
-
-  /* data-silent marks a clip with no audio track at all. Giving one a
-     button is worse than giving it nothing: it looks like the sound is
-     broken rather than absent. The attribute is set from what ffprobe
-     actually reports on the file, not from memory. */
-  var sounded = document.querySelectorAll(
-    '#projectWork video[autoplay]:not([data-silent])');
-  if (sounded.length) {
-    var buttons = [];
-    var paint = function (v, btn) {
-      var live = !v.muted;
-      btn.innerHTML = live ? ICON_ON : ICON_OFF;
-      btn.classList.toggle('is-live', live);
-      btn.setAttribute('aria-pressed', live ? 'true' : 'false');
-      btn.setAttribute('aria-label', live ? 'Mute this clip' : 'Unmute this clip');
-    };
-    Array.prototype.forEach.call(sounded, function (v) {
-      var btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'sound-toggle';
-      v.parentNode.appendChild(btn);
-      buttons.push([v, btn]);
-      paint(v, btn);
-      btn.addEventListener('click', function (e) {
-        e.preventDefault();
-        var turningOn = v.muted;
-        buttons.forEach(function (pair) {      // solo: everything else goes quiet
-          pair[0].muted = true;
-          paint(pair[0], pair[1]);
-        });
-        if (turningOn) {
-          v.muted = false;
-          var q = v.play(); if (q && q.catch) q.catch(function () {});
-        }
-        paint(v, btn);
-      });
-    });
-  }
-
   // Autoplay loops only once they're on screen — a project page can hold a
   // lot of video, and decoding them all at once stutters the scroll.
   var loops = document.querySelectorAll('#projectWork video[autoplay]');
@@ -564,6 +513,135 @@
     });
   }
 
+  /* ── Lightbox ─────────────────────────────────────────────────────
+     Click a work image or clip (not a player with its own controls, not
+     anything inside a link) and it opens over the page. A clip restarts
+     from the top, muted, in the lightbox; the red speaker gives it sound.
+     The chevrons and the arrow keys step through the project's work,
+     Esc / the X / a click anywhere closes it. Grid clips pause while it's
+     open and pick up again after. Built once; it outlives project swaps,
+     which close it first. */
+  var CHEV_L = '<svg viewBox="0 0 20 36" aria-hidden="true"><path d="M16 3 L4 18 L16 33"/></svg>';
+  var CHEV_R = '<svg viewBox="0 0 20 36" aria-hidden="true"><path d="M4 3 L16 18 L4 33"/></svg>';
+  var X_ICON = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2 2 L18 18 M18 2 L2 18"/></svg>';
+  var SPEAKER = 'M2 7 L6.5 7 L12 2.5 L12 17.5 L6.5 13 L2 13 Z';
+  var SOUND_ON  = '<svg viewBox="0 0 26 20" aria-hidden="true"><path d="' + SPEAKER + ' M16 7 Q18 10 16 13 M19.5 4 Q24 10 19.5 16"/></svg>';
+  var SOUND_OFF = '<svg viewBox="0 0 26 20" aria-hidden="true"><path d="' + SPEAKER + ' M17 7 L23 13 M23 7 L17 13"/></svg>';
+
+  var lb = null, lbClose, lbPrev, lbNext, lbSound, lbMedia = null;
+  var lbList = [], lbIdx = -1, lbResume = [], lbReturn = null, lbOpen = false;
+
+  function srcOf(m, a) { return m.getAttribute(a) || m.getAttribute('data-held-' + a); }
+  function lbItems() {
+    return Array.prototype.filter.call(document.querySelectorAll('#projectWork img, #projectWork video'), function (m) {
+      return !(m.tagName === 'VIDEO' && m.hasAttribute('controls')) && !m.closest('a') && srcOf(m, 'src');
+    });
+  }
+  function dropMedia() {
+    if (!lbMedia) return;
+    if (lbMedia.tagName === 'VIDEO') { lbMedia.pause(); lbMedia.removeAttribute('src'); lbMedia.load(); }
+    lbMedia.remove();
+    lbMedia = null;
+  }
+  function paintSound() {
+    var live = lbMedia && lbMedia.tagName === 'VIDEO' && !lbMedia.muted;
+    lbSound.innerHTML = live ? SOUND_ON : SOUND_OFF;
+    lbSound.setAttribute('aria-label', live ? 'Mute' : 'Unmute');
+    lbSound.setAttribute('aria-pressed', live ? 'true' : 'false');
+  }
+  function buildLb() {
+    lb = document.createElement('div');
+    lb.className = 'lightbox';
+    lb.setAttribute('role', 'dialog');
+    lb.setAttribute('aria-modal', 'true');
+    lb.setAttribute('aria-label', 'Work viewer');
+    lb.tabIndex = -1;
+    lb.innerHTML =
+      '<button type="button" class="lightbox-close" aria-label="Close">' + X_ICON + '</button>' +
+      '<button type="button" class="side-arrow side-arrow--prev" aria-label="Previous piece">' + CHEV_L + '</button>' +
+      '<button type="button" class="side-arrow side-arrow--next" aria-label="Next piece">' + CHEV_R + '</button>' +
+      '<button type="button" class="lightbox-sound" hidden></button>';
+    document.body.appendChild(lb);
+    lbClose = lb.querySelector('.lightbox-close');
+    lbPrev = lb.querySelector('.side-arrow--prev');
+    lbNext = lb.querySelector('.side-arrow--next');
+    lbSound = lb.querySelector('.lightbox-sound');
+    // the controls keep their clicks to themselves: the speaker repaints
+    // its icon mid-click, which would otherwise read as a backdrop click
+    lbClose.addEventListener('click', function (e) { e.stopPropagation(); closeLb(); });
+    lbPrev.addEventListener('click', function (e) { e.stopPropagation(); showLb(lbIdx - 1); });
+    lbNext.addEventListener('click', function (e) { e.stopPropagation(); showLb(lbIdx + 1); });
+    lbSound.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (!lbMedia || lbMedia.tagName !== 'VIDEO') return;
+      lbMedia.muted = !lbMedia.muted;
+      var q = lbMedia.play(); if (q && q.catch) q.catch(function () {});
+      paintSound();
+    });
+    // anywhere that isn't a control closes it, the piece itself included
+    lb.addEventListener('click', function () { closeLb(); });
+    document.addEventListener('keydown', function (e) {
+      if (!lbOpen) return;
+      if (e.key === 'Escape') { e.preventDefault(); closeLb(); }
+      else if (e.key === 'ArrowLeft' && lbList.length > 1) { e.preventDefault(); showLb(lbIdx - 1); }
+      else if (e.key === 'ArrowRight' && lbList.length > 1) { e.preventDefault(); showLb(lbIdx + 1); }
+    });
+  }
+  function showLb(n) {
+    lbIdx = (n + lbList.length) % lbList.length;
+    var m = lbList[lbIdx], el;
+    dropMedia();
+    if (m.tagName === 'VIDEO') {
+      // a fresh element, so it always starts from the top, muted
+      el = document.createElement('video');
+      el.muted = true; el.loop = true; el.playsInline = true; el.autoplay = true;
+      el.setAttribute('muted', ''); el.setAttribute('playsinline', '');
+      el.src = srcOf(m, 'src');
+      var q = el.play(); if (q && q.catch) q.catch(function () {});
+    } else {
+      el = new Image();
+      el.alt = m.alt || '';
+      el.src = srcOf(m, 'src');
+    }
+    if (m.getAttribute('width')) { el.setAttribute('width', m.getAttribute('width')); el.setAttribute('height', m.getAttribute('height')); }
+    el.className = 'lightbox-media is-in';
+    lb.insertBefore(el, lbClose);
+    lbMedia = el;
+    lbSound.hidden = !(m.tagName === 'VIDEO' && !m.hasAttribute('data-silent'));
+    paintSound();
+    lbPrev.hidden = lbNext.hidden = lbList.length < 2;
+  }
+  function openLb(m) {
+    if (!lb) buildLb();
+    lbList = lbItems();
+    var n = lbList.indexOf(m);
+    if (n < 0) return;
+    lbReturn = document.activeElement;
+    lbResume = Array.prototype.filter.call(document.querySelectorAll('#projectWork video'), function (v) { return !v.paused; });
+    lbResume.forEach(function (v) { v.pause(); });
+    document.documentElement.classList.add('locked');
+    lbOpen = true;
+    showLb(n);
+    lb.classList.add('is-open');
+    lb.focus({ preventScroll: true });   // the dialog, not the X, so no ring shows on a tap
+  }
+  function closeLb(now) {
+    if (!lbOpen) return;
+    lbOpen = false;
+    lb.classList.remove('is-open');
+    document.documentElement.classList.remove('locked');
+    if (now) dropMedia(); else setTimeout(function () { if (!lbOpen) dropMedia(); }, 260);
+    lbResume.forEach(function (v) { if (v.isConnected) { var q = v.play(); if (q && q.catch) q.catch(function () {}); } });
+    lbResume = [];
+    if (lbReturn && lbReturn.focus && lbReturn.isConnected) lbReturn.focus({ preventScroll: true });
+  }
+  document.addEventListener('click', function (e) {
+    var m = e.target.closest && e.target.closest('#projectWork img, #projectWork video');
+    if (!m || (m.tagName === 'VIDEO' && m.hasAttribute('controls')) || m.closest('a')) return;
+    e.preventDefault();
+    openLb(m);
+  });
+
   var teardown = render(window.PROJECT_SLUG);
   if (history.replaceState) history.replaceState({ slug: window.PROJECT_SLUG }, '');
   // each swap starts at the top; the browser restoring an old scroll
@@ -582,6 +660,7 @@
   window.projectSwap = function (slug, push) {
     if (swapping || !isProject(slug) || !history.pushState) return false;
     swapping = true;
+    closeLb(true);
     document.body.classList.add('page-leaving');
     setTimeout(function () {
       teardown();
