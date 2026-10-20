@@ -516,7 +516,8 @@
   /* ── Lightbox ─────────────────────────────────────────────────────
      Click a work image or clip (not a player with its own controls, not
      anything inside a link) and it opens over the page. A clip restarts
-     from the top, muted, in the lightbox; the red speaker gives it sound.
+     from the top in the lightbox, with its sound on (the click that opened
+     it counts as the gesture browsers want before playing audio).
      The chevrons and the arrow keys step through the project's work,
      Esc / the X / a click anywhere closes it. Grid clips pause while it's
      open and pick up again after. Built once; it outlives project swaps,
@@ -524,11 +525,8 @@
   var CHEV_L = '<svg viewBox="0 0 20 36" aria-hidden="true"><path d="M16 3 L4 18 L16 33"/></svg>';
   var CHEV_R = '<svg viewBox="0 0 20 36" aria-hidden="true"><path d="M4 3 L16 18 L4 33"/></svg>';
   var X_ICON = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2 2 L18 18 M18 2 L2 18"/></svg>';
-  var SPEAKER = 'M2 7 L6.5 7 L12 2.5 L12 17.5 L6.5 13 L2 13 Z';
-  var SOUND_ON  = '<svg viewBox="0 0 26 20" aria-hidden="true"><path d="' + SPEAKER + ' M16 7 Q18 10 16 13 M19.5 4 Q24 10 19.5 16"/></svg>';
-  var SOUND_OFF = '<svg viewBox="0 0 26 20" aria-hidden="true"><path d="' + SPEAKER + ' M17 7 L23 13 M23 7 L17 13"/></svg>';
 
-  var lb = null, lbClose, lbPrev, lbNext, lbSound, lbMedia = null;
+  var lb = null, lbClose, lbPrev, lbNext, lbMedia = null;
   var lbList = [], lbIdx = -1, lbResume = [], lbReturn = null, lbOpen = false;
 
   function srcOf(m, a) { return m.getAttribute(a) || m.getAttribute('data-held-' + a); }
@@ -551,20 +549,6 @@
     el.classList.add('is-leaving');
     setTimeout(function () { killMedia(el); }, 260);
   }
-  // the speaker hangs just under the clip's bottom-right corner
-  function placeSound() {
-    if (!lbMedia || lbSound.hidden) return;
-    // layout box, not getBoundingClientRect: the piece is mid-zoom while it fades in
-    var pad = 10;
-    lbSound.style.left = (lbMedia.offsetLeft + lbMedia.offsetWidth - lbSound.offsetWidth + pad) + 'px';
-    lbSound.style.top = (lbMedia.offsetTop + lbMedia.offsetHeight + 6) + 'px';
-  }
-  function paintSound() {
-    var live = lbMedia && lbMedia.tagName === 'VIDEO' && !lbMedia.muted;
-    lbSound.innerHTML = live ? SOUND_ON : SOUND_OFF;
-    lbSound.setAttribute('aria-label', live ? 'Mute' : 'Unmute');
-    lbSound.setAttribute('aria-pressed', live ? 'true' : 'false');
-  }
   function buildLb() {
     lb = document.createElement('div');
     lb.className = 'lightbox';
@@ -575,25 +559,15 @@
     lb.innerHTML =
       '<button type="button" class="lightbox-close" aria-label="Close">' + X_ICON + '</button>' +
       '<button type="button" class="side-arrow side-arrow--prev" aria-label="Previous piece">' + CHEV_L + '</button>' +
-      '<button type="button" class="side-arrow side-arrow--next" aria-label="Next piece">' + CHEV_R + '</button>' +
-      '<button type="button" class="lightbox-sound" hidden></button>';
+      '<button type="button" class="side-arrow side-arrow--next" aria-label="Next piece">' + CHEV_R + '</button>';
     document.body.appendChild(lb);
     lbClose = lb.querySelector('.lightbox-close');
     lbPrev = lb.querySelector('.side-arrow--prev');
     lbNext = lb.querySelector('.side-arrow--next');
-    lbSound = lb.querySelector('.lightbox-sound');
-    // the controls keep their clicks to themselves: the speaker repaints
-    // its icon mid-click, which would otherwise read as a backdrop click
+    // the controls keep their clicks to themselves (a click anywhere else closes)
     lbClose.addEventListener('click', function (e) { e.stopPropagation(); closeLb(); });
     lbPrev.addEventListener('click', function (e) { e.stopPropagation(); showLb(lbIdx - 1); });
     lbNext.addEventListener('click', function (e) { e.stopPropagation(); showLb(lbIdx + 1); });
-    lbSound.addEventListener('click', function (e) {
-      e.stopPropagation();
-      if (!lbMedia || lbMedia.tagName !== 'VIDEO') return;
-      lbMedia.muted = !lbMedia.muted;
-      var q = lbMedia.play(); if (q && q.catch) q.catch(function () {});
-      paintSound();
-    });
     // anywhere that isn't a control closes it, the piece itself included
     lb.addEventListener('click', function () { closeLb(); });
     document.addEventListener('keydown', function (e) {
@@ -602,20 +576,20 @@
       else if (e.key === 'ArrowLeft' && lbList.length > 1) { e.preventDefault(); showLb(lbIdx - 1); }
       else if (e.key === 'ArrowRight' && lbList.length > 1) { e.preventDefault(); showLb(lbIdx + 1); }
     });
-    window.addEventListener('resize', function () { if (lbOpen) placeSound(); });
   }
   function showLb(n) {
     lbIdx = (n + lbList.length) % lbList.length;
     var m = lbList[lbIdx], el;
     dropMedia(!lbOpen || !lb.classList.contains('is-open'));
-    lbSound.classList.remove('is-shown');
     if (m.tagName === 'VIDEO') {
-      // a fresh element, so it always starts from the top, muted
+      // a fresh element, so it always starts from the top, with sound; if a
+      // browser still refuses audio, it plays muted rather than not at all
       el = document.createElement('video');
-      el.muted = true; el.loop = true; el.playsInline = true; el.autoplay = true;
-      el.setAttribute('muted', ''); el.setAttribute('playsinline', '');
+      el.loop = true; el.playsInline = true;
+      el.setAttribute('playsinline', '');
       el.src = srcOf(m, 'src');
-      var q = el.play(); if (q && q.catch) q.catch(function () {});
+      var q = el.play();
+      if (q && q.catch) q.catch(function () { el.muted = true; var r = el.play(); if (r && r.catch) r.catch(function () {}); });
     } else {
       el = new Image();
       el.alt = m.alt || '';
@@ -625,17 +599,12 @@
     el.className = 'lightbox-media';
     lb.insertBefore(el, lbClose);
     lbMedia = el;
-    lbSound.hidden = !(m.tagName === 'VIDEO' && !m.hasAttribute('data-silent'));
-    paintSound();
-    placeSound();
     lbPrev.hidden = lbNext.hidden = lbList.length < 2;
     // reveal once there's something to show: a decoded image, a first frame
     var reveal = function () {
       if (lbMedia !== el) return;
       void el.offsetWidth;   // commit the hidden state first, so a cached piece still fades
       el.classList.add('is-shown');
-      placeSound();
-      lbSound.classList.add('is-shown');
     };
     if (el.tagName === 'VIDEO') {
       if (el.readyState >= 2) reveal(); else el.addEventListener('loadeddata', reveal, { once: true });

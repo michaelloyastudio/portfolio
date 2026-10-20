@@ -2239,10 +2239,9 @@ html.arrows-stay .side-arrows { animation: none; }
 /* ══ LIGHTBOX ══
    A work image or clip, opened over everything (project-page.js). The
    frame repeats the page's: the X where the burger sits, the chevrons where
-   the side arrows sit (they step through the project's work), and for a
-   clip with sound, a speaker in the burger's column at the bottom. All of
-   it drawn in the mark's stroke. The piece sits inside the hero's width,
-   clear of the X and speaker rows. */
+   the side arrows sit (they step through the project's work), drawn in the
+   mark's stroke. Clips play with their sound on. The piece sits inside the hero's width,
+   clear of the X's row. */
 .lightbox {
   position: fixed;
   inset: 0;
@@ -2304,19 +2303,6 @@ html.arrows-stay .side-arrows { animation: none; }
   width: calc(var(--logo-h) * 0.6);
   height: calc(var(--logo-h) * 0.6);
 }
-/* the speaker: just under the clip's bottom-right corner (project-page.js
-   places it against the clip), drawn lighter than the frame's marks so the
-   small glyph doesn't clog */
-.lightbox .lightbox-sound {
-  width: calc(var(--logo-h) * 0.8);
-  height: calc(var(--logo-h) * 0.62);
-  padding: 10px;
-  opacity: 0;
-  transition: opacity 0.4s var(--ease);
-}
-.lightbox-sound.is-shown { opacity: 1; }
-.lightbox-sound path { stroke-width: calc(var(--bar-h) * 0.5); }
-.lightbox-sound[hidden] { display: none; }
 .lightbox .side-arrow { width: var(--arrow-w); height: var(--arrow-h); }
 .lightbox .side-arrow[hidden] { display: none; }
 @media (max-width: 900px) {
@@ -2326,5 +2312,5 @@ html.arrows-stay .side-arrows { animation: none; }
   .lightbox .side-arrow--next { right: auto; left: calc(var(--frame-x) + var(--arrow-w) + 2rem); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .lightbox, .lightbox-media, .lightbox-sound { transition: none; }
+  .lightbox, .lightbox-media { transition: none; }
 }
