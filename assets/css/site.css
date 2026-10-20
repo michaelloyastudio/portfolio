@@ -2163,20 +2163,33 @@ body.page-leaving .menu-foot { opacity: 0; transform: translateY(-10px); transit
   inset: 0;
   z-index: 80;
   pointer-events: none;
+  --arrow-w: calc(var(--logo-h) * 0.38);
+  --arrow-h: calc(var(--logo-h) * 0.68);
+  --arrow-hit: 14px;                       /* extra hit area round the glyph */
+  --arrow-gap: clamp(14px, 1.8vw, 36px);   /* glyph to the hero's edge */
 }
+/* The link is a still box; only the glyph inside it moves on hover, so
+   the hit area never slides out from under the pointer. project-page.js
+   sets --hero-l / --hero-r (the hero's edges, as insets from the window)
+   so the arrows sit just outside the picture; they never go further out
+   than the logo and burger. */
 .side-arrow {
   position: absolute;
   top: 50%;
-  width: calc(var(--logo-h) * 0.56);
-  height: calc(var(--logo-h) * 1.0);
-  margin-top: calc(var(--logo-h) * -0.5);
+  box-sizing: content-box;
+  width: var(--arrow-w);
+  height: var(--arrow-h);
+  padding: var(--arrow-hit);
+  margin-top: calc(var(--arrow-h) / -2 - var(--arrow-hit));
   color: var(--accent);
   pointer-events: auto;
+}
+.side-arrow--prev { left:  max(calc(var(--frame-x) - var(--arrow-hit)), calc(var(--hero-l, 0px) - var(--arrow-gap) - var(--arrow-w) - var(--arrow-hit))); }
+.side-arrow--next { right: max(calc(var(--frame-x) - var(--arrow-hit)), calc(var(--hero-r, 0px) - var(--arrow-gap) - var(--arrow-w) - var(--arrow-hit))); }
+.side-arrow svg {
+  width: 100%; height: 100%; display: block; overflow: visible;
   transition: transform 0.35s var(--ease);
 }
-.side-arrow--prev { left: var(--frame-x); }
-.side-arrow--next { right: var(--frame-x); }
-.side-arrow svg { width: 100%; height: 100%; display: block; overflow: visible; }
 .side-arrow path {
   fill: none;
   stroke: currentColor;
@@ -2185,8 +2198,8 @@ body.page-leaving .menu-foot { opacity: 0; transform: translateY(-10px); transit
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
 }
-.side-arrow--prev:hover { transform: translateX(-5px); }
-.side-arrow--next:hover { transform: translateX(5px); }
+.side-arrow--prev:hover svg { transform: translateX(-4px); }
+.side-arrow--next:hover svg { transform: translateX(4px); }
 @media (max-width: 900px) {
   .side-arrows {
     position: static;
@@ -2194,7 +2207,7 @@ body.page-leaving .menu-foot { opacity: 0; transform: translateY(-10px); transit
     justify-content: space-between;
     padding: 0 var(--pad);   /* .project already leaves the gap above */
   }
-  .side-arrow { position: static; margin: 0; }
+  .side-arrow { position: static; margin: 0 calc(var(--arrow-hit) * -1); }
 }
 
 /* ══ RESPONSIVE (desktop-first; full mobile pass still to come) ══ */

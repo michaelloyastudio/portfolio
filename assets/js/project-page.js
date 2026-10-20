@@ -78,6 +78,15 @@
       if (window.innerWidth <= 640 || !mw) { head.style.maxWidth = ''; release(); return; }
       var pad = parseFloat(getComputedStyle(head).paddingLeft) || 0;
       head.style.maxWidth = (mw + 2 * pad).toFixed(1) + 'px';
+      // the side arrows sit just outside the hero's edges
+      // (measured against the arrows' own fixed layer, which can differ from
+      // clientWidth by the scrollbar)
+      var arrows = document.querySelector('.side-arrows');
+      if (arrows) {
+        var hr = hm.getBoundingClientRect(), ar = arrows.getBoundingClientRect();
+        arrows.style.setProperty('--hero-l', (hr.left - ar.left).toFixed(1) + 'px');
+        arrows.style.setProperty('--hero-r', (ar.right - hr.right).toFixed(1) + 'px');
+      }
       release();
     };
     hm.addEventListener(hm.tagName === 'VIDEO' ? 'loadedmetadata' : 'load', fitHero);
