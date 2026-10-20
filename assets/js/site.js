@@ -98,6 +98,18 @@
      pages, for the "go to" arrow on tiles and bands. */
   var CHEV = '<svg viewBox="0 0 20 36" aria-hidden="true"><path d="M4 3 L16 18 L4 33"/></svg>';
 
+  /* Arrived by clicking a side arrow: the pointer is still resting on the
+     same arrow, but a fresh page shows the default cursor until the mouse
+     moves. The page's head script set arrow-cursor so it keeps the hand;
+     the first real movement hands the cursor back to the page. */
+  if (document.documentElement.classList.contains('arrow-cursor')) {
+    var dropCursor = function () {
+      document.documentElement.classList.remove('arrow-cursor');
+      window.removeEventListener('pointermove', dropCursor);
+    };
+    window.addEventListener('pointermove', dropCursor);
+  }
+
   /* Side arrows on project pages: a click bounces the chevron out the way
      it points and back, while the page fades behind it. Only the glyph
      moves; the link's box stays put. */
@@ -132,7 +144,12 @@
     if (document.querySelector('.side-arrows')) {
       var dest = a.pathname.replace(/\.html$/, '');
       var toProject = typeof projects !== 'undefined' && projects.some(function (p) { return '/' + p.slug === dest; });
-      if (toProject) { try { sessionStorage.setItem('arrowsStay', '1'); } catch (_) {} }
+      if (toProject) {
+        try {
+          sessionStorage.setItem('arrowsStay', '1');
+          if (a.classList.contains('side-arrow')) sessionStorage.setItem('arrowCursor', '1');
+        } catch (_) {}
+      }
       else document.body.classList.add('arrows-leaving');
     }
     if (a.pathname === '/' || a.pathname === '/index.html') document.body.classList.add('nav-leaving');

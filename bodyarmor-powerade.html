@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BODYARMOR & Powerade — Michael Loya Studio</title>
 <meta name="description" content="BODYARMOR & Powerade — Brand Campaign. Michael Loya Studio.">
-<link rel="icon" type="image/svg+xml" href="favicon.svg?v=245">
+<link rel="icon" type="image/svg+xml" href="favicon.svg?v=246">
 
 <link rel="canonical" href="https://michaelloya.studio/bodyarmor-powerade">
 
@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300..700;1,300..700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/site.css?v=245">
+<link rel="stylesheet" href="assets/css/site.css?v=246">
 <style>
   /* First paint: the header (logo + menu) stays put from page to page; the
      project itself builds top down (site.css, .project load-in). */
@@ -31,7 +31,11 @@
 <script>
   /* Arriving from another project (site.js leaves this flag): the side
      arrows are already in place, so skip their load-in. */
-  try { if (sessionStorage.getItem('arrowsStay')) { document.documentElement.classList.add('arrows-stay'); sessionStorage.removeItem('arrowsStay'); } } catch (e) {}
+  try {
+    if (sessionStorage.getItem('arrowsStay')) { document.documentElement.classList.add('arrows-stay'); sessionStorage.removeItem('arrowsStay'); }
+    // and if it was an arrow click, keep the hand cursor until the mouse moves
+    if (sessionStorage.getItem('arrowCursor')) { document.documentElement.classList.add('arrow-cursor'); sessionStorage.removeItem('arrowCursor'); }
+  } catch (e) {}
 </script>
 </head>
 <body>
@@ -98,9 +102,9 @@
 </footer>
 
 <script>window.PROJECT_SLUG = "bodyarmor-powerade";</script>
-<script src="assets/js/projects.js?v=245"></script>
-<script src="assets/js/project-page.js?v=245"></script>
-<script src="assets/js/site.js?v=245"></script>
+<script src="assets/js/projects.js?v=246"></script>
+<script src="assets/js/project-page.js?v=246"></script>
+<script src="assets/js/site.js?v=246"></script>
 <!-- GoatCounter: page views, no cookies. Skips itself on localhost. -->
 <script data-goatcounter="https://michaelloya.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
