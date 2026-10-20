@@ -54,14 +54,14 @@ const plugins = [
       ['Source', '<a href="https://github.com/michaelloyastudio/gh-midi" target="_blank" rel="noopener">github.com/michaelloyastudio/gh-midi</a>']
     ],
     status: 'live',
-    version: 'v1.1',
+    version: 'v1.2',
     /* The Windows zip is built by GitHub Actions in the gh-midi repo (its
        `release` job attaches it to the GitHub release); the copy here is
        that exact asset. It was smoke-tested on GitHub's runners rather than
        played on a real PC, but Mike doesn't want it labelled beta (2026-09-22). */
     downloads: [
-      { os: 'macOS',   file: 'assets/downloads/GH-MIDI-v1.1-macOS.zip?v=739e104109a8',   size: '16.7 MB' },
-      { os: 'Windows', file: 'assets/downloads/GH-MIDI-v1.1-Windows.zip?v=e2d939ad9e74', size: '6.2 MB' }
+      { os: 'macOS',   file: 'assets/downloads/GH-MIDI-v1.2-macOS.zip?v=8d3bed902381',   size: '17.0 MB' },
+      { os: 'Windows', file: 'assets/downloads/GH-MIDI-v1.2-Windows.zip?v=7639e6b25eb1', size: '6.2 MB' }
     ],
     /* No setup on the page. It ships as README.txt in the zip, where it's
        next to the files it talks about. The page sells; the README installs.

@@ -1,4 +1,4 @@
-GH MIDI v1.1
+GH MIDI v1.2
 ============
 Play a Guitar Hero controller like a real instrument.
 
@@ -23,6 +23,12 @@ SETUP
       Click Done. Then:
           System Settings > Privacy & Security > scroll down > Open Anyway
       Once. It opens normally after that.
+      No "Open Anyway", it does nothing, or macOS calls the app "damaged"?
+      Open Terminal (Cmd+Space, type Terminal) and paste this, with the
+      space at the end:
+          xattr -dr com.apple.quarantine 
+      then DRAG GH MIDI.app into the Terminal window and press Return.
+      Open the app again - it works from then on.
 
   3.  Plug in the guitar. Open something that makes sound, pick an
       instrument, set its MIDI input to "GH MIDI". Play.
@@ -32,6 +38,13 @@ SETUP
   If the plugin still won't load in your DAW, open Terminal and paste:
 
       xattr -dr com.apple.quarantine ~/Library/Audio/Plug-Ins/VST3/"GH MIDI.vst3"
+
+
+NEW IN 1.2
+
+  FRETS button: change what any fret plays (menus show your key first).
+  Lower input lag. Lefty flip and whammy palm mute in SETTINGS.
+  SOLO: joystick up/down slides the five frets along the scale.
 
 
 HELP
