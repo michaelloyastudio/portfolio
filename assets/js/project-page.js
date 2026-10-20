@@ -537,11 +537,27 @@
       return !(m.tagName === 'VIDEO' && m.hasAttribute('controls')) && !m.closest('a') && srcOf(m, 'src');
     });
   }
-  function dropMedia() {
+  function killMedia(el) {
+    if (el.tagName === 'VIDEO') { el.pause(); el.removeAttribute('src'); el.load(); }
+    el.remove();
+  }
+  // fade the current piece out (crossfade on a step), or drop it at once
+  function dropMedia(now) {
     if (!lbMedia) return;
-    if (lbMedia.tagName === 'VIDEO') { lbMedia.pause(); lbMedia.removeAttribute('src'); lbMedia.load(); }
-    lbMedia.remove();
+    var el = lbMedia;
     lbMedia = null;
+    if (now) { killMedia(el); return; }
+    el.classList.remove('is-shown');
+    el.classList.add('is-leaving');
+    setTimeout(function () { killMedia(el); }, 260);
+  }
+  // the speaker hangs just under the clip's bottom-right corner
+  function placeSound() {
+    if (!lbMedia || lbSound.hidden) return;
+    // layout box, not getBoundingClientRect: the piece is mid-zoom while it fades in
+    var pad = 10;
+    lbSound.style.left = (lbMedia.offsetLeft + lbMedia.offsetWidth - lbSound.offsetWidth + pad) + 'px';
+    lbSound.style.top = (lbMedia.offsetTop + lbMedia.offsetHeight + 6) + 'px';
   }
   function paintSound() {
     var live = lbMedia && lbMedia.tagName === 'VIDEO' && !lbMedia.muted;
@@ -586,11 +602,13 @@
       else if (e.key === 'ArrowLeft' && lbList.length > 1) { e.preventDefault(); showLb(lbIdx - 1); }
       else if (e.key === 'ArrowRight' && lbList.length > 1) { e.preventDefault(); showLb(lbIdx + 1); }
     });
+    window.addEventListener('resize', function () { if (lbOpen) placeSound(); });
   }
   function showLb(n) {
     lbIdx = (n + lbList.length) % lbList.length;
     var m = lbList[lbIdx], el;
-    dropMedia();
+    dropMedia(!lbOpen || !lb.classList.contains('is-open'));
+    lbSound.classList.remove('is-shown');
     if (m.tagName === 'VIDEO') {
       // a fresh element, so it always starts from the top, muted
       el = document.createElement('video');
@@ -604,12 +622,27 @@
       el.src = srcOf(m, 'src');
     }
     if (m.getAttribute('width')) { el.setAttribute('width', m.getAttribute('width')); el.setAttribute('height', m.getAttribute('height')); }
-    el.className = 'lightbox-media is-in';
+    el.className = 'lightbox-media';
     lb.insertBefore(el, lbClose);
     lbMedia = el;
     lbSound.hidden = !(m.tagName === 'VIDEO' && !m.hasAttribute('data-silent'));
     paintSound();
+    placeSound();
     lbPrev.hidden = lbNext.hidden = lbList.length < 2;
+    // reveal once there's something to show: a decoded image, a first frame
+    var reveal = function () {
+      if (lbMedia !== el) return;
+      void el.offsetWidth;   // commit the hidden state first, so a cached piece still fades
+      el.classList.add('is-shown');
+      placeSound();
+      lbSound.classList.add('is-shown');
+    };
+    if (el.tagName === 'VIDEO') {
+      if (el.readyState >= 2) reveal(); else el.addEventListener('loadeddata', reveal, { once: true });
+    } else if (el.decode) {
+      el.decode().then(reveal, reveal);
+    } else if (el.complete) reveal();
+    else { el.onload = reveal; el.onerror = reveal; }
   }
   function openLb(m) {
     if (!lb) buildLb();
@@ -630,7 +663,7 @@
     lbOpen = false;
     lb.classList.remove('is-open');
     document.documentElement.classList.remove('locked');
-    if (now) dropMedia(); else setTimeout(function () { if (!lbOpen) dropMedia(); }, 260);
+    if (now) dropMedia(true); else setTimeout(function () { if (!lbOpen) dropMedia(true); }, 360);
     lbResume.forEach(function (v) { if (v.isConnected) { var q = v.play(); if (q && q.catch) q.catch(function () {}); } });
     lbResume = [];
     if (lbReturn && lbReturn.focus && lbReturn.isConnected) lbReturn.focus({ preventScroll: true });

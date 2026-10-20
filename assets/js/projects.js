@@ -144,11 +144,10 @@ const projects = [
 <div><img src="projects/university-union/sarah-sherman.jpg" alt="A Night with Sarah Sherman" loading="lazy" width="1164" height="1800"></div>
 </div>
 <div class="project-video"><video src="projects/university-union/block-party-anim.mp4" data-silent autoplay loop muted playsinline onloadedmetadata="this.playbackRate=1.5" width="1280" height="720"></video></div>
-<div class="img-grid-5">
+<div class="img-grid-4">
 <div><img src="projects/university-union/connor-wood.jpg" alt="A Night with Connor Wood" loading="lazy" width="1553" height="2400"></div>
 <div><img src="projects/university-union/calenton.jpg" alt="Calentón Latin Music Festival" loading="lazy" width="1553" height="2400"></div>
 <div><img src="projects/university-union/talent-show.jpg" alt="Talent Show" loading="lazy" width="1164" height="1800"></div>
-<div><img src="projects/university-union/danielle-brooks.jpg" alt="Danielle Brooks" loading="lazy" width="1553" height="2400"></div>
 <div><img src="projects/university-union/comedy-knockout.jpg" alt="Comedy Knockout" loading="lazy" width="1118" height="1727"></div>
 </div>`
   },

@@ -24,9 +24,9 @@
   /* First paint: the header (logo + menu) stays put from page to page; the
      project itself builds top down (site.css, .project load-in). */
   html { background: #0a0a0a; }
-  body > *:not(.nav):not(.menu):not(.project):not(.side-arrows) { opacity: 0; animation: pageIn 0.4s ease 0.03s forwards; }
+  body > *:not(.nav):not(.menu):not(.project):not(.side-arrows):not(.lightbox) { opacity: 0; animation: pageIn 0.4s ease 0.03s forwards; }
   @keyframes pageIn { to { opacity: 1; } }
-  @media (prefers-reduced-motion: reduce) { body > *:not(.nav):not(.menu):not(.project):not(.side-arrows) { opacity: 1; animation: none; } }
+  @media (prefers-reduced-motion: reduce) { body > *:not(.nav):not(.menu):not(.project):not(.side-arrows):not(.lightbox) { opacity: 1; animation: none; } }
 </style>
 <script>
   /* Arriving from another project (site.js leaves this flag): the side

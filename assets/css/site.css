@@ -2118,7 +2118,7 @@ body.page-leaving .menu-foot { opacity: 0; transform: translateY(-10px); transit
 /* Work media opens in the lightbox (project-page.js): anything that isn't
    a player with its own controls, or inside a link. */
 .project-work img:not(a img),
-.project-work video:not([controls]):not(a video) { cursor: zoom-in; }
+.project-work video:not([controls]):not(a video) { cursor: pointer; }
 
 .project-work [class^="img-grid"] img,
 .project-work [class^="img-grid"] video {
@@ -2254,24 +2254,29 @@ html.arrows-stay .side-arrows { animation: none; }
   background: var(--bg);   /* solid, like the menu: just the piece */
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.25s ease, visibility 0.25s;
+  transition: opacity 0.35s var(--ease), visibility 0s linear 0.35s;
   -webkit-user-select: none; user-select: none;
 }
-.lightbox.is-open { opacity: 1; visibility: visible; }
+.lightbox.is-open { opacity: 1; visibility: visible; transition: opacity 0.35s var(--ease), visibility 0s; }
+/* Every piece sits in the same grid cell, so stepping to the next one
+   crossfades: the old one fades out on top of the new one fading in. A
+   piece stays invisible until it has actually loaded (project-page.js adds
+   is-shown), so nothing pops in half-drawn. */
 .lightbox-media {
+  grid-area: 1 / 1;
   display: block;
+  opacity: 0;
+  transform: scale(0.985);
+  transition: opacity 0.4s var(--ease), transform 0.5s var(--ease);
   max-width: 100%;
   max-height: calc(100vh - 2 * var(--lb-y));
   max-height: calc(100svh - 2 * var(--lb-y));
   width: auto;
   height: auto;
-  cursor: zoom-out;
+  cursor: pointer;
 }
-.lightbox-media.is-in { animation: lbIn 0.4s var(--ease) both; }
-@keyframes lbIn {
-  from { opacity: 0; transform: scale(0.96); }
-  to   { opacity: 1; transform: none; }
-}
+.lightbox-media.is-shown { opacity: 1; transform: none; }
+.lightbox-media.is-leaving { opacity: 0; transform: none; transition-duration: 0.25s; }
 .lightbox button {
   position: absolute;
   background: none;
@@ -2299,13 +2304,18 @@ html.arrows-stay .side-arrows { animation: none; }
   width: calc(var(--logo-h) * 0.6);
   height: calc(var(--logo-h) * 0.6);
 }
-/* the speaker: the burger's column, the frame's bottom inset */
-.lightbox-sound {
-  bottom: calc(var(--frame-y) - var(--arrow-hit));
-  right: calc(var(--frame-x) + var(--logo-h) * 0.3 - var(--arrow-hit));
+/* the speaker: just under the clip's bottom-right corner (project-page.js
+   places it against the clip), drawn lighter than the frame's marks so the
+   small glyph doesn't clog */
+.lightbox .lightbox-sound {
   width: calc(var(--logo-h) * 0.8);
   height: calc(var(--logo-h) * 0.62);
+  padding: 10px;
+  opacity: 0;
+  transition: opacity 0.4s var(--ease);
 }
+.lightbox-sound.is-shown { opacity: 1; }
+.lightbox-sound path { stroke-width: calc(var(--bar-h) * 0.5); }
 .lightbox-sound[hidden] { display: none; }
 .lightbox .side-arrow { width: var(--arrow-w); height: var(--arrow-h); }
 .lightbox .side-arrow[hidden] { display: none; }
@@ -2316,6 +2326,5 @@ html.arrows-stay .side-arrows { animation: none; }
   .lightbox .side-arrow--next { right: auto; left: calc(var(--frame-x) + var(--arrow-w) + 2rem); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .lightbox { transition: none; }
-  .lightbox-media.is-in { animation: none; }
+  .lightbox, .lightbox-media, .lightbox-sound { transition: none; }
 }
