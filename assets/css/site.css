@@ -1312,9 +1312,14 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
 /* Square, unlike the work grid. Plugin shots are app windows, which are
    near-square — at 16/9 about a third of the tile was empty padding. */
 .plugin-grid .tile-media { aspect-ratio: 1 / 1; background: #f3f3f3; }
-.tile-badge {
+.tile-badges {
   position: absolute;
   top: 0.85rem; left: 0.85rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.tile-badge {
   padding: 0.42em 0.7em 0.38em;
   border-radius: 2px;
   background: var(--accent);
@@ -1324,6 +1329,18 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   letter-spacing: 0.14em;
   text-transform: uppercase;
   line-height: 1;
+}
+/* Fresh release: black chip, red star. Retires on its own (updateBadge.until). */
+.tile-badge--new {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  background: #0a0a0a;
+}
+.tile-star {
+  width: 1.15em; height: 1.15em;
+  margin: -0.2em 0 -0.15em;
+  fill: var(--accent);
 }
 /* Not shipped yet: same chip, no red. Red is the download promise. */
 .tile-badge--soon {

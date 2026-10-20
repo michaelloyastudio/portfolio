@@ -389,6 +389,9 @@
      Title and host only under the shot; the tagline lives on the
      product page. */
   var pgrid = $('pluginGrid');
+  /* "New update" chip: shown until the plugin's updateBadge.until date, so
+     it retires itself instead of going stale. */
+  var STAR = '<svg class="tile-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.8l3.1 6.6 7.2.9-5.3 5 1.4 7.1L12 17.9l-6.4 3.5L7 14.3l-5.3-5 7.2-.9z"/></svg>';
   /* `const plugins` in plugins.js is a lexical global, not a window
      property, so this has to be a typeof check rather than window.plugins. */
   if (pgrid && typeof plugins !== 'undefined') {
@@ -401,9 +404,14 @@
       tile.innerHTML =
         '<div class="tile-media">' +
           '<img src="' + p.cover + '" alt="' + p.name + '" loading="lazy" draggable="false">' +
-          ((p.downloads && p.downloads.length) || p.download
-            ? '<span class="tile-badge">Free</span>'
-            : '<span class="tile-badge tile-badge--soon">In development</span>') +
+          '<div class="tile-badges">' +
+            ((p.downloads && p.downloads.length) || p.download
+              ? '<span class="tile-badge">Free</span>'
+              : '<span class="tile-badge tile-badge--soon">In development</span>') +
+            (p.updateBadge && new Date() < new Date(p.updateBadge.until)
+              ? '<span class="tile-badge tile-badge--new">' + STAR + p.updateBadge.text + '</span>'
+              : '') +
+          '</div>' +
         '</div>' +
         '<div class="tile-meta">' +
           '<div>' +

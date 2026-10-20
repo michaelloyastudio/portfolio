@@ -55,6 +55,7 @@ const plugins = [
     ],
     status: 'live',
     version: 'v1.2',
+    updateBadge: { text: 'New update', until: '2026-11-20' },   // v1.2 shipped 2026-10-20
     /* The Windows zip is built by GitHub Actions in the gh-midi repo (its
        `release` job attaches it to the GitHub release); the copy here is
        that exact asset. It was smoke-tested on GitHub's runners rather than
