@@ -76,8 +76,8 @@ const projects = [
 <p>We shape the idea together, then I execute it, shooting and editing it myself. My schooling and the work before this were graphic design; loya is where I'm building the video craft on top of it.</p>
 <p>The logo came out of his hat collection, set in Amador, a blackletter that balances elegance with edge.</p>`,
     work: `<div class="img-grid-2" data-exact>
-<div><video src="projects/loya-and-co/oh-no-3d.mp4" autoplay loop muted playsinline poster="projects/loya-and-co/oh-no-3d-poster.jpg" width="1920" height="1080"></video></div>
 <div><video src="projects/loya-and-co/goodbye-3d.mp4" autoplay loop muted playsinline poster="projects/loya-and-co/goodbye-3d-poster.jpg" width="1920" height="1080"></video></div>
+<div><video src="projects/loya-and-co/oh-no-3d.mp4" autoplay loop muted playsinline poster="projects/loya-and-co/oh-no-3d-poster.jpg" width="1920" height="1080"></video></div>
 </div>
 <div class="img-grid-3" data-exact>
 <div><video src="projects/loya-and-co/oh-no-promo-1.mp4" autoplay loop muted playsinline poster="projects/loya-and-co/oh-no-promo-1-poster.jpg" width="1280" height="960"></video></div>
@@ -202,7 +202,7 @@ const projects = [
     /* ORDER IS DELIBERATE — most important first, least last. Mike's
        ranking, and where a new piece goes is decided by where he places it
        in this list, not by when it was made:
-         YOU! (the McDonald's video), Control Me (261016_ControlMe, Wii-menu CRT piece), felly, fuji, random element, Z poster (sabt), jumpscare,
+         YOU! (the McDonald's video), Control Me (261016_ControlMe, Wii-menu CRT piece), Surf Curse Disco (260927_Disco), felly, fuji, random element, Z poster (sabt), Winged Victory, Artifaxing tee (261018_ArtifaxingShirt), jumpscare,
          logic, django, sketch (smiski), homelander, the other videos,
          basketball video (web story), steph curry, final four,
        The basketball video is 9:16. Placed right after homelander it shared
@@ -220,10 +220,13 @@ const projects = [
     work: `<div class="img-grid-3">
 <div><video src="projects/miscellaneous/you-mcdonalds.mp4" autoplay loop muted playsinline width="1440" height="1080"></video></div>
 <div><video src="projects/miscellaneous/control-me.mp4" autoplay loop muted playsinline width="1440" height="1080"></video></div>
+<div><video src="projects/miscellaneous/surf-curse-disco.mp4" autoplay loop muted playsinline width="1280" height="720"></video></div>
 <div><img src="projects/miscellaneous/felly-wildfire.jpg" alt="Wildfire, an album by Felly" loading="lazy" width="1650" height="2550"></div>
 <div><img src="projects/miscellaneous/fuji.jpg" alt="Fuji poster" loading="lazy" width="1800" height="2700"></div>
 <div><img src="projects/miscellaneous/random-element.jpg" alt="Random Element poster" loading="lazy" width="1164" height="1800"></div>
 <div><img src="projects/miscellaneous/sabt.jpg" alt="Sweet American Boy Tour, a poster for Z" loading="lazy" width="1200" height="1600"></div>
+<div><img src="projects/miscellaneous/winged-victory.jpg" alt="Winged Victory of Samothrace poster" loading="lazy" width="1800" height="2400"></div>
+<div><img src="projects/miscellaneous/artifaxing-tee.jpg" alt="Artifaxing tee, an A made of wildflowers" loading="lazy" width="1800" height="2545"></div>
 <div><img src="projects/miscellaneous/jumpscare.jpg" alt="Jumpscare poster" loading="lazy" width="1164" height="1800"></div>
 <div><img src="projects/miscellaneous/logic.jpg" alt="Logic-inspired design" loading="lazy" width="1080" height="1867"></div>
 <div><img src="projects/miscellaneous/scene-2.jpg" alt="Django Unchained poster" loading="lazy" width="1190" height="1768"></div>
