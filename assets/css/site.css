@@ -1851,6 +1851,38 @@ main.project > .project-pager { animation: projIn 0.55s var(--ease) 0.65s both; 
   main.project > * { animation: none !important; }
 }
 
+/* ══ LOAD-IN, the other pages ══
+   Same move as a project page, top down: the title, then what's under it.
+   Work and Tools bring their tiles in one after another (capped, so the
+   lower rows don't wait); About goes title, portrait, copy; GH MIDI goes
+   shot, buy column, then the copy. data-in on the element opts it out of
+   the flat first-paint fade in each page's <head>. */
+[data-in].page-head,
+main[data-in] > .about-head { animation: projIn 0.4s var(--ease) 0s both; }
+.work-grid[data-in] > .tile { animation: projIn 0.55s var(--ease) both; animation-delay: calc(0.15s + var(--i, 0) * 0.06s); }
+main[data-in] .about-figure { animation: projIn 0.5s var(--ease) 0.15s both; }
+main[data-in] .about-copy   { animation: projIn 0.55s var(--ease) 0.28s both; }
+main[data-in] .product-media { animation: projIn 0.5s var(--ease) 0s both; }
+main[data-in] .product-buy   { animation: projIn 0.5s var(--ease) 0.12s both; }
+main[data-in] .product-body  { animation: projIn 0.55s var(--ease) 0.3s both; }
+@media (prefers-reduced-motion: reduce) {
+  [data-in], [data-in] * { animation: none !important; }
+}
+
+/* ══ LOAD-OUT ══
+   site.js adds page-leaving on an internal link: everything but the
+   header lifts a touch and fades in 0.2s, the reverse of the load-in. An
+   animation rather than a transition, because the load-in animations'
+   fill would otherwise hold everything at full opacity. Over the open
+   menu, the menu's own links and icons fade instead. */
+@keyframes pageOut {
+  from { opacity: 1; transform: none; }
+  to   { opacity: 0; transform: translateY(-10px); }
+}
+body.page-leaving > *:not(.nav):not(.menu) { animation: pageOut 0.2s cubic-bezier(0.4, 0, 1, 1) forwards; }
+body.page-leaving .menu-links,
+body.page-leaving .menu-foot { opacity: 0; transform: translateY(-10px); transition: opacity 0.2s ease-in, transform 0.2s ease-in; }
+
 /* ══ PROJECT PAGE ══════════════════════════════════════════════
    Hero at the top, then one block of copy, then the work. */
 .project { padding-bottom: clamp(3rem, 8vh, 6rem); }

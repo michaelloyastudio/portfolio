@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>About — Michael Loya Studio</title>
 <meta name="description" content="Michael Loya — designer, editor, and motion designer. Syracuse University, Newhouse Department Prize in Motion Graphics.">
-<link rel="icon" type="image/svg+xml" href="favicon.svg?v=235">
+<link rel="icon" type="image/svg+xml" href="favicon.svg?v=236">
 
 <link rel="canonical" href="https://michaelloya.studio/about">
 
@@ -18,7 +18,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="assets/css/site.css?v=235">
+<link rel="stylesheet" href="assets/css/site.css?v=236">
 <style>
   /* First-paint guard. Applies before anything else resolves, so the page
      never flashes raw content before the load-in animations start.
@@ -26,10 +26,10 @@
      The header (logo + menu) is left out: it stays put from page to page
      instead of blinking on every load. */
   html { background: #0a0a0a; }
-  body > *:not(.nav):not(.menu) { opacity: 0; animation: pageIn 0.4s ease 0.03s forwards; }
+  body > *:not(.nav):not(.menu):not([data-in]) { opacity: 0; animation: pageIn 0.4s ease 0.03s forwards; }
   @keyframes pageIn { to { opacity: 1; } }
   @media (prefers-reduced-motion: reduce) {
-    body > *:not(.nav):not(.menu) { opacity: 1; animation: none; }
+    body > *:not(.nav):not(.menu):not([data-in]) { opacity: 1; animation: none; }
   }
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300..700;1,300..700&display=swap" rel="stylesheet">
@@ -60,7 +60,7 @@
   </div>
 </nav>
 
-<main class="project about">
+<main class="project about" data-in>
 
   <header class="about-head">
     <h1 class="about-statement">About</h1>
@@ -82,7 +82,7 @@
         <div><dt>Based</dt><dd>Tampa, FL</dd></div>
         <div><dt>Focus</dt><dd>Video, motion, and design</dd></div>
       </dl>
-      <a class="btn btn-solid about-resume" href="assets/site/resume.pdf?v=235" target="_blank" rel="noopener" data-wave>Download Resume</a>
+      <a class="btn btn-solid about-resume" href="assets/site/resume.pdf?v=236" target="_blank" rel="noopener" data-wave>Download Resume</a>
     </div>
 
   </div>
@@ -100,8 +100,8 @@
 </footer>
 
 
-<script src="assets/js/projects.js?v=235"></script>
-<script src="assets/js/site.js?v=235"></script>
+<script src="assets/js/projects.js?v=236"></script>
+<script src="assets/js/site.js?v=236"></script>
 <!-- GoatCounter: page views, no cookies. Skips itself on localhost. -->
 <script data-goatcounter="https://michaelloya.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>

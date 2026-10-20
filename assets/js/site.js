@@ -72,21 +72,36 @@
     });
   }
 
-  /* ── Heading home ──────────────────────────────────────────────────
-     The header stays put between pages. Going back to the Studio page
-     (the logo, or Studio in the menu) is the one exception: the logo and
-     menu fade out quickly first, so the Studio page can draw them in again.
-     That holds on the Studio page itself too, where it reloads. */
-  {
-    document.querySelectorAll('a.nav-logo, .menu-links a[href="/"]').forEach(function (a) {
-      a.addEventListener('click', function (e) {
-        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
-        e.preventDefault();
-        document.body.classList.add('nav-leaving');
-        setTimeout(function () { window.location.href = a.href; }, 170);
-      });
-    });
-  }
+  /* ── Leaving a page ────────────────────────────────────────────────
+     Any internal link fades the page out quickly (a short lift, the
+     reverse of the load-in) before it navigates. The header stays put
+     between pages, except going back to the Studio page (the logo, or
+     Studio in the menu): then the logo and burger fade too, so the Studio
+     page can draw them in again. Delegated, so tiles built later count.
+     New tabs, downloads, files, other sites and same-page anchors are left
+     alone. */
+  var LEAVE_MS = 200;
+  var calm = window.matchMedia('(prefers-reduced-motion: reduce)');
+  document.addEventListener('click', function (e) {
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    var a = e.target.closest && e.target.closest('a[href]');
+    if (!a || (a.target && a.target !== '_self') || a.hasAttribute('download')) return;
+    if (a.origin !== location.origin || !/^https?:$/.test(a.protocol)) return;
+    if (/\.(?!html$)[a-z0-9]+$/i.test(a.pathname)) return;           // a file, not a page
+    if (a.pathname === location.pathname && a.hash) return;           // same-page anchor
+    if (calm.matches) return;
+    e.preventDefault();
+    document.body.classList.add('page-leaving');
+    if (a.pathname === '/' || a.pathname === '/index.html') document.body.classList.add('nav-leaving');
+    setTimeout(function () { window.location.href = a.href; }, LEAVE_MS);
+  });
+  // Back/forward can restore this page from the cache mid-leave: undo it.
+  window.addEventListener('pageshow', function (e) {
+    if (!e.persisted) return;
+    document.body.classList.remove('page-leaving', 'nav-leaving', 'menu-open');
+    if (burger) burger.setAttribute('aria-expanded', 'false');
+    lockScroll(false);
+  });
 
   /* ── Logo draw-on (Studio page) ───────────────────────────────────
      Same move as the brand's logo animation (04_Admin/07_Brand.../
@@ -290,12 +305,14 @@
   /* ── Work grid (work page) ───────────────────────────────────────
      Static covers only — no hover video. */
   var grid = $('workGrid');
+  var grid_i = 0;
   if (grid) {
     projects.forEach(function (p) {
       var tile = document.createElement('a');
       // No scroll-reveal here: on the Work page the grid IS the content, and
       // fading tiles in made it look like only the first four existed.
       tile.className = 'tile';
+      tile.style.setProperty('--i', Math.min(grid_i++, 7));
       tile.href = '/' + p.slug;
       tile.innerHTML =
         '<div class="tile-media">' +
@@ -325,9 +342,11 @@
   /* `const plugins` in plugins.js is a lexical global, not a window
      property, so this has to be a typeof check rather than window.plugins. */
   if (pgrid && typeof plugins !== 'undefined') {
+    grid_i = 0;
     plugins.forEach(function (p) {
       var tile = document.createElement('a');
       tile.className = 'tile';
+      tile.style.setProperty('--i', Math.min(grid_i++, 7));
       tile.href = '/' + p.slug;
       tile.innerHTML =
         '<div class="tile-media">' +
