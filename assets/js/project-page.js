@@ -39,12 +39,19 @@
         (p.heroLoop ? 'autoplay loop muted preload="auto"' : 'controls preload="metadata"') +
         (p.heroPoster ? ' poster="' + p.heroPoster + '"' : '') + '></video>'
       : '<img src="' + p.hero + '" alt="' + p.title + '">';
+    // heroSize (projects.js) lets the hero, the title above it and the
+    // side arrows all lay out at once, before the file arrives
+    var size = p.heroSize || [0, 0];
+    if (size[0]) { hero.firstElementChild.setAttribute('width', size[0]); hero.firstElementChild.setAttribute('height', size[1]); }
+    var dimsOf = function (m) {
+      return [m.naturalWidth || m.videoWidth || size[0], m.naturalHeight || m.videoHeight || size[1]];
+    };
 
     // A hero narrower than ~4:3 would be enormous at full width, so mark it
     // and let CSS cap the height instead (Album Covers is square).
     var hm = hero.firstElementChild;
     var flag = function () {
-      var w = hm.naturalWidth || hm.videoWidth, h = hm.naturalHeight || hm.videoHeight;
+      var d = dimsOf(hm), w = d[0], h = d[1];
       if (w && h) hero.classList.toggle('is-tall', (w / h) < 1.3);
     };
     hm.addEventListener(hm.tagName === 'VIDEO' ? 'loadedmetadata' : 'load', flag);
@@ -55,39 +62,45 @@
        so every screen shows the whole hero the same way. Its width follows
        from its own aspect. Phones keep full width. */
     var fitHero = function () {
-      var w = hm.naturalWidth || hm.videoWidth, h = hm.naturalHeight || hm.videoHeight;
+      var d = dimsOf(hm), w = d[0], h = d[1];
       if (!w || !h) return;
-      if (window.innerWidth <= 640) { hm.style.maxHeight = ''; return; }
+      if (window.innerWidth <= 640) { hm.style.maxHeight = hm.style.width = ''; alignHead(); return; }
       var top = hero.getBoundingClientRect().top + window.scrollY;
       var gap = Math.max(16, Math.min(32, window.innerHeight * 0.025));
-      var avail = window.innerHeight - top - gap;
-      hm.style.maxHeight = Math.max(avail, 240).toFixed(0) + 'px';
+      var avail = Math.max(window.innerHeight - top - gap, 240);
+      if (hero.classList.contains('is-tall')) avail = Math.min(avail, window.innerHeight * 0.78);
+      hm.style.maxHeight = avail.toFixed(0) + 'px';
+      /* the width is set outright, from the file's aspect, so it's right
+         before the file has loaded (an unloaded img has no size of its own) */
+      var cs = getComputedStyle(hero);
+      var inner = hero.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+      hm.style.width = Math.min(inner, avail * w / h).toFixed(1) + 'px';
       hero.classList.add('is-fit');
       alignHead();
     };
     /* The title and category run to the hero's edges: the head takes the
        hero's rendered width (plus the same side padding both carry). */
     var head = document.querySelector('.project-head');
-    /* The head holds its load-in until it knows that width, so it never
-       appears at one width and then jumps to another (fallback 700ms). */
-    var release = function () { if (head) head.classList.remove('head-wait'); };
-    if (head) { head.classList.add('head-wait'); setTimeout(release, 700); }
     var alignHead = function () {
       if (!head) return;
       var mw = hm.getBoundingClientRect().width;
-      if (window.innerWidth <= 640 || !mw) { head.style.maxWidth = ''; release(); return; }
+      if (window.innerWidth <= 640 || !mw) { head.style.maxWidth = ''; return; }
       var pad = parseFloat(getComputedStyle(head).paddingLeft) || 0;
       head.style.maxWidth = (mw + 2 * pad).toFixed(1) + 'px';
-      // the side arrows sit just outside the hero's edges
-      // (measured against the arrows' own fixed layer, which can differ from
-      // clientWidth by the scrollbar)
+      /* The side arrows sit just outside a full-width 16:9 hero, the widest
+         a hero gets, and stay there on every project, so they don't jump
+         about between a wide page and a square or narrower one. Measured
+         against the arrows' own fixed layer, which can differ from
+         clientWidth by the scrollbar. */
       var arrows = document.querySelector('.side-arrows');
       if (arrows) {
-        var hr = hm.getBoundingClientRect(), ar = arrows.getBoundingClientRect();
-        arrows.style.setProperty('--hero-l', (hr.left - ar.left).toFixed(1) + 'px');
-        arrows.style.setProperty('--hero-r', (ar.right - hr.right).toFixed(1) + 'px');
+        var ar = arrows.getBoundingClientRect();
+        var slot = Math.min(1600, Math.max(0.74 * window.innerWidth, 760), ar.width) - 2 * pad;
+        var wide = Math.min(slot, (parseFloat(hm.style.maxHeight) || Infinity) * 16 / 9);
+        var inset = ((ar.width - wide) / 2).toFixed(1) + 'px';
+        arrows.style.setProperty('--hero-l', inset);
+        arrows.style.setProperty('--hero-r', inset);
       }
-      release();
     };
     hm.addEventListener(hm.tagName === 'VIDEO' ? 'loadedmetadata' : 'load', fitHero);
     // a layered hero is ready when its layers are (layeredHero says so)
@@ -97,6 +110,8 @@
     }
     fitHero();
     window.addEventListener('resize', fitHero);
+    // the title's real font can change its height, and so the room left
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitHero);
 
     if (!isVideo && p.heroLayers) layeredHero(hero, hm, p.heroLayers);
     /* A looping video hero has no layers, but builds in the same way a

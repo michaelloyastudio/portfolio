@@ -1843,7 +1843,6 @@ body.nav-leaving .nav { opacity: 0; }
   to   { opacity: 1; transform: none; }
 }
 main.project > .project-head { animation: projIn 0.4s var(--ease) 0s both; }
-main.project > .project-head.head-wait { animation-play-state: paused; }
 main.project > .project-body,
 main.project > .project-work { animation: projIn 0.55s var(--ease) 0.65s both; }
 @media (prefers-reduced-motion: reduce) {
@@ -1880,7 +1879,7 @@ main[data-in] .product-body  { animation: projIn 0.55s var(--ease) 0.3s both; }
 }
 /* html + body.page-leaving: one notch more specific than each page's
    inline first-paint rule, which would otherwise win on source order */
-html body.page-leaving > *:not(.nav):not(.menu) { animation: pageOut 0.2s cubic-bezier(0.4, 0, 1, 1) forwards; }
+html body.page-leaving > *:not(.nav):not(.menu):not(.side-arrows) { animation: pageOut 0.2s cubic-bezier(0.4, 0, 1, 1) forwards; }
 body.page-leaving .menu-links,
 body.page-leaving .menu-foot { opacity: 0; transform: translateY(-10px); transition: opacity 0.2s ease-in, transform 0.2s ease-in; }
 
@@ -2163,16 +2162,18 @@ body.page-leaving .menu-foot { opacity: 0; transform: translateY(-10px); transit
   inset: 0;
   z-index: 80;
   pointer-events: none;
-  --arrow-w: calc(var(--logo-h) * 0.38);
+  --arrow-w: calc(var(--logo-h) * 0.5);
   --arrow-h: calc(var(--logo-h) * 0.68);
   --arrow-hit: 14px;                       /* extra hit area round the glyph */
   --arrow-gap: clamp(14px, 1.8vw, 36px);   /* glyph to the hero's edge */
 }
 /* The link is a still box; only the glyph inside it moves on hover, so
    the hit area never slides out from under the pointer. project-page.js
-   sets --hero-l / --hero-r (the hero's edges, as insets from the window)
-   so the arrows sit just outside the picture; they never go further out
-   than the logo and burger. */
+   sets --hero-l / --hero-r to where a full-width 16:9 hero's edges fall,
+   so the arrows sit just outside the picture in the same spot on every
+   project (a narrower hero doesn't pull them in). They never go further
+   out than the logo and burger, and they stay put through the page fade,
+   like the header. */
 .side-arrow {
   position: absolute;
   top: 50%;

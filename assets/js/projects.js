@@ -27,6 +27,7 @@ const projects = [
     year: "2026",
     cover: `projects/capstone/hero.jpg?v=3`,
     hero: `projects/capstone/hero.jpg?v=3`,
+    heroSize: [2400, 1340],   // the hero file's own size: lays it out before it loads
     /* Depths follow Mike's own parallax comp (S10.mp4): across that move the
        stars barely shift, the small Saturn and two little planets travel
        30px, most planets 130px, the blurred corner planets 358px. Scaled so
@@ -60,6 +61,7 @@ const projects = [
     year: "2023–Present",
     cover: `projects/loya-and-co/cover.jpg?v=4`,
     hero: `projects/loya-and-co/cover.jpg?v=4`,
+    heroSize: [2400, 1357],   // the hero file's own size: lays it out before it loads
     /* The empty room with the light, Mike's cut of the record on its shelf,
        and dust in the beam on three planes, made procedurally
        (~/Developer/depth/hero_layers/loya_dust.py). */
@@ -101,6 +103,7 @@ const projects = [
     year: "2025",
     cover: `projects/bodyarmor-powerade/cover.jpg?v=3`,
     hero: `projects/bodyarmor-powerade/cover.jpg?v=3`,
+    heroSize: [1920, 1080],   // the hero file's own size: lays it out before it loads
     /* Mike's layers: the empty gym and rack, the bottles on the bench, the
        fine print, the logo (nudged up a touch) in front. */
     heroLayers: [
@@ -123,6 +126,7 @@ const projects = [
     year: "2024–2026",
     cover: `projects/university-union/jj-timelapse-poster.jpg`,   // the loop's own first frame, so hover-play starts seamlessly
     hero: `projects/university-union/jj-timelapse.mp4?v=8`,
+    heroSize: [1600, 900],   // the hero file's own size: lays it out before it loads
     heroPoster: `projects/university-union/jj-timelapse-poster.jpg`,
     heroLoop: true,       // plays like a gif: muted, looping, no controls
     intro: `<p>I was Co-Director of Design Board at University Union, Syracuse's largest programming organization, through May 2026. Concert posters, festival identity, large-format signage, and social assets reaching 12,000+ followers.</p>
@@ -156,6 +160,7 @@ const projects = [
     year: "2022–2024",
     cover: `projects/album-covers/commercial-break.jpg`,
     hero: `projects/album-covers/commercial-break.jpg`,
+    heroSize: [1279, 1280],   // the hero file's own size: lays it out before it loads
     /* Mike's layers: the jet cabin with him gone (his cleaned-up plate), the
        signature and sticker just in front of it (where they are on the
        cover, moving only slightly), him and the chips, the ransom letters.
@@ -184,6 +189,7 @@ const projects = [
     year: "2022–Present",
     cover: `projects/miscellaneous/you-cover.jpg?v=5`,
     hero: `projects/miscellaneous/you-hero.jpg?v=5`,
+    heroSize: [2400, 1800],   // the hero file's own size: lays it out before it loads
     heroFit: 'content',   // as wide as the work below it, not the full-bleed slot
     /* Mike's layers: the sunburst, the Y and U, the starburst, the meal. */
     heroLayers: [
