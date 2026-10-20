@@ -21,6 +21,20 @@
   }
 
   /* ── Menu ────────────────────────────────────────────────────────*/
+  /* ── A reload lands at the top ──────────────────────────────────
+     Every page, so the load-in plays from the start instead of the
+     browser restoring a spot halfway down. Back/forward still restore:
+     the mode goes back to auto as the page is left. */
+  var navEntry = performance.getEntriesByType ? performance.getEntriesByType('navigation')[0] : null;
+  if (navEntry && navEntry.type === 'reload' && 'scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+    window.scrollTo(0, 0);
+    window.addEventListener('load', function () { window.scrollTo(0, 0); });
+    window.addEventListener('pagehide', function () {
+      if (!document.querySelector('.hero--studio')) history.scrollRestoration = 'auto';
+    });
+  }
+
   var burger = $('burger');
   if (burger) {
     burger.addEventListener('click', function () {

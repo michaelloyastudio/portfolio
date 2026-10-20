@@ -1845,8 +1845,7 @@ body.nav-leaving .nav { opacity: 0; }
 main.project > .project-head { animation: projIn 0.4s var(--ease) 0s both; }
 main.project > .project-head.head-wait { animation-play-state: paused; }
 main.project > .project-body,
-main.project > .project-work,
-main.project > .project-pager { animation: projIn 0.55s var(--ease) 0.65s both; }
+main.project > .project-work { animation: projIn 0.55s var(--ease) 0.65s both; }
 @media (prefers-reduced-motion: reduce) {
   main.project > * { animation: none !important; }
 }
@@ -2152,6 +2151,51 @@ body.page-leaving .menu-foot { opacity: 0; transform: translateY(-10px); transit
   transition: color 0.3s ease;
 }
 .project-pager a:hover { color: var(--accent); }
+
+/* ── prev / next on project pages: red chevrons fixed in the side
+   margins, on the same inset as the logo and burger, drawn with the
+   mark's own stroke (--bar-h) and round caps. The wrapper is the fixed
+   layer (not each arrow) so the page fade, which transforms body's
+   children, can't pull them out of place. Below 900 the margins are too
+   thin, so they drop to a row at the end of the page. ── */
+.side-arrows {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  pointer-events: none;
+}
+.side-arrow {
+  position: absolute;
+  top: 50%;
+  width: calc(var(--logo-h) * 0.56);
+  height: calc(var(--logo-h) * 1.0);
+  margin-top: calc(var(--logo-h) * -0.5);
+  color: var(--accent);
+  pointer-events: auto;
+  transition: transform 0.35s var(--ease);
+}
+.side-arrow--prev { left: var(--frame-x); }
+.side-arrow--next { right: var(--frame-x); }
+.side-arrow svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.side-arrow path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: var(--bar-h);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.side-arrow--prev:hover { transform: translateX(-5px); }
+.side-arrow--next:hover { transform: translateX(5px); }
+@media (max-width: 900px) {
+  .side-arrows {
+    position: static;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 var(--pad);   /* .project already leaves the gap above */
+  }
+  .side-arrow { position: static; margin: 0; }
+}
 
 /* ══ RESPONSIVE (desktop-first; full mobile pass still to come) ══ */
 @media (max-width: 900px) {
