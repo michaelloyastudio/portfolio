@@ -62,10 +62,11 @@ const plugins = [
     updateBadge: { text: 'New update', until: '2026-11-20' },   // v1.2 shipped 2026-10-20
     changelog: [
       { version: '1.2', date: 'October 20, 2026', items: [
-        '<strong>Change what any fret plays.</strong> The new FRETS editor swaps the chord or note on any fret and on all ten two-fret pairs. Your key\'s chords are listed first, and your picks follow the key.',
+        '<strong>Change what any fret plays.</strong> The new FRETS editor swaps the chord or note on any fret and on all ten two-fret pairs. Your key\'s chords are listed first, and a switch sets whether a change applies to every key or just the one you\'re in.',
         '<strong>Lower lag.</strong> The guitar is read every millisecond instead of every four, strums settle faster, and notes reach your DAW a full audio block sooner.',
         '<strong>Lefty flip.</strong> Mirrors the highway and reverses the strum bar and joystick.',
         '<strong>Palm mute.</strong> Hold the whammy and strum for short, chunky power-chord chugs.',
+        '<strong>Reset to defaults</strong> in SETTINGS, for the controller mapping, lefty and whammy mode.',
         '<strong>SOLO range.</strong> The joystick slides the five frets up or down the scale, one note at a time.',
         'Your settings and mappings from 1.1 carry over.'
       ] },
@@ -83,8 +84,8 @@ const plugins = [
        that exact asset. It was smoke-tested on GitHub's runners rather than
        played on a real PC, but Mike doesn't want it labelled beta (2026-09-22). */
     downloads: [
-      { os: 'macOS',   file: 'assets/downloads/GH-MIDI-v1.2-macOS.zip?v=8d3bed902381',   size: '17.0 MB' },
-      { os: 'Windows', file: 'assets/downloads/GH-MIDI-v1.2-Windows.zip?v=7639e6b25eb1', size: '6.2 MB' }
+      { os: 'macOS',   file: 'assets/downloads/GH-MIDI-v1.2-macOS.zip?v=52ef575b8da1',   size: '17.0 MB' },
+      { os: 'Windows', file: 'assets/downloads/GH-MIDI-v1.2-Windows.zip?v=cf56385a6fa5', size: '6.2 MB' }
     ],
     /* No setup on the page. It ships as README.txt in the zip, where it's
        next to the files it talks about. The page sells; the README installs.
