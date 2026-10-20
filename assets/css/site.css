@@ -2223,7 +2223,6 @@ body.page-leaving .menu-foot { opacity: 0; transform: translateY(-10px); transit
 }
 .side-arrows { animation: projIn 0.4s var(--ease) 0s both; }
 html.arrows-stay .side-arrows { animation: none; }
-html.arrow-cursor, html.arrow-cursor * { cursor: pointer !important; }
 @media (prefers-reduced-motion: reduce) { .side-arrows { animation: none; } }
 @media (max-width: 900px) {
   .side-arrows {

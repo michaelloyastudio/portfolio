@@ -3,36 +3,56 @@
    Each /<slug>.html sets window.PROJECT_SLUG, then this fills in the
    hero, title, copy, and media from projects.js. Content lives in one
    place; the per-project HTML files stay thin.
+
+   Moving between projects doesn't load a new page: render() builds a
+   project into the page already open, and the teardown it returns stops
+   everything the last one started (listeners, timers, observers, the
+   parallax loop) before the next is built. The header and the side
+   arrows are never replaced, so they stay perfectly still and the cursor
+   on an arrow keeps its hand. Each project keeps its own URL (pushState),
+   and back/forward swap the same way.
    ══════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
 
+  var $ = function (id) { return document.getElementById(id); };
+
+  function render(slug) {
   var pageStart = performance.now();   // ~ when the CSS load-in starts
+
+  // what this render starts, so its teardown can stop all of it
+  var alive = true;
+  var life = 'AbortController' in window ? new AbortController() : null;
+  var sig = life ? { signal: life.signal } : false;
+  var timers = [], observers = [], settle = null;
+  function later(fn, ms) { var id = setTimeout(function () { if (alive) fn(); }, ms); timers.push(id); return id; }
+  function watch(o) { observers.push(o); return o; }
 
   /* The hero loads first. The work below holds its images and videos
      (Misc alone is tens of MB of loops) until the hero is in, or 3s,
      so they don't crowd the hero's layers off the connection. */
   var heroDone = false, onHeroDone = [];
   function heroReady() {
-    if (heroDone) return;
+    if (heroDone || !alive) return;
     heroDone = true;
     onHeroDone.forEach(function (f) { f(); });
   }
-  setTimeout(heroReady, 3000);
-  var slug = window.PROJECT_SLUG;
+  later(heroReady, 3000);
   var i = -1;
   projects.forEach(function (p, n) { if (p.slug === slug) i = n; });
-  if (i < 0) return;
+  if (i < 0) return function () {};
 
   var p = projects[i];
-  var $ = function (id) { return document.getElementById(id); };
   var isVideo = /\.(mp4|mov|webm)(\?|$)/i.test(p.hero || '');
 
   document.title = p.title + ' — Michael Loya Studio';
+  var canon = document.querySelector('link[rel="canonical"]');
+  if (canon) canon.href = 'https://michaelloya.studio/' + p.slug;
 
   // ── hero ──
   var hero = $('projectHero');
   if (hero) {
+    hero.classList.remove('is-content', 'is-tall', 'is-fit');
     if (p.heroFit === 'content') hero.classList.add('is-content');
     hero.innerHTML = isVideo
       ? '<video src="' + p.hero + '" playsinline ' +
@@ -95,9 +115,9 @@
       else hm.addEventListener(isVideo ? 'loadeddata' : 'load', heroReady, { once: true });
     }
     fitHero();
-    window.addEventListener('resize', fitHero);
+    window.addEventListener('resize', fitHero, sig);
     // the title's real font can change its height, and so the room left
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitHero);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { if (alive) fitHero(); });
 
     if (!isVideo && p.heroLayers) layeredHero(hero, hm, p.heroLayers);
     /* A looping video hero has no layers, but builds in the same way a
@@ -107,7 +127,7 @@
       hm.classList.add('hero-pre');
       var go = function () { hm.classList.remove('hero-pre'); hm.classList.add('hero-build'); };
       if (hm.readyState >= 2) go(); else hm.addEventListener('loadeddata', go, { once: true });
-      setTimeout(go, 2500);
+      later(go, 2500);
     }
   }
 
@@ -158,7 +178,7 @@
       .reduce(function (o, li, rank) { o[li] = rank; return o; }, []);
     var introStart = null;
     img.style.visibility = 'hidden';
-    var fallback = setTimeout(function () { img.style.visibility = ''; }, 2500);
+    var fallback = later(function () { img.style.visibility = ''; }, 2500);
     var loaded = 0;
     function onLoad() {
       if (++loaded < els.length) return;
@@ -178,7 +198,7 @@
       introStart = Math.max(performance.now(), pageStart + 120);
       start();
       // once the last layer is in, the flat image underneath can come back
-      setTimeout(function () { img.style.visibility = ''; }, STAGGER * els.length + INTRO);
+      later(function () { img.style.visibility = ''; }, STAGGER * els.length + INTRO);
     }
     els.forEach(function (im, n) {
       im.onload = onLoad;
@@ -194,12 +214,12 @@
       stack.style.width = img.offsetWidth + 'px';
       stack.style.height = img.offsetHeight + 'px';
     }
-    window.addEventListener('resize', place);
+    window.addEventListener('resize', place, sig);
     /* and follows it whenever its box changes for any other reason: fitHero
        or is-tall landing after the stack was placed, fonts settling the
        title above. Without this the stack could keep a stale full-width
        square and spill over the copy below. */
-    if ('ResizeObserver' in window) new ResizeObserver(place).observe(img);
+    if ('ResizeObserver' in window) watch(new ResizeObserver(place)).observe(img);
 
     /* Pointer target in -1..1 across the picture. Three things keep it calm:
        the pointer's pull (on) fades in over about half a second after it
@@ -223,17 +243,17 @@
 
     var visible = true, running = false;
     if ('IntersectionObserver' in window) {
-      new IntersectionObserver(function (es) {
+      watch(new IntersectionObserver(function (es) {
         visible = es[0].isIntersecting;
         if (visible) start();
-      }).observe(wrap);
+      })).observe(wrap);
     }
     function start() { if (!running) { running = true; requestAnimationFrame(frame); } }
     /* scroll position the page loaded at: the resting state, with no
        pointer over it, is the hero exactly as composed */
     var t0 = null;
     function frame() {
-      if (!visible) { running = false; return; }
+      if (!visible || !alive) { running = false; return; }
       var now = performance.now(), dt = last ? Math.min(0.05, (now - last) / 1000) : 0.016;
       last = now;
       var ease = function (tau) { return 1 - Math.exp(-dt / tau); };
@@ -277,6 +297,7 @@
   $('projectYear').textContent = p.year;
 
   // ── media ──
+  $('projectWork').innerHTML = '';
   var tpl = document.createElement('template');
   tpl.innerHTML = p.work;                      // parsed inert: nothing fetches yet
   if (!heroDone) {
@@ -432,18 +453,18 @@
     v.addEventListener('loadeddata', layoutMosaic);
   });
   layoutMosaic();
-  window.addEventListener('load', layoutMosaic);
+  window.addEventListener('load', layoutMosaic, sig);
 
   var tries = 0;
-  var settle = setInterval(function () {
+  settle = setInterval(function () {
     layoutMosaic();
     if (!pending || ++tries > 40) clearInterval(settle);
   }, 200);
 
   var rt;
   window.addEventListener('resize', function () {
-    clearTimeout(rt); rt = setTimeout(layoutMosaic, 120);
-  });
+    clearTimeout(rt); rt = later(layoutMosaic, 120);
+  }, sig);
 
   /* ── Sound, one clip at a time ────────────────────────────────────
      Autoplay only works muted, so every looping clip starts silent. This
@@ -501,14 +522,27 @@
   var loops = document.querySelectorAll('#projectWork video[autoplay]');
   if (loops.length && 'IntersectionObserver' in window) {
     loops.forEach(function (v) { v.pause(); });
-    var vio = new IntersectionObserver(function (entries) {
+    var vio = watch(new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
         if (e.isIntersecting) { var q = e.target.play(); if (q && q.catch) q.catch(function () {}); }
         else e.target.pause();
       });
-    }, { rootMargin: '150px 0px' });
+    }, { rootMargin: '150px 0px' }));
     loops.forEach(function (v) { vio.observe(v); });
   }
+
+  return function teardown() {
+    alive = false;
+    if (life) life.abort();
+    timers.forEach(clearTimeout);
+    clearInterval(settle);
+    observers.forEach(function (o) { o.disconnect(); });
+    // stop every clip and its download before the DOM goes
+    document.querySelectorAll('#projectHero video, #projectWork video').forEach(function (v) {
+      v.pause(); v.removeAttribute('src'); v.load();
+    });
+  };
+  }   // render
 
   /* ── No widows ─────────────────────────────────────────────────────
      Binds the last two words of every paragraph with a non-breaking
@@ -529,4 +563,45 @@
       last.nodeValue = last.nodeValue.replace(/\s+(\S+)\s*$/, '\u00a0$1');
     });
   }
+
+  var teardown = render(window.PROJECT_SLUG);
+  if (history.replaceState) history.replaceState({ slug: window.PROJECT_SLUG }, '');
+  // each swap starts at the top; the browser restoring an old scroll
+  // position on back/forward would fight it
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+
+  /* ── Project to project, in place ─────────────────────────────────
+     site.js hands project links here. The page fades out as on any
+     leave (page-leaving; the header and side arrows are left out of it),
+     the next project is built behind it, then the same top-down load-in
+     plays again. */
+  var LEAVE_MS = 200, swapping = false;
+  function isProject(slug) { return projects.some(function (q) { return q.slug === slug; }); }
+  function replay(el) { el.style.animation = 'none'; void el.offsetWidth; el.style.animation = ''; }
+
+  window.projectSwap = function (slug, push) {
+    if (swapping || !isProject(slug) || !history.pushState) return false;
+    swapping = true;
+    document.body.classList.add('page-leaving');
+    setTimeout(function () {
+      teardown();
+      if (push) history.pushState({ slug: slug }, '', '/' + slug);
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      window.PROJECT_SLUG = slug;
+      teardown = render(slug);
+      document.querySelectorAll('main.project > .project-head, main.project > .project-body, main.project > .project-work')
+        .forEach(replay);
+      document.body.classList.remove('page-leaving');
+      // GoatCounter counts the first page itself; swaps are counted here
+      if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path: '/' + slug });
+      swapping = false;
+    }, LEAVE_MS);
+    return true;
+  };
+
+  // back / forward between projects swaps the same way
+  window.addEventListener('popstate', function () {
+    var slug = location.pathname.replace(/^\//, '').replace(/\.html$/, '');
+    if (isProject(slug) && slug !== window.PROJECT_SLUG) window.projectSwap(slug, false);
+  });
 })();
