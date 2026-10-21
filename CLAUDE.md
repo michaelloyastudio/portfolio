@@ -37,7 +37,7 @@ Featured projects on the Studio page are set by `data-featured` on `#bands` in `
 
 Parchment replaces white. Black is `#0a0a0a`, never pure `#000`. Red is for links, hover, and active states only — it works because it's rationed.
 
-Type: **Inter** (Google Fonts, variable 300-700 with a true italic axis) for everything outside the hero — UI and body copy both. The hero keeps its own faces: **Nimbus Sans** self-hosted, **Warbler Deck** (Typekit) for the serif italic, **DIN 2014 Rounded** (Typekit) for the loading wordmark.
+Type: two faces. **Inter** (Google Fonts, variable 300-700 with a true italic axis) for everything, hero sans included. **Warbler Deck** (Typekit kit `oft2xxg`) for the serif italic accents in the hero. Nimbus Sans, Steelfish and DIN 2014 Rounded were removed on 2026-10-21; no self-hosted fonts remain.
 
 Inter is on trial, swapped in from Space Grotesk + IBM Plex on 2026-09-13. Note it contradicts the anti-slop rule below; Mike asked to see it. Both faces are set by `--font-display` / `--font-body` in one place, so reverting is a token edit.
 
@@ -122,7 +122,7 @@ So `hero.js` measures the loaded font at runtime (`tuneToFont`) and writes `--sl
 The reel's window is sized against the deepest descender across *every* word on it, not the landing word: the `g` in "brand campaigns" drops further than the `p` in "video production."
 
 ## Known issues
-- **The wordmark needs michaelloya.studio on the Typekit kit's allowed domains** (kit `vvj5gyy`, loaded on index.html). It resolves on localhost; if the live domain isn't listed it will silently fall back to Space Grotesk.
+- None open.
 
 ## URLs
 **Links have no `.html`.** Files on disk are still `work.html`, `gh-midi.html` and so on — GitHub Pages resolves `/work` to `work.html` on its own. Verified live: `/work` is 200 with **no redirect**, and `/work/` is a 404, so Pages never appends a trailing slash. Internal links are root-relative (`/work`, `/` for home); asset paths stay relative and resolve correctly because there is never a trailing slash to change the base.

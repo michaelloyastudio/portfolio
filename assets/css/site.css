@@ -4,47 +4,6 @@
    place a light mode would need to change.
    ══════════════════════════════════════════════════════════════ */
 
-/* ══ NIMBUS SANS (hero + body) ══
-   URW's metric clone of Helvetica, open source (AFPL/GPL) so unlike
-   Helvetica Neue it can be self-hosted. Originals live in
-   02_Assets/Fonts/nimbus-sans. */
-@font-face {
-  font-family: 'Nimbus Sans';
-  src: url('../fonts/nimbus-sans-400.woff2') format('woff2');
-  font-weight: 400; font-style: normal; font-display: swap;
-}
-@font-face {
-  font-family: 'Nimbus Sans';
-  src: url('../fonts/nimbus-sans-400i.woff2') format('woff2');
-  font-weight: 400; font-style: italic; font-display: swap;
-}
-@font-face {
-  font-family: 'Nimbus Sans';
-  src: url('../fonts/nimbus-sans-700.woff2') format('woff2');
-  font-weight: 700; font-style: normal; font-display: swap;
-}
-@font-face {
-  font-family: 'Nimbus Sans';
-  src: url('../fonts/nimbus-sans-700i.woff2') format('woff2');
-  font-weight: 700; font-style: italic; font-display: swap;
-}
-
-/* ══ STEELFISH (hero wordmark) ══ */
-@font-face {
-  font-family: 'Steelfish';
-  src: url('../fonts/steelfish-bold.woff2') format('woff2');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Steelfish';
-  src: url('../fonts/steelfish-extrabold.woff2') format('woff2');
-  font-weight: 800;
-  font-style: normal;
-  font-display: swap;
-}
-
 /* ══ TOKENS ══ */
 :root {
   --black:     #0a0a0a;
@@ -114,9 +73,8 @@
   --font-body: 'Inter', system-ui, -apple-system, sans-serif;
 
   /* Hero faces.
-     Inter, matched to the Nimbus Sans it replaced. Nimbus is still
-     self-hosted in assets/fonts and still in the stack behind Inter, so
-     nothing 404s and the old face is one token away.
+     Inter, matched to the Nimbus Sans it replaced (Nimbus, Steelfish and
+     the DIN wordmark face were removed from the site on 2026-10-21).
 
      MATCHED, NOT SWAPPED. Every hero weight and tracking value below was
      solved against Nimbus by measurement, not taste: ink coverage on
@@ -133,7 +91,7 @@
      serves it as 'warbler-deck' / 'warbler-banner'. Those names lead the
      stack so it takes over the moment that's done. Playfair Display is
      the fallback for every visitor until then. */
-  --font-hero: 'Inter', 'Nimbus Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-hero: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   --font-hero-serif: 'warbler-deck', 'Warbler Deck', 'warbler-banner', 'Warbler Banner', 'Playfair Display', Georgia, serif;
 }
 
@@ -535,38 +493,6 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   letter-spacing: -0.045em;
   margin: 0 0 1.5rem;
   animation: rise 1s var(--ease) 0.25s both;
-}
-
-/* ── Wordmark ──────────────────────────────────────────────────────
-   Proportions lifted from the old portfolio, which set the mark at 62px
-   against a 76px logotype. Everything below is expressed against
-   --wm so the lockup scales as one piece:
-     mark height      62/76  = 0.82em
-     mark gap         0.6/76 = 0.126em      mark nudge  6/76 = 0.079em
-     tagline size     1.3/4.75 = 0.274      tagline top 0.9/4.75 = 0.19 */
-.hero .wordmark {
-  --wm: clamp(2.1rem, 7.4vw, 6.5rem);
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 0.126em;
-  /* DIN 2014 Rounded is the original wordmark face, loaded from the
-     Typekit kit on index.html only. word-spacing and weight 400 are from
-     the old CSS too — DIN sets wider than the display face at the same size. */
-  font-family: 'din-2014-rounded-variable', var(--font-display);
-  font-size: var(--wm);
-  font-weight: 400;
-  word-spacing: -0.05em;
-  line-height: 1;
-  letter-spacing: -0.01em;
-  white-space: nowrap;
-  margin: 0;
-}
-.hero .wordmark img {
-  height: 0.82em;
-  width: auto;
-  margin-top: 0.079em;
-  flex: none;
 }
 
 .hero .hero-sub { margin-top: clamp(1.25rem, 2.5vw, 2rem); }
