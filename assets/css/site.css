@@ -1560,11 +1560,11 @@ button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-lin
 }
 .video-embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
 .product-stats { margin-top: clamp(1.75rem, 4vh, 2.5rem); text-align: center; }
-/* centred and big: the two figures split the video's width between them */
+/* centred: the figures sit side by side in the middle */
 .product-stats-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
-  gap: clamp(1rem, 3vw, 2rem);
+  display: flex;
+  justify-content: center;
+  gap: clamp(2rem, 4vw, 3.5rem);
 }
 .product-stat { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
 .product-stat-fig {
