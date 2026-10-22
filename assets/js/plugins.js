@@ -30,8 +30,8 @@
  *               section above What's New.
  *   stats     — optional {items: [[figure, label]], note}: big numbers in that
  *               same section, under the video (reach of the videos about the
- *               plugin). Round DOWN so the claim stays true. The note shows
- *               as a hover/tap popup on a small (i) beside the numbers.
+ *               plugin). Round DOWN so the claim stays true. The note sits
+ *               above the numbers as their heading.
  *   changelog — [{version, date, items: [html]}], newest first. The newest
  *               renders as "What's new", the rest as a collapsed version
  *               history. Rewrite it from the GitHub release notes per cut.
