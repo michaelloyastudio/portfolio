@@ -123,12 +123,28 @@
     videoHtml = '<section class="plugin-section plugin-video"><h2 class="changelog-title">The Video</h2>' +
       (p.video ? '<div class="video-embed"><iframe src="https://www.youtube-nocookie.com/embed/' + p.video.youtube +
         '" title="' + (p.video.title || p.name) + '" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>' : '') +
-      (p.stats && p.stats.items ? '<div class="product-stats"><div class="product-stats-row">' + p.stats.items.map(function (s) {
+      (p.stats && p.stats.items ? '<div class="product-stats"><div class="product-stats-row">' + p.stats.items.map(function (s, n, all) {
+          // the source of the numbers lives in a small (i) pinned to the last
+          // figure's corner (so it doesn't push the centred group): hover or tap
+          var info = (n === all.length - 1 && p.stats.note)
+            ? '<button type="button" class="stat-info" aria-label="About these numbers" aria-describedby="statInfoTip">' +
+              '<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8.5"/><path d="M10 9 L10 14.2"/><circle class="dot" cx="10" cy="5.9" r="0.6"/></svg>' +
+              '<span class="stat-info-tip" id="statInfoTip" role="tooltip">' + p.stats.note + '</span></button>'
+            : '';
           return '<div class="product-stat"><span class="product-stat-fig">' + s[0] + '</span>' +
-                 '<span class="product-stat-label">' + s[1] + '</span></div>';
-        }).join('') + '</div>' + (p.stats.note ? '<p class="product-stats-note">' + p.stats.note + '</p>' : '') + '</div>' : '') +
+                 '<span class="product-stat-label">' + s[1] + '</span>' + info + '</div>';
+        }).join('') +
+        '</div></div>' : '') +
       '</section>';
   }
+  // touch has no hover: a tap toggles the (i) popup, a tap elsewhere closes it
+  document.addEventListener('click', function (e) {
+    var info = document.querySelector('.stat-info');
+    if (!info) return;
+    if (e.target.closest('.stat-info')) info.classList.toggle('is-open');
+    else info.classList.remove('is-open');
+  });
+
   /* What's New: every version as a row that slides open, all closed to
      start. The newest carries a red star. */
   var STAR = '<svg class="changelog-star" viewBox="0 0 24 24" aria-label="Latest"><path d="M12 1.8l3.1 6.6 7.2.9-5.3 5 1.4 7.1L12 17.9l-6.4 3.5L7 14.3l-5.3-5 7.2-.9z"/></svg>';

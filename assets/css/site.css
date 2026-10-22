@@ -1580,7 +1580,51 @@ button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-lin
   text-transform: uppercase;
   color: var(--accent);
 }
-.product-stats-note { margin: 1.6rem 0 0; font-size: clamp(0.9rem, 1vw, 1.05rem); color: var(--muted); }
+/* the (i) beside the numbers: muted stroke, red on hover; its popup
+   carries the source of the numbers */
+.product-stat { position: relative; }
+.stat-info {
+  position: absolute;
+  top: 0.1rem;
+  left: calc(100% + 0.45rem);
+  width: 1.15rem; height: 1.15rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.25s ease;
+}
+.stat-info:hover, .stat-info:focus-visible, .stat-info.is-open { color: var(--accent); outline: none; }
+.stat-info svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.stat-info circle, .stat-info path { fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; }
+.stat-info .dot { fill: currentColor; }
+.stat-info-tip {
+  position: absolute;
+  right: -0.5rem;                 /* opens leftward, so it stays on screen */
+  bottom: calc(100% + 0.6rem);
+  width: max-content;
+  max-width: 15rem;
+  padding: 0.55rem 0.75rem;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--fg);
+  font-size: 0.82rem;
+  line-height: 1.4;
+  letter-spacing: 0;
+  text-transform: none;
+  text-align: left;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(4px);
+  transition: opacity 0.2s ease, transform 0.25s var(--ease), visibility 0.2s;
+  pointer-events: none;
+  z-index: 5;
+}
+.stat-info:hover .stat-info-tip,
+.stat-info:focus-visible .stat-info-tip,
+.stat-info.is-open .stat-info-tip { opacity: 1; visibility: visible; transform: none; }
 .plugin-guide { max-width: 780px; }
 /* What's New + version history (plugin-page.js, from plugins.js changelog).
    "What's New" is the heading; under it the version and its date share a

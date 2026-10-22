@@ -30,7 +30,8 @@
  *               section above What's New.
  *   stats     — optional {items: [[figure, label]], note}: big numbers in that
  *               same section, under the video (reach of the videos about the
- *               plugin). Round DOWN so the claim stays true.
+ *               plugin). Round DOWN so the claim stays true. The note shows
+ *               as a hover/tap popup on a small (i) beside the numbers.
  *   changelog — [{version, date, items: [html]}], newest first. The newest
  *               renders as "What's new", the rest as a collapsed version
  *               history. Rewrite it from the GitHub release notes per cut.
@@ -68,7 +69,7 @@ const plugins = [
     /* Mike's totals for 10 posts (2026-10-22): Instagram 442,589 views /
        14,325 likes, TikTok 264,083 / 6,517 (two TikTok counts app-rounded),
        total 706,672 views / 20,842 likes / 293 comments. Shown rounded down. */
-    stats: { items: [['700K+', 'views'], ['20K+', 'likes']], note: 'Across Instagram and YouTube' },
+    stats: { items: [['700K+', 'views'], ['20K+', 'likes']], note: 'On GH MIDI videos across Instagram and TikTok' },
     video: { youtube: '8DL_x7Ll75Y', title: 'Making GH MIDI' },
     changelog: [
       { version: '1.2', date: 'October 20, 2026', items: [
