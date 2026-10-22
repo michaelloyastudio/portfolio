@@ -777,6 +777,10 @@ button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-lin
      used only for the paint before the script runs. */
   height: var(--slot-h, 1.36em);
   margin: var(--slot-mt, -0.215em) 0 0;
+  /* Warbler's x-height is 0.461em against Inter's 0.546em, so at the same
+     size the red word read a step smaller than the sans above it. Scaled
+     up to meet it halfway (the phone gets the full 1.18, below). */
+  font-size: 1.1em;
 }
 .slot-reel {
   display: block;
@@ -898,6 +902,19 @@ button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-lin
     --pad: var(--frame-x);
   }
 
+  /* Header backdrop: black behind the logo and burger so content scrolls
+     under it, feathered at the bottom so it fades out rather than cutting
+     off. A pseudo-element, so the nav itself stays click-through. */
+  .nav::before {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; top: 0;
+    height: calc(100% + 1.75rem);
+    background: linear-gradient(to bottom, var(--bg) 0%, var(--bg) calc(100% - 2.75rem), rgba(10, 10, 10, 0) 100%);
+    pointer-events: none;
+    z-index: -1;
+  }
+
   /* ── hero ── */
   .hero--studio {
     /* the hero no longer has to fill the screen: stacked, its content is
@@ -933,8 +950,10 @@ button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-lin
      what's left under the nav, and the three rows spread out — title at the
      top, video in the middle, copy and button at the bottom. On a screen
      shorter than the content it simply scrolls; the gap below is the floor. */
-  .hero--studio { min-height: 100svh; display: flex; flex-direction: column; }
-  .hero-grid    { flex: 1; align-content: space-between; row-gap: 2.4rem; }
+  /* Compact: title, video and copy sit together with an even gap, instead
+     of spreading out to fill the phone's height (Mike: too far apart). */
+  .hero--studio { min-height: 0; }
+  .hero-grid    { row-gap: 1.75rem; }
 
   /* Everything centred, and the lede on two lines: the hard breaks come
      off and the copy wraps naturally, sized so "A multifaceted creative
@@ -960,10 +979,14 @@ button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-lin
      which hero.js measures from the same font metrics as the window. */
   .slot {
     display: inline-block;
-    font-size: 1.18em;
+    font-size: 1.22em;
     margin-top: 0;
+    margin-left: 0.03em;   /* with the markup space: one normal word gap after "on" */
     vertical-align: calc(-1 * var(--slot-desc, 0.3em));
   }
+  /* The window is as wide as the longest word; each word starts at its left
+     edge, right after "on", instead of centring in it and drifting away. */
+  .slot-word { text-align: left; }
 
 
   /* ── page + project headers ── */
@@ -1568,7 +1591,7 @@ button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-lin
 }
 .product-stat { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
 .product-stat-fig {
-  font-size: clamp(2rem, 4.2vw, 4.5rem);
+  font-size: clamp(2.75rem, 4.2vw, 4.5rem);
   font-weight: 700;
   letter-spacing: -0.045em;
   line-height: 0.95;
@@ -1583,7 +1606,7 @@ button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-lin
 /* the line over the numbers: what they count, a step up from body small print */
 .product-stats-head {
   margin: 0 0 1.1rem;
-  font-size: clamp(1rem, 1.15vw, 1.2rem);
+  font-size: clamp(0.9rem, 1.15vw, 1.2rem);
   color: var(--muted);
   text-wrap: balance;
 }
