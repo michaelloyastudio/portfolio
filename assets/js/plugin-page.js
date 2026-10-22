@@ -108,6 +108,16 @@
 
   // ── copy ──
   $('pluginIntro').innerHTML = p.intro;
+  // reach of the videos about it: big figures under the pitch
+  if (p.stats && p.stats.items && p.stats.items.length) {
+    var st = document.createElement('div');
+    st.className = 'product-stats';
+    st.innerHTML = '<div class="product-stats-row">' + p.stats.items.map(function (s) {
+      return '<div class="product-stat"><span class="product-stat-fig">' + s[0] + '</span>' +
+             '<span class="product-stat-label">' + s[1] + '</span></div>';
+    }).join('') + '</div>' + (p.stats.note ? '<p class="product-stats-note">' + p.stats.note + '</p>' : '');
+    $('pluginIntro').insertAdjacentElement('afterend', st);
+  }
   /* What's new (the newest version) and the version history (the rest,
      collapsed), above the open-source note. */
   var CHEV = '<svg viewBox="0 0 20 36" aria-hidden="true"><path d="M4 3 L16 18 L4 33"/></svg>';

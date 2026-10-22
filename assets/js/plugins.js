@@ -26,6 +26,9 @@
  *               instead of a link that 404s. (The older single `download`
  *               + `size` pair still renders as one macOS button.)
  *   note      — optional word after the size on the meta line ('beta')
+ *   stats     — optional {items: [[figure, label]], note}: a row of big numbers
+ *               under the intro (reach of the videos about the plugin).
+ *               Round DOWN so the claim stays true.
  *   changelog — [{version, date, items: [html]}], newest first. The newest
  *               renders as "What's new", the rest as a collapsed version
  *               history. Rewrite it from the GitHub release notes per cut.
@@ -60,6 +63,10 @@ const plugins = [
     status: 'live',
     version: 'v1.2',
     updateBadge: { text: 'New update', until: '2026-11-20' },   // v1.2 shipped 2026-10-20
+    /* Mike's totals for 10 posts (2026-10-22): Instagram 442,589 views /
+       14,325 likes, TikTok 264,083 / 6,517 (two TikTok counts app-rounded),
+       total 706,672 views / 20,842 likes / 293 comments. Shown rounded down. */
+    stats: { items: [['700K+', 'views'], ['20K+', 'likes']], note: 'On the GH MIDI videos across Instagram and TikTok' },
     changelog: [
       { version: '1.2', date: 'October 20, 2026', items: [
         '<strong>Change what any fret plays.</strong> The new FRETS editor swaps the chord or note on any fret and on all ten two-fret pairs. Your key\'s chords are listed first, and a switch sets whether a change applies to every key or just the one you\'re in.',

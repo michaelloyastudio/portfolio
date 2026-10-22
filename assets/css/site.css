@@ -1541,6 +1541,25 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   margin: 0 0 1.1rem;
 }
 .product-intro p:last-child { margin-bottom: 0; }
+/* Reach of the GH MIDI videos (plugins.js stats): big figures in the
+   page's heading weight, labels in the small-caps label style. */
+.product-stats { margin-top: clamp(2rem, 5vh, 3rem); }
+.product-stats-row { display: flex; flex-wrap: wrap; gap: clamp(2rem, 6vw, 4.5rem); }
+.product-stat { display: flex; flex-direction: column; gap: 0.35rem; }
+.product-stat-fig {
+  font-size: clamp(2.2rem, 3.6vw, 3.4rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: var(--fg);
+}
+.product-stat-label {
+  font-size: 0.66rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.product-stats-note { margin: 1rem 0 0; font-size: 0.85rem; color: var(--muted); }
 .plugin-guide { max-width: 780px; }
 /* What's New + version history (plugin-page.js, from plugins.js changelog).
    "What's New" is the heading; under it the version and its date share a
