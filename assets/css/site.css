@@ -1568,7 +1568,7 @@ button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-lin
 }
 .product-stat { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
 .product-stat-fig {
-  font-size: clamp(2.2rem, 5.2vw, 5.6rem);
+  font-size: clamp(2rem, 4.2vw, 4.5rem);
   font-weight: 700;
   letter-spacing: -0.045em;
   line-height: 0.95;
