@@ -903,16 +903,22 @@ button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-lin
   }
 
   /* Header backdrop: a black bar behind the logo and burger so content
-     scrolls under it, with a drop shadow along its bottom edge. A
+     scrolls under it, with a drop shadow along its bottom edge once the
+     page has scrolled (at the top it would sit on bare background). A
      pseudo-element, so the nav itself stays click-through. */
   .nav::before {
     content: '';
     position: absolute;
     inset: 0;
     background: var(--bg);
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.85), 0 2px 4px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0), 0 2px 4px rgba(0, 0, 0, 0);
+    transition: box-shadow 0.3s ease;
     pointer-events: none;
     z-index: -1;
+  }
+  /* the shadow only once something has scrolled under the bar (site.js) */
+  html.is-scrolled .nav::before {
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.85), 0 2px 4px rgba(0, 0, 0, 0.6);
   }
 
   /* ── hero ── */

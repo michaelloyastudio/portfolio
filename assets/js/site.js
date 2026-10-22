@@ -240,6 +240,10 @@
   });
 
   /* ── Nav background on scroll ────────────────────────────────────*/
+  // the phone header's shadow shows only once the page is off the top
+  var markScrolled = function () { document.documentElement.classList.toggle('is-scrolled', window.scrollY > 2); };
+  window.addEventListener('scroll', markScrolled, { passive: true });
+  markScrolled();
   var cue = document.querySelector('.scroll-cue');
   if (cue) {
     var onScroll = function () {
