@@ -902,15 +902,15 @@ button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-lin
     --pad: var(--frame-x);
   }
 
-  /* Header backdrop: black behind the logo and burger so content scrolls
-     under it, feathered at the bottom so it fades out rather than cutting
-     off. A pseudo-element, so the nav itself stays click-through. */
+  /* Header backdrop: a black bar behind the logo and burger so content
+     scrolls under it, with a drop shadow along its bottom edge. A
+     pseudo-element, so the nav itself stays click-through. */
   .nav::before {
     content: '';
     position: absolute;
-    left: 0; right: 0; top: 0;
-    height: calc(100% + 1.75rem);
-    background: linear-gradient(to bottom, var(--bg) 0%, var(--bg) calc(100% - 2.75rem), rgba(10, 10, 10, 0) 100%);
+    inset: 0;
+    background: var(--bg);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.85), 0 2px 4px rgba(0, 0, 0, 0.6);
     pointer-events: none;
     z-index: -1;
   }
