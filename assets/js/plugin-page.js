@@ -30,7 +30,11 @@
   var shot = $('pluginShot');
   if (shot) {
     shot.innerHTML =
-      '<img id="pluginShotMain" src="' + shots[0].src + '" alt="' + shots[0].alt + '">' +
+      '<div class="product-shot-main"><img id="pluginShotMain" src="' + shots[0].src + '" alt="' + shots[0].alt + '">' +
+      // the same "New update" chip as the Tools tile, until its date
+      (p.updateBadge && new Date() < new Date(p.updateBadge.until)
+        ? '<div class="tile-badges"><span class="tile-badge tile-badge--new"><svg class="tile-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.8l3.1 6.6 7.2.9-5.3 5 1.4 7.1L12 17.9l-6.4 3.5L7 14.3l-5.3-5 7.2-.9z"/></svg>' + p.updateBadge.text + '</span></div>'
+        : '') + '</div>' +
       (shots.length > 1
         ? '<div class="product-thumbs">' + shots.map(function (s, n) {
             return '<button class="product-thumb' + (n ? '' : ' is-on') +
@@ -125,22 +129,19 @@
         }).join('') + '</div>' + (p.stats.note ? '<p class="product-stats-note">' + p.stats.note + '</p>' : '') + '</div>' : '') +
       '</section>';
   }
+  /* What's New: every version as a row that slides open, all closed to
+     start. The newest carries a red star. */
+  var STAR = '<svg class="changelog-star" viewBox="0 0 24 24" aria-label="Latest"><path d="M12 1.8l3.1 6.6 7.2.9-5.3 5 1.4 7.1L12 17.9l-6.4 3.5L7 14.3l-5.3-5 7.2-.9z"/></svg>';
   var log = p.changelog || [], logHtml = '';
   if (log.length) {
-    logHtml += '<section class="plugin-section plugin-changelog">' +
-      '<h2 class="changelog-title">What\'s New</h2>' +
-      '<div class="changelog-row"><span class="changelog-v">' + log[0].version + '</span>' +
-      '<span class="changelog-date">' + log[0].date + '</span></div>' + list(log[0].items) + '</section>';
-    if (log.length > 1) {
-      logHtml += '<section class="plugin-section plugin-history"><h2>Version history</h2>' +
-        log.slice(1).map(function (v) {
-          return '<details class="changelog-version"><summary>' +
-            '<span class="changelog-v">' + v.version + '</span>' +
-            '<span class="changelog-date">' + v.date + '</span>' +
-            '<span class="changelog-chev">' + CHEV + '</span></summary>' +
-            '<div class="changelog-body">' + list(v.items) + '</div></details>';
-        }).join('') + '</section>';
-    }
+    logHtml = '<section class="plugin-section plugin-changelog"><h2 class="changelog-title">What\'s New</h2>' +
+      log.map(function (v, n) {
+        return '<details class="changelog-version"><summary>' +
+          '<span class="changelog-v">' + v.version + (n ? '' : STAR) + '</span>' +
+          '<span class="changelog-date">' + v.date + '</span>' +
+          '<span class="changelog-chev">' + CHEV + '</span></summary>' +
+          '<div class="changelog-body">' + list(v.items) + '</div></details>';
+      }).join('') + '</section>';
   }
   var body = $('pluginBody');
   if (body) body.innerHTML = videoHtml + logHtml + (p.body || '');
