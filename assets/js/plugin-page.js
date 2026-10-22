@@ -108,20 +108,23 @@
 
   // ── copy ──
   $('pluginIntro').innerHTML = p.intro;
-  // reach of the videos about it: big figures under the pitch
-  if (p.stats && p.stats.items && p.stats.items.length) {
-    var st = document.createElement('div');
-    st.className = 'product-stats';
-    st.innerHTML = '<div class="product-stats-row">' + p.stats.items.map(function (s) {
-      return '<div class="product-stat"><span class="product-stat-fig">' + s[0] + '</span>' +
-             '<span class="product-stat-label">' + s[1] + '</span></div>';
-    }).join('') + '</div>' + (p.stats.note ? '<p class="product-stats-note">' + p.stats.note + '</p>' : '');
-    $('pluginIntro').insertAdjacentElement('afterend', st);
-  }
   /* What's new (the newest version) and the version history (the rest,
      collapsed), above the open-source note. */
   var CHEV = '<svg viewBox="0 0 20 36" aria-hidden="true"><path d="M4 3 L16 18 L4 33"/></svg>';
   var list = function (items) { return '<ul class="changelog-list">' + items.map(function (t) { return '<li>' + t + '</li>'; }).join('') + '</ul>'; };
+  /* The Video: the YouTube embed, then the reach numbers under it. Same
+     heading style as What's New, so the two read as the page's sections. */
+  var videoHtml = '';
+  if (p.video || (p.stats && p.stats.items && p.stats.items.length)) {
+    videoHtml = '<section class="plugin-section plugin-video"><h2 class="changelog-title">The Video</h2>' +
+      (p.video ? '<div class="video-embed"><iframe src="https://www.youtube-nocookie.com/embed/' + p.video.youtube +
+        '" title="' + (p.video.title || p.name) + '" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>' : '') +
+      (p.stats && p.stats.items ? '<div class="product-stats"><div class="product-stats-row">' + p.stats.items.map(function (s) {
+          return '<div class="product-stat"><span class="product-stat-fig">' + s[0] + '</span>' +
+                 '<span class="product-stat-label">' + s[1] + '</span></div>';
+        }).join('') + '</div>' + (p.stats.note ? '<p class="product-stats-note">' + p.stats.note + '</p>' : '') + '</div>' : '') +
+      '</section>';
+  }
   var log = p.changelog || [], logHtml = '';
   if (log.length) {
     logHtml += '<section class="plugin-section plugin-changelog">' +
@@ -140,7 +143,7 @@
     }
   }
   var body = $('pluginBody');
-  if (body) body.innerHTML = logHtml + (p.body || '');
+  if (body) body.innerHTML = videoHtml + logHtml + (p.body || '');
 
   /* The version rows open and close with a slide: <details> on its own
      snaps, so the summary click is taken over and the body's height is
