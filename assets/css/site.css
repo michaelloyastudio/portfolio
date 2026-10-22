@@ -511,6 +511,14 @@ body.menu-open .menu-links a:nth-child(4) { transition-delay: 0s, 0.26s, 0.26s; 
   to   { opacity: 1; transform: none; }
 }
 
+/* Controls aren't copy: clicking or double-clicking one never selects its
+   label. Every button-shaped thing on the site, links styled as buttons
+   included. */
+button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-link {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 .btn {
   display: inline-block;
   font-size: 0.76rem;
