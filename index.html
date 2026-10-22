@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Michael Loya Studio</title>
 <meta name="description" content="Michael Loya Studio — video, motion, and design for artists and brands.">
-<link rel="icon" type="image/svg+xml" href="favicon.svg?v=275">
+<link rel="icon" type="image/svg+xml" href="favicon.svg?v=276">
 
 <link rel="canonical" href="https://michaelloya.studio/">
 
@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://use.typekit.net/oft2xxg.css">
-<link rel="stylesheet" href="assets/css/site.css?v=275">
+<link rel="stylesheet" href="assets/css/site.css?v=276">
 <style>
   /* First-paint guard. Applies before anything else resolves, so the page
      never flashes raw content before the load-in animations start.
@@ -84,24 +84,22 @@
 
     <a class="hero-work" id="heroWork" href="/loya" aria-label="goodbye, for Loya, latest work">
       <!-- Phones get the McDonald's loop: 4:3 sits better in the stacked
-           layout than the 16:9 Loya loop. The browser picks the source by
-           width; the script below matches the poster, shape and link. -->
-      <video muted loop playsinline preload="auto" width="1600" height="900">
-        <source media="(max-width: 640px)" src="assets/video/hero-loop-mobile.mp4?v=275" type="video/mp4">
-        <source src="assets/video/hero-loop.mp4?v=275" type="video/mp4">
-      </video>
+           layout than the 16:9 Loya loop. The script picks the file by
+           width (a <source media> hint was ignored by a real phone) and
+           matches the poster, shape and link. -->
+      <video muted loop playsinline preload="auto" width="1600" height="900"></video>
     </a>
     <script>
       (function () {
         var a = document.getElementById('heroWork'), vid = a.querySelector('video');
-        if (window.matchMedia('(max-width: 640px)').matches) {
-          vid.poster = 'assets/video/hero-loop-mobile-poster.jpg?v=275';
+        var phone = window.matchMedia('(max-width: 640px)').matches;
+        if (phone) {
           vid.width = 1440; vid.height = 1080;
           a.href = '/miscellaneous';
           a.setAttribute('aria-label', "YOU!, a McDonald's piece, in Miscellaneous");
-        } else {
-          vid.poster = 'assets/video/hero-loop-poster.jpg?v=275';
         }
+        vid.poster = 'assets/video/' + (phone ? 'hero-loop-mobile-poster.jpg' : 'hero-loop-poster.jpg') + '?v=276';
+        vid.src = 'assets/video/' + (phone ? 'hero-loop-mobile.mp4' : 'hero-loop.mp4') + '?v=276';
       })();
     </script>
 
@@ -129,9 +127,9 @@
 </footer>
 
 <!-- ══ PROJECT DETAIL ══ -->
-<script src="assets/js/projects.js?v=275"></script>
-<script src="assets/js/hero.js?v=275"></script>
-<script src="assets/js/site.js?v=275"></script>
+<script src="assets/js/projects.js?v=276"></script>
+<script src="assets/js/hero.js?v=276"></script>
+<script src="assets/js/site.js?v=276"></script>
 <!-- GoatCounter: page views, no cookies. Skips itself on localhost. -->
 <script data-goatcounter="https://michaelloya.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
