@@ -1571,21 +1571,59 @@ button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-lin
   border: 1px solid var(--line);
 }
 .product-shot-main.has-overlay video,
-.product-shot-main.has-overlay .shot-overlay {
+.product-shot-main.has-overlay .shot-overlay,
+.product-shot-main.has-overlay .shot-like {
   border: 0;
   will-change: transform, opacity;
   backface-visibility: hidden;
   transition: transform var(--rise), opacity var(--rise);
 }
+.product-shot-main.has-overlay { touch-action: manipulation; }
 .product-shot-main.has-overlay video { background: var(--parchment); transform: translate3d(0, 0, 0); }
-.product-shot-main.has-overlay .shot-overlay { transform: translate3d(0, 3.981%, 0); }
+.product-shot-main.has-overlay .shot-overlay,
+.product-shot-main.has-overlay .shot-like { transform: translate3d(0, 3.981%, 0); }
 @media (hover: hover) {
   .product-shot-main.has-overlay:hover video { transform: translate3d(0, -3.981%, 0); }
-  .product-shot-main.has-overlay:hover .shot-overlay { transform: translate3d(0, 0, 0); }
+  .product-shot-main.has-overlay:hover .shot-overlay,
+  .product-shot-main.has-overlay:hover .shot-like { transform: translate3d(0, 0, 0); opacity: 1; }
+  .product-shot-main.has-overlay:hover .shot-like-hit { pointer-events: auto; }
 }
 .product-shot-main.has-overlay.show-overlay video { transform: translate3d(0, -3.981%, 0); }
-.product-shot-main.has-overlay.show-overlay .shot-overlay { transform: translate3d(0, 0, 0); }
-.product-shot .shot-overlay[hidden] { display: none; }
+.product-shot-main.has-overlay.show-overlay .shot-overlay,
+.product-shot-main.has-overlay.show-overlay .shot-like { transform: translate3d(0, 0, 0); opacity: 1; }
+.product-shot-main.show-overlay .shot-like-hit { pointer-events: auto; }
+.product-shot .shot-overlay[hidden], .product-shot .shot-like[hidden] { display: none; }
+/* The overlay's like. The red heart sits exactly on the SVG's white one
+   (its screen px 1178,1648 100x90, mapped onto the 1080 card) and pops in
+   when liked; the hit area is a little bigger than the heart. A double tap
+   drops a big heart where it landed, tilted, that rises and fades. */
+.shot-like { position: absolute; inset: 0; opacity: 0; pointer-events: none; }
+.shot-like-heart {
+  position: absolute; left: 65.497%; top: 56.398%; width: 2.992%; height: 2.693%;
+  fill: #fe2c55; overflow: visible;
+  transform: scale(0); opacity: 0;
+  transition: transform 0.18s var(--ease), opacity 0.18s var(--ease);
+}
+.shot-like.is-liked .shot-like-heart { opacity: 1; transform: scale(1); animation: likePop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+@keyframes likePop { 0% { transform: scale(0); } 55% { transform: scale(1.3); } 100% { transform: scale(1); } }
+.shot-like-hit {
+  position: absolute; left: 64%; top: 55.2%; width: 6%; height: 6.4%;
+  padding: 0; border: 0; background: none; border-radius: 50%;
+  pointer-events: none;
+}
+.shot-like-burst {
+  position: absolute; width: 8%; aspect-ratio: 100 / 90;
+  pointer-events: none; z-index: 3;
+  animation: likeBurst 0.95s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.shot-like-burst svg { display: block; width: 100%; height: 100%; fill: #fe2c55; filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.3)); }
+@keyframes likeBurst {
+  0%   { transform: translate(-50%, -50%) rotate(var(--tilt)) scale(1.6); opacity: 0; }
+  14%  { transform: translate(-50%, -50%) rotate(var(--tilt)) scale(0.88); opacity: 1; }
+  26%  { transform: translate(-50%, -50%) rotate(var(--tilt)) scale(1); opacity: 1; }
+  62%  { transform: translate(-50%, -50%) rotate(var(--tilt)) scale(1); opacity: 1; }
+  100% { transform: translate(-50%, -150%) rotate(var(--tilt)) scale(1.5); opacity: 0; }
+}
 /* A shot that builds itself on load (plugin-page.js, shots[0].build): the
    still waits invisibly underneath, keeping the box; the kit sits inside its
    1px border, base first, then each piece rising into place in turn. */

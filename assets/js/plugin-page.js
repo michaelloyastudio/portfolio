@@ -41,14 +41,21 @@
     var overlay = function (s) {
       var o = $('pluginShotOverlay');
       o.hidden = !s.overlay;
+      $('pluginShotLike').hidden = !s.overlay;
       if (s.overlay) o.src = s.overlay;
       o.parentNode.classList.toggle('has-overlay', !!s.overlay);
       o.parentNode.classList.remove('show-overlay');
     };
     var noHover = window.matchMedia('(hover: none)');
+    // the overlay's like heart, in its screen px (backstage-social.svg)
+    var HEART = 'M1228 1738c-41-30-50-43-50-61 0-17 13-29 27-29 10 0 19 6 23 14 4-8 13-14 23-14 14 0 27 12 27 29 0 18-9 31-50 61z';
     shot.innerHTML =
       '<div class="product-shot-main">' + media(shots[0]) +
       '<img id="pluginShotOverlay" class="shot-overlay" alt="" aria-hidden="true" hidden>' +
+      // the overlay's like: a red heart over its white one, plus a hit area to toggle it
+      '<div id="pluginShotLike" class="shot-like" hidden>' +
+        '<svg class="shot-like-heart" viewBox="1178 1648 100 90" aria-hidden="true"><path d="' + HEART + '"/></svg>' +
+        '<button class="shot-like-hit" aria-label="Like" aria-pressed="false"></button></div>' +
       // the same "New update" chip as the Tools tile, until its date
       (p.updateBadge && new Date() < new Date(p.updateBadge.until)
         ? '<div class="tile-badges"><span class="tile-badge tile-badge--new"><svg class="tile-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.8l3.1 6.6 7.2.9-5.3 5 1.4 7.1L12 17.9l-6.4 3.5L7 14.3l-5.3-5 7.2-.9z"/></svg>' + p.updateBadge.text + '</span></div>'
@@ -95,10 +102,45 @@
       shot.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('.product-thumb')) done(); }, true);
     }
 
+    /* Like it the way the app does: the heart toggles, a double tap (double
+       click) anywhere likes and drops a big heart where you tapped. On touch
+       a lone tap still shows / hides the overlay; hiding waits out the
+       double-tap window so a double tap never blinks it. */
+    var like = function (on) {
+      var l = $('pluginShotLike');
+      l.classList.toggle('is-liked', on);
+      l.querySelector('.shot-like-hit').setAttribute('aria-pressed', on);
+    };
+    var burst = function (m, e) {
+      var r = m.getBoundingClientRect(), h = document.createElement('div');
+      h.className = 'shot-like-burst';
+      h.style.left = (e.clientX - r.left) + 'px';
+      h.style.top = (e.clientY - r.top) + 'px';
+      h.style.setProperty('--tilt', (Math.random() * 40 - 20).toFixed(1) + 'deg');
+      h.innerHTML = '<svg viewBox="1178 1648 100 90" aria-hidden="true"><path d="' + HEART + '"/></svg>';
+      m.appendChild(h);
+      h.addEventListener('animationend', function () { h.remove(); });
+    };
+    var lastTap = null, hiding = 0;
     shot.addEventListener('click', function (e) {
       var m = e.target.closest && e.target.closest('.product-shot-main');
-      // a click on desktop would pin it on after the mouse leaves: touch only
-      if (m && !$('pluginShotOverlay').hidden) { if (noHover.matches) m.classList.toggle('show-overlay'); return; }
+      if (m && !$('pluginShotOverlay').hidden) {
+        if (e.target.closest('.shot-like-hit')) { like(!$('pluginShotLike').classList.contains('is-liked')); lastTap = null; return; }
+        var t = { at: e.timeStamp, x: e.clientX, y: e.clientY };
+        if (lastTap && t.at - lastTap.at < 320 && Math.abs(t.x - lastTap.x) < 40 && Math.abs(t.y - lastTap.y) < 40) {
+          clearTimeout(hiding);
+          if (noHover.matches) m.classList.add('show-overlay');
+          like(true); burst(m, e); lastTap = t;
+          return;
+        }
+        lastTap = t;
+        // a click on desktop would pin it on after the mouse leaves: touch only
+        if (noHover.matches) {
+          if (!m.classList.contains('show-overlay')) m.classList.add('show-overlay');
+          else hiding = setTimeout(function () { m.classList.remove('show-overlay'); }, 320);
+        }
+        return;
+      }
       var b = e.target.closest && e.target.closest('.product-thumb');
       if (!b) return;
       var s = shots[+b.getAttribute('data-n')], main = $('pluginShotMain');

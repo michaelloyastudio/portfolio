@@ -179,7 +179,7 @@ const plugins = [
     ],
     facts: [
       ['Host', 'After Effects 2022 or later'],
-      ['Platform', 'macOS 14 or later, Apple Silicon and Intel'],
+      ['Platform', 'macOS 14+ and Windows 10/11'],
       ['Format', 'Panel (Window › Extensions)'],
       ['Output', '4K MP4, 9:16 or 16:9']
     ],
