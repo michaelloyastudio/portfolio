@@ -65,13 +65,17 @@
      word plus LAND, so read top to bottom the reel is LAND, SPIN, LAND,
      SPIN: the landing word flicks past once halfway, the way it would on
      a real reel, before it comes round again and stops. */
-  var order = SPIN.concat([LAND], SPIN);
+  /* One more LAND past the far end. The load-in spin starts on the word
+     before it and never shows it; a click respin jumps there from 0, which
+     reads as no jump at all because both say the same thing. */
+  var order = SPIN.concat([LAND], SPIN, [LAND]);
   var html = word(LAND);
   for (var i = 0; i < order.length; i++) html += word(order[i]);
   reel.innerHTML = html;
 
   var words = reel.querySelectorAll('.slot-word');
-  var last = words.length - 1;
+  var top = words.length - 1;       // the extra LAND, where a respin starts
+  var last = top - 1;               // where the load-in spin starts
 
   function settle() {
     if (!work) return;
@@ -108,7 +112,15 @@
        read as they pass and easing out into the stop. The work floats in
        only once it has landed. */
     var SPIN_MS = 2150;
+    var slot = document.getElementById('slot');
+    /* Feathered edges for as long as the reel visibly moves (see .slot in
+       site.css); they ease off at the same 80% mark the work comes in. */
+    function feather() {
+      slot.classList.add('is-spinning');
+      setTimeout(function () { slot.classList.remove('is-spinning'); }, Math.round(SPIN_MS * 0.8));
+    }
     requestAnimationFrame(function () {
+      feather();
       reel.style.transition = 'transform ' + SPIN_MS + 'ms cubic-bezier(0.22, 0.45, 0.25, 1)';
       reel.style.transform = at(0);
     });
@@ -117,6 +129,58 @@
        eye the reel has stopped well before transitionend. Bring the work
        in at that moment instead of a second later. */
     setTimeout(settle, Math.round(SPIN_MS * 0.8));
+
+    /* Click the reel to pull the lever again. A click mid-spin is ignored
+       rather than restarting it, so it always lands cleanly. */
+    var spinning = true;
+    setTimeout(function () { spinning = false; }, SPIN_MS);
+    function respin() {
+      if (spinning) return;
+      spinning = true;
+      reel.style.transition = 'none';
+      reel.style.transform = at(top);
+      void reel.offsetHeight;
+      reel.style.transition = 'transform ' + SPIN_MS + 'ms cubic-bezier(0.22, 0.45, 0.25, 1)';
+      reel.style.transform = at(0);
+      feather();
+      setTimeout(function () { spinning = false; }, SPIN_MS);
+    }
+    /* The lever is the word itself, not the line: the window runs the full
+       width of the copy (as wide as its longest word), so clicks and the
+       hover cursor to the right of "motion design." pulled it too. A hit
+       box sized to the landing word's ink, in em so it scales with the
+       type, measured again once the web font is in. */
+    var hit = document.createElement('span');
+    hit.className = 'slot-hit';
+    hit.setAttribute('role', 'button');
+    hit.setAttribute('tabindex', '0');
+    hit.setAttribute('aria-label', 'Spin again');
+    slot.appendChild(hit);
+    var sizeHit = function () {
+      var r = document.createRange();
+      r.selectNodeContents(words[0].querySelector('.slot-ink'));
+      var b = r.getBoundingClientRect(), box = slot.getBoundingClientRect();
+      var em = parseFloat(getComputedStyle(slot).fontSize) || 16;
+      if (!b.width) return;
+      // a little slack round the ink, so the last letter and the period count
+      hit.style.left = ((b.left - box.left) / em - 0.08).toFixed(3) + 'em';
+      hit.style.width = (b.width / em + 0.16).toFixed(3) + 'em';
+    };
+    /* Warbler comes from Adobe's kit after fonts.ready has already settled
+       on the fallback, which is narrower: measured then, the box stopped
+       short of the "n." So again whenever a font finishes loading, and as
+       the pointer comes onto the line, before it can reach the word. */
+    sizeHit();
+    if (document.fonts) {
+      if (document.fonts.ready) document.fonts.ready.then(sizeHit);
+      if (document.fonts.addEventListener) document.fonts.addEventListener('loadingdone', sizeHit);
+    }
+    slot.addEventListener('pointerenter', sizeHit);
+    window.addEventListener('resize', sizeHit);
+    hit.addEventListener('click', respin);
+    hit.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); respin(); }
+    });
   }
 
 

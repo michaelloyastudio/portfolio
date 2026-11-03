@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Work &amp; Tools — Michael Loya Studio</title>
 <meta name="description" content="Selected design, motion, and video work by Michael Loya.">
-<link rel="icon" type="image/svg+xml" href="favicon.svg?v=276">
+<link rel="icon" type="image/svg+xml" href="favicon.svg?v=349">
 
 <link rel="canonical" href="https://michaelloya.studio/all">
 
@@ -18,7 +18,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="assets/css/site.css?v=276">
+<link rel="stylesheet" href="assets/css/site.css?v=349">
 <style>
   /* First-paint guard. Applies before anything else resolves, so the page
      never flashes raw content before the load-in animations start.
@@ -32,6 +32,17 @@
     body > *:not(.nav):not(.menu):not([data-in]) { opacity: 1; animation: none; }
   }
 </style>
+<script>
+  /* Arriving on /all#tools: the site's smooth scrolling would glide down
+     through Work. Off until the page has loaded, so the browser lands
+     there in one jump and the first thing that moves is the load-in. */
+  if (location.hash) {
+    document.documentElement.style.scrollBehavior = 'auto';
+    addEventListener('load', function () {
+      setTimeout(function () { document.documentElement.style.scrollBehavior = ''; }, 0);
+    });
+  }
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300..700;1,300..700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -48,8 +59,8 @@
 <nav class="menu" id="menu">
   <div class="menu-links">
     <a href="/">Studio</a>
-    <a href="/work" aria-current="page">Work</a>
-    <a href="/tools">Tools</a>
+    <a href="/all" aria-current="page">Work</a>
+    <a href="/all#tools">Tools</a>
     <a href="/about">About</a>
   </div>
   <div class="menu-foot">
@@ -60,17 +71,21 @@
   </div>
 </nav>
 
-<header class="page-head">
-  <h1>Work</h1>
-</header>
+<section class="all-section" id="work" data-in>
+  <header class="page-head">
+    <h1>Work</h1>
+  </header>
 
-<div class="work-grid" id="workGrid"></div>
+  <div class="work-grid" id="workGrid"></div>
+</section>
 
-<header class="page-head page-head--section">
-  <h2>Tools</h2>
-</header>
+<section class="all-section tools-section" id="tools" data-in>
+  <header class="page-head page-head--section">
+    <h2>Tools</h2>
+  </header>
 
-<div class="work-grid plugin-grid" id="pluginGrid"></div>
+  <div class="work-grid plugin-grid" id="pluginGrid"></div>
+</section>
 
 <footer class="site-foot">
   <span>© <span id="yr"></span> Michael Loya Studio</span>
@@ -82,9 +97,9 @@
   </div>
 </footer>
 
-<script src="assets/js/projects.js?v=276"></script>
-<script src="assets/js/plugins.js?v=276"></script>
-<script src="assets/js/site.js?v=276"></script>
+<script src="assets/js/projects.js?v=349"></script>
+<script src="assets/js/plugins.js?v=349"></script>
+<script src="assets/js/site.js?v=349"></script>
 <!-- GoatCounter: page views, no cookies. Skips itself on localhost. -->
 <script data-goatcounter="https://michaelloya.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>

@@ -21,7 +21,7 @@
 const projects = [
   {
     slug: "where-it-hurts",
-    title: "where it hurts.",
+    title: "Where It Hurts",
     category: "Music Video",
     tools: "Photoshop, After Effects, Magnific, Higgsfield",
     year: "2026",
@@ -200,7 +200,7 @@ const projects = [
     /* ORDER IS DELIBERATE — most important first, least last. Mike's
        ranking, and where a new piece goes is decided by where he places it
        in this list, not by when it was made:
-         YOU! (the McDonald's video), Control Me (261016_ControlMe, Wii-menu CRT piece), Surf Curse Disco (260927_Disco), felly, fuji, random element, Z poster (sabt), Winged Victory, Artifaxing tee (261018_ArtifaxingShirt), jumpscare,
+         YOU! (the McDonald's video), Control Me (261016_ControlMe, Wii-menu CRT piece), Better Off Alone (261023_BetterOffAlone, Kaiven commission, FFXV pixel CRT piece), Surf Curse Disco (260927_Disco), felly, fuji, random element, Z poster (sabt), Winged Victory, Artifaxing tee (261018_ArtifaxingShirt), jumpscare,
          logic, django, sketch (smiski), homelander, the other videos,
          basketball video (web story), steph curry, final four,
        The basketball video is 9:16. Placed right after homelander it shared
@@ -208,7 +208,10 @@ const projects = [
        two loops break into a row of their own and it lands in the tall row
        with steph curry, at twice the size. Same tier, one step later, and
        that step is what buys the size.
-         freshmen, sweezy, then the rest.
+         freshmen, then the rest. (Exotic for Sweezy and the cartoon self
+         portrait were taken off Nov 3 '26; their files are still in the folder.)
+       The top row is YOU! and Control Me only (Mike: three videos up top was
+       too many); data-row-end on Control Me closes the row there.
        "Tyler the Creator" is mm-print.jpg, the Artist or Rapper magazine
        spread. Mike wants it left down in the rest, next to the characters
        sketchbook, rather than ranked up with steph curry.
@@ -217,7 +220,8 @@ const projects = [
        reintroduce ragged edges between the pieces. */
     work: `<div class="img-grid-3">
 <div><video src="projects/miscellaneous/you-mcdonalds.mp4" autoplay loop muted playsinline width="1440" height="1080"></video></div>
-<div><video src="projects/miscellaneous/control-me.mp4" autoplay loop muted playsinline width="1440" height="1080"></video></div>
+<div data-row-end><video src="projects/miscellaneous/control-me.mp4" autoplay loop muted playsinline width="1440" height="1080"></video></div>
+<div><video src="projects/miscellaneous/better-off-alone.mp4" autoplay loop muted playsinline width="1440" height="1080"></video></div>
 <div><video src="projects/miscellaneous/surf-curse-disco.mp4" autoplay loop muted playsinline width="1280" height="720"></video></div>
 <div><img src="projects/miscellaneous/felly-wildfire.jpg" alt="Wildfire, an album by Felly" loading="lazy" width="1650" height="2550"></div>
 <div><img src="projects/miscellaneous/fuji.jpg" alt="Fuji poster" loading="lazy" width="1800" height="2700"></div>
@@ -236,8 +240,6 @@ const projects = [
 <div><img src="projects/miscellaneous/scene-3.png" alt="Steph Curry poster" loading="lazy" width="1292" height="1762"></div>
 <div><img src="projects/miscellaneous/volleyball-final-four.jpg" alt="2024 Volleyball Final Four" loading="lazy" width="1200" height="1600"></div>
 <div><img src="projects/miscellaneous/freshmen.jpg" alt="Mixtape Magazine 2023 Freshman" loading="lazy" width="1600" height="1600"></div>
-<div><img src="projects/miscellaneous/exotic-sweezy.jpg" alt="Exotic, an album by Sweezy" loading="lazy" width="1800" height="1800"></div>
-<div><img src="projects/miscellaneous/cartoon.jpg" alt="Cartoon illustration" loading="lazy" width="1002" height="1986"></div>
 <div><img src="projects/miscellaneous/mm-print.jpg" alt="Mixtape Magazine, Artist or Rapper" loading="lazy" width="1976" height="1525"></div>
 <div><img src="projects/miscellaneous/characters-sketchbook.jpeg" alt="Character sketchbook mockup" loading="lazy" width="2272" height="1888"></div>
 </div>`

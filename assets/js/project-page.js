@@ -400,7 +400,8 @@
         // three portrait tiles are still short of the target, so without it
         // they'd keep collecting neighbours and end up small. Breaking at the
         // column count lets a row of verticals fill the width and stand tall.
-        if ((!exact && h <= target) || row.length >= perRow) {
+        // data-row-end on a tile closes its row early (Misc's top two).
+        if ((!exact && h <= target) || row.length >= perRow || t.hasAttribute('data-row-end')) {
           rows.push(row); row = []; sum = 0;
         }
       });
@@ -567,6 +568,15 @@
     lbNext = lb.querySelector('.side-arrow--next');
     // the controls keep their clicks to themselves (a click anywhere else closes)
     lbClose.addEventListener('click', function (e) { e.stopPropagation(); closeLb(); });
+    /* The X you see is the page's own burger, morphed (body.lb-open), so it
+       animates in and back out like the menu's. While a piece is open a
+       click on it closes the piece instead of opening the menu. */
+    var burger = document.getElementById('burger');
+    if (burger) burger.addEventListener('click', function (e) {
+      if (!lbOpen) return;
+      e.stopImmediatePropagation();
+      closeLb();
+    }, true);
     lbPrev.addEventListener('click', function (e) { e.stopPropagation(); showLb(lbIdx - 1); });
     lbNext.addEventListener('click', function (e) { e.stopPropagation(); showLb(lbIdx + 1); });
     // anywhere that isn't a control closes it, the piece itself included
@@ -626,12 +636,17 @@
     lbOpen = true;
     showLb(n);
     lb.classList.add('is-open');
+    document.body.classList.add('lb-open');   // the burger turns into the X (site.css)
+    // the piece lands under the pointer: keep the glass cursor on it
+    if (window.cursorRecheck) setTimeout(window.cursorRecheck, 60);
     lb.focus({ preventScroll: true });   // the dialog, not the X, so no ring shows on a tap
   }
   function closeLb(now) {
     if (!lbOpen) return;
     lbOpen = false;
     lb.classList.remove('is-open');
+    document.body.classList.remove('lb-open');  // ...and back
+    if (window.cursorRecheck) setTimeout(window.cursorRecheck, 60);
     document.documentElement.classList.remove('locked');
     if (now) dropMedia(true); else setTimeout(function () { if (!lbOpen) dropMedia(true); }, 360);
     lbResume.forEach(function (v) { if (v.isConnected) { var q = v.play(); if (q && q.catch) q.catch(function () {}); } });

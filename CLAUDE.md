@@ -83,7 +83,7 @@ treatment for all of them, decided against alternatives:
 
 - **Keep the macOS title bar.** It is what makes the image read as a real app
   rather than a render.
-- **Light ground (#f3f3f3).** These UIs are dark; on a dark card the window
+- **Light ground (Parchment #E8E0D4, was #f3f3f3 grey until Nov 3 '26).** These UIs are dark; on a dark card the window
   dissolves into the page. White is the loudest thing on a black site, which
   is what a shop tile wants.
 - **Square.** Plugin tiles are `aspect-ratio: 1/1`, unlike the 16:9 work grid.

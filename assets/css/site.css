@@ -100,6 +100,15 @@
 /* scrollbar-gutter reserves the scrollbar's width at all times, so the
    page never shifts sideways when a scrollbar appears on load or is
    removed by overflow:hidden when the menu opens. */
+/* Nothing on the site highlights: no text selection from a click, a drag
+   or a double-click, and no grey tap flash on phones, so clicking around
+   to explore never paints the page blue. Form fields keep it. */
+html {
+  -webkit-user-select: none;
+          user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+input, textarea, [contenteditable] { -webkit-user-select: text; user-select: text; }
 html {
   scroll-behavior: smooth;
   scrollbar-gutter: stable;
@@ -142,6 +151,8 @@ h1, h2, h3,
 html.locked { overflow: hidden; }
 
 img, video { display: block; max-width: 100%; }
+/* nothing on the site drags out as a file (site.js stops the rest) */
+img, video { -webkit-user-drag: none; }
 
 a { color: inherit; text-decoration: none; }
 ::selection { background: var(--accent); color: var(--black); }
@@ -241,10 +252,12 @@ body:has(.hero--studio) .burger span:nth-child(3) { animation-delay: 0.62s; }
    survives --logo-h changing. */
 .burger span:nth-child(1),
 .burger span:nth-child(3) { transform-origin: right center; }
-body.menu-open .burger span:nth-child(1) {
+body.menu-open .burger span:nth-child(1),
+body.lb-open .burger span:nth-child(1) {
   transform: translate(calc(var(--logo-h) * -0.8 * 0.1464), calc(var(--bar-h) + var(--bar-gap) - var(--logo-h) * 0.8 * 0.3536)) rotate(-45deg);
 }
-body.menu-open .burger span:nth-child(3) {
+body.menu-open .burger span:nth-child(3),
+body.lb-open .burger span:nth-child(3) {
   transform: translate(calc(var(--logo-h) * -0.8 * 0.1464), calc((var(--bar-h) + var(--bar-gap) - var(--logo-h) * 0.8 * 0.3536) * -1)) rotate(45deg);
 }
 /* The middle bar trims out instead of fading, from its start toward its
@@ -256,7 +269,17 @@ body.menu-open .burger span:nth-child(3) {
   clip-path: inset(0 0 0 0 round 999px);
   transition: transform 0.4s var(--ease), opacity 0.25s ease, clip-path 0.2s cubic-bezier(0.22, 1, 0.36, 1);
 }
-body.menu-open .burger span:nth-child(2) { clip-path: inset(0 0 0 100% round 999px); }
+body.menu-open .burger span:nth-child(2),
+body.lb-open .burger span:nth-child(2) { clip-path: inset(0 0 0 100% round 999px); }
+/* Leaving for another page from the open menu (site.js menu-leaving): the
+   X turns back into the burger while the menu stays up and the page goes. */
+body.menu-open.menu-leaving .burger span:nth-child(n) {
+  transform: none;
+  clip-path: inset(0 0 0 0 round 999px);
+}
+/* An open lightbox (95) sits over the nav (90); lift the nav above it so
+   the burger, morphing into the X, is the lightbox's close button. */
+body.lb-open .nav { z-index: 96; }
 
 /* Menu overlay */
 .menu {
@@ -782,6 +805,32 @@ button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-lin
      up to meet it halfway (the phone gets the full 1.18, below). */
   font-size: 1.1em;
 }
+/* the click target: the landing word only (sized in hero.js) */
+.slot { position: relative; }
+.slot-hit {
+  position: absolute;
+  top: 0; height: 100%;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.slot-hit:focus-visible { outline: 1px solid var(--accent); outline-offset: -1px; }
+/* Feathered edges while the reel moves: words fade in at the top and out
+   at the bottom instead of being cut by a hard line. --feather eases back
+   to 0 as it lands so the resting word sits unmasked (the window is only
+   a hair taller than the ink). Registered so it can transition. */
+@property --feather {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 0%;
+}
+.slot {
+  --feather: 0%;
+  -webkit-mask-image: linear-gradient(transparent, #000 var(--feather), #000 calc(100% - var(--feather)), transparent);
+          mask-image: linear-gradient(transparent, #000 var(--feather), #000 calc(100% - var(--feather)), transparent);
+  transition: --feather 0.45s ease-out;
+}
+.slot.is-spinning { --feather: 14%; transition-duration: 0.15s; }
 .slot-reel {
   display: block;
   will-change: transform;
@@ -1053,6 +1102,12 @@ button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-lin
    page title's face and size, but the grid above already carries the gap,
    so no seven rems of top padding. */
 .page-head--section { padding-top: 0; }
+/* The menu's Tools link lands here (/all#tools): stop with the title
+   where Work's sits at the top of the page, clear of the fixed header. */
+#tools { scroll-margin-top: var(--head-top); }
+/* At least a window tall, or a short Tools grid leaves too little page
+   below it to scroll the title up there and it stops mid-screen. */
+.tools-section { min-height: calc(100svh - var(--head-top)); }
 .page-head--section h2 {
   font-size: clamp(2.6rem, 8vw, 5.4rem);
   font-weight: 700;
@@ -1202,6 +1257,13 @@ button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-lin
   transition: transform 0.8s var(--ease);
 }
 .tile:hover .tile-media img { transform: scale(1.045); }
+/* Tools covers sit on the card's own grey, so one shrunk by coverScale
+   (--fit) shows no edge; the hover zoom multiplies onto it */
+.plugin-grid .tile-media { background: var(--parchment); }
+.plugin-grid .tile-media img,
+.plugin-grid .thumb-video { transform: scale(var(--fit, 1)); }
+.plugin-grid .tile:hover .tile-media img,
+.plugin-grid .tile:hover .thumb-video { transform: scale(calc(var(--fit, 1) * 1.045)); }
 
 /* Same treatment as the Studio bands: category over the title on the left,
    an arrow on the right, and the hover is the title and the arrow, not a
@@ -1236,6 +1298,22 @@ button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-lin
   transition: color 0.3s ease, transform 0.4s var(--ease);
 }
 .tile:hover .tile-arrow { color: var(--accent); transform: translateX(7px); }
+/* A Tools tile: the price on the grey line, the full name a size down
+   from a project's title so "… for After Effects" stays on one line. */
+.plugin-grid .tile-text { flex: 1; min-width: 0; }
+.plugin-grid .tile-cat { white-space: nowrap; }
+.plugin-grid .tile { container-type: inline-size; }
+.plugin-grid .tile-title {
+  /* sized off the tile's own width (cqi), so the longest name always fits */
+  font-size: clamp(0.8rem, 6.6cqi, 1.25rem);
+  white-space: nowrap;
+}
+@media (max-width: 640px) {
+  /* two tiles across a phone: too narrow for one line at a readable size */
+  .plugin-grid .tile-title { font-size: 0.95rem; white-space: normal; }
+}
+
+
 /* The tile and band arrows are the site's chevron (site.js CHEV), sized
    off the arrow's font size so the phone overrides still scale it, with a
    stroke in the same proportion to its height as the side arrows'. */
@@ -1274,13 +1352,15 @@ button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-lin
    a line of description under the title. */
 /* Three across, not two: a tool tile is a product card, not a poster, and
    the grid should hold three before anything has to wrap. */
-.plugin-grid { grid-template-columns: repeat(3, 1fr); }
+.plugin-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.plugin-grid--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 /* Square, unlike the work grid. Plugin shots are app windows, which are
    near-square — at 16/9 about a third of the tile was empty padding. */
-.plugin-grid .tile-media { aspect-ratio: 1 / 1; background: #f3f3f3; }
+.plugin-grid .tile-media { aspect-ratio: 1 / 1; background: var(--parchment); }
 .tile-badges {
   position: absolute;
   top: 0.85rem; left: 0.85rem;
+  z-index: 2;                 /* over a tile's hover video */
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
@@ -1466,7 +1546,71 @@ button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-lin
 }
 
 .product-shot-main { position: relative; }
-.product-shot img {
+/* a shot's overlay (a social app's UI over the 9:16 video): fades in on hover, or on tap */
+.product-shot .shot-overlay {
+  position: absolute; inset: 0;
+  background: none; border-color: transparent;
+  opacity: 0; transition: opacity 0.25s var(--ease);
+  pointer-events: none;
+}
+@media (hover: hover) { .product-shot-main:hover .shot-overlay { opacity: 1; } }
+.product-shot-main.show-overlay .shot-overlay { opacity: 1; }
+/* The video sits centred on its card; the phone it shows up in is taller
+   than the video (the app's bottom bar), so on hover the video rises the
+   43 px (of 1080) that centres the phone. The phone rides up WITH it, from
+   43 px low, as one piece on one curve: when only the video moved, the
+   picture slid about inside a half-faded phone and read as jitter. Both are
+   their own composited layers (translate3d, will-change) so the move stays
+   on whole device pixels. Overlay geometry: projects/plugins/backstage-
+   social.svg. The video carries no border or dark backdrop here:
+   transparent, its 1px border showed --panel as a black outline. */
+.product-shot-main.has-overlay {
+  --rise: 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  overflow: hidden;
+  background: var(--parchment);
+  border: 1px solid var(--line);
+}
+.product-shot-main.has-overlay video,
+.product-shot-main.has-overlay .shot-overlay {
+  border: 0;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  transition: transform var(--rise), opacity var(--rise);
+}
+.product-shot-main.has-overlay video { background: var(--parchment); transform: translate3d(0, 0, 0); }
+.product-shot-main.has-overlay .shot-overlay { transform: translate3d(0, 3.981%, 0); }
+@media (hover: hover) {
+  .product-shot-main.has-overlay:hover video { transform: translate3d(0, -3.981%, 0); }
+  .product-shot-main.has-overlay:hover .shot-overlay { transform: translate3d(0, 0, 0); }
+}
+.product-shot-main.has-overlay.show-overlay video { transform: translate3d(0, -3.981%, 0); }
+.product-shot-main.has-overlay.show-overlay .shot-overlay { transform: translate3d(0, 0, 0); }
+.product-shot .shot-overlay[hidden] { display: none; }
+/* A shot that builds itself on load (plugin-page.js, shots[0].build): the
+   still waits invisibly underneath, keeping the box; the kit sits inside its
+   1px border, base first, then each piece rising into place in turn. */
+#pluginShotMain.is-building { opacity: 0; }
+.shot-build { position: absolute; inset: 1px; pointer-events: none; }
+.product-shot .shot-build img {
+  position: absolute;
+  display: block;
+  border: 0;
+  background: none;
+  aspect-ratio: auto;
+  object-fit: fill;
+}
+.product-shot .shot-build .shot-build-base { inset: 0; width: 100%; height: 100%; }
+.product-shot .shot-build .shot-build-piece { height: auto; opacity: 0; }
+.shot-build.go .shot-build-piece {
+  animation: shotPiece 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(0.45s + var(--k) * 0.09s);   /* once the base has resolved */
+}
+@keyframes shotPiece {
+  from { opacity: 0; transform: translateY(12px) scale(0.96); filter: blur(4px); }
+  to   { opacity: 1; transform: none; filter: none; }
+}
+.product-shot img, .product-shot video {
+  display: block;
   width: 100%;
   aspect-ratio: 1 / 1;
   object-fit: cover;
@@ -1521,6 +1665,13 @@ button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-lin
   font-weight: 700;
   letter-spacing: -0.02em;
   margin: 1.6rem 0 0;
+}
+/* a sale: the regular price struck through, quieter, in front of the real one */
+.price-was {
+  color: var(--muted);
+  font-weight: 400;
+  text-decoration-thickness: 0.08em;
+  margin-right: 0.25em;
 }
 .product-cta { margin-top: 1.25rem; }
 /* Full width and solid red. Nothing else on the page is allowed to be
@@ -1590,7 +1741,29 @@ button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-lin
   aspect-ratio: 16 / 9;
   background: var(--panel);
 }
+/* A plugin's own silent loop: full width, no frame, like a project clip. */
+/* Wider than the 780px text column: it breaks out to the page width. */
+.plugin-loop { position: relative; left: 50%; transform: translateX(-50%); width: min(var(--maxw) - 2 * var(--pad), 100vw - 2 * var(--pad)); }
+.plugin-loop video { display: block; width: 100%; aspect-ratio: 16 / 9; background: var(--panel); }
 .video-embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
+/* the cover over a YouTube video until it's clicked (plugin-page.js) */
+.video-facade {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  padding: 0; border: 0;
+  background: var(--panel) center / cover no-repeat;
+  cursor: pointer;
+}
+/* YouTube's own embed button, so it reads as the video it is: the rounded
+   lozenge, dark until hovered, then YouTube red */
+.video-play {
+  position: absolute; left: 50%; top: 50%;
+  width: 68px; height: 48px;
+  margin: -24px 0 0 -34px;
+}
+.video-play svg { display: block; width: 100%; height: 100%; }
+.video-play .yt-bg { fill: #212121; fill-opacity: 0.8; transition: fill 0.1s cubic-bezier(0, 0, 0.2, 1), fill-opacity 0.1s cubic-bezier(0, 0, 0.2, 1); }
+.video-facade:hover .video-play .yt-bg { fill: #f00; fill-opacity: 1; }
 .product-stats { margin-top: clamp(1.75rem, 4vh, 2.5rem); text-align: center; }
 /* centred: the figures sit side by side in the middle */
 .product-stats-row {
@@ -1917,12 +2090,24 @@ main.about + .site-foot { padding-top: 1.5rem; }
 .about-detail .about-block:first-child { margin-top: 0; }
 .resume-row a { display: inline-block; }
 
-/* Heading home (site.js): the header fades out quickly before the Studio
+/* Heading home (site.js): the header trims off (below) before the Studio
    page loads and draws it in again. On the Studio page the mark is hidden
    from the very first paint (the draw-on script un-hides it), so it can't
    flash in full before it draws. */
 .nav { transition: opacity 0.16s ease-out; }
-body.nav-leaving .nav { opacity: 0; }
+/* Going back to the Studio page, the logo and burger trim off rather than
+   fade: the same move as their draw-on there, run out. Each stroke is
+   eaten from its start toward its end, like Trim Paths' start running up,
+   and the Studio page then draws them back on. The burger bars go in turn,
+   top to bottom; out of the open menu the X trims off as it stands. */
+/* (the logo's own trim is drawn in site.js, trimLogoOut: a real trim keeps its round cap) */
+body.nav-leaving.page-leaving .burger span:nth-child(n) {
+  clip-path: inset(0 0 0 100% round 999px);
+  transition: transform 0.4s var(--ease), clip-path 0.26s cubic-bezier(0.55, 0, 0.45, 1);
+}
+body.nav-leaving.page-leaving .burger span:nth-child(2) { transition-delay: 0s, 0.05s; }
+body.nav-leaving.page-leaving .burger span:nth-child(3) { transition-delay: 0s, 0.1s; }
+
 @media (prefers-reduced-motion: no-preference) {
   body:has(.hero--studio) .nav-logo path { visibility: hidden; }
 }
@@ -1953,9 +2138,30 @@ main[data-in] > .about-head { animation: projIn 0.4s var(--ease) 0s both; }
 .work-grid[data-in] > .tile { animation: projIn 0.55s var(--ease) both; animation-delay: calc(0.15s + var(--i, 0) * 0.06s); }
 main[data-in] .about-figure { animation: projIn 0.5s var(--ease) 0.15s both; }
 main[data-in] .about-copy   { animation: projIn 0.55s var(--ease) 0.28s both; }
-main[data-in] .product-media { animation: projIn 0.5s var(--ease) 0s both; }
-main[data-in] .product-buy   { animation: projIn 0.5s var(--ease) 0.12s both; }
-main[data-in] .product-body  { animation: projIn 0.55s var(--ease) 0.3s both; }
+/* a product page builds like a project: the shot first (and, with a build
+   kit, its pieces), then the buy column beside it, then everything below */
+/* the shot arrives like a project hero (heroBuild: out of a soft blur,
+   growing into place); its thumbnails follow */
+main[data-in] .product-shot-main { animation: heroBuild 0.7s cubic-bezier(0.33, 1, 0.68, 1) 0.05s both; }
+main[data-in] .product-thumbs    { animation: projIn 0.5s var(--ease) 0.35s both; }
+main[data-in] .product-buy   { animation: projIn 0.5s var(--ease) 0.5s both; }
+main[data-in] .product-body  { animation: projIn 0.55s var(--ease) 0.9s both; }
+main[data-in] .plugin-guide  { animation: projIn 0.55s var(--ease) 1.05s both; }   /* the video, features, changelog */
+main[data-in] .arrow-pager   { animation: projIn 0.5s var(--ease) 1.25s both; }
+/* a project page's arrows, now at its foot, come in after the work */
+.side-arrows { animation: projIn 0.5s var(--ease) 0.9s both; }
+@media (prefers-reduced-motion: reduce) { .side-arrows, main[data-in] .arrow-pager, main[data-in] .plugin-guide { animation: none; } }
+/* /all: every title and tile is held hidden until it comes into view,
+   then plays the same move. site.js adds .in to each piece as it arrives
+   and numbers the ones arriving together (--i), behind a title (--lead). */
+.all-section[data-in] > .page-head,
+.all-section[data-in] .tile { opacity: 0; }
+.all-section[data-in] .in { opacity: 1; }   /* what reduced motion is left with */
+.all-section[data-in] > .page-head.in { animation: projIn 0.4s var(--ease) 0s both; }
+.all-section[data-in] .tile.in {
+  animation: projIn 0.55s var(--ease) both;
+  animation-delay: calc(var(--lead, 0s) + min(var(--i, 0), 7) * 0.06s);
+}
 @media (prefers-reduced-motion: reduce) {
   [data-in], [data-in] * { animation: none !important; }
 }
@@ -1972,14 +2178,15 @@ main[data-in] .product-body  { animation: projIn 0.55s var(--ease) 0.3s both; }
 }
 /* html + body.page-leaving: one notch more specific than each page's
    inline first-paint rule, which would otherwise win on source order */
-html body.page-leaving > *:not(.nav):not(.menu):not(.side-arrows),
-html body.page-leaving.arrows-leaving > .side-arrows { animation: pageOut 0.2s cubic-bezier(0.4, 0, 1, 1) forwards; }
+html body.page-leaving > *:not(.nav):not(.menu):not(.cursor) { animation: pageOut 0.2s cubic-bezier(0.4, 0, 1, 1) forwards; }
 body.page-leaving .menu-links,
 body.page-leaving .menu-foot { opacity: 0; transform: translateY(-10px); transition: opacity 0.2s ease-in, transform 0.2s ease-in; }
 
 /* ══ PROJECT PAGE ══════════════════════════════════════════════
    Hero at the top, then one block of copy, then the work. */
 .project { padding-bottom: clamp(2.5rem, 6vh, 4.5rem); }
+/* the arrow row right after the work carries its own gap */
+main.project:has(+ .side-arrows) { padding-bottom: 0; }
 /* The footer sits a touch closer site-wide; on project pages (after the
    side arrows) and GH MIDI it keeps a bit more air under the work. */
 .side-arrows + .site-foot,
@@ -2209,52 +2416,43 @@ main.product + .site-foot { padding-top: clamp(3rem, 7vh, 4.5rem); }
 }
 .project-pager a:hover { color: var(--accent); }
 
-/* ── prev / next on project pages: red chevrons fixed in the side
-   margins, on the same inset as the logo and burger, drawn with the
-   mark's own stroke (--bar-h) and round caps. The wrapper is the fixed
-   layer (not each arrow) so the page fade, which transforms body's
-   children, can't pull them out of place. Below 900 the margins are too
-   thin, so they drop to a row at the end of the page. ── */
-.side-arrows, .lightbox {
+/* ── prev / next: red chevrons in a row at the foot of the page ──
+   Project pages (.side-arrows, after </main>) and product pages
+   (.arrow-pager, the end of <main>) share one look: the mark's own stroke
+   (--bar-h), round caps, the brand red, previous at the left edge of the
+   content column and next at the right. They used to hang fixed in the side
+   margins on project pages; Mike moved them down to match the Tools pages
+   (Nov 3 '26). The lightbox keeps its own arrows at the sides (below). */
+.side-arrows, .arrow-pager, .lightbox {
   --arrow-w: calc(var(--logo-h) * 0.5);
   --arrow-h: calc(var(--logo-h) * 0.68);
   --arrow-hit: 14px;                       /* extra hit area round the glyph */
-  --arrow-gap: clamp(14px, 1.8vw, 36px);   /* glyph to the hero's edge */
+  --arrow-gap: clamp(14px, 1.8vw, 36px);   /* glyph to the hero's edge (lightbox) */
 }
-.side-arrows {
-  position: fixed;
-  inset: 0;
-  z-index: 80;
-  pointer-events: none;
+.side-arrows, .arrow-pager {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: var(--workw);
+  margin: clamp(1.25rem, 3.5vh, 2.5rem) auto 0;   /* close under the content (was 3-5rem) */
+  padding: 0 var(--pad);
 }
-/* The arrows sit just outside a full-width hero, in the same spot on
-   every project (a narrower hero doesn't pull them in), never further out
-   than the logo and burger. Between projects they're constant, like the
-   header: no fade, no movement. Arriving from anywhere else they come in
-   with the title; leaving for anywhere else they go out with the page
-   (site.js sets arrows-leaving, and arrowsStay for the next project's
-   inline head script). The link box carries extra hit area round the glyph. */
-.side-arrow {
-  position: absolute;
-  top: 50%;
+.side-arrow, .pager-arrow {
   box-sizing: content-box;
   width: var(--arrow-w);
   height: var(--arrow-h);
   padding: var(--arrow-hit);
-  margin-top: calc(var(--arrow-h) / -2 - var(--arrow-hit));
+  margin: 0 calc(var(--arrow-hit) * -1);
   color: var(--accent);
-  pointer-events: auto;
+  transition: transform 0.3s var(--ease);
 }
-/* the edge of a full-width hero: half of what the hero slot leaves of the
-   window, plus the slot's own padding. Pure CSS, so it's in place on the
-   very first paint and identical on every project. */
-.side-arrows, .lightbox { --hero-edge: calc((100% - min(var(--herow), 100%)) / 2 + var(--pad)); }
-.side-arrow--prev { left:  max(calc(var(--frame-x) - var(--arrow-hit)), calc(var(--hero-edge) - var(--arrow-gap) - var(--arrow-w) - var(--arrow-hit))); }
-.side-arrow--next { right: max(calc(var(--frame-x) - var(--arrow-hit)), calc(var(--hero-edge) - var(--arrow-gap) - var(--arrow-w) - var(--arrow-hit))); }
-.side-arrow svg {
+.side-arrow--next, .pager-arrow--next { margin-left: auto; }
+.side-arrows .side-arrow--prev:hover, .pager-arrow--prev:hover { transform: translateX(-4px); }
+.side-arrows .side-arrow--next:hover, .pager-arrow--next:hover { transform: translateX(4px); }
+.side-arrow svg, .pager-arrow svg {
   width: 100%; height: 100%; display: block; overflow: visible;
 }
-.side-arrow path {
+.side-arrow path, .pager-arrow path {
   fill: none;
   stroke: currentColor;
   stroke-width: var(--bar-h);
@@ -2262,23 +2460,21 @@ main.product + .site-foot { padding-top: clamp(3rem, 7vh, 4.5rem); }
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
 }
-.side-arrows { animation: projIn 0.4s var(--ease) 0s both; }
-html.arrows-stay .side-arrows { animation: none; }
-@media (prefers-reduced-motion: reduce) { .side-arrows { animation: none; } }
-@media (max-width: 900px) {
-  .side-arrows {
-    position: static;
-    display: flex;
-    justify-content: space-between;
-    padding: 0 var(--pad);   /* .project already leaves the gap above */
-  }
-  .side-arrows .side-arrow { position: static; margin: 0 calc(var(--arrow-hit) * -1); }
+.pager-arrow[hidden] { display: none; }
+/* the lightbox's arrows: fixed at the sides, just outside a full-width hero */
+.lightbox { --hero-edge: calc((100% - min(var(--herow), 100%)) / 2 + var(--pad)); }
+.lightbox .side-arrow {
+  position: absolute;
+  top: 50%;
+  margin: calc(var(--arrow-h) / -2 - var(--arrow-hit)) 0 0;
 }
+.lightbox .side-arrow--prev { left:  max(calc(var(--frame-x) - var(--arrow-hit)), calc(var(--hero-edge) - var(--arrow-gap) - var(--arrow-w) - var(--arrow-hit))); }
+.lightbox .side-arrow--next { right: max(calc(var(--frame-x) - var(--arrow-hit)), calc(var(--hero-edge) - var(--arrow-gap) - var(--arrow-w) - var(--arrow-hit))); }
 
 /* ══ RESPONSIVE (desktop-first; full mobile pass still to come) ══ */
 @media (max-width: 900px) {
   .work-grid { grid-template-columns: 1fr; }
-  .plugin-grid { grid-template-columns: repeat(2, 1fr); }   /* two across all the way down to a phone */
+  .plugin-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }   /* two across all the way down to a phone */
   .product-top { grid-template-columns: minmax(0, 1fr); gap: 2rem; }
   .product-buy { position: static; }
   .product-specs > div { grid-template-columns: 1fr; gap: 0.2rem; }
@@ -2358,7 +2554,11 @@ html.arrows-stay .side-arrows { animation: none; }
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
 }
-/* the X: same size and spot as the burger */
+/* the X: same size and spot as the burger. Kept for keyboard focus and
+   screen readers but drawn invisible: the X you see is the burger itself,
+   morphed (body.lb-open above), so it animates like the menu's. */
+.lightbox-close { opacity: 0; }
+.lightbox-close:focus-visible { opacity: 1; }
 .lightbox-close {
   top: calc(var(--nav-y) + var(--logo-h) * 0.7 - var(--logo-h) * 0.3 - var(--arrow-hit));
   right: calc(var(--frame-x) + var(--logo-h) * 0.4 - var(--arrow-hit));
@@ -2375,4 +2575,54 @@ html.arrows-stay .side-arrows { animation: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .lightbox, .lightbox-media { transition: none; }
+}
+
+/* ══ CURSOR ══
+   site.js adds .cursor (and html.has-cursor) on mice and trackpads only.
+   A red dot (the brand red: a pointer is an active state) with a soft
+   shadow; over anything clickable (.is-glass) it swells into a disc of
+   Parchment-tinted glass: flat, lightly softening and lifting what's under it, a
+   hairline edge and a glow just inside. Still, no shimmer. */
+html.has-cursor, html.has-cursor * { cursor: none !important; }
+/* !important on its fade: each page's inline first-paint rule (body > *)
+   and the leaving fade both outrank a class, and either one took the dot
+   over, fading it in at 0,0 or snapping it there as a page went. */
+.cursor {
+  position: fixed;
+  left: 0; top: 0;
+  z-index: 2147483647;
+  pointer-events: none;
+  opacity: 0 !important;
+  animation: none !important;
+  transition: opacity 0.2s ease;
+}
+.cursor.is-on { opacity: 1 !important; }
+.cursor i {
+  position: absolute;
+  left: 0; top: 0;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--accent);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 3px 10px rgba(0, 0, 0, 0.28);
+  transition:
+    width 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    height 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.3s ease,
+    box-shadow 0.3s ease,
+    transform 0.15s ease;
+}
+.cursor.is-glass i {
+  width: 34px; height: 34px;
+  background: rgba(232, 224, 212, 0.2);      /* glass tinted Parchment, the brand's pale */
+  -webkit-backdrop-filter: blur(0.6px) saturate(1.25) brightness(1.12);
+          backdrop-filter: blur(0.6px) saturate(1.25) brightness(1.12);
+  box-shadow:
+    inset 0 0 0 1px rgba(232, 224, 212, 0.6),    /* the edge, a hairline */
+    inset 0 0 10px rgba(232, 224, 212, 0.3),     /* a soft glow just inside it */
+    0 4px 12px rgba(0, 0, 0, 0.22);
+}
+.cursor.is-down i { transform: translate(-50%, -50%) scale(0.86); }
+@media (prefers-reduced-motion: reduce) {
+  .cursor i { transition: none; }
 }

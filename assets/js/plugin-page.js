@@ -29,8 +29,26 @@
   var shots = (p.shots && p.shots.length) ? p.shots : [{ src: p.hero, alt: p.name }];
   var shot = $('pluginShot');
   if (shot) {
+    /* A shot is a still ({src}) or a silent loop ({video, src}), where src
+       is the loop's poster and doubles as its thumbnail. */
+    var media = function (s) {
+      return s.video
+        ? '<video id="pluginShotMain" src="' + s.video + '" poster="' + s.src + '" muted autoplay loop playsinline aria-label="' + s.alt + '"></video>'
+        : '<img id="pluginShotMain" src="' + s.src + '" alt="' + s.alt + '">';
+    };
+    // a shot's `overlay` (e.g. a social app's UI over a 9:16 video) fades in on hover, or on
+    // tap where there's no hover
+    var overlay = function (s) {
+      var o = $('pluginShotOverlay');
+      o.hidden = !s.overlay;
+      if (s.overlay) o.src = s.overlay;
+      o.parentNode.classList.toggle('has-overlay', !!s.overlay);
+      o.parentNode.classList.remove('show-overlay');
+    };
+    var noHover = window.matchMedia('(hover: none)');
     shot.innerHTML =
-      '<div class="product-shot-main"><img id="pluginShotMain" src="' + shots[0].src + '" alt="' + shots[0].alt + '">' +
+      '<div class="product-shot-main">' + media(shots[0]) +
+      '<img id="pluginShotOverlay" class="shot-overlay" alt="" aria-hidden="true" hidden>' +
       // the same "New update" chip as the Tools tile, until its date
       (p.updateBadge && new Date() < new Date(p.updateBadge.until)
         ? '<div class="tile-badges"><span class="tile-badge tile-badge--new"><svg class="tile-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.8l3.1 6.6 7.2.9-5.3 5 1.4 7.1L12 17.9l-6.4 3.5L7 14.3l-5.3-5 7.2-.9z"/></svg>' + p.updateBadge.text + '</span></div>'
@@ -38,16 +56,61 @@
       (shots.length > 1
         ? '<div class="product-thumbs">' + shots.map(function (s, n) {
             return '<button class="product-thumb' + (n ? '' : ' is-on') +
-                   '" data-src="' + s.src + '" aria-label="' + s.alt + '">' +
+                   '" data-n="' + n + '" aria-label="' + s.alt + '">' +
                    '<img src="' + s.src + '" alt="" loading="lazy"></button>';
           }).join('') + '</div>'
         : '');
 
-    var main = $('pluginShotMain');
+    overlay(shots[0]);
+
+    /* shots[0].build: the first shot puts itself together on load. Over the
+       still (held invisible, so the box keeps its size) sits the empty
+       panel on its card, then each control drops in after the one before.
+       When the last one lands the build is removed and the still shows, the
+       same pixels. A thumbnail click mid-build just ends it. (A pointer
+       parallax on the pieces was tried and dropped, Nov 3 '26.) */
+    var build = shots[0].build;
+    if (build && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      var still = $('pluginShotMain'), kit = document.createElement('div');
+      kit.className = 'shot-build';
+      kit.innerHTML = '<img class="shot-build-base" src="' + build.base + '" alt="">' +
+        build.layers.map(function (l, i) {
+          return '<img class="shot-build-piece" src="' + l.src + '" alt="" style="left:' + l.x + '%;top:' + l.y + '%;width:' + l.w + '%;--k:' + i + '">';
+        }).join('');
+      still.classList.add('is-building');
+      still.parentNode.insertBefore(kit, still.nextSibling);
+      var pieces = kit.querySelectorAll('img');
+      var done = function () {
+        if (!kit.parentNode) return;
+        still.classList.remove('is-building');
+        kit.remove();
+      };
+      // start only once every piece is decoded, so none pops in late
+      Promise.all([].map.call(pieces, function (im) {
+        return im.decode ? im.decode().catch(function () {}) : Promise.resolve();
+      })).then(function () {
+        kit.classList.add('go');
+        pieces[pieces.length - 1].addEventListener('animationend', function () { setTimeout(done, 60); }, { once: true });
+      });
+      shot.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('.product-thumb')) done(); }, true);
+    }
+
     shot.addEventListener('click', function (e) {
+      var m = e.target.closest && e.target.closest('.product-shot-main');
+      // a click on desktop would pin it on after the mouse leaves: touch only
+      if (m && !$('pluginShotOverlay').hidden) { if (noHover.matches) m.classList.toggle('show-overlay'); return; }
       var b = e.target.closest && e.target.closest('.product-thumb');
       if (!b) return;
-      main.src = b.getAttribute('data-src');
+      var s = shots[+b.getAttribute('data-n')], main = $('pluginShotMain');
+      overlay(s);
+      if (s.video || main.tagName === 'VIDEO') {
+        // swap the element: a loop and a still can't share one tag
+        var tmp = document.createElement('div');
+        tmp.innerHTML = media(s);
+        main.parentNode.replaceChild(tmp.firstChild, main);
+      } else {
+        main.src = s.src; main.alt = s.alt;
+      }
       [].forEach.call(shot.querySelectorAll('.product-thumb'), function (t) {
         t.classList.toggle('is-on', t === b);
       });
@@ -69,10 +132,28 @@
   downloads = downloads.slice().sort(function (a, b) {
     return (b.os === mine ? 1 : 0) - (a.os === mine ? 1 : 0);
   });
-  $('pluginPrice').textContent = downloads.length ? 'Free' : 'Not released yet';
+  /* Paid plugins carry `price`. With a `buy` link that's the one solid
+     button; without one the page shows the price and says it's coming. */
+  $('pluginPrice').textContent = p.price || (downloads.length ? 'Free' : 'Not released yet');
+  // a sale: the regular price struck through in front of it
+  if (p.price && p.was) $('pluginPrice').innerHTML = '<s class="price-was">' + p.was + '</s> ' + p.price;
 
   var dl = $('pluginDownload');
-  if (dl) {
+  if (dl && p.price) {
+    dl.innerHTML = p.buy
+      ? '<div class="product-dl"><a class="btn btn-solid product-btn" href="' + p.buy + '">Buy ' + p.name + '</a>' +
+        '<p class="product-meta">' + [p.version, p.buyNote].filter(Boolean).join(' &nbsp;·&nbsp; ') + '</p></div>'
+      : '<p class="product-meta product-meta--soon">Coming soon</p>';
+    /* Gumroad links open Gumroad's checkout as an overlay on this page (its
+       Modal Overlay widget) instead of leaving the site. The button keeps the
+       site's own style: no `gumroad-button` class, which would restyle it. */
+    if (p.buy && /gumroad\.com\//.test(p.buy) && !document.querySelector('script[src*="gumroad.com/js/gumroad.js"]')) {
+      var gr = document.createElement('script');
+      gr.src = 'https://gumroad.com/js/gumroad.js';
+      gr.async = true;
+      document.body.appendChild(gr);
+    }
+  } else if (dl) {
     if (downloads.length) {
       dl.innerHTML = downloads.map(function (d, n) {
         return '<div class="product-dl">' +
@@ -119,10 +200,38 @@
   /* The Video: the YouTube embed, then the reach numbers under it. Same
      heading style as What's New, so the two read as the page's sections. */
   var videoHtml = '';
-  if (p.video || (p.stats && p.stats.items && p.stats.items.length)) {
-    videoHtml = '<section class="plugin-section plugin-video"><h2 class="changelog-title">The Video</h2>' +
-      (p.video ? '<div class="video-embed"><iframe src="https://www.youtube-nocookie.com/embed/' + p.video.youtube +
-        '" title="' + (p.video.title || p.name) + '" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>' : '') +
+  // the cover's click: the real player in its place, playing (autoplay is
+  // allowed because the click handed it the permission via allow="autoplay")
+  document.addEventListener('click', function (e) {
+    var f = e.target.closest && e.target.closest('.video-facade');
+    if (!f) return;
+    var frame = document.createElement('iframe');
+    frame.src = 'https://www.youtube-nocookie.com/embed/' + f.getAttribute('data-yt') + '?autoplay=1&rel=0';
+    frame.title = f.getAttribute('data-title');
+    frame.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+    frame.referrerPolicy = 'strict-origin-when-cross-origin';
+    frame.allowFullscreen = true;
+    f.replaceWith(frame);
+  });
+
+  /* `video` is a YouTube id ({youtube}) or a silent loop shipped with the
+     site ({src, poster}), which plays full width like a project clip.
+     `heading: ''` drops the section title. */
+  if (p.video && p.video.src) {
+    videoHtml = '<section class="plugin-section plugin-video plugin-loop">' +
+      (p.video.heading ? '<h2 class="changelog-title">' + p.video.heading + '</h2>' : '') +
+      '<video src="' + p.video.src + '" poster="' + (p.video.poster || '') + '" muted autoplay loop playsinline preload="metadata" aria-label="' +
+      (p.video.title || p.name) + '"></video></section>';
+  } else if (p.video || (p.stats && p.stats.items && p.stats.items.length)) {
+    videoHtml = '<section class="plugin-section plugin-video"><h2 class="changelog-title">' + ((p.video && p.video.heading) || 'The Video') + '</h2>' +
+      /* A cover, not the player: YouTube's player is another page, and this
+         one gets no mouse events over it, so the site's cursor stuck at its
+         edge. The thumbnail and play button are this page's own; a click
+         swaps in the player, already playing (playVideo, below). */
+      (p.video ? '<div class="video-embed"><button class="video-facade" data-yt="' + p.video.youtube + '" data-title="' + (p.video.title || p.name) +
+        '" aria-label="Play ' + (p.video.title || p.name) + '" style="background-image:url(https://i.ytimg.com/vi/' + p.video.youtube + '/maxresdefault.jpg)">' +
+        '<span class="video-play"><svg viewBox="0 0 68 48" aria-hidden="true"><path class="yt-bg" d="M66.52 7.74c-.78-2.93-2.49-5.41-5.42-6.19C55.79.13 34 0 34 0S12.21.13 6.9 1.55C3.97 2.33 2.27 4.81 1.48 7.74.06 13.05 0 24 0 24s.06 10.95 1.48 16.26c.78 2.93 2.49 5.41 5.42 6.19C12.21 47.87 34 48 34 48s21.79-.13 27.1-1.55c2.93-.78 4.64-3.26 5.42-6.19C67.94 34.95 68 24 68 24s-.06-10.95-1.48-16.26z"/>' +
+        '<path d="M45 24 27 14v20z" fill="#fff"/></svg></span></button></div>' : '') +
       (p.stats && p.stats.items ? '<div class="product-stats">' +
         // the source of the numbers heads them, tying them to the video above
         (p.stats.note ? '<p class="product-stats-head">' + p.stats.note + '</p>' : '') +
@@ -147,8 +256,11 @@
           '<div class="changelog-body">' + list(v.items) + '</div></details>';
       }).join('') + '</section>';
   }
+  var featHtml = p.features && p.features.length
+    ? '<section class="plugin-section plugin-features"><h2 class="changelog-title">What it does</h2>' + list(p.features) + '</section>'
+    : '';
   var body = $('pluginBody');
-  if (body) body.innerHTML = videoHtml + logHtml + (p.body || '');
+  if (body) body.innerHTML = videoHtml + featHtml + logHtml + (p.body || '');
 
   /* The version rows open and close with a slide: <details> on its own
      snaps, so the summary click is taken over and the body's height is
@@ -186,7 +298,7 @@
      pair. All of it keys off plugins.length, so nothing here changes when
      a plugin is added or pulled. */
   var prevEl = $('pluginPrev'), nextEl = $('pluginNext');
-  var pager = document.querySelector('.project-pager');
+  var pager = document.querySelector('.arrow-pager');
   /* Removed, not hidden: .project-pager carries its own display rule in
      the stylesheet, and an author `display` beats the UA rule behind the
      hidden attribute — so pager.hidden = true set the attribute and the

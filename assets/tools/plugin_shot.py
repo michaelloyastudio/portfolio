@@ -22,11 +22,14 @@ The treatment, decided against alternatives and worth keeping consistent:
 import argparse, io
 from PIL import Image, ImageDraw, ImageFilter, ImageCms
 
-GROUND   = (243, 243, 243)
+GROUND   = (232, 224, 212)   # Parchment, the brand pale (was #f3f3f3 grey, Mike Nov 3 '26)
 RADIUS   = 26      # on the 2x screenshot, so ~13pt
 FILL     = 0.86    # how much of the frame the window takes
-BLUR     = 40
-DROP     = 14      # shadow offset, px
+BLUR     = 26
+DROP     = 18      # shadow offset, px
+SHADOW   = 0.62    # shadow opacity (was 0.42, before that 0.30 / blur 40: both too faint to read, Mike Nov 2 + 3 '26)
+CONTACT  = 0.22    # a tight second shadow right under the edge, so the window sits ON the card
+CONTACT_BLUR = 5
 
 def _to_srgb(im):
     """Convert a screenshot into real sRGB.
@@ -54,19 +57,28 @@ def _rounded(im, r):
 
 def compose(shot, out, size=1400):
     win = _rounded(_to_srgb(Image.open(shot)), RADIUS)
-    bg = Image.new('RGBA', (size, size), GROUND + (255,))
-
     s = min(size / win.width, size / win.height) * FILL
     win = win.resize((max(1, int(win.width * s)), max(1, int(win.height * s))), Image.LANCZOS)
-    x, y = (size - win.width) // 2, (size - win.height) // 2
+    return place(win, out, size)
+
+def place(win, out, size=1400, xy=None):
+    """Put an already-rounded RGBA window on the ground with the shadow
+    (centred, or at xy). Also used to re-shadow shots whose raw screenshot is gone."""
+    bg = Image.new('RGBA', (size, size), GROUND + (255,))
+    x, y = xy or ((size - win.width) // 2, (size - win.height) // 2)
 
     # Shadow from the window's alpha, so it hugs the rounded corners.
     pad = BLUR * 3
     lay = Image.new('RGBA', (win.width + pad * 2, win.height + pad * 2), (0, 0, 0, 0))
     solid = Image.new('RGBA', win.size, (0, 0, 0, 255))
-    solid.putalpha(win.getchannel('A').point(lambda a: int(a * 0.30)))
+    solid.putalpha(win.getchannel('A').point(lambda a: int(a * SHADOW)))
     lay.paste(solid, (pad, pad + DROP), solid)
     bg.alpha_composite(lay.filter(ImageFilter.GaussianBlur(BLUR)), (x - pad, y - pad))
+    lay = Image.new('RGBA', (win.width + pad * 2, win.height + pad * 2), (0, 0, 0, 0))
+    solid = Image.new('RGBA', win.size, (0, 0, 0, 255))
+    solid.putalpha(win.getchannel('A').point(lambda a: int(a * CONTACT)))
+    lay.paste(solid, (pad, pad + 2), solid)
+    bg.alpha_composite(lay.filter(ImageFilter.GaussianBlur(CONTACT_BLUR)), (x - pad, y - pad))
 
     bg.alpha_composite(win, (x, y))
     bg.convert('RGB').save(out, quality=93, subsampling=0)

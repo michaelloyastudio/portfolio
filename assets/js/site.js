@@ -20,6 +20,149 @@
     document.documentElement.classList.toggle('locked', locks > 0);
   }
 
+  /* ── Cursor ──────────────────────────────────────────────────────
+     A red dot with a soft shadow in place of the arrow, on mice and
+     trackpads only (touch keeps nothing, it has no cursor). Over anything
+     clickable, project work that opens in the lightbox and the parallax
+     heroes included, it swells into a disc of Parchment-tinted glass. Styles in
+     site.css under CURSOR. */
+  var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+  if (finePointer.matches) {
+    // .has-overlay: a product video that shows a phone UI on hover
+    // .lightbox-media: the piece open in a project's lightbox (a click steps on)
+    var CLICKABLE = 'a[href], button, [role="button"], summary, label, select, .tile, .band, .product-thumb, .product-shot-main.has-overlay, .lightbox-media';
+    // the lightbox's own rule (project-page.js lbItems): work that isn't a
+    // player with controls and isn't already a link. And a project's hero,
+    // whose parallax layers answer the pointer.
+    /* A project hero is glass over its PICTURE only, not the empty slot
+       beside a square one: the pointer has to sit inside the box of its
+       image, video or layer stack (whichever has laid out yet, so it works
+       from the first frame of the build). */
+    var overHero = function (x, y) {
+      var hero = document.getElementById('projectHero');
+      if (!hero) return false;
+      // .hero-layer imgs are scaled past the frame (cropped by .hero-layers): skip them
+      return Array.prototype.some.call(hero.querySelectorAll('img:not(.hero-layer), video, .hero-layers'), function (m) {
+        var r = m.getBoundingClientRect();
+        return r.width > 2 && r.height > 2 && x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+      });
+    };
+    var clickable = function (el, x, y) {
+      if (!el || !el.closest) return false;
+      if (el.closest('#projectHero')) return overHero(x, y);
+      if (el.closest(CLICKABLE)) return true;
+      var m = el.closest('#projectWork img, #projectWork video');
+      return !!m && !(m.tagName === 'VIDEO' && m.hasAttribute('controls'));
+    };
+    var cursor = document.createElement('div');
+    cursor.className = 'cursor';
+    cursor.setAttribute('aria-hidden', 'true');
+    cursor.innerHTML = '<i></i>';
+    document.body.appendChild(cursor);
+    document.documentElement.classList.add('has-cursor');
+
+    var place = function (x, y) {
+      cursor.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0)';
+      cursor.classList.add('is-on');
+    };
+    /* A new page gets no mousemove until the mouse moves, so the dot would
+       vanish on every link. Carry it over: where it was as the last page
+       went, it is as this one comes in. */
+    var was = null;
+    try {
+      was = JSON.parse(sessionStorage.getItem('cursorAt') || 'null');
+      if (was) {
+        cursor.style.transition = 'none';         // already showing: no fade back in
+        place(was[0], was[1]);
+        void cursor.offsetWidth;                  // settle it there before the fade comes back
+        cursor.style.transition = '';
+        var under = document.elementFromPoint(was[0], was[1]);
+        cursor.classList.toggle('is-glass', clickable(under, was[0], was[1]));
+      }
+    } catch (_) {}
+    var lastX = was ? was[0] : -1, lastY = was ? was[1] : -1, moved = false;
+    document.addEventListener('mousemove', function (e) {
+      if (e.target.tagName === 'IFRAME') return;   // see the iframe note below
+      moved = true;
+      lastX = e.clientX; lastY = e.clientY;
+      // within a hero the picture's edge isn't an element boundary: check each move
+      if (e.target.closest && e.target.closest('#projectHero')) cursor.classList.toggle('is-glass', overHero(lastX, lastY));
+      place(lastX, lastY);
+    }, { passive: true });
+    window.addEventListener('pagehide', function () {
+      try {
+        if (lastX >= 0 && cursor.classList.contains('is-on')) sessionStorage.setItem('cursorAt', JSON.stringify([lastX, lastY]));
+        else sessionStorage.removeItem('cursorAt');
+      } catch (_) {}
+    });
+    /* Something opened or closed under a still pointer (the lightbox): no
+       mouseover comes, so look again at what's there now. */
+    window.cursorRecheck = function () {
+      if (lastX < 0) return;
+      cursor.classList.toggle('is-glass', clickable(document.elementFromPoint(lastX, lastY), lastX, lastY));
+    };
+    /* A page building itself under a pointer that hasn't moved (a hero
+       mid-load, tiles arriving) sends no mouseover, so for the first few
+       seconds look again every frame until the mouse does move. */
+    var loadT0 = performance.now();
+    (function watchLoad() {
+      if (moved || performance.now() - loadT0 > 4000) return;
+      window.cursorRecheck();
+      requestAnimationFrame(watchLoad);
+    })();
+    document.addEventListener('mouseover', function (e) {
+      /* An embedded player (YouTube) is another page: this one gets no
+         mouse events over it, so the dot would sit stuck on its edge. Fade
+         it out there and let the player's own pointer take over; the next
+         mousemove back on the page brings it back. */
+      if (e.target.tagName === 'IFRAME') { cursor.classList.remove('is-on', 'is-glass'); return; }
+      cursor.classList.toggle('is-glass', clickable(e.target, e.clientX, e.clientY));
+    });
+    // gone when the pointer leaves the window
+    document.addEventListener('mouseout', function (e) {
+      if (!e.relatedTarget) cursor.classList.remove('is-on');
+    });
+    /* Chrome doesn't even send that much for a cross-origin frame (a
+       playing YouTube video): the pointer just stops reporting. So if the
+       moves stop with the dot at a frame's edge, it went in; hide it. A
+       click that swaps a frame in under the pointer (the video cover) and
+       the window losing focus to one count too. */
+    var frameAt = function (x, y) {
+      var hit = false;
+      document.querySelectorAll('iframe').forEach(function (f) {
+        var r = f.getBoundingClientRect();
+        if (x > r.left - 24 && x < r.right + 24 && y > r.top - 24 && y < r.bottom + 24) hit = true;
+      });
+      return hit;
+    };
+    var still = null;
+    document.addEventListener('mousemove', function () {
+      clearTimeout(still);
+      still = setTimeout(function () {
+        if (frameAt(lastX, lastY)) cursor.classList.remove('is-on', 'is-glass');
+      }, 120);
+    }, { passive: true });
+    document.addEventListener('click', function () {
+      setTimeout(function () {
+        var el = document.elementFromPoint(lastX, lastY);
+        if (el && el.tagName === 'IFRAME') cursor.classList.remove('is-on', 'is-glass');
+      }, 0);
+    });
+    window.addEventListener('blur', function () { cursor.classList.remove('is-on', 'is-glass'); });
+    document.addEventListener('mousedown', function () { cursor.classList.add('is-down'); });
+    document.addEventListener('mouseup', function () { cursor.classList.remove('is-down'); });
+  }
+
+  /* ── No dragging pictures off the page ──────────────────────────
+     An image, a video, or a link built round one (every tile) would lift
+     out as a ghost and drop as a file. CSS user-drag covers Chrome and
+     Safari; this covers the rest. */
+  document.addEventListener('dragstart', function (e) {
+    var t = e.target;
+    if (t.nodeType !== 1) t = t.parentElement;
+    if (t && (/^(IMG|VIDEO|PICTURE|svg)$/i.test(t.tagName) || (t.closest && t.closest('a') && t.closest('a').querySelector('img, video')))) e.preventDefault();
+  });
+
   /* ── Menu ────────────────────────────────────────────────────────*/
   /* ── A reload lands at the top ──────────────────────────────────
      Every page, so the load-in plays from the start instead of the
@@ -115,6 +258,7 @@
     });
   });
 
+  var arriveAt = null;   // set by the /all block further down
   var LEAVE_MS = 200;
   var calm = window.matchMedia('(prefers-reduced-motion: reduce)');
   function calmMotion() { return calm.matches; }
@@ -124,6 +268,19 @@
     if (!a || (a.target && a.target !== '_self') || a.hasAttribute('download')) return;
     if (a.origin !== location.origin || !/^https?:$/.test(a.protocol)) return;
     if (/\.(?!html$)[a-z0-9]+$/i.test(a.pathname)) return;           // a file, not a page
+    /* Work and Tools in the menu both point at /all (Tools at #tools).
+       Already on /all, there's no page to load: shut the menu and arrive
+       at the section the way a fresh load would (arriveAt, below). */
+    if (a.pathname === location.pathname && a.closest('.menu-links') && arriveAt) {
+      e.preventDefault();
+      if (document.body.classList.contains('menu-open')) burger.click();
+      // a frame later: in the same one the page is still scroll-locked and
+      // the browser drops the scroll
+      var to = a.hash ? document.querySelector(a.hash) : null;
+      requestAnimationFrame(function () { arriveAt(to); });
+      history.replaceState(null, '', a.pathname + a.hash);
+      return;
+    }
     if (a.pathname === location.pathname && a.hash) return;           // same-page anchor
     if (calm.matches) return;
     var dest = a.pathname.replace(/\.html$/, '');
@@ -143,12 +300,20 @@
       else document.body.classList.add('arrows-leaving');
     }
     if (a.pathname === '/' || a.pathname === '/index.html') document.body.classList.add('nav-leaving');
-    setTimeout(function () { window.location.href = a.href; }, LEAVE_MS);
+    /* Leaving from the open menu: the X turns back into the burger as the
+       page goes (menu-leaving, site.css), and the next page arrives with
+       the burger already there. Held a little longer so the turn lands. */
+    var fromMenu = !!a.closest('.menu-links') && document.body.classList.contains('menu-open');
+    var home = document.body.classList.contains('nav-leaving');   // logo + burger trim off first
+    if (home && window.trimLogoOut) window.trimLogoOut(360);
+    // going home, the X trims off as an X (no turn back first)
+    if (fromMenu && !home) document.body.classList.add('menu-leaving');
+    setTimeout(function () { window.location.href = a.href; }, home || fromMenu ? 400 : LEAVE_MS);
   });
   // Back/forward can restore this page from the cache mid-leave: undo it.
   window.addEventListener('pageshow', function (e) {
     if (!e.persisted) return;
-    document.body.classList.remove('page-leaving', 'nav-leaving', 'arrows-leaving', 'menu-open');
+    document.body.classList.remove('page-leaving', 'nav-leaving', 'arrows-leaving', 'menu-open', 'menu-leaving');
     if (burger) burger.setAttribute('aria-expanded', 'false');
     lockScroll(false);
   });
@@ -161,6 +326,39 @@
      which keeps the round cap on the leading edge; a dash offset would
      draw by arc length instead. */
   var markPath = document.querySelector('.nav-logo path');
+  /* The draw-on's mirror, for heading home: the stroke is eaten from its
+     START toward its end (Trim Paths' start running up), rebuilt each frame
+     from a moving x so the trailing edge keeps its round cap, and easing in
+     (slow, then gone). A CSS clip did this first and left a flat cut. */
+  if (markPath) window.trimLogoOut = function (ms) {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var d = markPath.getAttribute('d');
+    var Q = (d.match(/-?[\d.]+,-?[\d.]+/g) || []).map(function (xy) { return xy.split(',').map(Number); });
+    if (Q.length < 2) return;
+    var A = Q[0][0], Z = Q[Q.length - 1][0], s0 = null;
+    var from = function (xs) {
+      var out = [];
+      for (var k = 1; k < Q.length; k++) {
+        var a = Q[k - 1], b = Q[k];
+        if (b[0] <= xs) continue;
+        if (!out.length) {
+          var t = xs > a[0] ? (xs - a[0]) / (b[0] - a[0]) : 0;
+          out.push([a[0] + t * (b[0] - a[0]), a[1] + t * (b[1] - a[1])]);
+        }
+        out.push(b);
+      }
+      return out.length > 1 ? 'M' + out.map(function (q) { return q[0].toFixed(2) + ',' + q[1].toFixed(2); }).join(' L') : '';
+    };
+    var step = function (now) {
+      if (s0 === null) s0 = now;
+      var p = Math.min(1, (now - s0) / ms), e = p * p * p;
+      var nd = from(A + e * (Z - A));
+      if (!nd || p >= 1) { markPath.style.visibility = 'hidden'; return; }
+      markPath.setAttribute('d', nd);
+      requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  };
   if (markPath && document.querySelector('.hero--studio') &&
       !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     var full = markPath.getAttribute('d');
@@ -336,13 +534,21 @@
      parallax, so hovering its thumbnail plays the loop over the still
      instead: it appears at once (the still is its own first frame) and
      plays. Leaving pauses it where it is; hovering again resumes. */
-  function videoThumb(p, media, hoverEl) {
+  // reset: on leave, back to the still image (Tools tiles); otherwise the frame it stopped on stays up
+  function videoThumb(p, media, hoverEl, reset, start) {
     if (!p.heroLoop || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     var v = document.createElement('video');
     v.className = 'thumb-video';
     v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'auto';
     v.setAttribute('aria-hidden', 'true');
     v.src = p.hero;
+    /* coverAt: no still at all. The video itself sits paused on that frame
+       (shown once it has seeked there), so a hover just presses play: a
+       still swapped for the video, however close, gave a visible blip. */
+    if (start) {
+      v.addEventListener('loadedmetadata', function () { v.currentTime = start; }, { once: true });
+      v.addEventListener('seeked', function () { v.classList.add('is-on'); }, { once: true });
+    }
     media.appendChild(v);
     // no fade in: the still is the loop's first frame, so the video can
     // simply appear on top of it and start moving
@@ -351,9 +557,12 @@
       else v.addEventListener('playing', function () { v.classList.add('is-on'); }, { once: true });
       var q = v.play(); if (q && q.catch) q.catch(function () {});
     });
-    // leaving just pauses: the frame it stopped on stays up, and the next
-    // hover carries on from there
-    hoverEl.addEventListener('mouseleave', function () { v.pause(); });
+    // leaving pauses: work tiles and bands keep the frame it stopped on and carry on
+    // next hover; Tools tiles (reset) go back to their still and start over
+    hoverEl.addEventListener('mouseleave', function () {
+      v.pause();
+      if (reset) { v.classList.remove('is-on'); try { v.currentTime = 0; } catch (e) {} }
+    });
   }
 
   /* ── Work grid (work page) ───────────────────────────────────────
@@ -392,6 +601,24 @@
      the tile instead of promising a button that isn't there.
      Title and host only under the shot; the tagline lives on the
      product page. */
+  /* On /all the menu marks whichever half is on screen: Work until the
+     Tools head reaches the top third of the window, then Tools. */
+  var toolsHead = $('tools');
+  var menuWork = document.querySelector('.menu-links a[href="/all"]');
+  var menuTools = document.querySelector('.menu-links a[href="/all#tools"]');
+  if (toolsHead && menuWork && menuTools) {
+    var markSection = function () {
+      var inTools = toolsHead.getBoundingClientRect().top < window.innerHeight / 3;
+      menuWork.toggleAttribute('aria-current', !inTools);
+      menuTools.toggleAttribute('aria-current', inTools);
+      if (inTools) menuTools.setAttribute('aria-current', 'page');
+      else menuWork.setAttribute('aria-current', 'page');
+    };
+    window.addEventListener('scroll', markSection, { passive: true });
+    window.addEventListener('load', markSection);
+    markSection();
+  }
+
   var pgrid = $('pluginGrid');
   /* "New update" chip: shown until the plugin's updateBadge.until date, so
      it retires itself instead of going stale. */
@@ -400,6 +627,9 @@
      property, so this has to be a typeof check rather than window.plugins. */
   if (pgrid && typeof plugins !== 'undefined') {
     grid_i = 0;
+    /* Rectangles only: three across when the count divides by three,
+       otherwise two (four plugins = 2 x 2). Phones are two across anyway. */
+    if (plugins.length % 3 && !(plugins.length % 2)) pgrid.classList.add('plugin-grid--2');
     plugins.forEach(function (p) {
       var tile = document.createElement('a');
       tile.className = 'tile';
@@ -414,16 +644,92 @@
               : '') +
           '</div>' +
         '</div>' +
+        /* The price on the grey line, where a project shows its category,
+           then the full name ("Backstage for After Effects"), set a size
+           down from a project's title so it holds one line. (Tried: the
+           price in the arrow's place, Nov 3 '26; names got too small.) */
         '<div class="tile-meta">' +
-          '<div>' +
-            // the price where a project shows its category
-            '<p class="tile-cat">' + ((p.downloads && p.downloads.length) || p.download ? 'Free' : 'In development') + '</p>' +
+          '<div class="tile-text">' +
+            '<p class="tile-cat">' + (p.price ? (p.was ? '<s class="price-was">' + p.was + '</s> ' : '') + p.price : ((p.downloads && p.downloads.length) || p.download ? 'Free' : 'In development')) + '</p>' +
             '<h2 class="tile-title">' + p.name + '</h2>' +
           '</div>' +
           '<span class="tile-arrow">' + CHEV + '</span>' +
         '</div>';
+      // coverScale: a cover that fills more of its card than the others sits back to match
+      if (p.coverScale) tile.style.setProperty('--fit', p.coverScale);
       pgrid.appendChild(tile);
+      // a plugin with a square loop plays it on hover, like the project bands
+      // coverAt: the still is a frame of the loop, so it plays on from there
+      // and pauses where it is; otherwise back to the still and start over
+      if (p.coverVideo) videoThumb({ heroLoop: true, hero: p.coverVideo }, tile.querySelector('.tile-media'), tile, !p.coverAt, p.coverAt);
     });
+  }
+
+  /* ── /all: each half loads in as it comes into view ───────────────
+     The title, then its tiles one after another, the same move as every
+     other page, but per piece as it reaches the window rather than all
+     at once on load. Land on #tools and only Tools plays; Work waits up
+     there until you scroll back to it, and scrolling up brings its rows in
+     bottom-first, the way they arrive. Pieces that come in together are
+     staggered by the order they sit on the page. */
+  var sections = document.querySelectorAll('.all-section[data-in]');
+  if (sections.length) {
+    var pieces = Array.prototype.slice.call(
+      document.querySelectorAll('.all-section > .page-head, .all-section .tile'));
+    var before = function (a, b) { return a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING; };
+    var show = function (els) {
+      els.sort(function (a, b) { return before(a, b) ? -1 : 1; });
+      var heads = els.filter(function (el) { return el.classList.contains('page-head'); });
+      els.forEach(function (el) {
+        // tiles wait for a title arriving with them; alone they start at once
+        if (!el.classList.contains('page-head')) {
+          el.style.setProperty('--i', els.indexOf(el) - heads.length);
+          el.style.setProperty('--lead', heads.length ? '0.15s' : '0s');
+        }
+        el.classList.add('in');
+      });
+    };
+    var pieceIO = null, release = null;
+    /* Arrive at a section (null = the top) as if the page had just loaded
+       there: cut to it with no scroll, everything hidden again, and play
+       it in. On #tools, Work's last row peeks in above the title, so Work
+       isn't even watched until the reader starts back up. Runs on load and
+       again from the menu's Work / Tools while already on the page. */
+    arriveAt = function (landing) {
+      var html = document.documentElement;
+      // 'instant', not the stylesheet's smooth: a cut, never a glide
+      if (landing) landing.scrollIntoView({ behavior: 'instant' });
+      else window.scrollTo({ top: 0, behavior: 'instant' });
+      if (!('IntersectionObserver' in window) || calm.matches) { show(pieces.slice()); return; }
+      if (pieceIO) pieceIO.disconnect();
+      if (release) window.removeEventListener('scroll', release);
+      pieces.forEach(function (el) {
+        el.classList.remove('in');
+        el.style.removeProperty('--i');
+        el.style.removeProperty('--lead');
+      });
+      void html.offsetHeight;   // commit the reset so a replayed piece animates again
+      pieceIO = new IntersectionObserver(function (entries) {
+        var now = entries.filter(function (e) { return e.isIntersecting; })
+                         .map(function (e) { pieceIO.unobserve(e.target); return e.target; });
+        if (now.length) show(now);
+      }, { rootMargin: '0px 0px -4% 0px' });
+      var held = landing ? pieces.filter(function (el) { return !landing.contains(el) && before(el, landing); }) : [];
+      pieces.forEach(function (el) { if (held.indexOf(el) < 0) pieceIO.observe(el); });
+      if (held.length) {
+        var from = window.scrollY;
+        release = function () {
+          if (window.scrollY >= from - 2) return;
+          window.removeEventListener('scroll', release);
+          held.forEach(function (el) { pieceIO.observe(el); });
+        };
+        window.addEventListener('scroll', release, { passive: true });
+      }
+    };
+    /* Land on #tools before looking, not after: the browser's own jump
+       comes a frame too late, and the first look would see Work at the
+       top and play it. all.html turns smooth scrolling off for this. */
+    arriveAt(location.hash ? document.querySelector('.all-section' + location.hash) : null);
   }
 
   /* ── Featured bands (studio page) ────────────────────────────────

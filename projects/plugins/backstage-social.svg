@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080" width="1080" height="1080">
+  <!-- What the 9:16 video inside backstage-square.mp4 looks like in the TikTok feed, as a whole
+       phone. Measured off a real post on an iPhone (1320x2868 screenshot, Nov 2026): the app scales
+       9:16 to COVER the screen above its bottom bar, 1473 px wide on a 1320 screen, so about 5% of
+       each side never shows, and the bar takes the last 257 px. Everything below is in those SCREEN
+       pixels (0.323124 card px each, screen origin at card 326.73, 76.585), so positions copy
+       straight off a screenshot. That lines up with the video at x302 y74 476x846; it sits at y117
+       (centred) and site.css lifts it 43 px on hover. The card is repainted round the phone and
+       its shadow redrawn. No platform branding. -->
+  <defs>
+    <symbol id="pfp" viewBox="0 0 200 200"><image width="200" height="200" href="data:image/jpeg;base64,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"/></symbol>
+    <clipPath id="avatar" clipPathUnits="userSpaceOnUse"><circle cx="1228" cy="1490" r="64"/></clipPath>
+    <clipPath id="disc" clipPathUnits="userSpaceOnUse"><circle cx="1228" cy="2515" r="36"/></clipPath>
+    <path id="phone" d="M0 180a180 180 0 0 1 180-180h960a180 180 0 0 1 180 180v2508a180 180 0 0 1-180 180h-960a180 180 0 0 1-180-180z"/>
+    <clipPath id="screen"><use href="#phone"/></clipPath>
+    <mask id="outside">
+      <rect width="1080" height="1080" fill="#fff"/>
+      <use href="#phone" transform="translate(326.73 76.585) scale(0.323124)" fill="#000"/>
+    </mask>
+    <filter id="card" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="9" stdDeviation="15" flood-color="#000" flood-opacity=".26"/>
+    </filter>
+    <linearGradient id="top" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#000" stop-opacity=".35"/><stop offset="1" stop-color="#000" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="bot" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".55"/>
+    </linearGradient>
+    <filter id="sh" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#000" flood-opacity=".35"/>
+    </filter>
+  </defs>
+
+  <!-- the card again, everywhere but the phone, with the phone's own shadow -->
+  <g mask="url(#outside)">
+    <rect width="1080" height="1080" fill="#E8E0D4"/>
+    <use href="#phone" transform="translate(326.73 76.585) scale(0.323124)" fill="#000" filter="url(#card)"/>
+  </g>
+
+  <g transform="translate(326.73 76.585) scale(0.323124)" clip-path="url(#screen)"
+     font-family="-apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif" fill="#fff">
+    <rect x="0" y="0" width="1320" height="560" fill="url(#top)"/>
+    <rect x="0" y="1880" width="1320" height="731" fill="url(#bot)"/>
+
+    <!-- status bar + island -->
+    <rect x="471" y="33" width="378" height="111" rx="55.5" fill="#000"/>
+    <text x="221" y="117" font-size="52" font-weight="600" text-anchor="middle">9:41</text>
+    <!-- cellular: four bars, bottoms level -->
+    <rect x="937" y="102" width="11" height="14" rx="3"/>
+    <rect x="953" y="94" width="11" height="22" rx="3"/>
+    <rect x="969" y="86" width="11" height="30" rx="3"/>
+    <rect x="985" y="78" width="11" height="38" rx="3"/>
+    <!-- wifi: a 90° fan of two bands over a wedge, all from one point -->
+    <g transform="translate(1053 116)">
+      <path d="M0 0L-12.7-12.7A18 18 0 0 1 12.7-12.7Z"/>
+      <path d="M-19.8-19.8A28 28 0 0 1 19.8-19.8" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round"/>
+      <path d="M-29-29A41 41 0 0 1 29-29" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round"/>
+    </g>
+    <!-- battery -->
+    <rect x="1104" y="79" width="80" height="37" rx="11" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width="4"/>
+    <rect x="1110" y="85" width="62" height="25" rx="6"/>
+    <path d="M1190 90v15a8 8 0 0 0 0-15z" fill-opacity=".4"/>
+
+    <g filter="url(#sh)">
+      <!-- feed tabs + search -->
+      <text x="628" y="268" font-size="50" font-weight="600" fill-opacity=".65" text-anchor="end">Following</text>
+      <text x="676" y="268" font-size="50" font-weight="700">For You</text>
+      <rect x="736" y="292" width="64" height="8" rx="4"/>
+      <circle cx="1238" cy="240" r="25" fill="none" stroke="#fff" stroke-width="7"/>
+      <path d="M1257 259l19 19" stroke="#fff" stroke-width="7" stroke-linecap="round"/>
+
+      <!-- right rail, centred on x 1228 -->
+      <!-- Mike's real profile picture (his YouTube/TikTok pfp, 04_Admin/07_Brand.../Profile_Pics) -->
+      <g clip-path="url(#avatar)"><use href="#pfp" x="1162" y="1424" width="132" height="132"/></g>
+      <circle cx="1228" cy="1490" r="66" fill="none" stroke="#fff" stroke-width="5"/>
+      <circle cx="1228" cy="1555" r="31" fill="#fe2c55"/>
+      <path d="M1215 1555h26M1228 1542v26" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
+
+      <path d="M1228 1738c-41-30-50-43-50-61 0-17 13-29 27-29 10 0 19 6 23 14 4-8 13-14 23-14 14 0 27 12 27 29 0 18-9 31-50 61z"/>
+      <text x="1228" y="1788" font-size="37" font-weight="700" text-anchor="middle">24.1K</text>
+
+      <path d="M1228 1857c-27 0-49 18-49 41 0 13 6 24 16 31l-6 21 24-11c5 1 10 1 15 1 27 0 49-18 49-42s-22-41-49-41z"/>
+      <circle cx="1208" cy="1898" r="5" fill="#555"/><circle cx="1228" cy="1898" r="5" fill="#555"/><circle cx="1248" cy="1898" r="5" fill="#555"/>
+      <text x="1228" y="1987" font-size="37" font-weight="700" text-anchor="middle">312</text>
+
+      <path d="M1194 2058h68v83l-34-24-34 24z"/>
+      <text x="1228" y="2185" font-size="37" font-weight="700" text-anchor="middle">1.2K</text>
+
+      <path d="M1232 2272v-21l45 40-45 40v-21c-30 0-48 9-62 27 4-34 27-61 62-65z"/>
+      <text x="1228" y="2381" font-size="37" font-weight="700" text-anchor="middle">Share</text>
+
+      <circle cx="1228" cy="2515" r="56" fill="#222" stroke="#2e2e2e" stroke-width="14"/>
+      <g clip-path="url(#disc)"><use href="#pfp" x="1192" y="2479" width="72" height="72"/></g>
+
+      <!-- bottom left: who, caption, tags -->
+      <!-- the block sits on the bottom: one caption line, so the name drops a line too -->
+      <text x="36" y="2489" font-size="49" font-weight="700">michaelloya.studio</text>
+      <text x="36" y="2575" font-size="43">Timeline and BTS preview for a recent commission</text>
+    </g>
+
+    <!-- the app's bottom bar: five tabs, then the home indicator -->
+    <rect x="0" y="2611" width="1320" height="257" fill="#000"/>
+    <rect x="0" y="2611" width="1320" height="2" fill="#fff" fill-opacity=".12"/>
+    <g font-size="30" text-anchor="middle">
+      <!-- Home (current) -->
+      <path d="M132 2640l-34 29v34h22v-21h24v21h22v-34z"/>
+      <text x="132" y="2750" font-weight="600">Home</text>
+      <!-- Friends -->
+      <g fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-opacity=".85">
+        <circle cx="386" cy="2656" r="13"/><path d="M362 2702c2-17 12-26 24-26s22 9 24 26"/>
+        <circle cx="413" cy="2660" r="10"/><path d="M418 2678c11 1 19 9 20 23"/>
+      </g>
+      <text x="396" y="2750" fill-opacity=".85">Friends</text>
+      <!-- create -->
+      <rect x="606" y="2636" width="108" height="70" rx="18"/>
+      <path d="M660 2655v32M644 2671h32" stroke="#000" stroke-width="7" stroke-linecap="round"/>
+      <!-- Inbox -->
+      <path d="M902 2648h44a9 9 0 0 1 9 9v30a9 9 0 0 1-9 9h-17l-12 11v-11h-15a9 9 0 0 1-9-9v-30a9 9 0 0 1 9-9z" fill="none" stroke="#fff" stroke-width="5" stroke-linejoin="round" stroke-opacity=".85"/>
+      <text x="924" y="2750" fill-opacity=".85">Inbox</text>
+      <!-- Profile -->
+      <g fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-opacity=".85">
+        <circle cx="1188" cy="2658" r="15"/><path d="M1160 2704c2-19 14-29 28-29s26 10 28 29"/>
+      </g>
+      <text x="1188" y="2750" fill-opacity=".85">Profile</text>
+    </g>
+    <rect x="459" y="2829" width="402" height="15" rx="7.5"/>
+  </g>
+</svg>

@@ -8,9 +8,21 @@
  *               its own. The Tools tile shows the price in that spot.
  *   tagline   — one line under the name on the product page only; the
  *               Tools grid shows title and host, nothing under them
+ *   was       — optional regular price, shown struck through before `price` (a sale)
+ *   price     — paid plugins only ('$39'). Replaces "Free" on the tile and
+ *               the page. With `buy` (the checkout URL) the page shows one
+ *               solid Buy button; without it, "Coming soon" and no button.
+ *               A Gumroad `buy` link (https://loyadesign.gumroad.com/l/<slug>)
+ *               opens Gumroad's checkout as an overlay on the page.
+ *   coverVideo — optional square loop the Tools tile plays on hover
+ *   coverScale — optional: shrink a cover that fills more of its card than the others
+ *   coverAt    — optional: the still IS this second of coverVideo, so a hover plays on from
+ *                the frozen frame and leaving pauses where it got to (no return to the still)
  *   cover     — 16:9 grid tile
  *   hero      — the product shot. Falls back to this when `shots` is absent.
- *   shots     — [{src, alt}] gallery. More than one renders a thumbnail
+ *   shots     — [{src, alt}] gallery; {video, src, alt} is a silent loop
+ *               (overlay: an image laid over it on hover / tap, e.g. a social app's UI)
+ *               with src as its poster and thumbnail. More than one renders a thumbnail
  *               strip under the main shot; one or none renders no strip.
  *   intro     — the pitch. Two short paragraphs at most.
  *   facts     — array of [label, value] rows, rendered as the facts list
@@ -27,7 +39,10 @@
  *               + `size` pair still renders as one macOS button.)
  *   note      — optional word after the size on the meta line ('beta')
  *   video     — optional {youtube: id, title}: embedded in "The Video"
- *               section above What's New.
+ *               section above What's New. Or {src, poster, heading?}: a
+ *               silent 16:9 loop from this repo, played full width.
+ *   features  — optional [html] list under "What it does", same bullets as
+ *               What's New.
  *   stats     — optional {items: [[figure, label]], note}: big numbers in that
  *               same section, under the video (reach of the videos about the
  *               plugin). Round DOWN so the claim stays true. The note sits
@@ -47,13 +62,20 @@ const plugins = [
   {
     slug: 'gh-midi',
     name: 'Guitar Hero MIDI',
+    coverScale: 0.86,
     tagline: 'Play a Guitar Hero controller like a real instrument',
-    cover: 'projects/plugins/gh-midi-cover.jpg?v=2',
-    hero: 'projects/plugins/gh-midi-ui.jpg?v=2',
+    cover: 'projects/plugins/gh-midi-tile.jpg?v=6',
+    coverVideo: 'projects/plugins/gh-midi-square.mp4?v=6',
+    coverAt: 2.617,
+    hero: 'projects/plugins/gh-midi-ui.jpg?v=7',
+    /* v1.2 shots (Nov 2026): the standalone app's own demo mode, captured as a real window;
+       the overlays are its HUD snapshots composited into that window frame. */
     shots: [
-      { src: 'projects/plugins/gh-midi-ui.jpg?v=2',       alt: 'Chord struck on the note highway' },
-      { src: 'projects/plugins/gh-midi-settings.jpg?v=2', alt: 'Settings: device picker and mapping table' },
-      { src: 'projects/plugins/gh-midi-help.jpg?v=2',     alt: 'The built-in How to Play card' }
+      // the loop leads: it autoplays where the others build themselves
+      { video: 'projects/plugins/gh-midi-square.mp4?v=6', src: 'projects/plugins/gh-midi-square-poster.jpg?v=6', alt: 'GH MIDI playing its demo' },
+      { src: 'projects/plugins/gh-midi-frets.jpg?v=7',    alt: 'FRETS: choose what every fret plays' },
+      { src: 'projects/plugins/gh-midi-settings.jpg?v=7', alt: 'Settings: controller mapping, lefty flip, whammy as bend or palm mute' },
+      { src: 'projects/plugins/gh-midi-help.jpg?v=7',     alt: 'The built-in How to Play card' }
     ],
     intro: `<p>Turns the controller into a MIDI instrument. It reads the frets, strum bar, whammy and joystick directly from the hardware and sends them as MIDI to whatever instrument you have loaded.</p>
 <p>Four modes cover everything from chords in a key, where a wrong note is not possible, to a fully chromatic layout. It runs as a VST3 in your DAW, or as a standalone app that appears as a MIDI input in GarageBand, Logic, or any synth.</p>`,
@@ -70,7 +92,7 @@ const plugins = [
        14,325 likes, TikTok 264,083 / 6,517 (two TikTok counts app-rounded),
        total 706,672 views / 20,842 likes / 293 comments. Shown rounded down. */
     stats: { items: [['700K+', 'views'], ['20K+', 'likes']], note: 'On GH MIDI videos across Instagram and TikTok' },
-    video: { youtube: '8DL_x7Ll75Y', title: 'Making GH MIDI' },
+    video: { youtube: '8DL_x7Ll75Y', title: 'Making GH MIDI', heading: 'The Process' },
     changelog: [
       { version: '1.2', date: 'October 20, 2026', items: [
         '<strong>Change what any fret plays.</strong> The new FRETS editor swaps the chord or note on any fret and on all ten two-fret pairs. Your key\'s chords are listed first, and a switch sets whether a change applies to every key or just the one you\'re in.',
@@ -111,6 +133,104 @@ const plugins = [
        The source link lives in the specs list; Mike cut the open-source
        blurb below the changelog (2026-10-20). */
     body: ''
-  }
+  },
+
+  /* Paid AE tools. Set `buy` to the Gumroad link and the Buy button appears.
+     Backstage's loops are cut from a real Backstage video (Control Me). */
+  {
+    slug: 'backstage',
+    name: 'Backstage for After Effects',
+    tagline: 'Social-ready process videos in one click',
+    price: '$19.99',
+    was: '$29.99',
+    buy: null,
+    cover: 'projects/plugins/backstage-ui.jpg?v=3',
+    // coverVideo: off while Mike makes a new one (was backstage-square.mp4?v=3)
+    shots: [
+      /* build: the shot assembles itself on load (plugin-page.js): the empty
+         panel on its card, then each control in order. Cut from the same
+         capture as the still and placed in percent of the card, so the last
+         frame IS the still. Rebuild them together. */
+      { src: 'projects/plugins/backstage-ui.jpg?v=3', alt: 'The Backstage panel',
+        build: { base: 'projects/plugins/backstage-build/base.jpg?v=2', layers: [
+          { src: 'projects/plugins/backstage-build/01-header.png?v=2', x: 19.214, y: 13.071, w: 61.5 },
+          { src: 'projects/plugins/backstage-build/02-card1.png?v=2', x: 19.214, y: 24.857, w: 20.286 },
+          { src: 'projects/plugins/backstage-build/03-card2.png?v=2', x: 39.786, y: 24.857, w: 20.357 },
+          { src: 'projects/plugins/backstage-build/04-card3.png?v=2', x: 60.429, y: 24.857, w: 20.286 },
+          { src: 'projects/plugins/backstage-build/05-top.png?v=2', x: 19.214, y: 63.286, w: 61.5 },
+          { src: 'projects/plugins/backstage-build/06-size.png?v=2', x: 19.214, y: 68.714, w: 61.5 },
+          { src: 'projects/plugins/backstage-build/07-peek.png?v=2', x: 19.214, y: 75.5, w: 18.143 },
+          { src: 'projects/plugins/backstage-build/08-make.png?v=2', x: 38.0, y: 75.5, w: 42.714 },
+          { src: 'projects/plugins/backstage-build/09-opts.png?v=2', x: 19.214, y: 86.571, w: 61.5 }
+        ] } },
+      { video: 'projects/plugins/backstage-square.mp4?v=6', src: 'projects/plugins/backstage-cover.jpg?v=6', overlay: 'projects/plugins/backstage-social.svg?v=9', alt: 'A Backstage process video: the viewer with its handles, the final render and the whole timeline' },
+      { src: 'projects/plugins/backstage-ui-options.jpg?v=3', alt: 'The Backstage panel with its options open: range, render and timeline' }
+    ],
+    intro: `<p>Hit Generate and Backstage steps through your comp one frame at a time, screenshots the real viewer with every handle, path and gizmo After Effects draws, shoots the whole timeline, renders the comp, and builds a finished 4K process video, vertical 9:16 or wide 16:9. No screen recording, no cropping in Premiere.</p>
+<p>It finds the viewer and the timeline on its own and fits the comp in the viewer, then puts your zoom, playhead and selection back when it's done. Preview shows one frame in all three looks before you commit.</p>`,
+    video: { src: 'projects/plugins/backstage-loop.mp4?v=4', poster: 'projects/plugins/backstage-poster.jpg?v=4', title: 'A 16:9 Backstage video' },
+    features: [
+      '<strong>The real viewer.</strong> Everything After Effects draws: handles, motion paths, 3D gizmos, effect points.',
+      '<strong>The whole timeline.</strong> Every layer in one shot, with or without the layer names, and the playhead moving across it.',
+      '<strong>Three looks.</strong> Stack, Split or Viewer, with the final render or the handles on top.',
+      '<strong>Two sizes.</strong> 9:16 that stays clear of the Reels, TikTok and Shorts app bars, or 16:9 for YouTube.',
+      '<strong>Any comp size.</strong> 16:9, 9:16, square, ultra-wide. Tall comps go side by side.',
+      '<strong>One button.</strong> No layers to pick and no regions to draw.'
+    ],
+    facts: [
+      ['Host', 'After Effects 2022 or later'],
+      ['Platform', 'macOS 14 or later, Apple Silicon and Intel'],
+      ['Format', 'Panel (Window › Extensions)'],
+      ['Output', '4K MP4, 9:16 or 16:9']
+    ],
+    status: 'building',
+    version: 'v1.0',
+    body: ''
+  },
+
+  /* Ransom's loops are rendered from the panel's own letters with Typeset's
+     motion (~/Developer/promo/ransom). Price is a placeholder until Mike sets it. */
+  {
+    slug: 'ransom',
+    name: 'Ransom for After Effects',
+    tagline: 'Type a word, get a ransom note',
+    price: '$29',
+    buy: null,
+    cover: 'projects/plugins/ransom-ui.jpg?v=4',
+    // coverVideo: off for now, the tile just zooms (was ransom-square.mp4)
+    shots: [
+      /* builds itself on load, like Backstage's (plugin-page.js) */
+      { src: 'projects/plugins/ransom-ui.jpg?v=4', alt: 'The Ransom panel',
+        build: { base: 'projects/plugins/ransom-build/base.jpg?v=1', layers: [
+          { src: 'projects/plugins/ransom-build/01-header.png?v=1', x: 16.857, y: 14.929, w: 66.214 },
+          { src: 'projects/plugins/ransom-build/02-stage.png?v=1', x: 16.857, y: 25.0, w: 66.214 },
+          { src: 'projects/plugins/ransom-build/03-text.png?v=1', x: 16.857, y: 56.214, w: 66.214 },
+          { src: 'projects/plugins/ransom-build/04-align.png?v=1', x: 16.857, y: 71.0, w: 21.643 },
+          { src: 'projects/plugins/ransom-build/05-boil.png?v=1', x: 38.929, y: 71.0, w: 44.143 },
+          { src: 'projects/plugins/ransom-build/06-add.png?v=1', x: 16.857, y: 79.857, w: 66.214 }
+        ] } },
+      { video: 'projects/plugins/ransom-square.mp4', src: 'projects/plugins/ransom-cover.jpg', alt: 'Ransom notes animating in' }
+    ],
+    intro: `<p>Type your text and Ransom builds it from real cutout letters: magazine scraps, newsprint, comics, record sleeves, band tees, embroidered patches, stickers, tickets and tin signs. The preview shows the exact letters you'll get. Click one to swap it, or shuffle them all, then hit Add.</p>
+<p>The note lands in your comp as one layer, sized to fit, and nothing is baked. Tilt, spacing, boil and the paper shadow are sliders right on that layer, and every letter inside is its own layer you can animate.</p>`,
+    video: { src: 'projects/plugins/ransom-loop.mp4', poster: 'projects/plugins/ransom-poster.jpg', title: 'Ransom notes in motion' },
+    features: [
+      '<strong>1,140 letters inside.</strong> A–Z, a–z, 0–9 and punctuation, at least 12 looks per character. Nothing to download separately.',
+      '<strong>What you see is what you get.</strong> Click any letter in the preview to swap its cutout before you add it.',
+      '<strong>Live in the comp.</strong> Tilt, size variation, up and down, letter and line spacing, all on the note layer.',
+      '<strong>Boil.</strong> A stop-motion twitch, with letters that swap cutouts as they boil.',
+      '<strong>Lines and alignment.</strong> One line or several, left, center or right, in mixed case like a real ransom note.',
+      '<strong>Travels with the project.</strong> The letters you use are copied next to your project file.'
+    ],
+    facts: [
+      ['Host', 'After Effects 2022 or later'],
+      ['Platform', 'macOS'],
+      ['Format', 'Panel (Window › Extensions)'],
+      ['Letters', '1,140 cutouts, included']
+    ],
+    status: 'building',
+    version: 'v2.0',
+    body: ''
+  },
 
 ];
