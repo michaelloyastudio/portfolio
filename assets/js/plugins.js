@@ -163,7 +163,7 @@ const plugins = [
           { src: 'projects/plugins/backstage-build/08-make.png?v=2', x: 38.0, y: 75.5, w: 42.714 },
           { src: 'projects/plugins/backstage-build/09-opts.png?v=2', x: 19.214, y: 86.571, w: 61.5 }
         ] } },
-      { video: 'projects/plugins/backstage-square.mp4?v=6', src: 'projects/plugins/backstage-cover.jpg?v=6', overlay: 'projects/plugins/backstage-social.svg?v=9', alt: 'A Backstage process video: the viewer with its handles, the final render and the whole timeline' },
+      { video: 'projects/plugins/backstage-pair.mp4?v=1', src: 'projects/plugins/backstage-pair.jpg?v=1', overlay: 'projects/plugins/backstage-social.svg?v=10', alt: 'A Backstage process video, and the same video in the TikTok feed' },
       { src: 'projects/plugins/backstage-ui-options.jpg?v=3', alt: 'The Backstage panel with its options open: range, render and timeline' }
     ],
     intro: `<p>Hit Generate and Backstage steps through your comp one frame at a time, screenshots the real viewer with every handle, path and gizmo After Effects draws, shoots the whole timeline, renders the comp, and builds a finished 4K process video, vertical 9:16 or wide 16:9. No screen recording, no cropping in Premiere.</p>

@@ -28,9 +28,9 @@
      site.css under CURSOR. */
   var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
   if (finePointer.matches) {
-    // .has-overlay: a product video that shows a phone UI on hover
+    // .shot-phone: the phone half of a side-by-side product video, which you can like
     // .lightbox-media: the piece open in a project's lightbox (a click steps on)
-    var CLICKABLE = 'a[href], button, [role="button"], summary, label, select, .tile, .band, .product-thumb, .product-shot-main.has-overlay, .lightbox-media';
+    var CLICKABLE = 'a[href], button, [role="button"], summary, label, select, .tile, .band, .product-thumb, .shot-phone, .lightbox-media';
     // the lightbox's own rule (project-page.js lbItems): work that isn't a
     // player with controls and isn't already a link. And a project's hero,
     // whose parallax layers answer the pointer.
