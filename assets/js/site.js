@@ -900,9 +900,8 @@
      can't autoplay sound), and when it ends the page is back, caught
      mid-zoom, overshoots and settles as if nothing happened. ?egg forces it.
      Not for reduced motion; it waits until the video can play through. */
-  /* TESTING (Nov 4 '26, Mike): every other About load instead of 1 in 1000, counted per browser.
-     Back to launch odds: set EGG_EVERY_OTHER to false. */
-  var EGG_EVERY_OTHER = true, eggTurn = false;
+  /* EGG_EVERY_OTHER: every other About load instead of 1 in 1000, counted per browser (for testing it). */
+  var EGG_EVERY_OTHER = false, eggTurn = false;
   if (EGG_EVERY_OTHER && document.querySelector('main.about')) {
     try { var eggN = (+localStorage.getItem('aboutEggN') || 0) + 1; localStorage.setItem('aboutEggN', eggN); eggTurn = eggN % 2 === 1; } catch (e) {}
   }
