@@ -147,21 +147,8 @@ const plugins = [
     cover: 'projects/plugins/receipts-tile.jpg?v=4',   // the panel behind, the TikTok phone in front (receipts repo tools/promo/thumbnail.html)
     // coverVideo: off while Mike makes a new one (was receipts-square.mp4?v=3)
     shots: [
-      /* build: the shot assembles itself on load (plugin-page.js): the empty
-         panel on its card, then each control in order. Cut from the same
-         capture as the still and placed in percent of the card, so the last
-         frame IS the still. Rebuild them together. */
-      { src: 'projects/plugins/receipts-ui.jpg?v=6', alt: 'The Receipts panel',
-        build: { base: 'projects/plugins/receipts-build/base.jpg?v=5', layers: [
-          { src: 'projects/plugins/receipts-build/01-header.png?v=5', x: 9.571, y: 15.0, w: 80.857 },
-          { src: 'projects/plugins/receipts-build/02-card1.png?v=5', x: 9.571, y: 30.5, w: 19.857 },
-          { src: 'projects/plugins/receipts-build/03-card2.png?v=5', x: 29.929, y: 30.5, w: 19.857 },
-          { src: 'projects/plugins/receipts-build/04-card3.png?v=5', x: 50.214, y: 30.5, w: 19.857 },
-          { src: 'projects/plugins/receipts-build/05-card4.png?v=5', x: 70.571, y: 30.5, w: 19.857 },
-          { src: 'projects/plugins/receipts-build/06-peek.png?v=5', x: 9.571, y: 69.857, w: 23.857 },
-          { src: 'projects/plugins/receipts-build/07-make.png?v=5', x: 34.286, y: 69.857, w: 56.143 },
-          { src: 'projects/plugins/receipts-build/08-opts.png?v=5', x: 9.571, y: 84.429, w: 80.857 }
-        ] } },
+      // the hero: the panel behind, the TikTok phone in front (same picture as the Tools tile and Gumroad)
+      { src: 'projects/plugins/receipts-tile.jpg?v=4', alt: 'The Receipts panel, and the video it makes in the TikTok feed' },
       { video: 'projects/plugins/receipts-pair.mp4?v=1', src: 'projects/plugins/receipts-pair.jpg?v=1', overlay: 'projects/plugins/receipts-social.svg?v=10', alt: 'A Receipts process video, and the same video in the TikTok feed' },
       { src: 'projects/plugins/receipts-ui-options.jpg?v=6', alt: 'The Receipts panel with its options open: on top, background, range, render and timeline' }
     ],
