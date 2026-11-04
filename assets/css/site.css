@@ -2715,3 +2715,11 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
 @media (prefers-reduced-motion: reduce) {
   .cursor i { transition: none; }
 }
+
+/* About's 1-in-1000 video (site.js): over everything, the page's own black
+   behind it; the whole clip shows (contain) on a tall phone, fills a wide screen */
+.about-egg { position: fixed; inset: 0; z-index: 2147483646; background: var(--bg); opacity: 0; pointer-events: none; display: flex; align-items: center; justify-content: center; }
+.about-egg.is-on { pointer-events: auto; }
+.about-egg video { width: 100%; height: 100%; object-fit: cover; display: block; }
+@media (max-aspect-ratio: 1/1) { .about-egg video { object-fit: contain; } }
+

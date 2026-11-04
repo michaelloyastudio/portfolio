@@ -892,4 +892,53 @@
 
   var yr = $('yr');
   if (yr) yr.textContent = new Date().getFullYear();
+
+  /* ── About: 1 in 1000 ─────────────────────────────────────────────
+     Once in a thousand visits the About page, just loaded, leans in a
+     little (fast, then slow), snaps out into a video (Mike filming this
+     very page off his monitor, assets/egg/about-egg.mp4, silent: a page
+     can't autoplay sound), and when it ends the page is back, caught
+     mid-zoom, overshoots and settles as if nothing happened. ?egg forces it.
+     Not for reduced motion; it waits until the video can play through. */
+  if (document.querySelector('main.about') && !calm.matches &&
+      (Math.random() < 1 / 1000 || /[?&]egg\b/.test(location.search))) {
+    var body = document.body, egg = document.createElement('div');
+    egg.className = 'about-egg';
+    egg.setAttribute('aria-hidden', 'true');
+    egg.innerHTML = '<video src="assets/egg/about-egg.mp4?v=1" muted playsinline preload="auto"></video>';
+    var ev = egg.querySelector('video');
+    var origin = function () { body.style.transformOrigin = '50% ' + (window.scrollY + window.innerHeight / 2) + 'px'; };
+    var clear = function () { ['transform', 'transformOrigin', 'opacity'].forEach(function (k) { body.style[k] = ''; }); };
+    var ready = new Promise(function (res) { ev.addEventListener('canplaythrough', res, { once: true }); });
+    var loaded = new Promise(function (res) { setTimeout(res, 1400); });   // the page's own load-in first
+    document.documentElement.appendChild(egg);   // outside body: body is what zooms
+    ev.load();
+    Promise.race([Promise.all([ready, loaded]), new Promise(function (res, rej) { setTimeout(rej, 8000); })]).then(function () {
+      origin();
+      // 1. lean in: fast, then slow
+      return body.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.05)' }],
+        { duration: 750, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'forwards' }).finished;
+    }).then(function () {
+      // 2. snap out: the page drops back and away as the video comes up, already pulling back
+      egg.classList.add('is-on');
+      var q = ev.play(); if (q && q.catch) q.catch(function () {});
+      body.animate([{ transform: 'scale(1.05)', opacity: 1 }, { transform: 'scale(0.86)', opacity: 0 }],
+        { duration: 240, easing: 'cubic-bezier(0.5, 0, 0.75, 0)', fill: 'forwards' });
+      ev.animate([{ transform: 'scale(1.22)' }, { transform: 'scale(1)' }],
+        { duration: 420, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' });
+      return egg.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 200, easing: 'ease-out', fill: 'forwards' }).finished
+        .then(function () { return new Promise(function (res) { ev.addEventListener('ended', res, { once: true }); }); });
+    }).then(function () {
+      // 3. the video ends zoomed into the page: cut to the page at that zoom, overshoot, settle
+      body.getAnimations().forEach(function (a) { a.cancel(); });
+      egg.remove();
+      origin();
+      return body.animate([{ transform: 'scale(1.16)' }, { transform: 'scale(0.985)', offset: 0.55 }, { transform: 'scale(1)' }],
+        { duration: 700, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' }).finished;
+    }).catch(function () {}).then(function () {
+      body.getAnimations().forEach(function (a) { a.cancel(); });
+      if (egg.parentNode) egg.remove();
+      clear();
+    });
+  }
 })();
