@@ -64,7 +64,7 @@ const plugins = [
     name: 'Guitar Hero MIDI',
     coverScale: 0.86,
     tagline: 'Play a Guitar Hero controller like a real instrument',
-    cover: 'projects/plugins/gh-midi-tile.jpg?v=6',
+    cover: 'projects/plugins/gh-midi-tile.jpg?v=7',
     coverVideo: 'projects/plugins/gh-midi-square.mp4?v=6',
     coverAt: 2.617,
     hero: 'projects/plugins/gh-midi-ui.jpg?v=7',
@@ -72,7 +72,7 @@ const plugins = [
        the overlays are its HUD snapshots composited into that window frame. */
     shots: [
       // the loop leads: it autoplays where the others build themselves
-      { video: 'projects/plugins/gh-midi-square.mp4?v=6', src: 'projects/plugins/gh-midi-square-poster.jpg?v=6', alt: 'GH MIDI playing its demo' },
+      { video: 'projects/plugins/gh-midi-square.mp4?v=6', src: 'projects/plugins/gh-midi-square-poster.jpg?v=7', alt: 'GH MIDI playing its demo' },
       { src: 'projects/plugins/gh-midi-frets.jpg?v=7',    alt: 'FRETS: choose what every fret plays' },
       { src: 'projects/plugins/gh-midi-settings.jpg?v=7', alt: 'Settings: controller mapping, lefty flip, whammy as bend or palm mute' },
       { src: 'projects/plugins/gh-midi-help.jpg?v=7',     alt: 'The built-in How to Play card' }
