@@ -178,7 +178,7 @@ const plugins = [
   {
     slug: 'clippings',
     name: 'Clippings for After Effects',
-    tagline: 'Type a word, get a ransom note',
+    tagline: 'Ransom-note text in one click',
     price: '$29',
     buy: 'https://michaelloyastudio.gumroad.com/l/clippings',
     cover: 'projects/plugins/clippings-ui.jpg?v=2',
@@ -198,7 +198,7 @@ const plugins = [
     ],
     intro: `<p>Type your text and Clippings builds it from real cutout letters: magazine scraps, newsprint, comics, record sleeves, band tees, embroidered patches, stickers, tickets and tin signs. The preview shows the exact letters you'll get. Click one to swap it, or shuffle them all, then hit Add.</p>
 <p>The note lands in your comp as one layer, sized to fit, and nothing is baked. Tilt, spacing, boil and the paper shadow are sliders right on that layer, and every letter inside is its own layer you can animate.</p>`,
-    video: { src: 'projects/plugins/clippings-loop.mp4?v=2', poster: 'projects/plugins/clippings-poster.jpg?v=2', title: 'Clippings in motion' },
+    video: { src: 'projects/plugins/clippings-loop.mp4?v=2', poster: 'projects/plugins/clippings-loop-start.jpg?v=1', title: 'Clippings in motion' },   // poster = its first frame: it waits there until the page has loaded in
     features: [
       '<strong>1,140 letters inside.</strong> A–Z, a–z, 0–9 and punctuation, at least 12 looks per character. Nothing to download separately.',
       '<strong>What you see is what you get.</strong> Click any letter in the preview to swap its cutout before you add it.',
@@ -214,7 +214,7 @@ const plugins = [
       ['Letters', '1,140 cutouts, included']
     ],
     status: 'building',
-    version: 'v2.0',
+    version: 'v1.0',
     body: ''
   },
 

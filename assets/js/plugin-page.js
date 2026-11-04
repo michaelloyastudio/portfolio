@@ -251,7 +251,7 @@
   if (p.video && p.video.src) {
     videoHtml = '<section class="plugin-section plugin-video plugin-loop">' +
       (p.video.heading ? '<h2 class="changelog-title">' + p.video.heading + '</h2>' : '') +
-      '<video src="' + p.video.src + '" poster="' + (p.video.poster || '') + '" muted autoplay loop playsinline preload="metadata" aria-label="' +
+      '<video src="' + p.video.src + '" poster="' + (p.video.poster || '') + '" muted loop playsinline preload="auto" aria-label="' +
       (p.video.title || p.name) + '"></video></section>';
   } else if (p.video || (p.stats && p.stats.items && p.stats.items.length)) {
     var vh = p.video && p.video.heading !== undefined ? p.video.heading : 'The Video';
@@ -293,6 +293,27 @@
     : '';
   var body = $('pluginBody');
   if (body) body.innerHTML = videoHtml + featHtml + logHtml + (p.body || '');
+
+  /* The loop holds on its first frame until the page has finished loading
+     in and the video is on screen, then plays from the top, so its own
+     opening (Clippings' letters landing) is seen rather than missed. */
+  var loopVid = document.querySelector('.plugin-loop video');
+  if (loopVid) {
+    var guide = loopVid.closest('.plugin-guide') || loopVid.parentNode;
+    var landed = Promise.all((guide.getAnimations ? guide.getAnimations() : []).map(function (a) { return a.finished; }))
+      .catch(function () {});
+    var seen = new Promise(function (res) {
+      if (!window.IntersectionObserver) return res();
+      var io = new IntersectionObserver(function (es) {
+        if (es.some(function (e) { return e.isIntersecting; })) { io.disconnect(); res(); }
+      }, { threshold: 0.6 });
+      io.observe(loopVid);
+    });
+    Promise.all([landed, seen]).then(function () {
+      try { loopVid.currentTime = 0; } catch (e) {}
+      var q = loopVid.play(); if (q && q.catch) q.catch(function () {});
+    });
+  }
 
   /* The stats fill the text column: the figures are sized so that, with the
      row's ordinary gap between them, the first starts at its left edge and
