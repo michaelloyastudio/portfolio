@@ -151,20 +151,21 @@ const plugins = [
          panel on its card, then each control in order. Cut from the same
          capture as the still and placed in percent of the card, so the last
          frame IS the still. Rebuild them together. */
-      { src: 'projects/plugins/receipts-ui.jpg?v=3', alt: 'The Receipts panel',
-        build: { base: 'projects/plugins/receipts-build/base.jpg?v=2', layers: [
-          { src: 'projects/plugins/receipts-build/01-header.png?v=2', x: 19.214, y: 13.071, w: 61.5 },
-          { src: 'projects/plugins/receipts-build/02-card1.png?v=2', x: 19.214, y: 24.857, w: 20.286 },
-          { src: 'projects/plugins/receipts-build/03-card2.png?v=2', x: 39.786, y: 24.857, w: 20.357 },
-          { src: 'projects/plugins/receipts-build/04-card3.png?v=2', x: 60.429, y: 24.857, w: 20.286 },
-          { src: 'projects/plugins/receipts-build/05-top.png?v=2', x: 19.214, y: 63.286, w: 61.5 },
-          { src: 'projects/plugins/receipts-build/06-size.png?v=2', x: 19.214, y: 68.714, w: 61.5 },
-          { src: 'projects/plugins/receipts-build/07-peek.png?v=2', x: 19.214, y: 75.5, w: 18.143 },
-          { src: 'projects/plugins/receipts-build/08-make.png?v=2', x: 38.0, y: 75.5, w: 42.714 },
-          { src: 'projects/plugins/receipts-build/09-opts.png?v=2', x: 19.214, y: 86.571, w: 61.5 }
+      { src: 'projects/plugins/receipts-ui.jpg?v=4', alt: 'The Receipts panel',
+        build: { base: 'projects/plugins/receipts-build/base.jpg?v=3', layers: [
+          { src: 'projects/plugins/receipts-build/01-header.png?v=3', x: 15.571, y: 13.786, w: 68.857 },
+          { src: 'projects/plugins/receipts-build/02-card1.png?v=3', x: 15.571, y: 27.0, w: 16.929 },
+          { src: 'projects/plugins/receipts-build/03-card2.png?v=3', x: 32.929, y: 27.0, w: 16.857 },
+          { src: 'projects/plugins/receipts-build/04-card3.png?v=3', x: 50.214, y: 27.0, w: 16.857 },
+          { src: 'projects/plugins/receipts-build/05-card4.png?v=3', x: 67.5, y: 27.0, w: 16.929 },
+          { src: 'projects/plugins/receipts-build/06-top.png?v=3', x: 15.571, y: 59.714, w: 68.857 },
+          { src: 'projects/plugins/receipts-build/07-size.png?v=3', x: 15.571, y: 65.714, w: 68.857 },
+          { src: 'projects/plugins/receipts-build/08-peek.png?v=3', x: 15.571, y: 73.286, w: 20.357 },
+          { src: 'projects/plugins/receipts-build/09-make.png?v=3', x: 36.571, y: 73.286, w: 47.857 },
+          { src: 'projects/plugins/receipts-build/10-opts.png?v=3', x: 15.571, y: 85.714, w: 68.857 }
         ] } },
       { video: 'projects/plugins/receipts-pair.mp4?v=1', src: 'projects/plugins/receipts-pair.jpg?v=1', overlay: 'projects/plugins/receipts-social.svg?v=10', alt: 'A Receipts process video, and the same video in the TikTok feed' },
-      { src: 'projects/plugins/receipts-ui-options.jpg?v=3', alt: 'The Receipts panel with its options open: range, render and timeline' }
+      { src: 'projects/plugins/receipts-ui-options.jpg?v=4', alt: 'The Receipts panel with its options open: range, render and timeline' }
     ],
     intro: `<p>Hit Generate and Receipts steps through your comp one frame at a time, screenshots the real viewer with every handle, path and gizmo After Effects draws, shoots the whole timeline, renders the comp, and builds a finished 4K process video, vertical 9:16 or wide 16:9. No screen recording, no cropping in Premiere.</p>
 <p>It finds the viewer and the timeline on its own and fits the comp in the viewer, then puts your zoom, playhead and selection back when it's done. Preview shows one frame in every look before you commit.</p>`,
