@@ -254,7 +254,8 @@
       '<video src="' + p.video.src + '" poster="' + (p.video.poster || '') + '" muted autoplay loop playsinline preload="metadata" aria-label="' +
       (p.video.title || p.name) + '"></video></section>';
   } else if (p.video || (p.stats && p.stats.items && p.stats.items.length)) {
-    videoHtml = '<section class="plugin-section plugin-video"><h2 class="changelog-title">' + ((p.video && p.video.heading) || 'The Video') + '</h2>' +
+    var vh = p.video && p.video.heading !== undefined ? p.video.heading : 'The Video';
+    videoHtml = '<section class="plugin-section plugin-video">' + (vh ? '<h2 class="changelog-title">' + vh + '</h2>' : '') +
       /* A cover, not the player: YouTube's player is another page, and this
          one gets no mouse events over it, so the site's cursor stuck at its
          edge. The thumbnail and play button are this page's own; a click

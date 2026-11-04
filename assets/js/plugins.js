@@ -92,7 +92,7 @@ const plugins = [
        14,325 likes, TikTok 264,083 / 6,517 (two TikTok counts app-rounded),
        total 706,672 views / 20,842 likes / 293 comments. Shown rounded down. */
     stats: { items: [['700K+', 'views'], ['20K+', 'likes']], note: 'On GH MIDI videos across Instagram and TikTok' },
-    video: { youtube: '8DL_x7Ll75Y', title: 'Making GH MIDI', heading: 'The Process' },
+    video: { youtube: '8DL_x7Ll75Y', title: 'Making GH MIDI', heading: '' },   // no section title (Mike, Nov 4 '26; was 'The Process')
     changelog: [
       { version: '1.2', date: 'October 20, 2026', items: [
         '<strong>Change what any fret plays.</strong> The new FRETS editor swaps the chord or note on any fret and on all ten two-fret pairs. Your key\'s chords are listed first, and a switch sets whether a change applies to every key or just the one you\'re in.',
