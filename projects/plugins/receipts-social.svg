@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080" width="1080" height="1080">
-  <!-- The TikTok feed's UI for the phone half of backstage-pair.mp4 (the right of the card; the
-       video as Backstage makes it is on the left). Measured off a real post on an iPhone (1320x2868
+  <!-- The TikTok feed's UI for the phone half of receipts-pair.mp4 (the right of the card; the
+       video as Receipts makes it is on the left). Measured off a real post on an iPhone (1320x2868
        screenshot, Nov 2026): the app scales 9:16 to COVER the screen above its bottom bar, 1473 px
        wide on a 1320 screen, so about 5% of each side never shows, and the bar takes the last 257 px.
        Everything below is in those SCREEN pixels, 0.3 card px each, screen origin at card 612, 110,

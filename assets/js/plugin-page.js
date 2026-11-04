@@ -45,7 +45,7 @@
       if (s.overlay) o.src = s.overlay;
       o.parentNode.classList.toggle('has-overlay', !!s.overlay);
     };
-    // the overlay's like heart, in its screen px (backstage-social.svg)
+    // the overlay's like heart, in its screen px (receipts-social.svg)
     var HEART = 'M1228 1738c-41-30-50-43-50-61 0-17 13-29 27-29 10 0 19 6 23 14 4-8 13-14 23-14 14 0 27 12 27 29 0 18-9 31-50 61z';
     shot.innerHTML =
       '<div class="product-shot-main">' + media(shots[0]) +

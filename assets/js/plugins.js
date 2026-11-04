@@ -136,39 +136,39 @@ const plugins = [
   },
 
   /* Paid AE tools. Set `buy` to the Gumroad link and the Buy button appears.
-     Backstage's loops are cut from a real Backstage video (Control Me). */
+     Receipts' loops are cut from a real Receipts video (Control Me). */
   {
-    slug: 'backstage',
-    name: 'Backstage for After Effects',
+    slug: 'receipts',
+    name: 'Receipts for After Effects',
     tagline: 'Social-ready process videos in one click',
     price: '$19.99',
     was: '$29.99',
     buy: null,
-    cover: 'projects/plugins/backstage-ui.jpg?v=3',
-    // coverVideo: off while Mike makes a new one (was backstage-square.mp4?v=3)
+    cover: 'projects/plugins/receipts-ui.jpg?v=3',
+    // coverVideo: off while Mike makes a new one (was receipts-square.mp4?v=3)
     shots: [
       /* build: the shot assembles itself on load (plugin-page.js): the empty
          panel on its card, then each control in order. Cut from the same
          capture as the still and placed in percent of the card, so the last
          frame IS the still. Rebuild them together. */
-      { src: 'projects/plugins/backstage-ui.jpg?v=3', alt: 'The Backstage panel',
-        build: { base: 'projects/plugins/backstage-build/base.jpg?v=2', layers: [
-          { src: 'projects/plugins/backstage-build/01-header.png?v=2', x: 19.214, y: 13.071, w: 61.5 },
-          { src: 'projects/plugins/backstage-build/02-card1.png?v=2', x: 19.214, y: 24.857, w: 20.286 },
-          { src: 'projects/plugins/backstage-build/03-card2.png?v=2', x: 39.786, y: 24.857, w: 20.357 },
-          { src: 'projects/plugins/backstage-build/04-card3.png?v=2', x: 60.429, y: 24.857, w: 20.286 },
-          { src: 'projects/plugins/backstage-build/05-top.png?v=2', x: 19.214, y: 63.286, w: 61.5 },
-          { src: 'projects/plugins/backstage-build/06-size.png?v=2', x: 19.214, y: 68.714, w: 61.5 },
-          { src: 'projects/plugins/backstage-build/07-peek.png?v=2', x: 19.214, y: 75.5, w: 18.143 },
-          { src: 'projects/plugins/backstage-build/08-make.png?v=2', x: 38.0, y: 75.5, w: 42.714 },
-          { src: 'projects/plugins/backstage-build/09-opts.png?v=2', x: 19.214, y: 86.571, w: 61.5 }
+      { src: 'projects/plugins/receipts-ui.jpg?v=3', alt: 'The Receipts panel',
+        build: { base: 'projects/plugins/receipts-build/base.jpg?v=2', layers: [
+          { src: 'projects/plugins/receipts-build/01-header.png?v=2', x: 19.214, y: 13.071, w: 61.5 },
+          { src: 'projects/plugins/receipts-build/02-card1.png?v=2', x: 19.214, y: 24.857, w: 20.286 },
+          { src: 'projects/plugins/receipts-build/03-card2.png?v=2', x: 39.786, y: 24.857, w: 20.357 },
+          { src: 'projects/plugins/receipts-build/04-card3.png?v=2', x: 60.429, y: 24.857, w: 20.286 },
+          { src: 'projects/plugins/receipts-build/05-top.png?v=2', x: 19.214, y: 63.286, w: 61.5 },
+          { src: 'projects/plugins/receipts-build/06-size.png?v=2', x: 19.214, y: 68.714, w: 61.5 },
+          { src: 'projects/plugins/receipts-build/07-peek.png?v=2', x: 19.214, y: 75.5, w: 18.143 },
+          { src: 'projects/plugins/receipts-build/08-make.png?v=2', x: 38.0, y: 75.5, w: 42.714 },
+          { src: 'projects/plugins/receipts-build/09-opts.png?v=2', x: 19.214, y: 86.571, w: 61.5 }
         ] } },
-      { video: 'projects/plugins/backstage-pair.mp4?v=1', src: 'projects/plugins/backstage-pair.jpg?v=1', overlay: 'projects/plugins/backstage-social.svg?v=10', alt: 'A Backstage process video, and the same video in the TikTok feed' },
-      { src: 'projects/plugins/backstage-ui-options.jpg?v=3', alt: 'The Backstage panel with its options open: range, render and timeline' }
+      { video: 'projects/plugins/receipts-pair.mp4?v=1', src: 'projects/plugins/receipts-pair.jpg?v=1', overlay: 'projects/plugins/receipts-social.svg?v=10', alt: 'A Receipts process video, and the same video in the TikTok feed' },
+      { src: 'projects/plugins/receipts-ui-options.jpg?v=3', alt: 'The Receipts panel with its options open: range, render and timeline' }
     ],
-    intro: `<p>Hit Generate and Backstage steps through your comp one frame at a time, screenshots the real viewer with every handle, path and gizmo After Effects draws, shoots the whole timeline, renders the comp, and builds a finished 4K process video, vertical 9:16 or wide 16:9. No screen recording, no cropping in Premiere.</p>
+    intro: `<p>Hit Generate and Receipts steps through your comp one frame at a time, screenshots the real viewer with every handle, path and gizmo After Effects draws, shoots the whole timeline, renders the comp, and builds a finished 4K process video, vertical 9:16 or wide 16:9. No screen recording, no cropping in Premiere.</p>
 <p>It finds the viewer and the timeline on its own and fits the comp in the viewer, then puts your zoom, playhead and selection back when it's done. Preview shows one frame in all three looks before you commit.</p>`,
-    video: { src: 'projects/plugins/backstage-loop.mp4?v=4', poster: 'projects/plugins/backstage-poster.jpg?v=4', title: 'A 16:9 Backstage video' },
+    video: { src: 'projects/plugins/receipts-loop.mp4?v=4', poster: 'projects/plugins/receipts-poster.jpg?v=4', title: 'A 16:9 Receipts video' },
     features: [
       '<strong>The real viewer.</strong> Everything After Effects draws: handles, motion paths, 3D gizmos, effect points.',
       '<strong>The whole timeline.</strong> Every layer in one shot, with or without the layer names, and the playhead moving across it.',
@@ -199,7 +199,7 @@ const plugins = [
     cover: 'projects/plugins/ransom-ui.jpg?v=4',
     // coverVideo: off for now, the tile just zooms (was ransom-square.mp4)
     shots: [
-      /* builds itself on load, like Backstage's (plugin-page.js) */
+      /* builds itself on load, like Receipts' (plugin-page.js) */
       { src: 'projects/plugins/ransom-ui.jpg?v=4', alt: 'The Ransom panel',
         build: { base: 'projects/plugins/ransom-build/base.jpg?v=1', layers: [
           { src: 'projects/plugins/ransom-build/01-header.png?v=1', x: 16.857, y: 14.929, w: 66.214 },

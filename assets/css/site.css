@@ -1547,7 +1547,7 @@ button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-lin
 
 .product-shot-main { position: relative; }
 /* A shot's overlay: a social app's UI over the phone half of a side-by-side
-   video (backstage-pair.mp4: the video as Backstage makes it on the left, the
+   video (receipts-pair.mp4: the video as Receipts makes it on the left, the
    same video in the TikTok feed on the right). Always on, no hover. The phone
    is the only part that does anything: like it and the glass cursor. */
 .product-shot .shot-overlay {
@@ -1563,7 +1563,7 @@ button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-lin
 .product-shot-main.has-overlay video { border: 0; background: var(--parchment); }
 .product-shot .shot-overlay[hidden], .product-shot .shot-phone[hidden] { display: none; }
 /* The phone's screen on the 1080 card: 1320x2868 screen px at 0.3, from
-   612,110 (backstage-social.svg). Inside it everything is in percent of the
+   612,110 (receipts-social.svg). Inside it everything is in percent of the
    screen, so the red heart sits exactly on the SVG's white one (screen px
    1178,1648 100x90) and pops in when liked; the hit area is a little bigger
    than the heart. A double tap drops a big heart where it landed, tilted,
@@ -2593,8 +2593,8 @@ main.product + .site-foot { padding-top: clamp(3rem, 7vh, 4.5rem); }
    site.js adds .cursor (and html.has-cursor) on mice and trackpads only.
    A red dot (the brand red: a pointer is an active state) with a soft
    shadow; over anything clickable (.is-glass) it swells into a disc of
-   Parchment-tinted glass: flat, lightly softening and lifting what's under it, a
-   hairline edge and a glow just inside. Still, no shimmer. */
+   Parchment-tinted glass: flat, lightly softening and lifting what's under it,
+   with a hairline edge. No inner glow (Mike's call), no shimmer. */
 html.has-cursor, html.has-cursor * { cursor: none !important; }
 /* !important on its fade: each page's inline first-paint rule (body > *)
    and the leaving fade both outrank a class, and either one took the dot
@@ -2631,7 +2631,6 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
           backdrop-filter: blur(0.6px) saturate(1.25) brightness(1.12);
   box-shadow:
     inset 0 0 0 1px rgba(232, 224, 212, 0.6),    /* the edge, a hairline */
-    inset 0 0 10px rgba(232, 224, 212, 0.3),     /* a soft glow just inside it */
     0 4px 12px rgba(0, 0, 0, 0.22);
 }
 .cursor.is-down i { transform: translate(-50%, -50%) scale(0.86); }

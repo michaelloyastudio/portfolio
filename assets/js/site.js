@@ -645,7 +645,7 @@
           '</div>' +
         '</div>' +
         /* The price on the grey line, where a project shows its category,
-           then the full name ("Backstage for After Effects"), set a size
+           then the full name ("Receipts for After Effects"), set a size
            down from a project's title so it holds one line. (Tried: the
            price in the arrow's place, Nov 3 '26; names got too small.) */
         '<div class="tile-meta">' +
