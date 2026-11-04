@@ -185,8 +185,8 @@ const plugins = [
     cover: 'projects/plugins/clippings-ui.jpg?v=2',
     // coverVideo: off for now, the tile just zooms (was clippings-square.mp4)
     shots: [
-      // the real panel, live (panel-demos.js): type, swap, shuffle, align, boil
-      { demo: 'clippings', src: 'projects/plugins/clippings-ui.jpg?v=2', alt: 'The Clippings panel: type your own words' },
+      // the real panel, live (panel-demos.js): shuffle, align, boil; the text is fixed
+      { demo: 'clippings', src: 'projects/plugins/clippings-ui.jpg?v=2', alt: 'The Clippings panel: shuffle the letters' },
       // a still, not the loop: the 1,140 LETTERS card (promo/clippings at 16.2 s, no piece twice in a note, the wall blurred)
       { src: 'projects/plugins/clippings-1140.jpg?v=2', alt: '1,140 cutout letters' }
     ],

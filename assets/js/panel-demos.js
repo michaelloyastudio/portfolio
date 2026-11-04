@@ -6,8 +6,8 @@
    receipts: the real panel (demos/receipts/, in an iframe) behind, the TikTok
      phone in front. Clicking a look card on the panel plays that look on the
      phone, from the same moment (receipts-look-<look>.mp4, one per look).
-   clippings: the real panel (demos/clippings/) centred: type, swap letters,
-     shuffle, align, boil. */
+   clippings: the real panel (demos/clippings/) centred, its text fixed:
+     shuffle, align, boil, Add. */
 (function () {
   var LOOKS = ['stack', 'split', 'viewer', 'handles'];
   var VID = function (l) { return 'projects/plugins/receipts-look-' + l + '.mp4?v=1'; };
@@ -64,7 +64,7 @@
     el.innerHTML =
       '<div class="demo-stage">' +
         '<div class="demo-panel demo-panel--solo"><div class="demo-tab">Clippings <i></i></div>' +
-          '<div class="demo-frame"><iframe src="demos/clippings/index.html?v=2" title="The Clippings panel: type your own words" scrolling="no"></iframe></div></div>' +
+          '<div class="demo-frame"><iframe src="demos/clippings/index.html?v=3" title="The Clippings panel: shuffle the letters" scrolling="no"></iframe></div></div>' +
       '</div>';
     fit(el, el.querySelector('.demo-stage'));
   }
