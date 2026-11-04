@@ -1788,9 +1788,12 @@ button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-lin
 }
 .product-stat { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
 .product-stat-fig {
-  font-size: clamp(3rem, 7.4vw, 8rem);
+  font-size: clamp(2.75rem, 5.6vw, 6rem);
   font-weight: 700;
   letter-spacing: -0.045em;
+  /* the last glyph's negative tracking let the + hang past the box (and the
+     column edge): give it back on the right */
+  padding-right: 0.045em;
   line-height: 0.95;
   color: var(--fg);
 }
