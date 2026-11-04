@@ -935,7 +935,7 @@ button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-lin
   /* Two Tools tiles across a phone leaves ~140px each. The category and
      title were wrapping into the arrow, so they get a size the column
      can hold. Work tiles are one column here and don't need this. */
-  .plugin-grid .tile-cat   { font-size: 0.6rem; letter-spacing: 0.12em; white-space: nowrap; }
+  .plugin-grid .tile-cat   { font-size: 0.78rem; white-space: nowrap; }
   .plugin-grid .tile-title { font-size: 1rem; }
   .plugin-grid .tile-meta  { gap: 0.6rem; }
   .plugin-grid .tile-arrow { font-size: 1.1rem; }
@@ -1265,9 +1265,10 @@ button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-lin
 .plugin-grid .tile:hover .tile-media img,
 .plugin-grid .tile:hover .thumb-video { transform: scale(calc(var(--fit, 1) * 1.045)); }
 
-/* Same treatment as the Studio bands: category over the title on the left,
-   an arrow on the right, and the hover is the title and the arrow, not a
-   line growing under the row. */
+/* The title on the left with its category (a Tools tile: its price) under
+   it in plain grey, title case, no tracking (Mike, Nov 4 '26: it was small
+   caps over the title, like the Studio bands); an arrow on the right, and the
+   hover is the title and the arrow, not a line growing under the row. */
 .tile-meta {
   display: flex;
   align-items: flex-end;
@@ -1276,11 +1277,11 @@ button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-lin
   padding-top: 1rem;
 }
 .tile-cat {
-  font-size: 0.68rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
+  font-size: clamp(0.85rem, 1vw, 0.98rem);
+  letter-spacing: 0;
+  text-transform: none;
   color: var(--muted);
-  margin: 0 0 0.4rem;
+  margin: 0.4rem 0 0;
 }
 .tile-title {
   font-size: clamp(1.1rem, 1.5vw, 1.6rem);

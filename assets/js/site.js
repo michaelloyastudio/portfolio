@@ -657,8 +657,8 @@
         '</div>' +
         '<div class="tile-meta">' +
           '<div>' +
-            '<p class="tile-cat">' + p.category + '</p>' +
             '<h2 class="tile-title">' + p.title + '</h2>' +
+            '<p class="tile-cat">' + p.category + '</p>' +
           '</div>' +
           '<span class="tile-arrow">' + CHEV + '</span>' +
         '</div>';
@@ -736,8 +736,8 @@
            price in the arrow's place, Nov 3 '26; names got too small.) */
         '<div class="tile-meta">' +
           '<div class="tile-text">' +
-            '<p class="tile-cat">' + (p.price ? (p.was ? '<s class="price-was">' + p.was + '</s> ' : '') + p.price : ((p.downloads && p.downloads.length) || p.download ? 'Free' : 'In development')) + '</p>' +
             '<h2 class="tile-title">' + p.name + '</h2>' +
+            '<p class="tile-cat">' + (p.price ? (p.was ? '<s class="price-was">' + p.was + '</s> ' : '') + p.price : ((p.downloads && p.downloads.length) || p.download ? 'Free' : 'In development')) + '</p>' +
           '</div>' +
           '<span class="tile-arrow">' + CHEV + '</span>' +
         '</div>';
