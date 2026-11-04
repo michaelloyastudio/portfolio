@@ -302,6 +302,9 @@
   });
 
   var arriveAt = null;   // set by the /all block further down
+  // the combined page's halves: path → the section it lands on (null = the top)
+  var HALVES = { '/work': null, '/tools': 'tools' };
+  var landed = false;    // the combined page has made its first landing (URL may follow scroll)
   var LEAVE_MS = 200;
   var calm = window.matchMedia('(prefers-reduced-motion: reduce)');
   function calmMotion() { return calm.matches; }
@@ -311,17 +314,17 @@
     if (!a || (a.target && a.target !== '_self') || a.hasAttribute('download')) return;
     if (a.origin !== location.origin || !/^https?:$/.test(a.protocol)) return;
     if (/\.(?!html$)[a-z0-9]+$/i.test(a.pathname)) return;           // a file, not a page
-    /* Work and Tools in the menu both point at /all (Tools at #tools).
-       Already on /all, there's no page to load: shut the menu and arrive
-       at the section the way a fresh load would (arriveAt, below). */
-    if (a.pathname === location.pathname && a.closest('.menu-links') && arriveAt) {
+    /* Work (/work) and Tools (/tools) in the menu are the two halves of one
+       page (all.html). Already on it, there's no page to load: shut the menu
+       and arrive at the half the way a fresh load would (arriveAt, below). */
+    var half = arriveAt && a.closest('.menu-links') ? HALVES[a.pathname] : undefined;
+    if (half !== undefined) {
       e.preventDefault();
       if (document.body.classList.contains('menu-open')) burger.click();
       // a frame later: in the same one the page is still scroll-locked and
       // the browser drops the scroll
-      var to = a.hash ? document.querySelector(a.hash) : null;
-      requestAnimationFrame(function () { arriveAt(to); });
-      history.replaceState(null, '', a.pathname + a.hash);
+      requestAnimationFrame(function () { arriveAt(half ? $(half) : null); });
+      history.replaceState(null, '', a.pathname);
       return;
     }
     if (a.pathname === location.pathname && a.hash) return;           // same-page anchor
@@ -644,11 +647,14 @@
      the tile instead of promising a button that isn't there.
      Title and host only under the shot; the tagline lives on the
      product page. */
-  /* On /all the menu marks whichever half is on screen: Work until the
-     Tools head reaches the top third of the window, then Tools. */
+  /* On the combined page the menu marks whichever half is on screen: Work
+     until the Tools head reaches the top third of the window, then Tools.
+     The address bar follows (/work, /tools), so a copied link or a reload
+     lands where the reader was. replaceState only on a change: Safari
+     throttles it. */
   var toolsHead = $('tools');
-  var menuWork = document.querySelector('.menu-links a[href="/all"]');
-  var menuTools = document.querySelector('.menu-links a[href="/all#tools"]');
+  var menuWork = document.querySelector('.menu-links a[href="/work"]');
+  var menuTools = document.querySelector('.menu-links a[href="/tools"]');
   if (toolsHead && menuWork && menuTools) {
     var markSection = function () {
       var inTools = toolsHead.getBoundingClientRect().top < window.innerHeight / 3;
@@ -656,6 +662,8 @@
       menuTools.toggleAttribute('aria-current', inTools);
       if (inTools) menuTools.setAttribute('aria-current', 'page');
       else menuWork.setAttribute('aria-current', 'page');
+      var path = inTools ? '/tools' : '/work';
+      if (landed && location.pathname !== path) history.replaceState(null, '', path + location.search);
     };
     window.addEventListener('scroll', markSection, { passive: true });
     window.addEventListener('load', markSection);
@@ -773,6 +781,9 @@
        comes a frame too late, and the first look would see Work at the
        top and play it. all.html turns smooth scrolling off for this. */
     arriveAt(location.hash ? document.querySelector('.all-section' + location.hash) : null);
+    // the stubs land here as /all or /all#tools: show the half's own address
+    history.replaceState(null, '', (location.hash === '#tools' ? '/tools' : '/work') + location.search);
+    landed = true;
   }
 
   /* ── Featured bands (studio page) ────────────────────────────────

@@ -8,9 +8,8 @@ Michael Loya's portfolio. Static, multi-page, no build step and no dependencies.
 
 ## Pages
 - **`index.html`** — Studio. The main page: video hero, three featured project bands, statement, closing CTA.
-- **`work.html`** — Work. All projects in a two-column grid; clicking one opens the detail overlay.
-- **`about.html`** — About. Bio, education, experience, skills, achievements, interests, resume.
-- **`tools.html`** — Tools (was Plugins). Same two-column `.tile` grid as Work, rendered from `plugins.js` — title and price under the shot, no description line; each tile opens `/<slug>.html` (`gh-midi.html`; Lookout is pulled for now, one revert away), which `plugin-page.js` fills in the same way `project-page.js` fills a project.
+- **`all.html`** — Work and Tools, one page: the project grid, then the tools grid (rendered from `plugins.js`, title and price under the shot; each tile opens `/<slug>`, which `plugin-page.js` fills the way `project-page.js` fills a project). Scroll runs straight from one into the other.
+- **`work.html` / `tools.html`** — stubs that forward to `/all` and `/all#tools`. They exist so the public addresses are **`/work` and `/tools`**: on arrival `site.js` swaps the address to `/work` or `/tools`, and while you scroll it follows whichever half is on screen (replaceState, only on a change). Menu links point at `/work` and `/tools`; on the page itself they jump in place. Nothing should link to `/all`.
 
 ## Shared files
 - **`assets/css/site.css`** — every style on the site. Tokens at the top; the semantic block (`--bg`, `--fg`, `--accent`…) is the only thing a light mode would need to change.
