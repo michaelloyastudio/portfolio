@@ -151,30 +151,28 @@ const plugins = [
          panel on its card, then each control in order. Cut from the same
          capture as the still and placed in percent of the card, so the last
          frame IS the still. Rebuild them together. */
-      { src: 'projects/plugins/receipts-ui.jpg?v=4', alt: 'The Receipts panel',
-        build: { base: 'projects/plugins/receipts-build/base.jpg?v=3', layers: [
-          { src: 'projects/plugins/receipts-build/01-header.png?v=3', x: 15.571, y: 13.786, w: 68.857 },
-          { src: 'projects/plugins/receipts-build/02-card1.png?v=3', x: 15.571, y: 27.0, w: 16.929 },
-          { src: 'projects/plugins/receipts-build/03-card2.png?v=3', x: 32.929, y: 27.0, w: 16.857 },
-          { src: 'projects/plugins/receipts-build/04-card3.png?v=3', x: 50.214, y: 27.0, w: 16.857 },
-          { src: 'projects/plugins/receipts-build/05-card4.png?v=3', x: 67.5, y: 27.0, w: 16.929 },
-          { src: 'projects/plugins/receipts-build/06-top.png?v=3', x: 15.571, y: 59.714, w: 68.857 },
-          { src: 'projects/plugins/receipts-build/07-size.png?v=3', x: 15.571, y: 65.714, w: 68.857 },
-          { src: 'projects/plugins/receipts-build/08-peek.png?v=3', x: 15.571, y: 73.286, w: 20.357 },
-          { src: 'projects/plugins/receipts-build/09-make.png?v=3', x: 36.571, y: 73.286, w: 47.857 },
-          { src: 'projects/plugins/receipts-build/10-opts.png?v=3', x: 15.571, y: 85.714, w: 68.857 }
+      { src: 'projects/plugins/receipts-ui.jpg?v=5', alt: 'The Receipts panel',
+        build: { base: 'projects/plugins/receipts-build/base.jpg?v=4', layers: [
+          { src: 'projects/plugins/receipts-build/01-header.png?v=4', x: 13.0, y: 14.286, w: 74.0 },
+          { src: 'projects/plugins/receipts-build/02-card1.png?v=4', x: 13.0, y: 28.5, w: 18.143 },
+          { src: 'projects/plugins/receipts-build/03-card2.png?v=4', x: 31.571, y: 28.5, w: 18.214 },
+          { src: 'projects/plugins/receipts-build/04-card3.png?v=4', x: 50.214, y: 28.5, w: 18.143 },
+          { src: 'projects/plugins/receipts-build/05-card4.png?v=4', x: 68.786, y: 28.5, w: 18.214 },
+          { src: 'projects/plugins/receipts-build/06-top.png?v=4', x: 13.0, y: 63.643, w: 74.0 },
+          { src: 'projects/plugins/receipts-build/07-peek.png?v=4', x: 13.0, y: 71.857, w: 21.857 },
+          { src: 'projects/plugins/receipts-build/08-make.png?v=4', x: 35.571, y: 71.857, w: 51.429 },
+          { src: 'projects/plugins/receipts-build/09-opts.png?v=4', x: 13.0, y: 85.143, w: 74.0 }
         ] } },
       { video: 'projects/plugins/receipts-pair.mp4?v=1', src: 'projects/plugins/receipts-pair.jpg?v=1', overlay: 'projects/plugins/receipts-social.svg?v=10', alt: 'A Receipts process video, and the same video in the TikTok feed' },
-      { src: 'projects/plugins/receipts-ui-options.jpg?v=4', alt: 'The Receipts panel with its options open: range, render and timeline' }
+      { src: 'projects/plugins/receipts-ui-options.jpg?v=5', alt: 'The Receipts panel with its options open: background, range, render and timeline' }
     ],
-    intro: `<p>Hit Generate and Receipts steps through your comp one frame at a time, screenshots the real viewer with every handle, path and gizmo After Effects draws, shoots the whole timeline, renders the comp, and builds a finished 4K process video, vertical 9:16 or wide 16:9. No screen recording, no cropping in Premiere.</p>
+    intro: `<p>Hit Generate and Receipts steps through your comp one frame at a time, screenshots the real viewer with every handle, path and gizmo After Effects draws, shoots the whole timeline, renders the comp, and builds a finished 4K 9:16 process video. No screen recording, no cropping in Premiere.</p>
 <p>It finds the viewer and the timeline on its own and fits the comp in the viewer, then puts your zoom, playhead and selection back when it's done. Preview shows one frame in every look before you commit.</p>`,
-    video: { src: 'projects/plugins/receipts-loop.mp4?v=4', poster: 'projects/plugins/receipts-poster.jpg?v=4', title: 'A 16:9 Receipts video' },
     features: [
       '<strong>The real viewer.</strong> Everything After Effects draws: handles, motion paths, 3D gizmos, effect points.',
       '<strong>The whole timeline.</strong> Every layer in one shot, with or without the layer names, and the playhead moving across it.',
       '<strong>Four looks.</strong> Stack, Split or Viewer, with the final render or the handles on top. Or Handles: the viewer on its own, no timeline.',
-      '<strong>Two sizes.</strong> 9:16 that stays clear of the Reels, TikTok and Shorts app bars, or 16:9 for YouTube.',
+      '<strong>Grey or no background.</strong> A 9:16 frame in After Effects\' grey that stays clear of the Reels, TikTok and Shorts app bars, or none: the video cropped right to the edges.',
       '<strong>Any comp size.</strong> 16:9, 9:16, square, ultra-wide. Tall comps go side by side.',
       '<strong>One button.</strong> No layers to pick and no regions to draw.'
     ],
@@ -182,7 +180,7 @@ const plugins = [
       ['Host', 'After Effects 2022 or later'],
       ['Platform', 'macOS 14+ and Windows 10/11'],
       ['Format', 'Panel (Window › Extensions)'],
-      ['Output', '4K MP4, 9:16 or 16:9']
+      ['Output', '4K 9:16 MP4, or cropped to fit']
     ],
     status: 'building',
     version: 'v1.0',
