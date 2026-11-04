@@ -294,6 +294,27 @@
   var body = $('pluginBody');
   if (body) body.innerHTML = videoHtml + featHtml + logHtml + (p.body || '');
 
+  /* The stats fill the text column: the figures are sized so that, with the
+     row's ordinary gap between them, the first starts at its left edge and
+     the last ends at its right (Mike, Nov 4 '26). Measured at 100px, then
+     scaled; again whenever the column changes width. */
+  var statRow = document.querySelector('.product-stats-row');
+  if (statRow) {
+    var fitStats = function () {
+      var figs = statRow.querySelectorAll('.product-stat-fig');
+      statRow.style.setProperty('--stat-fs', '100px');
+      var sum = 0;
+      [].forEach.call(figs, function (f) { sum += f.getBoundingClientRect().width; });
+      var gap = parseFloat(getComputedStyle(statRow).columnGap) || 0;
+      var room = statRow.clientWidth - gap * (figs.length - 1);
+      if (sum > 0 && room > 0) statRow.style.setProperty('--stat-fs', (100 * room / sum - 0.5) + 'px');
+    };
+    fitStats();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitStats);
+    if (window.ResizeObserver) new ResizeObserver(fitStats).observe(statRow);
+    else window.addEventListener('resize', fitStats);
+  }
+
   /* The version rows open and close with a slide: <details> on its own
      snaps, so the summary click is taken over and the body's height is
      animated, open set before opening and cleared after closing. */

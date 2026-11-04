@@ -1778,17 +1778,19 @@ button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-lin
 .video-facade:hover .video-play .yt-bg { fill: #f00; fill-opacity: 1; }
 .product-stats { margin-top: clamp(2.25rem, 5vh, 3.25rem); text-align: center; }
 /* the figures span the text column (What's New's edges: 780px with the page
-   gutter inside), first at its left edge, last at its right */
+   gutter inside), first at its left edge, last at its right, an ordinary gap
+   between: plugin-page.js sizes them to fit (--stat-fs) */
 .product-stats-row {
   display: flex;
   justify-content: space-between;
-  gap: clamp(1.5rem, 4vw, 3rem);
+  gap: clamp(2rem, 4vw, 3.5rem);
   width: min(100%, 780px - 2 * var(--pad));
   margin: 0 auto;
 }
 .product-stat { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
 .product-stat-fig {
-  font-size: clamp(2.75rem, 5.6vw, 6rem);
+  font-size: var(--stat-fs, clamp(2.75rem, 5.6vw, 6rem));
+  white-space: nowrap;
   font-weight: 700;
   letter-spacing: -0.045em;
   /* the last glyph's negative tracking let the + hang past the box (and the
@@ -2511,8 +2513,6 @@ main.product + .site-foot { padding-top: clamp(3rem, 7vh, 4.5rem); }
 }
 @media (max-width: 640px) {
   .side-arrows.tile-pager { grid-template-columns: minmax(0, 1fr); }
-  /* the two figures have to share a phone's width */
-  .product-stat-fig { font-size: min(13vw, 4rem); }
 }
 /* the lightbox's arrows: fixed at the sides, just outside a full-width hero */
 .lightbox { --hero-edge: calc((100% - min(var(--herow), 100%)) / 2 + var(--pad)); }
