@@ -1714,8 +1714,6 @@ button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-lin
 
 .product-specs {
   margin: 1.9rem 0 0;
-  padding-top: 1.4rem;
-  border-top: 1px solid var(--line);
 }
 .product-specs > div {
   display: grid;
@@ -2336,8 +2334,6 @@ main.product + .site-foot { padding-top: clamp(3rem, 7vh, 4.5rem); }
   flex-wrap: wrap;
   gap: 2.5rem;
   margin: 2.25rem 0 0;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--line);
 }
 .project-facts dt {
   font-size: 0.64rem;
