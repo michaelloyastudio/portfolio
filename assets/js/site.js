@@ -178,6 +178,34 @@
     if (t && (/^(IMG|VIDEO|PICTURE|svg)$/i.test(t.tagName) || (t.closest && t.closest('a') && t.closest('a').querySelector('img, video')))) e.preventDefault();
   });
 
+  /* ── No video menu ─────────────────────────────────────────────────
+     Right-clicking a video opened the browser's own menu (Loop, Save Video
+     As, Picture in Picture, Cast), which reads as a stock player. Videos
+     take no context menu, offer no picture-in-picture, and players with
+     controls drop the download item. Images keep theirs. Videos added
+     later (overlays, lightbox, plugin pages) are caught by the observer. */
+  document.addEventListener('contextmenu', function (e) {
+    var t = e.target;
+    if (t && t.nodeType !== 1) t = t.parentElement;
+    if (t && t.closest && t.closest('video')) e.preventDefault();
+  });
+  var quietVideo = function (v) {
+    v.disablePictureInPicture = true;
+    v.setAttribute('disablepictureinpicture', '');
+    v.setAttribute('controlslist', 'nodownload noplaybackrate noremoteplayback');
+    v.disableRemotePlayback = true;
+  };
+  Array.prototype.forEach.call(document.getElementsByTagName('video'), quietVideo);
+  new MutationObserver(function (list) {
+    list.forEach(function (m) {
+      Array.prototype.forEach.call(m.addedNodes, function (n) {
+        if (n.nodeType !== 1) return;
+        if (n.tagName === 'VIDEO') quietVideo(n);
+        else Array.prototype.forEach.call(n.getElementsByTagName('video'), quietVideo);
+      });
+    });
+  }).observe(document.documentElement, { childList: true, subtree: true });
+
   /* ── Menu ────────────────────────────────────────────────────────*/
   /* ── A reload lands at the top ──────────────────────────────────
      Every page, so the load-in plays from the start instead of the
