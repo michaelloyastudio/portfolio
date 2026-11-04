@@ -172,7 +172,7 @@
   var dl = $('pluginDownload');
   if (dl && p.price) {
     dl.innerHTML = p.buy
-      ? '<div class="product-dl"><a class="btn btn-solid product-btn" href="' + p.buy + '">Buy ' + p.name + '</a>' +
+      ? '<div class="product-dl"><a class="btn btn-solid product-btn" href="' + p.buy + '">Buy for ' + p.price + '</a>' +
         '<p class="product-meta">' + [p.version, p.buyNote].filter(Boolean).join(' &nbsp;·&nbsp; ') + '</p></div>'
       : '<p class="product-meta product-meta--soon">Coming soon</p>';
     /* Gumroad links open Gumroad's checkout as an overlay on this page (its
