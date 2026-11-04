@@ -2481,6 +2481,16 @@ main.product + .site-foot { padding-top: clamp(3rem, 7vh, 4.5rem); }
   margin: clamp(3rem, 8vh, 5rem) auto 0;
   padding: 0 var(--pad) clamp(2rem, 5vh, 3.5rem);
 }
+/* "Related" over the pair: Tools' section head on /all (face, size, and the
+   same distance down to the tiles; the grid gap already gives part of it) */
+.tile-pager > .related-head {
+  grid-column: 1 / -1;
+  font-size: clamp(2.6rem, 8vw, 5.4rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  margin: 0 0 max(0px, calc(clamp(2.5rem, 6vw, 4rem) - clamp(1.75rem, 3.5vw, 3rem)));
+}
 @media (max-width: 640px) {
   .side-arrows.tile-pager { grid-template-columns: minmax(0, 1fr); }
 }

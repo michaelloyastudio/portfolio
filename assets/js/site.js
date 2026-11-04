@@ -785,6 +785,11 @@
       .filter(Boolean);
     pagerNav.textContent = '';
     pagerNav.classList.add('tile-pager', 'work-grid');
+    // headed like Work and Tools on /all
+    var related = document.createElement('h2');
+    related.className = 'related-head';
+    related.textContent = 'Related';
+    pagerNav.appendChild(related);
     if (isTools) pagerNav.classList.add('plugin-grid', 'plugin-grid--2');
     picks.forEach(function (p) {
       var tile = isTools ? toolTile(p) : workTile(p);
