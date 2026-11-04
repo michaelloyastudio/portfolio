@@ -2492,6 +2492,9 @@ main.product + .site-foot { padding-top: clamp(3rem, 7vh, 4.5rem); }
   line-height: 1;
   margin: 0;
 }
+/* on a product page the pair lines up with the text above it (.product-body
+   and .plugin-guide: 780px with the page gutter inside) */
+.arrow-pager.tile-pager { max-width: 780px; }
 @media (max-width: 640px) {
   .side-arrows.tile-pager { grid-template-columns: minmax(0, 1fr); }
 }
