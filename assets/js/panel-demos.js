@@ -28,7 +28,7 @@
       '<div class="demo-stage">' +
         '<div class="demo-group">' +
           '<div class="demo-panel"><div class="demo-tab">Receipts <i></i></div>' +
-            '<div class="demo-frame"><iframe src="demos/receipts/index.html" title="The Receipts panel: click a look" scrolling="no"></iframe></div></div>' +
+            '<div class="demo-frame"><iframe src="demos/receipts/index.html?v=2" title="The Receipts panel: click a look" scrolling="no"></iframe></div></div>' +
           '<div class="demo-phone"><div class="demo-vid">' +
             '<video src="' + VID('stack') + '" poster="' + POSTER('stack') + '" muted autoplay loop playsinline aria-label="The Stack look, in the TikTok feed"></video></div>' +
             '<img class="demo-ui" src="projects/plugins/receipts-social.svg?v=10" alt="" aria-hidden="true">' +
@@ -64,7 +64,7 @@
     el.innerHTML =
       '<div class="demo-stage">' +
         '<div class="demo-panel demo-panel--solo"><div class="demo-tab">Clippings <i></i></div>' +
-          '<div class="demo-frame"><iframe src="demos/clippings/index.html" title="The Clippings panel: type your own words" scrolling="no"></iframe></div></div>' +
+          '<div class="demo-frame"><iframe src="demos/clippings/index.html?v=2" title="The Clippings panel: type your own words" scrolling="no"></iframe></div></div>' +
       '</div>';
     fit(el, el.querySelector('.demo-stage'));
   }

@@ -76,6 +76,8 @@ html, body { overflow: hidden; }
 <script>
 (function () {
   var ids = ['stack', 'split', 'viewer', 'handles'];
+  // no hover help tips on the site: the panel's own title attributes come off (panel.js sets some at load)
+  document.querySelectorAll('[title]').forEach(function (e) { e.removeAttribute('title'); });
   document.querySelectorAll('#layouts > button').forEach(function (b, k) {
     var th = b.querySelector('.th');
     th.style.backgroundImage = 'url("thumbs/' + ids[k] + '.jpg")';

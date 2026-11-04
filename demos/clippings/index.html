@@ -51,6 +51,8 @@ try { localStorage.setItem('clippings.opts.v5', JSON.stringify({ text: 'PAY UP\n
 <script>
 (function () {
   var $ = function (id) { return document.getElementById(id); }, boilT = null, P = window.ClippingsPanel;
+  // no hover help tips on the site: the panel's own title attributes come off (panel.js sets some at load)
+  document.querySelectorAll('[title]').forEach(function (e) { e.removeAttribute('title'); });
   // Add: clickable, does nothing here (in AE it drops the note into the comp)
   $('add').onclick = function () {};
   // Boil: the same pieces, shaking in place (a stop-motion jitter on each letter's spot and tilt). Done on
