@@ -80,7 +80,7 @@ const plugins = [
     intro: `<p>Turns the controller into a MIDI instrument. It reads the frets, strum bar, whammy and joystick directly from the hardware and sends them as MIDI to whatever instrument you have loaded.</p>
 <p>Four modes cover everything from chords in a key, where a wrong note is not possible, to a fully chromatic layout. It runs as a VST3 in your DAW, or as a standalone app that appears as a MIDI input in GarageBand, Logic, or any synth.</p>`,
     facts: [
-      ['Platform', 'macOS and Windows'],
+      ['Platform', 'macOS 11+ and Windows 10/11'],
       ['Format', 'Standalone app + VST3'],
       ['Controller', 'Any USB controller'],
       ['Source', '<a href="https://github.com/michaelloyastudio/gh-midi" target="_blank" rel="noopener">github.com/michaelloyastudio/gh-midi</a>']
@@ -188,32 +188,32 @@ const plugins = [
     body: ''
   },
 
-  /* Ransom's loops are rendered from the panel's own letters with Typeset's
-     motion (~/Developer/promo/ransom). Price is a placeholder until Mike sets it. */
+  /* Clippings' loops are rendered from the panel's own letters with Typeset's
+     motion (~/Developer/promo/clippings). Price is a placeholder until Mike sets it. */
   {
-    slug: 'ransom',
-    name: 'Ransom for After Effects',
+    slug: 'clippings',
+    name: 'Clippings for After Effects',
     tagline: 'Type a word, get a ransom note',
     price: '$29',
     buy: null,
-    cover: 'projects/plugins/ransom-ui.jpg?v=4',
-    // coverVideo: off for now, the tile just zooms (was ransom-square.mp4)
+    cover: 'projects/plugins/clippings-ui.jpg?v=2',
+    // coverVideo: off for now, the tile just zooms (was clippings-square.mp4)
     shots: [
       /* builds itself on load, like Receipts' (plugin-page.js) */
-      { src: 'projects/plugins/ransom-ui.jpg?v=4', alt: 'The Ransom panel',
-        build: { base: 'projects/plugins/ransom-build/base.jpg?v=1', layers: [
-          { src: 'projects/plugins/ransom-build/01-header.png?v=1', x: 16.857, y: 14.929, w: 66.214 },
-          { src: 'projects/plugins/ransom-build/02-stage.png?v=1', x: 16.857, y: 25.0, w: 66.214 },
-          { src: 'projects/plugins/ransom-build/03-text.png?v=1', x: 16.857, y: 56.214, w: 66.214 },
-          { src: 'projects/plugins/ransom-build/04-align.png?v=1', x: 16.857, y: 71.0, w: 21.643 },
-          { src: 'projects/plugins/ransom-build/05-boil.png?v=1', x: 38.929, y: 71.0, w: 44.143 },
-          { src: 'projects/plugins/ransom-build/06-add.png?v=1', x: 16.857, y: 79.857, w: 66.214 }
+      { src: 'projects/plugins/clippings-ui.jpg?v=2', alt: 'The Clippings panel',
+        build: { base: 'projects/plugins/clippings-build/base.jpg?v=2', layers: [
+          { src: 'projects/plugins/clippings-build/01-header.png?v=2', x: 16.714, y: 14.571, w: 66.571 },
+          { src: 'projects/plugins/clippings-build/02-stage.png?v=2', x: 16.714, y: 24.643, w: 66.571 },
+          { src: 'projects/plugins/clippings-build/03-text.png?v=2', x: 16.714, y: 56.071, w: 66.571 },
+          { src: 'projects/plugins/clippings-build/04-align.png?v=2', x: 16.714, y: 70.929, w: 21.786 },
+          { src: 'projects/plugins/clippings-build/05-boil.png?v=2', x: 38.929, y: 70.929, w: 44.357 },
+          { src: 'projects/plugins/clippings-build/06-add.png?v=2', x: 16.714, y: 79.786, w: 66.571 }
         ] } },
-      { video: 'projects/plugins/ransom-square.mp4', src: 'projects/plugins/ransom-cover.jpg', alt: 'Ransom notes animating in' }
+      { video: 'projects/plugins/clippings-square.mp4?v=2', src: 'projects/plugins/clippings-cover.jpg?v=2', alt: 'Cutout-letter notes animating in' }
     ],
-    intro: `<p>Type your text and Ransom builds it from real cutout letters: magazine scraps, newsprint, comics, record sleeves, band tees, embroidered patches, stickers, tickets and tin signs. The preview shows the exact letters you'll get. Click one to swap it, or shuffle them all, then hit Add.</p>
+    intro: `<p>Type your text and Clippings builds it from real cutout letters: magazine scraps, newsprint, comics, record sleeves, band tees, embroidered patches, stickers, tickets and tin signs. The preview shows the exact letters you'll get. Click one to swap it, or shuffle them all, then hit Add.</p>
 <p>The note lands in your comp as one layer, sized to fit, and nothing is baked. Tilt, spacing, boil and the paper shadow are sliders right on that layer, and every letter inside is its own layer you can animate.</p>`,
-    video: { src: 'projects/plugins/ransom-loop.mp4', poster: 'projects/plugins/ransom-poster.jpg', title: 'Ransom notes in motion' },
+    video: { src: 'projects/plugins/clippings-loop.mp4?v=2', poster: 'projects/plugins/clippings-poster.jpg?v=2', title: 'Clippings in motion' },
     features: [
       '<strong>1,140 letters inside.</strong> A–Z, a–z, 0–9 and punctuation, at least 12 looks per character. Nothing to download separately.',
       '<strong>What you see is what you get.</strong> Click any letter in the preview to swap its cutout before you add it.',
