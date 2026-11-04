@@ -150,14 +150,14 @@ const plugins = [
       // the hero: the panel behind, the TikTok phone in front (same picture as the Tools tile and Gumroad)
       { src: 'projects/plugins/receipts-tile.jpg?v=7', alt: 'The Receipts panel, and the video it makes in the TikTok feed' },
       { video: 'projects/plugins/receipts-pair.mp4?v=1', src: 'projects/plugins/receipts-pair.jpg?v=1', overlay: 'projects/plugins/receipts-social.svg?v=10', alt: 'A Receipts process video, and the same video in the TikTok feed' },
-      { src: 'projects/plugins/receipts-ui-options.jpg?v=6', alt: 'The Receipts panel with its options open: on top, background, range, render and timeline' }
+      { src: 'projects/plugins/receipts-ui-options.jpg?v=7', alt: 'The Receipts panel with its options open: primary, background, range, render and timeline' }
     ],
     intro: `<p>Hit Generate and Receipts steps through your comp one frame at a time, screenshots the real viewer with every handle, path and gizmo After Effects draws, shoots the whole timeline, renders the comp, and builds a finished 4K 9:16 process video. No screen recording, no cropping in Premiere.</p>
 <p>It finds the viewer and the timeline on its own and fits the comp in the viewer, then puts your zoom, playhead and selection back when it's done. Preview shows one frame in every look before you commit.</p>`,
     features: [
       '<strong>The real viewer.</strong> Everything After Effects draws: handles, motion paths, 3D gizmos, effect points.',
       '<strong>The whole timeline.</strong> Every layer in one shot, with or without the layer names, and the playhead moving across it.',
-      '<strong>Four looks.</strong> Stack, Split or Viewer, with the final render or the handles on top. Or Handles: the viewer on its own, no timeline.',
+      '<strong>Four looks.</strong> Stack, Split or Viewer, with the handles or the final render as the main picture. Or Handles: the viewer on its own, no timeline.',
       '<strong>Grey or no background.</strong> A 9:16 frame in After Effects\' grey that stays clear of the Reels, TikTok and Shorts app bars, or none: the video cropped right to the edges.',
       '<strong>Any comp size.</strong> 16:9, 9:16, square, ultra-wide. Tall comps go side by side.',
       '<strong>One button.</strong> No layers to pick and no regions to draw.'
