@@ -2608,7 +2608,7 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
 .cursor i {
   position: absolute;
   left: 0; top: 0;
-  width: 14px; height: 14px;
+  width: 17px; height: 17px;
   border-radius: 50%;
   transform: translate(-50%, -50%);
   background: var(--accent);
@@ -2621,7 +2621,7 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
     transform 0.15s ease;
 }
 .cursor.is-glass i {
-  width: 34px; height: 34px;
+  width: 40px; height: 40px;
   background: rgba(232, 224, 212, 0.2);      /* glass tinted Parchment, the brand's pale */
   -webkit-backdrop-filter: blur(0.6px) saturate(1.25) brightness(1.12);
           backdrop-filter: blur(0.6px) saturate(1.25) brightness(1.12);
