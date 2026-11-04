@@ -324,6 +324,8 @@
   var prevEl = $('projectPrev'), nextEl = $('projectNext');
   if (prevEl) prevEl.href = '/' + prev.slug;
   if (nextEl) nextEl.href = '/' + next.slug;
+  // site.js has turned the arrows into tiles by now on a swap: redraw them
+  if (window.tilePager) window.tilePager([prev.slug, next.slug]);
 
   /* ── mosaic: justified rows ──────────────────────────────────────
      Greedily fill a row with tiles until scaling them to fit the
@@ -686,7 +688,7 @@
       window.scrollTo({ top: 0, behavior: 'instant' });
       window.PROJECT_SLUG = slug;
       teardown = render(slug);
-      document.querySelectorAll('main.project > .project-head, main.project > .project-body, main.project > .project-work')
+      document.querySelectorAll('main.project > .project-head, main.project > .project-body, main.project > .project-work, .side-arrows')
         .forEach(replay);
       document.body.classList.remove('page-leaving');
       // GoatCounter counts the first page itself; swaps are counted here

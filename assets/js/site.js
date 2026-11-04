@@ -774,28 +774,30 @@
   if (pagerNav) {
     var isTools = pagerNav.classList.contains('arrow-pager');
     var list = isTools ? (typeof plugins !== 'undefined' ? plugins : []) : (typeof projects !== 'undefined' ? projects : []);
-    var bySlug = function (href) {
-      var slug = (href || '').replace(/^.*\//, '');
+    var bySlug = function (slug) {
       for (var k = 0; k < list.length; k++) if (list[k].slug === slug) return list[k];
       return null;
     };
-    var picks = [].slice.call(pagerNav.querySelectorAll('a'))
-      .filter(function (a) { return !a.hidden; })
-      .map(function (a) { return bySlug(a.getAttribute('href')); })
-      .filter(Boolean);
-    pagerNav.textContent = '';
+    /* slugs: the neighbours, previous first. project-page.js calls this
+       again on every in-place project swap. */
+    window.tilePager = function (slugs) {
+      pagerNav.textContent = '';
+      // headed like Work and Tools on /all
+      var related = document.createElement('h2');
+      related.className = 'related-head';
+      related.textContent = 'Related';
+      pagerNav.appendChild(related);
+      slugs.map(bySlug).filter(Boolean).forEach(function (p) {
+        var tile = isTools ? toolTile(p) : workTile(p);
+        pagerNav.appendChild(tile);
+        (isTools ? toolTileHooks : workTileHooks)(p, tile);
+      });
+    };
     pagerNav.classList.add('tile-pager', 'work-grid');
-    // headed like Work and Tools on /all
-    var related = document.createElement('h2');
-    related.className = 'related-head';
-    related.textContent = 'Related';
-    pagerNav.appendChild(related);
     if (isTools) pagerNav.classList.add('plugin-grid', 'plugin-grid--2');
-    picks.forEach(function (p) {
-      var tile = isTools ? toolTile(p) : workTile(p);
-      pagerNav.appendChild(tile);
-      (isTools ? toolTileHooks : workTileHooks)(p, tile);
-    });
+    window.tilePager([].slice.call(pagerNav.querySelectorAll('a'))
+      .filter(function (a) { return !a.hidden; })
+      .map(function (a) { return (a.getAttribute('href') || '').replace(/^.*\//, ''); }));
   }
 
   /* ── /all: each half loads in as it comes into view ───────────────
