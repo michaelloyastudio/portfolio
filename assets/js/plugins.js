@@ -147,8 +147,9 @@ const plugins = [
     cover: 'projects/plugins/receipts-tile.jpg?v=7',   // the panel behind, the TikTok phone in front (receipts repo tools/promo/cover/thumbnail.html)
     // coverVideo: off while Mike makes a new one (was receipts-square.mp4?v=3)
     shots: [
-      // the hero: the panel behind, the TikTok phone in front (same picture as the Tools tile and Gumroad)
-      { src: 'projects/plugins/receipts-tile.jpg?v=7', alt: 'The Receipts panel, and the video it makes in the TikTok feed' },
+      // the hero, live (panel-demos.js): the real panel behind, the TikTok phone in front; a look card
+      // clicked on the panel plays that look on the phone. Its thumbnail is the Tools tile's picture.
+      { demo: 'receipts', src: 'projects/plugins/receipts-tile.jpg?v=7', alt: 'The Receipts panel: click a look to see it on the phone' },
       { video: 'projects/plugins/receipts-pair.mp4?v=1', src: 'projects/plugins/receipts-pair.jpg?v=1', overlay: 'projects/plugins/receipts-social.svg?v=10', alt: 'A Receipts process video, and the same video in the TikTok feed' },
       { src: 'projects/plugins/receipts-ui-options.jpg?v=7', alt: 'The Receipts panel with its options open: primary, background, range, render and timeline' }
     ],
@@ -184,16 +185,8 @@ const plugins = [
     cover: 'projects/plugins/clippings-ui.jpg?v=2',
     // coverVideo: off for now, the tile just zooms (was clippings-square.mp4)
     shots: [
-      /* builds itself on load, like Receipts' (plugin-page.js) */
-      { src: 'projects/plugins/clippings-ui.jpg?v=2', alt: 'The Clippings panel',
-        build: { base: 'projects/plugins/clippings-build/base.jpg?v=2', layers: [
-          { src: 'projects/plugins/clippings-build/01-header.png?v=2', x: 16.714, y: 14.571, w: 66.571 },
-          { src: 'projects/plugins/clippings-build/02-stage.png?v=2', x: 16.714, y: 24.643, w: 66.571 },
-          { src: 'projects/plugins/clippings-build/03-text.png?v=2', x: 16.714, y: 56.071, w: 66.571 },
-          { src: 'projects/plugins/clippings-build/04-align.png?v=2', x: 16.714, y: 70.929, w: 21.786 },
-          { src: 'projects/plugins/clippings-build/05-boil.png?v=2', x: 38.929, y: 70.929, w: 44.357 },
-          { src: 'projects/plugins/clippings-build/06-add.png?v=2', x: 16.714, y: 79.786, w: 66.571 }
-        ] } },
+      // the real panel, live (panel-demos.js): type, swap, shuffle, align, boil
+      { demo: 'clippings', src: 'projects/plugins/clippings-ui.jpg?v=2', alt: 'The Clippings panel: type your own words' },
       { video: 'projects/plugins/clippings-square.mp4?v=2', src: 'projects/plugins/clippings-cover.jpg?v=2', alt: 'Cutout-letter notes animating in' }
     ],
     intro: `<p>Type your text and Clippings builds it from real cutout letters: magazine scraps, newsprint, comics, record sleeves, band tees, embroidered patches, stickers, tickets and tin signs. The preview shows the exact letters you'll get. Click one to swap it, or shuffle them all, then hit Add.</p>

@@ -66,6 +66,12 @@ modes were renamed CHORDS/PRO/SOLO → CHORDS/NOTES/SOLO and the zip gained
 the standalone app, while the site still described the older build). Re-copy
 the zip at the same time; its size is quoted on the page.
 
+## Live panel demos
+A product page's first shot can be the real panel, live (`shots[0].demo` in `plugins.js`; `assets/js/panel-demos.js` draws it, `plugin-page.js` calls it). The panels are copies of their real `index.html` / `style.css` / `panel.js` in `demos/<slug>/`, with After Effects (and, for Receipts, Node) faked in a stub `<script>` at the top of that copy, so they run in a plain page inside an iframe.
+- **Receipts:** the panel behind, the TikTok phone in front, on the thumbnail's 1200px layout. Only the look cards answer; a click posts `receipts:look` to the page, which plays `projects/plugins/receipts-look-<look>.mp4` on the phone from the same moment (all four share one timeline; rendered from the Better Off Alone capture with Primary = Handles).
+- **Clippings:** the panel alone: type, click a letter, shuffle, align, Boil (the demo boils the preview), Add (a toast saying what it does in AE). `demos/clippings/letters/` is a web set: up to 8 pieces per character as 220px WebP, with its own `letters.js`.
+**When a panel changes, re-copy its files into `demos/<slug>/`** (keep the stub head and tail scripts) or the demo shows the old panel.
+
 ## Plugin product images
 Crop wide source images to roughly square BEFORE composing — the tool fits
 to the shorter side, so a 16:9 plate in a square card leaves a band of white

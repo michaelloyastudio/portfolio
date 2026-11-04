@@ -1547,6 +1547,32 @@ button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-lin
 }
 
 .product-shot-main { position: relative; }
+/* A live panel demo as the first shot (panel-demos.js): a 1200px square stage
+   scaled to the box, laid out like the still it replaces (receipts: the
+   thumbnail, panel behind, phone in front; clippings: the panel centred).
+   The panels are their real pages in iframes; --k scales each up from its
+   AE size (Receipts 360x338, Clippings 320x362), under AE's panel tab. */
+.shot-demo { position: relative; aspect-ratio: 1 / 1; overflow: hidden; background: var(--parchment); }
+.demo-stage { position: absolute; left: 0; top: 0; width: 1200px; height: 1200px; transform-origin: 0 0; }
+.demo-group { position: absolute; left: 102px; top: 223px; width: 996px; height: 860px; }
+.demo-panel { --k: 1.94; --pw: 360px; --ph: 338px; position: absolute; left: 0; top: -46px; width: calc(var(--pw) * var(--k));
+  border-radius: 24px; overflow: hidden; background: #1e1e1e; box-shadow: 0 1px 3px rgba(0,0,0,.2), 0 16px 40px rgba(0,0,0,.3); }
+.demo-panel--solo { --k: 2.3; --pw: 320px; --ph: 362px; left: 50%; top: 50%; transform: translate(-50%, -50%); }
+.demo-tab { height: calc(28px * var(--k)); background: #232323; display: flex; align-items: center; gap: calc(7px * var(--k));
+  padding-left: calc(14px * var(--k)); font: calc(13px * var(--k)) "Helvetica Neue", Arial, sans-serif; color: #cdcdcd; }
+.demo-tab i { display: block; width: calc(10px * var(--k)); height: calc(7px * var(--k)); border-top: 2px solid #aaa; border-bottom: 2px solid #aaa; position: relative; }
+.demo-tab i::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; border-top: 2px solid #aaa; transform: translateY(-50%); }
+.demo-frame { width: calc(var(--pw) * var(--k)); height: calc(var(--ph) * var(--k)); overflow: hidden; }
+.demo-frame iframe { border: 0; display: block; width: var(--pw); height: var(--ph); transform: scale(var(--k)); transform-origin: 0 0; }
+/* the TikTok phone: receipts-social.svg's screen (1320x2868 screen px, 0.3 card px each, from 612,110 on its card) */
+.demo-phone { --u: 0.27894; position: absolute; right: 0; top: 0; width: calc(1320px * var(--u)); height: calc(2868px * var(--u));
+  border-radius: calc(180px * var(--u)); overflow: hidden; background: #000; box-shadow: 0 2px 4px rgba(0,0,0,.25), 0 24px 60px rgba(0,0,0,.45); }
+.demo-vid { position: absolute; left: 0; top: 0; width: 100%; height: calc(2613px * var(--u)); overflow: hidden; }
+/* .shot-demo in front: .product-shot img / video (square, bordered) mustn't reach these */
+.shot-demo .demo-vid video { position: absolute; width: calc(1473px * var(--u)); max-width: none; height: auto; aspect-ratio: 9 / 16; left: calc(-76.7px * var(--u)); top: calc(-6.7px * var(--u));
+  object-fit: fill; background: none; border: 0; }
+.shot-demo .demo-ui { position: absolute; width: calc(1080px * var(--u) / 0.3); max-width: none; aspect-ratio: auto; left: calc(-612px * var(--u) / 0.3); top: calc(-110px * var(--u) / 0.3);
+  pointer-events: none; object-fit: fill; background: none; border: 0; }
 /* A shot's overlay: a social app's UI over the phone half of a side-by-side
    video (receipts-pair.mp4: the video as Receipts makes it on the left, the
    same video in the TikTok feed on the right). Always on, no hover. The phone

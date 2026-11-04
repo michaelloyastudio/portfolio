@@ -31,7 +31,11 @@
   if (shot) {
     /* A shot is a still ({src}) or a silent loop ({video, src}), where src
        is the loop's poster and doubles as its thumbnail. */
+    /* {demo, src}: a live panel (panel-demos.js) in place of the still; src is
+       its thumbnail */
     var media = function (s) {
+      if (s.demo && window.PANEL_DEMOS && window.PANEL_DEMOS[s.demo])
+        return '<div id="pluginShotMain" class="shot-demo" role="group" aria-label="' + s.alt + '"></div>';
       return s.video
         ? '<video id="pluginShotMain" src="' + s.video + '" poster="' + s.src + '" muted autoplay loop playsinline aria-label="' + s.alt + '"></video>'
         : '<img id="pluginShotMain" src="' + s.src + '" alt="' + s.alt + '">';
@@ -67,6 +71,13 @@
         : '');
 
     overlay(shots[0]);
+    var demoOff = null;
+    var startDemo = function (s) {
+      if (demoOff) { demoOff(); demoOff = null; }
+      var el = $('pluginShotMain');
+      if (s.demo && el.classList.contains('shot-demo')) demoOff = window.PANEL_DEMOS[s.demo](el) || null;
+    };
+    startDemo(shots[0]);
 
     /* shots[0].build: the first shot puts itself together on load. Over the
        still (held invisible, so the box keeps its size) sits the empty
@@ -134,11 +145,12 @@
       if (!b) return;
       var s = shots[+b.getAttribute('data-n')], main = $('pluginShotMain');
       overlay(s);
-      if (s.video || main.tagName === 'VIDEO') {
-        // swap the element: a loop and a still can't share one tag
+      if (s.video || s.demo || main.tagName !== 'IMG') {
+        // swap the element: a loop, a still and a demo can't share one tag
         var tmp = document.createElement('div');
         tmp.innerHTML = media(s);
         main.parentNode.replaceChild(tmp.firstChild, main);
+        startDemo(s);
       } else {
         main.src = s.src; main.alt = s.alt;
       }

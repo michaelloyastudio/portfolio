@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Receipts</title>
+<link rel="stylesheet" href="style.css">
+<script>
+/* Site demo of the Receipts panel (the real panel.js / style.css / lib, copied from ~/Developer/receipts).
+   After Effects and Node are faked so it runs in a plain page; only the look cards do anything, and a
+   card click tells the page (postMessage 'receipts:look') so the phone beside it plays that look. */
+window.__adobe_cep__ = { getSystemPath: function () { return ''; }, evalScript: function (s, cb) {
+  setTimeout(function () { cb(JSON.stringify({ ok: true, name: 'Better Off Alone', fps: 24, dur: 12.83, ws: 0, wd: 12.83, w: 1440, h: 1080, pa: 1, aep: '' })); }, 5); } };
+window.require = function (m) {
+  if (m === 'fs') return { existsSync: function () { return true; }, readFileSync: function () { throw new Error('demo'); }, writeFileSync: function () {},
+    mkdirSync: function () {}, readdirSync: function () { return []; }, rmSync: function () {}, statSync: function () { return { size: 1 }; } };
+  if (m === 'path') return { join: function () { return [].slice.call(arguments).join('/').replace(/\/+/g, '/'); },
+    dirname: function (p) { return p.replace(/\/[^\/]*$/, ''); }, basename: function (p) { return p.split('/').pop(); } };
+  if (m === 'os') return { platform: function () { return 'darwin'; }, tmpdir: function () { return '/tmp'; }, homedir: function () { return '/home'; } };
+  if (m === 'child_process') return { execFile: function (f, a, o, cb) { cb(null, '{}'); },
+    spawn: function () { return { stdout: { on: function () {} }, stderr: { on: function () {} }, stdin: { write: function () {}, end: function () {} }, on: function () {} }; } };
+};
+try { localStorage.setItem('receipts.ui.v3', JSON.stringify({ layout: 'stack', swap: true, format: '9:16', bg: true, names: true })); } catch (e) {}
+</script>
+<style>
+/* the demo: just the look cards answer */
+html, body { overflow: hidden; }
+.go, #opts { pointer-events: none; }
+#toast { display: none; }
+</style>
+
+</head>
+<body>
+
+<header>
+  <h1>Receipts</h1>
+  <p id="comp" class="sub">Open a comp</p>
+</header>
+
+<section>
+  <div class="layouts" id="layouts"></div>
+</section>
+
+<section class="go">
+  <div class="gorow">
+    <button id="peek" class="big ghost" title="Shoot one frame at the playhead and show it in the looks above">PREVIEW</button>
+    <button id="make" class="big" title="Capture every frame, render and build the video">GENERATE</button>
+  </div>
+  <div id="prog" class="prog" hidden>
+    <p id="stage"></p>
+    <div class="bar"><i id="progBar"></i></div>
+    <div class="row-x"><span id="progTx"></span><button id="stop" class="mini" title="Stop capturing and build the video from what's captured so far  (Esc)">Stop</button></div>
+  </div>
+  <button id="reveal" class="link" hidden>Show in Finder</button>
+</section>
+
+<details id="opts">
+  <summary>Options</summary>
+  <div class="opt"><span>Primary</span>
+    <div class="seg" id="top"><button data-v="true" title="The viewer with every handle, path and gizmo is the main picture: first (top, or left when the comp is tall), the finished render second (Viewer look: the handles only)">Handles</button><button data-v="false" title="The finished render is the main picture: first (top, or left when the comp is tall), the viewer with its handles second (Viewer look: the render only)">Final render</button></div></div>
+  <div class="opt"><span>Background</span>
+    <div class="seg" id="bg"><button data-v="true" title="A 4K 9:16 frame in After Effects' grey, laid out clear of the Reels, TikTok and Shorts app bars">Grey</button><button data-v="false" title="No frame: the video is cropped right at the edges of the pictures and the timeline">None</button></div></div>
+  <div class="opt"><span>Range</span>
+    <div class="seg" id="range"><button data-v="work">Work area</button><button data-v="all">Whole comp</button></div></div>
+  <div class="opt"><span>Render</span>
+    <div class="seg" id="renderMode"><button data-v="render" title="AE renders the comp (same range) through the Render Queue">AE renders it</button><button data-v="file" title="Pick a render you already have; it should start on the same frame">Use my file</button></div></div>
+  <div class="opt"><span>Timeline</span>
+    <div class="seg" id="names"><button data-v="true" title="The whole timeline panel: switches, layer names, modes and parent columns, then the bars">With layer names</button><button data-v="false" title="Just the time graph with the layer bars">Bars only</button></div></div>
+</details>
+
+
+<div id="toast"></div>
+<script src="lib/compose.js"></script>
+<script src="lib/platform.js"></script>
+<script src="panel.js"></script>
+<script>
+(function () {
+  var ids = ['stack', 'split', 'viewer', 'handles'];
+  document.querySelectorAll('#layouts > button').forEach(function (b, k) {
+    var th = b.querySelector('.th');
+    th.style.backgroundImage = 'url("thumbs/' + ids[k] + '.jpg")';
+    th.querySelectorAll('b').forEach(function (x) { x.hidden = true; });
+    b.addEventListener('click', function () { parent.postMessage({ type: 'receipts:look', layout: ids[k] }, '*'); });
+  });
+})();
+</script>
+</body>
+</html>
