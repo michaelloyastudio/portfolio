@@ -167,12 +167,12 @@ const plugins = [
       { src: 'projects/plugins/receipts-ui-options.jpg?v=3', alt: 'The Receipts panel with its options open: range, render and timeline' }
     ],
     intro: `<p>Hit Generate and Receipts steps through your comp one frame at a time, screenshots the real viewer with every handle, path and gizmo After Effects draws, shoots the whole timeline, renders the comp, and builds a finished 4K process video, vertical 9:16 or wide 16:9. No screen recording, no cropping in Premiere.</p>
-<p>It finds the viewer and the timeline on its own and fits the comp in the viewer, then puts your zoom, playhead and selection back when it's done. Preview shows one frame in all three looks before you commit.</p>`,
+<p>It finds the viewer and the timeline on its own and fits the comp in the viewer, then puts your zoom, playhead and selection back when it's done. Preview shows one frame in every look before you commit.</p>`,
     video: { src: 'projects/plugins/receipts-loop.mp4?v=4', poster: 'projects/plugins/receipts-poster.jpg?v=4', title: 'A 16:9 Receipts video' },
     features: [
       '<strong>The real viewer.</strong> Everything After Effects draws: handles, motion paths, 3D gizmos, effect points.',
       '<strong>The whole timeline.</strong> Every layer in one shot, with or without the layer names, and the playhead moving across it.',
-      '<strong>Three looks.</strong> Stack, Split or Viewer, with the final render or the handles on top.',
+      '<strong>Four looks.</strong> Stack, Split or Viewer, with the final render or the handles on top. Or Handles: the viewer on its own, no timeline.',
       '<strong>Two sizes.</strong> 9:16 that stays clear of the Reels, TikTok and Shorts app bars, or 16:9 for YouTube.',
       '<strong>Any comp size.</strong> 16:9, 9:16, square, ultra-wide. Tall comps go side by side.',
       '<strong>One button.</strong> No layers to pick and no regions to draw.'
