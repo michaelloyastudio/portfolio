@@ -259,7 +259,10 @@
   /* `video` is a YouTube id ({youtube}) or a silent loop shipped with the
      site ({src, poster}), which plays full width like a project clip.
      `heading: ''` drops the section title. */
-  if (p.video && p.video.src) {
+  /* `wide`: a 16:9 still in the same full-width spot ({src, alt}) */
+  if (p.wide && p.wide.src) {
+    videoHtml = '<section class="plugin-section plugin-video plugin-loop plugin-wide"><img src="' + p.wide.src + '" alt="' + (p.wide.alt || '') + '" loading="lazy"></section>';
+  } else if (p.video && p.video.src) {
     videoHtml = '<section class="plugin-section plugin-video plugin-loop">' +
       (p.video.heading ? '<h2 class="changelog-title">' + p.video.heading + '</h2>' : '') +
       '<video src="' + p.video.src + '" poster="' + (p.video.poster || '') + '" muted loop playsinline preload="auto" aria-label="' +

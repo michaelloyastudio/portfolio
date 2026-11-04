@@ -1791,6 +1791,7 @@ button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-lin
    every product page's video is the same width (Mike, Nov 4 '26). */
 .plugin-loop, .plugin-video { position: relative; left: 50%; transform: translateX(-50%); width: min(var(--maxw) - 2 * var(--pad), 100vw - 2 * var(--pad)); }
 .plugin-loop video { display: block; width: 100%; aspect-ratio: 16 / 9; background: var(--panel); }
+.plugin-wide img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; }
 .video-embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
 /* the cover over a YouTube video until it's clicked (plugin-page.js) */
 .video-facade {
