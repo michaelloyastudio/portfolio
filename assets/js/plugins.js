@@ -144,7 +144,7 @@ const plugins = [
     price: '$19.99',
     was: '$29.99',
     buy: 'https://michaelloyastudio.gumroad.com/l/receipts',
-    cover: 'projects/plugins/receipts-tile.jpg?v=3',   // the panel next to the TikTok phone (receipts repo tools/promo/thumbnail.html)
+    cover: 'projects/plugins/receipts-tile.jpg?v=4',   // the panel behind, the TikTok phone in front (receipts repo tools/promo/thumbnail.html)
     // coverVideo: off while Mike makes a new one (was receipts-square.mp4?v=3)
     shots: [
       /* build: the shot assembles itself on load (plugin-page.js): the empty

@@ -645,13 +645,11 @@
      Static covers only — no hover video. */
   var grid = $('workGrid');
   var grid_i = 0;
-  if (grid) {
-    projects.forEach(function (p) {
+  /* One project's tile, as the Work grid draws it (the prev / next pair at
+     the foot of a project page uses it too). */
+  var workTile = function (p) {
       var tile = document.createElement('a');
-      // No scroll-reveal here: on the Work page the grid IS the content, and
-      // fading tiles in made it look like only the first four existed.
       tile.className = 'tile';
-      tile.style.setProperty('--i', Math.min(grid_i++, 7));
       tile.href = '/' + p.slug;
       tile.innerHTML =
         '<div class="tile-media">' +
@@ -664,9 +662,20 @@
           '</div>' +
           '<span class="tile-arrow">' + CHEV + '</span>' +
         '</div>';
+      return tile;
+  };
+  var workTileHooks = function (p, tile) {
+    layeredThumb(p, tile.querySelector('.tile-media'), tile, 0.045);
+    videoThumb(p, tile.querySelector('.tile-media'), tile);
+  };
+  if (grid) {
+    projects.forEach(function (p) {
+      // No scroll-reveal here: on the Work page the grid IS the content, and
+      // fading tiles in made it look like only the first four existed.
+      var tile = workTile(p);
+      tile.style.setProperty('--i', Math.min(grid_i++, 7));
       grid.appendChild(tile);
-      layeredThumb(p, tile.querySelector('.tile-media'), tile, 0.045);
-      videoThumb(p, tile.querySelector('.tile-media'), tile);
+      workTileHooks(p, tile);
     });
   }
 
@@ -706,15 +715,11 @@
   var STAR = '<svg class="tile-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.8l3.1 6.6 7.2.9-5.3 5 1.4 7.1L12 17.9l-6.4 3.5L7 14.3l-5.3-5 7.2-.9z"/></svg>';
   /* `const plugins` in plugins.js is a lexical global, not a window
      property, so this has to be a typeof check rather than window.plugins. */
-  if (pgrid && typeof plugins !== 'undefined') {
-    grid_i = 0;
-    /* Rectangles only: three across when the count divides by three,
-       otherwise two (four plugins = 2 x 2). Phones are two across anyway. */
-    if (plugins.length % 3 && !(plugins.length % 2)) pgrid.classList.add('plugin-grid--2');
-    plugins.forEach(function (p) {
+  /* One plugin's tile, as the Tools grid draws it (and the prev / next pair
+     at the foot of a product page). */
+  var toolTile = function (p) {
       var tile = document.createElement('a');
       tile.className = 'tile';
-      tile.style.setProperty('--i', Math.min(grid_i++, 7));
       tile.href = '/' + p.slug;
       tile.innerHTML =
         '<div class="tile-media">' +
@@ -738,11 +743,53 @@
         '</div>';
       // coverScale: a cover that fills more of its card than the others sits back to match
       if (p.coverScale) tile.style.setProperty('--fit', p.coverScale);
+      return tile;
+  };
+  var toolTileHooks = function (p, tile) {
+    // a plugin with a square loop plays it on hover, like the project bands
+    // coverAt: the still is a frame of the loop, so it plays on from there
+    // and pauses where it is; otherwise back to the still and start over
+    if (p.coverVideo) videoThumb({ heroLoop: true, hero: p.coverVideo }, tile.querySelector('.tile-media'), tile, !p.coverAt, p.coverAt);
+  };
+  if (pgrid && typeof plugins !== 'undefined') {
+    grid_i = 0;
+    /* Rectangles only: three across when the count divides by three,
+       otherwise two (four plugins = 2 x 2). Phones are two across anyway. */
+    if (plugins.length % 3 && !(plugins.length % 2)) pgrid.classList.add('plugin-grid--2');
+    plugins.forEach(function (p) {
+      var tile = toolTile(p);
+      tile.style.setProperty('--i', Math.min(grid_i++, 7));
       pgrid.appendChild(tile);
-      // a plugin with a square loop plays it on hover, like the project bands
-      // coverAt: the still is a frame of the loop, so it plays on from there
-      // and pauses where it is; otherwise back to the still and start over
-      if (p.coverVideo) videoThumb({ heroLoop: true, hero: p.coverVideo }, tile.querySelector('.tile-media'), tile, !p.coverAt, p.coverAt);
+      toolTileHooks(p, tile);
+    });
+  }
+
+  /* ── Prev / next at the foot of a project or product page ─────────
+     The page script (project-page.js, plugin-page.js) points the two
+     arrow links at the neighbours; here they become the neighbours' own
+     tiles, drawn exactly as the Work and Tools grids draw them (Mike, Nov
+     4 '26: the red arrows out). A hidden arrow (two plugins: Next only)
+     drops out. */
+  var pagerNav = document.querySelector('.side-arrows, .arrow-pager');
+  if (pagerNav) {
+    var isTools = pagerNav.classList.contains('arrow-pager');
+    var list = isTools ? (typeof plugins !== 'undefined' ? plugins : []) : (typeof projects !== 'undefined' ? projects : []);
+    var bySlug = function (href) {
+      var slug = (href || '').replace(/^.*\//, '');
+      for (var k = 0; k < list.length; k++) if (list[k].slug === slug) return list[k];
+      return null;
+    };
+    var picks = [].slice.call(pagerNav.querySelectorAll('a'))
+      .filter(function (a) { return !a.hidden; })
+      .map(function (a) { return bySlug(a.getAttribute('href')); })
+      .filter(Boolean);
+    pagerNav.textContent = '';
+    pagerNav.classList.add('tile-pager', 'work-grid');
+    if (isTools) pagerNav.classList.add('plugin-grid', 'plugin-grid--2');
+    picks.forEach(function (p) {
+      var tile = isTools ? toolTile(p) : workTile(p);
+      pagerNav.appendChild(tile);
+      (isTools ? toolTileHooks : workTileHooks)(p, tile);
     });
   }
 
