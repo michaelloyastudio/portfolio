@@ -1811,12 +1811,13 @@ button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-lin
    history rows repeat that row. Each change is a red-dash bullet that
    leads with its one-line intro in red. No rules anywhere: space only. */
 .plugin-section .changelog-title {
-  font-size: clamp(1.5rem, 2.2vw, 2.1rem);
+  font-size: clamp(2rem, 3.2vw, 3rem);
   font-weight: 700;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
   text-transform: none;
   color: var(--fg);
-  margin: 0 0 1.1rem;
+  margin: 0 0 1.4rem;
 }
 .changelog-version summary {
   display: flex;
@@ -2484,11 +2485,11 @@ main.product + .site-foot { padding-top: clamp(3rem, 7vh, 4.5rem); }
   padding: 0 var(--pad) clamp(2rem, 5vh, 3.5rem);
 }
 /* "Related" over the pair: the section heads' face, but smaller than every
-   heading on a product page (What's New / The Process are ~31px), the same
+   heading on a product page (What's New / The Process, ~46px), the same
    on project pages; the grid gap gives the distance down to the tiles */
 .tile-pager > .related-head {
   grid-column: 1 / -1;
-  font-size: clamp(1.3rem, 1.75vw, 1.6rem);
+  font-size: clamp(1.6rem, 2.4vw, 2.3rem);
   font-weight: 700;
   letter-spacing: -0.04em;
   line-height: 1;
