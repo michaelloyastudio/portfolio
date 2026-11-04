@@ -179,7 +179,7 @@ const plugins = [
     slug: 'clippings',
     name: 'Clippings for After Effects',
     tagline: 'Ransom-note text in one click',
-    price: '$29',
+    price: '$24.99',
     buy: 'https://michaelloyastudio.gumroad.com/l/clippings',
     cover: 'projects/plugins/clippings-ui.jpg?v=2',
     // coverVideo: off for now, the tile just zooms (was clippings-square.mp4)
