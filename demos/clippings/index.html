@@ -8,10 +8,10 @@
 <script>
 /* Site demo of the Clippings panel (the real panel.js / style.css, copied from ~/Developer/clippings) with a web
    set of the letters (letters/: up to 8 per character, 220px WebP). Type, click a letter, shuffle and align
-   work as in After Effects; Boil boils the preview; Add says what it does in AE. */
+   work as in After Effects; Boil shakes the preview; Add says what it does in AE. */
 try { if (!localStorage.getItem('clippings.opts.v5')) localStorage.setItem('clippings.opts.v5', JSON.stringify({ text: 'PAY UP\nOR ELSE', align: 'center', mix: true, boil: false, seed: 7 })); } catch (e) {}
 </script>
-<style>html, body { overflow: hidden; }</style>
+<style>html, body { overflow: hidden; } #text { resize: none; }</style>
 
 </head>
 <body>
@@ -55,11 +55,17 @@ try { if (!localStorage.getItem('clippings.opts.v5')) localStorage.setItem('clip
     if (!P.opts.text.replace(/\s/g, '')) { say('Type something first'); return; }
     say('In After Effects, Add drops this note into your comp as one layer');
   };
-  // Boil: the pieces swap twice a second (in AE every few frames; slower here, easier on the browser)
+  // Boil: the same pieces, shaking in place (a stop-motion jitter on each letter's spot and tilt). Done on
+  // the preview's canvas so panel.js stays the real one: while boiling, each letter's translate / rotate
+  // gets a small random nudge, and the note is redrawn a few times a second.
+  var ctx = $('stage').getContext('2d'), tr = ctx.translate, ro = ctx.rotate, shaking = false;
+  ctx.translate = function (x, y) { return shaking ? tr.call(this, x + (Math.random() * 2 - 1) * 1.6, y + (Math.random() * 2 - 1) * 1.6) : tr.call(this, x, y); };
+  ctx.rotate = function (a) { return ro.call(this, shaking ? a + (Math.random() * 2 - 1) * 0.03 : a); };
   function boil() {
     clearInterval(boilT);
-    if (!P.opts.boil) return;
-    boilT = setInterval(function () { P.opts.seed = 1 + Math.floor(Math.random() * 1e9); P.opts.pins = {}; P.draw(); }, 500);
+    shaking = !!P.opts.boil;
+    if (shaking) boilT = setInterval(P.draw, 110);
+    else P.draw();
   }
   $('boil').addEventListener('click', function () { setTimeout(boil, 0); });
   boil();
