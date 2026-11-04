@@ -9,7 +9,9 @@
 /* Site demo of the Clippings panel (the real panel.js / style.css, copied from ~/Developer/clippings) with a web
    set of the letters (letters/: up to 8 per character, 220px WebP). Type, click a letter, shuffle and align
    work as in After Effects; Boil shakes the preview; Add says what it does in AE. */
-try { if (!localStorage.getItem('clippings.opts.v5')) localStorage.setItem('clippings.opts.v5', JSON.stringify({ text: 'PAY UP\nOR ELSE', align: 'center', mix: true, boil: false, seed: 7 })); } catch (e) {}
+/* Every visit starts the same, nothing remembered: PAY UP / OR ELSE, centred, no boil, seed 7, which shows
+   the exact pieces on the Tools tile and the Gumroad pictures (letters/letters.js is ordered so it does). */
+try { localStorage.setItem('clippings.opts.v5', JSON.stringify({ text: 'PAY UP\nOR ELSE', align: 'center', mix: true, boil: false, seed: 7, pins: {} })); } catch (e) {}
 </script>
 <style>html, body { overflow: hidden; } #text { resize: none; }</style>
 
