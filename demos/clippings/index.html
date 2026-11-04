@@ -55,11 +55,11 @@ try { if (!localStorage.getItem('clippings.opts.v5')) localStorage.setItem('clip
     if (!P.opts.text.replace(/\s/g, '')) { say('Type something first'); return; }
     say('In After Effects, Add drops this note into your comp as one layer');
   };
-  // Boil: the pieces swap every few frames, like the note does in AE
+  // Boil: the pieces swap twice a second (in AE every few frames; slower here, easier on the browser)
   function boil() {
     clearInterval(boilT);
     if (!P.opts.boil) return;
-    boilT = setInterval(function () { P.opts.seed = 1 + Math.floor(Math.random() * 1e9); P.opts.pins = {}; P.draw(); }, 125);
+    boilT = setInterval(function () { P.opts.seed = 1 + Math.floor(Math.random() * 1e9); P.opts.pins = {}; P.draw(); }, 500);
   }
   $('boil').addEventListener('click', function () { setTimeout(boil, 0); });
   boil();
