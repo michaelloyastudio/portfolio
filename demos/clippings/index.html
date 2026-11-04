@@ -8,7 +8,7 @@
 <script>
 /* Site demo of the Clippings panel (the real panel.js / style.css, copied from ~/Developer/clippings) with a web
    set of the letters (letters/: up to 8 per character, 220px WebP). Type, click a letter, shuffle and align
-   work as in After Effects; Boil shakes the preview; Add says what it does in AE. */
+   work as in After Effects; Boil shakes the preview; Add does nothing. */
 /* Every visit starts the same, nothing remembered: PAY UP / OR ELSE, centred, no boil, seed 7, which shows
    the exact pieces on the Tools tile and the Gumroad pictures (letters/letters.js is ordered so it does). */
 try { localStorage.setItem('clippings.opts.v5', JSON.stringify({ text: 'PAY UP\nOR ELSE', align: 'center', mix: true, boil: false, seed: 7, pins: {} })); } catch (e) {}
@@ -50,13 +50,9 @@ try { localStorage.setItem('clippings.opts.v5', JSON.stringify({ text: 'PAY UP\n
 <script src="panel.js"></script>
 <script>
 (function () {
-  var $ = function (id) { return document.getElementById(id); }, t = $('toast'), tt = null, boilT = null, P = window.ClippingsPanel;
-  function say(msg) { t.textContent = msg; t.className = 'show ok'; clearTimeout(tt); tt = setTimeout(function () { t.className = ''; }, 3200); }
-  // Add: in AE it drops the note into the comp
-  $('add').onclick = function () {
-    if (!P.opts.text.replace(/\s/g, '')) { say('Type something first'); return; }
-    say('In After Effects, Add drops this note into your comp as one layer');
-  };
+  var $ = function (id) { return document.getElementById(id); }, boilT = null, P = window.ClippingsPanel;
+  // Add: clickable, does nothing here (in AE it drops the note into the comp)
+  $('add').onclick = function () {};
   // Boil: the same pieces, shaking in place (a stop-motion jitter on each letter's spot and tilt). Done on
   // the preview's canvas so panel.js stays the real one: while boiling, each letter's translate / rotate
   // gets a small random nudge, and the note is redrawn a few times a second.

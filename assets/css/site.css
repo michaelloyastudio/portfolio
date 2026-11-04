@@ -1198,19 +1198,22 @@ button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-lin
   -webkit-user-drag: none; user-select: none;
 }
 
-.band-meta {
+/* Like the Work and Tools tiles: the title and its arrow on one row, the
+   category under them in plain grey, title case, no tracking (Nov 4 '26). */
+.band-meta { margin-top: 1.4rem; }
+.band-head {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   gap: 2rem;
-  margin-top: 1.4rem;
 }
+.band-head .band-arrow svg { margin-bottom: 0; }
 .band-cat {
-  font-size: 0.68rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
+  font-size: clamp(0.9rem, 1.1vw, 1.08rem);
+  letter-spacing: 0;
+  text-transform: none;
   color: var(--muted);
-  margin: 0 0 0.5rem;
+  margin: 0.45rem 0 0;
 }
 .band-title {
   font-size: clamp(1.4rem, 2.2vw, 2.6rem);
@@ -2575,7 +2578,6 @@ main.product + .site-foot { padding-top: clamp(3rem, 7vh, 4.5rem); }
 
   .project-head { padding-bottom: 1.25rem; }
   .project-facts { gap: 1.5rem; }
-  .band-meta { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
 }
 
 /* ══ LIGHTBOX ══

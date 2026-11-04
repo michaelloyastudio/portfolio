@@ -879,11 +879,8 @@
       el.innerHTML =
         '<div class="band-media"><img src="' + p.cover + '" alt="' + p.title + '" loading="lazy"></div>' +
         '<div class="band-meta">' +
-          '<div>' +
-            '<p class="band-cat">' + p.category + '</p>' +
-            '<h3 class="band-title">' + p.title + '</h3>' +
-          '</div>' +
-          '<span class="band-arrow">' + CHEV + '</span>' +
+          '<div class="band-head"><h3 class="band-title">' + p.title + '</h3><span class="band-arrow">' + CHEV + '</span></div>' +
+          '<p class="band-cat">' + p.category + '</p>' +
         '</div>';
       bands.appendChild(el);
       layeredThumb(p, el.querySelector('.band-media'), el, 0.035);
