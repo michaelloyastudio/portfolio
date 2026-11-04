@@ -2592,9 +2592,9 @@ main.product + .site-foot { padding-top: clamp(3rem, 7vh, 4.5rem); }
 /* ══ CURSOR ══
    site.js adds .cursor (and html.has-cursor) on mice and trackpads only.
    A red dot (the brand red: a pointer is an active state) with a soft
-   shadow; over anything clickable (.is-glass) it swells into a disc of clear
-   glass: flat, lightly softening and lifting what's under it, with a hairline
-   edge. No tint, no colour shift, no inner glow (Mike's calls), no shimmer. */
+   shadow; over anything clickable (.is-glass) it swells into a disc of
+   Parchment-tinted glass: flat, lightly softening and lifting what's under it,
+   with a hairline edge. No inner glow (Mike's call), no shimmer. */
 html.has-cursor, html.has-cursor * { cursor: none !important; }
 /* !important on its fade: each page's inline first-paint rule (body > *)
    and the leaving fade both outrank a class, and either one took the dot
@@ -2626,9 +2626,9 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
 }
 .cursor.is-glass i {
   width: 34px; height: 34px;
-  background: transparent;                   /* clear glass: no tint */
-  -webkit-backdrop-filter: blur(0.6px) brightness(1.12);
-          backdrop-filter: blur(0.6px) brightness(1.12);
+  background: rgba(232, 224, 212, 0.2);      /* glass tinted Parchment, the brand's pale */
+  -webkit-backdrop-filter: blur(0.6px) saturate(1.25) brightness(1.12);
+          backdrop-filter: blur(0.6px) saturate(1.25) brightness(1.12);
   box-shadow:
     inset 0 0 0 1px rgba(232, 224, 212, 0.6),    /* the edge, a hairline */
     0 4px 12px rgba(0, 0, 0, 0.22);
