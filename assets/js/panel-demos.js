@@ -12,6 +12,8 @@
   var LOOKS = ['stack', 'split', 'viewer', 'handles'];
   var VID = function (l) { return 'projects/plugins/receipts-look-' + l + '.mp4?v=1'; };
   var POSTER = function (l) { return 'projects/plugins/receipts-look-' + l + '.jpg?v=1'; };
+  // the overlay's like heart, in its screen px (receipts-social.svg; same as plugin-page.js)
+  var HEART = 'M1228 1738c-41-30-50-43-50-61 0-17 13-29 27-29 10 0 19 6 23 14 4-8 13-14 23-14 14 0 27 12 27 29 0 18-9 31-50 61z';
 
   // keep a 1200px stage the width of its box
   function fit(el, stage) {
@@ -29,7 +31,10 @@
             '<div class="demo-frame"><iframe src="demos/receipts/index.html" title="The Receipts panel: click a look" scrolling="no"></iframe></div></div>' +
           '<div class="demo-phone"><div class="demo-vid">' +
             '<video src="' + VID('stack') + '" poster="' + POSTER('stack') + '" muted autoplay loop playsinline aria-label="The Stack look, in the TikTok feed"></video></div>' +
-            '<img class="demo-ui" src="projects/plugins/receipts-social.svg?v=10" alt="" aria-hidden="true"></div>' +
+            '<img class="demo-ui" src="projects/plugins/receipts-social.svg?v=10" alt="" aria-hidden="true">' +
+            // likeable like the gallery's phone: plugin-page.js handles the heart and the double tap on any .shot-phone
+            '<div class="shot-phone"><svg class="shot-like-heart" viewBox="1178 1648 100 90" aria-hidden="true"><path d="' + HEART + '"/></svg>' +
+              '<button class="shot-like-hit" aria-label="Like" aria-pressed="false"></button></div></div>' +
         '</div>' +
       '</div>';
     var stage = el.querySelector('.demo-stage'), video = el.querySelector('video'), frame = el.querySelector('iframe');

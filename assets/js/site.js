@@ -656,11 +656,8 @@
           '<img src="' + p.cover + '" alt="' + p.title + '" loading="lazy" draggable="false">' +
         '</div>' +
         '<div class="tile-meta">' +
-          '<div>' +
-            '<h2 class="tile-title">' + p.title + '</h2>' +
-            '<p class="tile-cat">' + p.category + '</p>' +
-          '</div>' +
-          '<span class="tile-arrow">' + CHEV + '</span>' +
+          '<div class="tile-head"><h2 class="tile-title">' + p.title + '</h2><span class="tile-arrow">' + CHEV + '</span></div>' +
+          '<p class="tile-cat">' + p.category + '</p>' +
         '</div>';
       return tile;
   };
@@ -735,11 +732,8 @@
            down from a project's title so it holds one line. (Tried: the
            price in the arrow's place, Nov 3 '26; names got too small.) */
         '<div class="tile-meta">' +
-          '<div class="tile-text">' +
-            '<h2 class="tile-title">' + p.name + '</h2>' +
-            '<p class="tile-cat">' + (p.price ? (p.was ? '<s class="price-was">' + p.was + '</s> ' : '') + p.price : ((p.downloads && p.downloads.length) || p.download ? 'Free' : 'In development')) + '</p>' +
-          '</div>' +
-          '<span class="tile-arrow">' + CHEV + '</span>' +
+          '<div class="tile-head"><h2 class="tile-title">' + p.name + '</h2><span class="tile-arrow">' + CHEV + '</span></div>' +
+          '<p class="tile-cat">' + (p.price ? (p.was ? '<s class="price-was">' + p.was + '</s> ' : '') + p.price : ((p.downloads && p.downloads.length) || p.download ? 'Free' : 'In development')) + '</p>' +
         '</div>';
       // coverScale: a cover that fills more of its card than the others sits back to match
       if (p.coverScale) tile.style.setProperty('--fit', p.coverScale);

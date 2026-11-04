@@ -937,7 +937,7 @@ button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-lin
      can hold. Work tiles are one column here and don't need this. */
   .plugin-grid .tile-cat   { font-size: 0.78rem; white-space: nowrap; }
   .plugin-grid .tile-title { font-size: 1rem; }
-  .plugin-grid .tile-meta  { gap: 0.6rem; }
+  .plugin-grid .tile-head  { gap: 0.6rem; }
   .plugin-grid .tile-arrow { font-size: 1.1rem; }
   :root {
     --logo-h: 34px;
@@ -1269,13 +1269,15 @@ button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-lin
    it in plain grey, title case, no tracking (Mike, Nov 4 '26: it was small
    caps over the title, like the Studio bands); an arrow on the right, and the
    hover is the title and the arrow, not a line growing under the row. */
-.tile-meta {
+.tile-meta { padding-top: 1rem; }
+/* the title and its arrow share a row; the grey line sits under both */
+.tile-head {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   gap: 1.5rem;
-  padding-top: 1rem;
 }
+.tile-head .tile-arrow svg { margin-bottom: 0; }
 .tile-cat {
   font-size: clamp(0.85rem, 1vw, 0.98rem);
   letter-spacing: 0;
@@ -1301,7 +1303,7 @@ button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-lin
 .tile:hover .tile-arrow { color: var(--accent); transform: translateX(7px); }
 /* A Tools tile: the price on the grey line, the full name a size down
    from a project's title so "… for After Effects" stays on one line. */
-.plugin-grid .tile-text { flex: 1; min-width: 0; }
+.plugin-grid .tile-head .tile-title { flex: 1; min-width: 0; }
 .plugin-grid .tile-cat { white-space: nowrap; }
 .plugin-grid .tile { container-type: inline-size; }
 .plugin-grid .tile-title {
@@ -1571,6 +1573,8 @@ button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-lin
 /* .shot-demo in front: .product-shot img / video (square, bordered) mustn't reach these */
 .shot-demo .demo-vid video { position: absolute; width: calc(1473px * var(--u)); max-width: none; height: auto; aspect-ratio: 9 / 16; left: calc(-76.7px * var(--u)); top: calc(-6.7px * var(--u));
   object-fit: fill; background: none; border: 0; }
+/* the like layer fills the demo's screen (its heart and hit area are in percent of the screen) */
+.demo-phone .shot-phone { left: 0; top: 0; width: 100%; height: 100%; border-radius: 0; }
 .shot-demo .demo-ui { position: absolute; width: calc(1080px * var(--u) / 0.3); max-width: none; aspect-ratio: auto; left: calc(-612px * var(--u) / 0.3); top: calc(-110px * var(--u) / 0.3);
   pointer-events: none; object-fit: fill; background: none; border: 0; }
 /* A shot's overlay: a social app's UI over the phone half of a side-by-side

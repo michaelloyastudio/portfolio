@@ -114,8 +114,7 @@
     /* Like it the way the app does, on the phone only: the heart toggles,
        a double tap (double click) anywhere on the phone likes and drops a
        big heart where you tapped. */
-    var like = function (on) {
-      var ph = $('pluginShotPhone');
+    var like = function (ph, on) {   // ph: the gallery's phone or the Receipts hero's
       ph.classList.toggle('is-liked', on);
       ph.querySelector('.shot-like-hit').setAttribute('aria-pressed', on);
     };
@@ -133,10 +132,10 @@
     shot.addEventListener('click', function (e) {
       var ph = e.target.closest && e.target.closest('.shot-phone');
       if (ph) {
-        if (e.target.closest('.shot-like-hit')) { like(!ph.classList.contains('is-liked')); lastTap = null; return; }
+        if (e.target.closest('.shot-like-hit')) { like(ph, !ph.classList.contains('is-liked')); lastTap = null; return; }
         var t = { at: e.timeStamp, x: e.clientX, y: e.clientY };
         if (lastTap && t.at - lastTap.at < 320 && Math.abs(t.x - lastTap.x) < 40 && Math.abs(t.y - lastTap.y) < 40) {
-          like(true); burst(ph, e);
+          like(ph, true); burst(ph, e);
         }
         lastTap = t;
         return;
