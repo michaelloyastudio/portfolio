@@ -59,6 +59,21 @@
     cursor.setAttribute('aria-hidden', 'true');
     cursor.innerHTML = '<i></i>';
     document.body.appendChild(cursor);
+    /* A little chromatic aberration in the glass: what's under it splits red
+       left, blue right. Chromium only, the one engine that runs an SVG filter
+       in backdrop-filter; Safari and Firefox keep the plain glass. */
+    if (window.chrome) {
+      var ca = document.createElement('div');
+      ca.setAttribute('aria-hidden', 'true');
+      ca.style.cssText = 'position:absolute;width:0;height:0;overflow:hidden';
+      ca.innerHTML = '<svg width="0" height="0"><filter id="cursorCA" color-interpolation-filters="sRGB">' +
+        '<feColorMatrix in="SourceGraphic" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0"/><feOffset dx="-0.75" result="r"/>' +
+        '<feColorMatrix in="SourceGraphic" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="g"/>' +
+        '<feColorMatrix in="SourceGraphic" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0"/><feOffset dx="0.75" result="b"/>' +
+        '<feBlend in="r" in2="g" mode="screen" result="rg"/><feBlend in="rg" in2="b" mode="screen"/></filter></svg>';
+      document.body.appendChild(ca);
+      cursor.classList.add('has-ca');
+    }
     document.documentElement.classList.add('has-cursor');
 
     var place = function (x, y) {

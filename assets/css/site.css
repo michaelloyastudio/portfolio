@@ -2633,6 +2633,10 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
     inset 0 0 0 1px rgba(232, 224, 212, 0.6),    /* the edge, a hairline */
     0 4px 12px rgba(0, 0, 0, 0.22);
 }
+/* Chromium: a little chromatic aberration under the glass (#cursorCA, site.js) */
+.cursor.has-ca.is-glass i {
+  backdrop-filter: url(#cursorCA) blur(0.6px) saturate(1.25) brightness(1.12);
+}
 .cursor.is-down i { transform: translate(-50%, -50%) scale(0.86); }
 @media (prefers-reduced-motion: reduce) {
   .cursor i { transition: none; }
