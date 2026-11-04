@@ -96,7 +96,37 @@
       }
     } catch (_) {}
     var lastX = was ? was[0] : -1, lastY = was ? was[1] : -1, moved = false;
+    /* Gumroad's checkout (the Buy button) is a full-window layer in a shadow
+       root with the store in an iframe: the dot froze at the iframe's edge and
+       the backdrop inherited cursor:none. While it's open the dot is off and
+       the system pointer is back; closing it hides the layer (display:none). */
+    var checkout = false;
+    var checkoutOpen = function () {
+      return Array.prototype.some.call(document.body.children, function (el) {
+        var f = el.shadowRoot && el.shadowRoot.querySelector('iframe');
+        return !!f && f.getClientRects().length > 0;
+      });
+    };
+    var checkoutCheck = function () {
+      var open = checkoutOpen();
+      if (open === checkout) return;
+      checkout = open;
+      document.documentElement.classList.toggle('has-cursor', !open);
+      if (open) cursor.classList.remove('is-on', 'is-glass');
+    };
+    if (window.MutationObserver) {
+      var watchShadow = new MutationObserver(checkoutCheck);
+      new MutationObserver(function (list) {
+        list.forEach(function (m) {
+          m.addedNodes.forEach(function (n) {
+            if (n.shadowRoot) watchShadow.observe(n.shadowRoot, { subtree: true, childList: true, attributes: true, attributeFilter: ['style', 'class'] });
+          });
+        });
+        checkoutCheck();
+      }).observe(document.body, { childList: true });
+    }
     document.addEventListener('mousemove', function (e) {
+      if (checkout) return;
       if (e.target.tagName === 'IFRAME') return;   // see the iframe note below
       moved = true;
       lastX = e.clientX; lastY = e.clientY;
