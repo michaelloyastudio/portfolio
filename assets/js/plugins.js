@@ -12,7 +12,7 @@
  *   price     — paid plugins only ('$39'). Replaces "Free" on the tile and
  *               the page. With `buy` (the checkout URL) the page shows one
  *               solid Buy button; without it, "Coming soon" and no button.
- *               A Gumroad `buy` link (https://loyadesign.gumroad.com/l/<slug>)
+ *               A Gumroad `buy` link (https://michaelloyastudio.gumroad.com/l/<slug>)
  *               opens Gumroad's checkout as an overlay on the page.
  *   coverVideo — optional square loop the Tools tile plays on hover
  *   coverScale — optional: shrink a cover that fills more of its card than the others
@@ -143,7 +143,7 @@ const plugins = [
     tagline: 'Social-ready process videos in one click',
     price: '$19.99',
     was: '$29.99',
-    buy: null,
+    buy: 'https://michaelloyastudio.gumroad.com/l/receipts',
     cover: 'projects/plugins/receipts-ui.jpg?v=3',
     // coverVideo: off while Mike makes a new one (was receipts-square.mp4?v=3)
     shots: [
@@ -195,7 +195,7 @@ const plugins = [
     name: 'Clippings for After Effects',
     tagline: 'Type a word, get a ransom note',
     price: '$29',
-    buy: null,
+    buy: 'https://michaelloyastudio.gumroad.com/l/clippings',
     cover: 'projects/plugins/clippings-ui.jpg?v=2',
     // coverVideo: off for now, the tile just zooms (was clippings-square.mp4)
     shots: [
