@@ -156,7 +156,7 @@ const plugins = [
     /* a 16:9 still of what Receipts lays out for different comp shapes: the Stack look's real boxes
        (lib/compose.js plan) for eight comp shapes, two rows of four, drawn as shapes
        (receipts repo tools/promo/ratios/) */
-    wide: { src: 'projects/plugins/receipts-ratios.jpg?v=3', alt: 'The 9:16 video Receipts lays out for 16:9, 4:3, 3:2, 2.39:1, 1:1, 4:5, 2:3 and 9:16 comps' },
+    wide: { src: 'projects/plugins/receipts-ratios.jpg?v=4', alt: 'The 9:16 video Receipts lays out for 16:9, 4:3, 3:2, 2.39:1, 1:1, 4:5, 2:3 and 9:16 comps' },
     intro: `<p>Hit Generate and Receipts steps through your comp one frame at a time, screenshots the real viewer with every handle, path and gizmo After Effects draws, shoots the whole timeline, renders the comp, and builds a finished 4K 9:16 process video. No screen recording, no cropping in Premiere.</p>
 <p>It finds the viewer and the timeline on its own and fits the comp in the viewer, then puts your zoom, playhead and selection back when it's done. Preview shows one frame in every look before you commit.</p>`,
     features: [
