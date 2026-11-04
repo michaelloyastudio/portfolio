@@ -1781,18 +1781,18 @@ button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-lin
 .product-stats-row {
   display: flex;
   justify-content: center;
-  gap: clamp(2.5rem, 5vw, 4.5rem);
+  gap: clamp(2.5rem, 6vw, 6rem);
 }
 .product-stat { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
 .product-stat-fig {
-  font-size: clamp(3.25rem, 5.2vw, 5.6rem);
+  font-size: clamp(3rem, 7.4vw, 8rem);
   font-weight: 700;
   letter-spacing: -0.045em;
   line-height: 0.95;
   color: var(--fg);
 }
 .product-stat-label {
-  font-size: clamp(0.8rem, 1vw, 1.1rem);
+  font-size: clamp(0.85rem, 1.2vw, 1.3rem);
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--accent);
@@ -2505,6 +2505,8 @@ main.product + .site-foot { padding-top: clamp(3rem, 7vh, 4.5rem); }
 }
 @media (max-width: 640px) {
   .side-arrows.tile-pager { grid-template-columns: minmax(0, 1fr); }
+  /* the two figures have to share a phone's width */
+  .product-stat-fig { font-size: min(13vw, 4rem); }
 }
 /* the lightbox's arrows: fixed at the sides, just outside a full-width hero */
 .lightbox { --hero-edge: calc((100% - min(var(--herow), 100%)) / 2 + var(--pad)); }
