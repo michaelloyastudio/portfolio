@@ -144,11 +144,11 @@ const plugins = [
     price: '$19.99',
     was: '$29.99',
     buy: 'https://michaelloyastudio.gumroad.com/l/receipts',
-    cover: 'projects/plugins/receipts-tile.jpg?v=6',   // the panel behind, the TikTok phone in front (receipts repo tools/promo/thumbnail.html)
+    cover: 'projects/plugins/receipts-tile.jpg?v=7',   // the panel behind, the TikTok phone in front (receipts repo tools/promo/cover/thumbnail.html)
     // coverVideo: off while Mike makes a new one (was receipts-square.mp4?v=3)
     shots: [
       // the hero: the panel behind, the TikTok phone in front (same picture as the Tools tile and Gumroad)
-      { src: 'projects/plugins/receipts-tile.jpg?v=6', alt: 'The Receipts panel, and the video it makes in the TikTok feed' },
+      { src: 'projects/plugins/receipts-tile.jpg?v=7', alt: 'The Receipts panel, and the video it makes in the TikTok feed' },
       { video: 'projects/plugins/receipts-pair.mp4?v=1', src: 'projects/plugins/receipts-pair.jpg?v=1', overlay: 'projects/plugins/receipts-social.svg?v=10', alt: 'A Receipts process video, and the same video in the TikTok feed' },
       { src: 'projects/plugins/receipts-ui-options.jpg?v=6', alt: 'The Receipts panel with its options open: on top, background, range, render and timeline' }
     ],
