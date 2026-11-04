@@ -64,7 +64,7 @@
     el.innerHTML =
       '<div class="demo-stage">' +
         '<div class="demo-panel demo-panel--solo"><div class="demo-tab">Clippings <i></i></div>' +
-          '<div class="demo-frame"><iframe src="demos/clippings/index.html?v=3" title="The Clippings panel: shuffle the letters" scrolling="no"></iframe></div></div>' +
+          '<div class="demo-frame"><iframe src="demos/clippings/index.html?v=4" title="The Clippings panel: shuffle the letters" scrolling="no"></iframe></div></div>' +
       '</div>';
     fit(el, el.querySelector('.demo-stage'));
   }

@@ -7,13 +7,13 @@
 <link rel="stylesheet" href="style.css">
 <script>
 /* Site demo of the Clippings panel (the real panel.js / style.css, copied from ~/Developer/clippings) with a web
-   set of the letters (letters/: only the PAY UP / OR ELSE characters, 4 per case, 220px WebP). The text is fixed; shuffle and align work as in
+   set of the letters (letters/: only the PAY UP / OR ELSE characters, 4 per case, 220px WebP). The text is fixed; click a letter, shuffle and align work as in
    After Effects; Boil shakes the preview; Add does nothing. */
 /* Every visit starts the same, nothing remembered: PAY UP / OR ELSE, centred, no boil, seed 7, which shows
    the exact pieces on the Tools tile and the Gumroad pictures (letters/letters.js is ordered so it does). */
 try { localStorage.setItem('clippings.opts.v5', JSON.stringify({ text: 'PAY UP\nOR ELSE', align: 'center', mix: true, boil: false, seed: 7, pins: {} })); } catch (e) {}
 </script>
-<style>html, body { overflow: hidden; } #text { resize: none; cursor: default; caret-color: transparent; user-select: none; } #stage { cursor: default; }</style>
+<style>html, body { overflow: hidden; } #text { resize: none; cursor: default; caret-color: transparent; user-select: none; }</style>
 
 </head>
 <body>
@@ -53,11 +53,10 @@ try { localStorage.setItem('clippings.opts.v5', JSON.stringify({ text: 'PAY UP\n
   var $ = function (id) { return document.getElementById(id); }, boilT = null, P = window.ClippingsPanel;
   // no hover help tips on the site: the panel's own title attributes come off (panel.js sets some at load)
   document.querySelectorAll('[title]').forEach(function (e) { e.removeAttribute('title'); });
-  // The text is fixed (PAY UP / OR ELSE) and letters can't be clicked to swap: the demo only has a small
-  // set of pieces (letters/), so it never shows the whole pack. Shuffle, align, Boil and Add still work.
+  // The text is fixed (PAY UP / OR ELSE): the demo only has a small set of pieces (letters/, 4 per
+  // case), so it never shows the whole pack. Clicking a letter, shuffle, align, Boil and Add still work.
   $('text').readOnly = true;
   $('text').tabIndex = -1;
-  $('stage').onclick = null;
   // Add: clickable, does nothing here (in AE it drops the note into the comp)
   $('add').onclick = function () {};
   // Boil: the same pieces, shaking in place (a stop-motion jitter on each letter's spot and tilt). Done on
