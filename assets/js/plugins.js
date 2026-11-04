@@ -187,8 +187,8 @@ const plugins = [
     shots: [
       // the real panel, live (panel-demos.js): type, swap, shuffle, align, boil
       { demo: 'clippings', src: 'projects/plugins/clippings-ui.jpg?v=2', alt: 'The Clippings panel: type your own words' },
-      // a still, not the loop: the 1,140 LETTERS card (promo/clippings, no piece twice in a note)
-      { src: 'projects/plugins/clippings-1140.jpg?v=1', alt: '1,140 cutout letters' }
+      // a still, not the loop: the 1,140 LETTERS card (promo/clippings at 16.2 s, no piece twice in a note, the wall blurred)
+      { src: 'projects/plugins/clippings-1140.jpg?v=2', alt: '1,140 cutout letters' }
     ],
     intro: `<p>Type your text and Clippings builds it from real cutout letters: magazine scraps, newsprint, comics, record sleeves, band tees, embroidered patches, stickers, tickets and tin signs. The preview shows the exact letters you'll get. Click one to swap it, or shuffle them all, then hit Add.</p>
 <p>The note lands in your comp as one layer, sized to fit, and nothing is baked. Tilt, spacing, boil and the paper shadow are sliders right on that layer, and every letter inside is its own layer you can animate.</p>`,
