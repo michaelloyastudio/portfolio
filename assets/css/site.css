@@ -2309,6 +2309,8 @@ main.product + .site-foot { padding-top: clamp(3rem, 7vh, 4.5rem); }
 }
 .project-category {
   font-size: 0.92rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
   color: var(--accent);
   margin: 0;
   text-align: right;
