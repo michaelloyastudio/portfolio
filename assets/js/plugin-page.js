@@ -58,7 +58,7 @@
       '<div id="pluginShotPhone" class="shot-phone" hidden>' +
         '<svg class="shot-like-heart" viewBox="1178 1648 100 90" aria-hidden="true"><path d="' + HEART + '"/></svg>' +
         '<button class="shot-like-hit" aria-label="Like" aria-pressed="false"></button></div>' +
-      // the same "New update" chip as the Tools tile, until its date
+      // the same "New Update" chip as the Tools tile, until its date
       (p.updateBadge && new Date() < new Date(p.updateBadge.until)
         ? '<div class="tile-badges"><span class="tile-badge tile-badge--new"><svg class="tile-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.8l3.1 6.6 7.2.9-5.3 5 1.4 7.1L12 17.9l-6.4 3.5L7 14.3l-5.3-5 7.2-.9z"/></svg>' + p.updateBadge.text + '</span></div>'
         : '') + '</div>' +
@@ -303,7 +303,7 @@
       }).join('') + '</section>';
   }
   var featHtml = p.features && p.features.length
-    ? '<section class="plugin-section plugin-features"><h2 class="changelog-title">What it does</h2>' + list(p.features) + '</section>'
+    ? '<section class="plugin-section plugin-features"><h2 class="changelog-title">What It Does</h2>' + list(p.features) + '</section>'
     : '';
   var body = $('pluginBody');
   if (body) body.innerHTML = videoHtml + featHtml + logHtml + (p.body || '');

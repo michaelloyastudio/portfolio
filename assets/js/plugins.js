@@ -41,7 +41,7 @@
  *   video     — optional {youtube: id, title}: embedded in "The Video"
  *               section above What's New. Or {src, poster, heading?}: a
  *               silent 16:9 loop from this repo, played full width.
- *   features  — optional [html] list under "What it does", same bullets as
+ *   features  — optional [html] list under "What It Does", same bullets as
  *               What's New.
  *   stats     — optional {items: [[figure, label]], note}: big numbers in that
  *               same section, under the video (reach of the videos about the
@@ -87,11 +87,11 @@ const plugins = [
     ],
     status: 'live',
     version: 'v1.2',
-    updateBadge: { text: 'New update', until: '2026-11-20' },   // v1.2 shipped 2026-10-20
+    updateBadge: { text: 'New Update', until: '2026-11-20' },   // v1.2 shipped 2026-10-20
     /* Mike's totals for 10 posts (2026-10-22): Instagram 442,589 views /
        14,325 likes, TikTok 264,083 / 6,517 (two TikTok counts app-rounded),
        total 706,672 views / 20,842 likes / 293 comments. Shown rounded down. */
-    stats: { items: [['700K+', 'views'], ['20K+', 'likes']], note: 'On GH MIDI videos across Instagram and TikTok' },
+    stats: { items: [['700K+', 'Views'], ['20K+', 'Likes']], note: 'On GH MIDI videos across Instagram and TikTok' },
     video: { youtube: '8DL_x7Ll75Y', title: 'Making GH MIDI', heading: '' },   // no section title (Mike, Nov 4 '26; was 'The Process')
     changelog: [
       { version: '1.2', date: 'October 20, 2026', items: [

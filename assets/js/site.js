@@ -294,7 +294,7 @@
       var clean = hero.classList.toggle('clean');
       heroVideo.muted = !clean;
       heroToggle.setAttribute('aria-pressed', clean ? 'true' : 'false');
-      if (label) label.textContent = clean ? 'Mute' : 'Play with sound';
+      if (label) label.textContent = clean ? 'Mute' : 'Play with Sound';
       if (clean) {
         var p = heroVideo.play();
         if (p && p.catch) p.catch(function () {});
