@@ -120,9 +120,11 @@
     };
     var burst = function (ph, e) {
       var r = ph.getBoundingClientRect(), h = document.createElement('div');
+      // the hero's phone sits on a scaled stage: screen px → the phone's own px
+      var k = ph.offsetWidth ? r.width / ph.offsetWidth : 1;
       h.className = 'shot-like-burst';
-      h.style.left = (e.clientX - r.left) + 'px';
-      h.style.top = (e.clientY - r.top) + 'px';
+      h.style.left = (e.clientX - r.left) / k + 'px';
+      h.style.top = (e.clientY - r.top) / k + 'px';
       h.style.setProperty('--tilt', (Math.random() * 40 - 20).toFixed(1) + 'deg');
       h.innerHTML = '<svg viewBox="1178 1648 100 90" aria-hidden="true"><path d="' + HEART + '"/></svg>';
       ph.appendChild(h);
