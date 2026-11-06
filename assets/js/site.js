@@ -180,12 +180,33 @@
       });
       return hit;
     };
+    /* macOS now and then drops a hidden pointer back to the arrow while the
+       mouse sits still, over the dot until it moves again. A browser only
+       tells the system which pointer to show when the mouse moves or the
+       pointer style under it changes, so while it's still, flip the element
+       under it between two invisible pointers: each flip says "hidden" again. */
+    var BLANK = 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'1\' height=\'1\'/%3E") 0 0, none';
+    var nudged = null, nudgeT = null;
+    var unnudge = function () {
+      if (nudged) { nudged.style.removeProperty('cursor'); nudged = null; }
+    };
+    var nudge = function () {
+      if (!checkout && lastX >= 0 && cursor.classList.contains('is-on')) {
+        var el = document.elementFromPoint(lastX, lastY);
+        if (nudged) unnudge();
+        else if (el && el.tagName !== 'IFRAME') { el.style.setProperty('cursor', BLANK, 'important'); nudged = el; }
+      }
+      nudgeT = setTimeout(nudge, 700);
+    };
     var still = null;
     document.addEventListener('mousemove', function () {
       clearTimeout(still);
       still = setTimeout(function () {
         if (frameAt(lastX, lastY)) cursor.classList.remove('is-on', 'is-glass');
       }, 120);
+      clearTimeout(nudgeT);
+      unnudge();
+      nudgeT = setTimeout(nudge, 700);
     }, { passive: true });
     document.addEventListener('click', function () {
       setTimeout(function () {
