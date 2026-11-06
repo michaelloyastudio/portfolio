@@ -540,7 +540,9 @@ button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-lin
 
 .btn {
   display: inline-block;
-  font-size: 0.91rem;
+  font-size: 0.76rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
   padding: 1rem 2.6rem;
   border: 1px solid var(--line);
   border-radius: 999px;
@@ -758,6 +760,7 @@ button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-lin
      rendered weight in Inter, so the button doesn't quietly get bolder. */
   font-weight: 430;
   font-size: clamp(0.8rem, 1.05vw, 1.05rem);
+  letter-spacing: 0.0685em;
   /* The 0.133em correction that used to live here is GONE, on purpose.
      It existed because Nimbus reserves descender room an all-caps label
      never uses (ascent 0.73em, descent 0.27em), so the ink floated above a
