@@ -171,10 +171,10 @@ const projects = [
     ],
     intro: `<p>Covers I made back when I was producing my own music. Each one shot and designed from scratch in Photoshop and Illustrator.</p>`,
     work: `<div class="img-grid-3" data-exact>
-<div><img src="projects/album-covers/loya-passion-update.jpg" alt="Passion update" loading="lazy" width="2500" height="2500"></div>
-<div><img src="projects/album-covers/loya-passion-4.jpg" alt="Passion series 4" loading="lazy" width="2500" height="2500"></div>
+<div><img src="projects/album-covers/loya-passion-update.jpg" alt="Passion update" loading="lazy" width="2000" height="2000"></div>
+<div><img src="projects/album-covers/loya-passion-4.jpg" alt="Passion series 4" loading="lazy" width="2000" height="2000"></div>
 <div><img src="projects/album-covers/whitenoise.jpg" alt="White Noise" loading="lazy" width="1280" height="1280"></div>
-<div><img src="projects/album-covers/loya-passion-1.jpg" alt="Passion series 1" loading="lazy" width="2500" height="2500"></div>
+<div><img src="projects/album-covers/loya-passion-1.jpg" alt="Passion series 1" loading="lazy" width="2000" height="2000"></div>
 <div><img src="projects/album-covers/swim.jpg" alt="Swim" loading="lazy" width="1800" height="1800"></div>
 <div><img src="projects/album-covers/getting-loud.jpg" alt="Getting Loud" loading="lazy" width="1600" height="1600"></div>
 </div>`
@@ -200,7 +200,7 @@ const projects = [
     /* ORDER IS DELIBERATE — most important first, least last. Mike's
        ranking, and where a new piece goes is decided by where he places it
        in this list, not by when it was made:
-         YOU! (the McDonald's video), Control Me (261016_ControlMe, Wii-menu CRT piece), Better Off Alone (261023_BetterOffAlone, Kaiven commission, FFXV pixel CRT piece), Surf Curse Disco (260927_Disco), felly, fuji, random element, Z poster (sabt), Winged Victory, Artifaxing tee (261018_ArtifaxingShirt), jumpscare,
+         YOU! (the McDonald's video), Slashay (261106_Slashay, lyric video commission, flat shape-layer worlds; Mike moved it up top Nov 19), Better Off Alone (261023_BetterOffAlone, Kyser commission, FFXV pixel CRT piece), Control Me (261016_ControlMe, Wii-menu CRT piece), Surf Curse Disco (260927_Disco), felly, fuji, random element, Z poster (sabt), Winged Victory, Artifaxing tee (261018_ArtifaxingShirt), jumpscare,
          logic, django, sketch (smiski), homelander, the other videos,
          basketball video (web story), steph curry, final four,
        The basketball video is 9:16. Placed right after homelander it shared
@@ -210,8 +210,10 @@ const projects = [
        that step is what buys the size.
          freshmen, then the rest. (Exotic for Sweezy and the cartoon self
          portrait were taken off Nov 3 '26; their files are still in the folder.)
-       The top row is YOU! and Control Me only (Mike: three videos up top was
-       too many); data-row-end on Control Me closes the row there.
+       The top row is YOU! and Slashay only (Mike: three videos up top was
+       too many); data-row-end on Slashay closes the row there. The second
+       row is Better Off Alone then Control Me, closed the same way (with Surf
+       Curse beside them all three came out 153px tall).
        "Tyler the Creator" is mm-print.jpg, the Artist or Rapper magazine
        spread. Mike wants it left down in the rest, next to the characters
        sketchbook, rather than ranked up with steph curry.
@@ -220,10 +222,11 @@ const projects = [
        reintroduce ragged edges between the pieces. */
     work: `<div class="img-grid-3">
 <div><video src="projects/miscellaneous/you-mcdonalds.mp4" autoplay loop muted playsinline width="1440" height="1080"></video></div>
-<div data-row-end><video src="projects/miscellaneous/control-me.mp4" autoplay loop muted playsinline width="1440" height="1080"></video></div>
+<div data-row-end><video src="projects/miscellaneous/slashay.mp4" autoplay loop muted playsinline width="1440" height="1080"></video></div>
 <div><video src="projects/miscellaneous/better-off-alone.mp4" autoplay loop muted playsinline width="1440" height="1080"></video></div>
+<div data-row-end><video src="projects/miscellaneous/control-me.mp4" autoplay loop muted playsinline width="1440" height="1080"></video></div>
 <div><video src="projects/miscellaneous/surf-curse-disco.mp4" autoplay loop muted playsinline width="1280" height="720"></video></div>
-<div><img src="projects/miscellaneous/felly-wildfire.jpg" alt="Wildfire, an album by Felly" loading="lazy" width="1650" height="2550"></div>
+<div><img src="projects/miscellaneous/felly-wildfire.jpg" alt="Wildfire, a cover concept for Felly" loading="lazy" width="1650" height="2550"></div>
 <div><img src="projects/miscellaneous/fuji.jpg" alt="Fuji poster" loading="lazy" width="1800" height="2700"></div>
 <div><img src="projects/miscellaneous/random-element.jpg" alt="Random Element poster" loading="lazy" width="1164" height="1800"></div>
 <div><img src="projects/miscellaneous/sabt.jpg" alt="Sweet American Boy Tour, a poster for Z" loading="lazy" width="1200" height="1600"></div>

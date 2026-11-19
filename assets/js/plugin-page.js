@@ -41,23 +41,18 @@
         : '<img id="pluginShotMain" src="' + s.src + '" alt="' + s.alt + '">';
     };
     // a shot's `overlay`: a social app's UI drawn over the phone half of a
-    // side-by-side video, always on, with the phone you can like
+    // side-by-side video, always on. Just a picture: the like you could tap
+    // on the phone went with the live demos (Mike, Nov 17 '26: no HTML
+    // interactions in the shots).
     var overlay = function (s) {
       var o = $('pluginShotOverlay');
       o.hidden = !s.overlay;
-      $('pluginShotPhone').hidden = !s.overlay;
       if (s.overlay) o.src = s.overlay;
       o.parentNode.classList.toggle('has-overlay', !!s.overlay);
     };
-    // the overlay's like heart, in its screen px (receipts-social.svg)
-    var HEART = 'M1228 1738c-41-30-50-43-50-61 0-17 13-29 27-29 10 0 19 6 23 14 4-8 13-14 23-14 14 0 27 12 27 29 0 18-9 31-50 61z';
     shot.innerHTML =
       '<div class="product-shot-main">' + media(shots[0]) +
       '<img id="pluginShotOverlay" class="shot-overlay" alt="" aria-hidden="true" hidden>' +
-      // the overlay's phone: a red heart over its white one, plus a hit area to toggle it
-      '<div id="pluginShotPhone" class="shot-phone" hidden>' +
-        '<svg class="shot-like-heart" viewBox="1178 1648 100 90" aria-hidden="true"><path d="' + HEART + '"/></svg>' +
-        '<button class="shot-like-hit" aria-label="Like" aria-pressed="false"></button></div>' +
       // the same "New Update" chip as the Tools tile, until its date
       (p.updateBadge && new Date() < new Date(p.updateBadge.until)
         ? '<div class="tile-badges"><span class="tile-badge tile-badge--new"><svg class="tile-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.8l3.1 6.6 7.2.9-5.3 5 1.4 7.1L12 17.9l-6.4 3.5L7 14.3l-5.3-5 7.2-.9z"/></svg>' + p.updateBadge.text + '</span></div>'
@@ -111,37 +106,7 @@
       shot.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('.product-thumb')) done(); }, true);
     }
 
-    /* Like it the way the app does, on the phone only: the heart toggles,
-       a double tap (double click) anywhere on the phone likes and drops a
-       big heart where you tapped. */
-    var like = function (ph, on) {   // ph: the gallery's phone or the Receipts hero's
-      ph.classList.toggle('is-liked', on);
-      ph.querySelector('.shot-like-hit').setAttribute('aria-pressed', on);
-    };
-    var burst = function (ph, e) {
-      var r = ph.getBoundingClientRect(), h = document.createElement('div');
-      // the hero's phone sits on a scaled stage: screen px → the phone's own px
-      var k = ph.offsetWidth ? r.width / ph.offsetWidth : 1;
-      h.className = 'shot-like-burst';
-      h.style.left = (e.clientX - r.left) / k + 'px';
-      h.style.top = (e.clientY - r.top) / k + 'px';
-      h.style.setProperty('--tilt', (Math.random() * 40 - 20).toFixed(1) + 'deg');
-      h.innerHTML = '<svg viewBox="1178 1648 100 90" aria-hidden="true"><path d="' + HEART + '"/></svg>';
-      ph.appendChild(h);
-      h.addEventListener('animationend', function () { h.remove(); });
-    };
-    var lastTap = null;
     shot.addEventListener('click', function (e) {
-      var ph = e.target.closest && e.target.closest('.shot-phone');
-      if (ph) {
-        if (e.target.closest('.shot-like-hit')) { like(ph, !ph.classList.contains('is-liked')); lastTap = null; return; }
-        var t = { at: e.timeStamp, x: e.clientX, y: e.clientY };
-        if (lastTap && t.at - lastTap.at < 320 && Math.abs(t.x - lastTap.x) < 40 && Math.abs(t.y - lastTap.y) < 40) {
-          like(ph, true); burst(ph, e);
-        }
-        lastTap = t;
-        return;
-      }
       var b = e.target.closest && e.target.closest('.product-thumb');
       if (!b) return;
       var s = shots[+b.getAttribute('data-n')], main = $('pluginShotMain');
@@ -267,7 +232,7 @@
   } else if (p.video && p.video.src) {
     videoHtml = '<section class="plugin-section plugin-video plugin-loop">' +
       (p.video.heading ? '<h2 class="changelog-title">' + p.video.heading + '</h2>' : '') +
-      '<video src="' + p.video.src + '" poster="' + (p.video.poster || '') + '" muted loop playsinline preload="auto" aria-label="' +
+      '<video src="' + p.video.src + '" poster="' + (p.video.poster || '') + '" muted loop playsinline preload="none" aria-label="' +
       (p.video.title || p.name) + '"></video></section>';
   } else if (p.video || (p.stats && p.stats.items && p.stats.items.length)) {
     var vh = p.video && p.video.heading !== undefined ? p.video.heading : 'The Video';
@@ -315,6 +280,16 @@
      opening (Clippings' letters landing) is seen rather than missed. */
   var loopVid = document.querySelector('.plugin-loop video');
   if (loopVid) {
+    /* It sits below the fold, so it doesn't download with the page (it's
+       the heaviest file on Clippings): preload="none" until it's about a
+       screen away, then the whole thing, so it's ready by the time it shows. */
+    var fetchLoop = function () { loopVid.preload = 'auto'; loopVid.load(); };
+    if (window.IntersectionObserver) {
+      var nio = new IntersectionObserver(function (es) {
+        if (es.some(function (e) { return e.isIntersecting; })) { nio.disconnect(); fetchLoop(); }
+      }, { rootMargin: '100% 0px' });
+      nio.observe(loopVid);
+    } else fetchLoop();
     var guide = loopVid.closest('.plugin-guide') || loopVid.parentNode;
     var landed = Promise.all((guide.getAnimations ? guide.getAnimations() : []).map(function (a) { return a.finished; }))
       .catch(function () {});

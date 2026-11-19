@@ -109,6 +109,11 @@ html {
   -webkit-tap-highlight-color: transparent;
 }
 input, textarea, [contenteditable] { -webkit-user-select: text; user-select: text; }
+/* Focus never draws anything either (Mike, Nov 19 '26). Every icon's hit
+   area is bigger than the icon, so a focus ring traces the hitbox, and
+   browsers paint one when you click an icon and then press a key (arrows
+   in the lightbox, say). Keyboard focus still works; it is just unseen. */
+*:focus, *:focus-visible { outline: none !important; }
 html {
   scroll-behavior: smooth;
   scrollbar-gutter: stable;
@@ -806,7 +811,6 @@ button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-lin
   user-select: none;
   -webkit-user-select: none;
 }
-.slot-hit:focus-visible { outline: 1px solid var(--accent); outline-offset: -1px; }
 /* Feathered edges while the reel moves: words fade in at the top and out
    at the bottom instead of being cut by a hard line. --feather eases back
    to 0 as it lands so the resting word sits unmasked (the window is only
@@ -2402,10 +2406,111 @@ main.product + .site-foot { padding-top: clamp(3rem, 7vh, 4.5rem); }
   position: relative;
 }
 
+/* ── player ──
+   The site's own player for videos played by hand (project-page.js
+   makePlayer). The whole picture is one button: before the first play it
+   carries a disc with a Parchment play mark over the poster, the mark
+   turning red on hover (red is for hover). Once started, the picture plays
+   and pauses on a click, the disc comes back only while paused, and the
+   bar at the foot shows while paused or while the pointer moves. Controls
+   are drawn in Parchment strokes like the header's marks, red on hover. */
+.player { position: relative; background: #000; }
+.player video { display: block; width: 100%; height: auto; }
+.player-cover {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  padding: 0; border: 0;
+  background: none;
+  cursor: pointer;
+  display: grid; place-items: center;
+}
+.player-big {
+  width: clamp(3.5rem, 6vw, 5.25rem);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  display: grid; place-items: center;
+  background: rgba(10, 10, 10, 0.55);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  color: var(--fg);
+  transition: opacity 0.3s var(--ease), transform 0.4s var(--ease), color 0.2s;
+}
+.player-big svg { width: 40%; height: 40%; margin-left: 6%; display: block; }
+.player-big path { fill: currentColor; stroke: currentColor; stroke-width: 2.4; stroke-linejoin: round; }
+.player-cover:hover .player-big { color: var(--accent); transform: scale(1.06); }
+.player.is-playing .player-big { opacity: 0; transform: scale(0.9); }
+
+.player-bar {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  display: flex; align-items: center;
+  gap: clamp(0.6rem, 1.2vw, 1rem);
+  padding: 2.4rem clamp(0.75rem, 1.6vw, 1.25rem) clamp(0.6rem, 1.2vw, 0.9rem);
+  background: linear-gradient(to top, rgba(10, 10, 10, 0.72), rgba(10, 10, 10, 0));
+  color: var(--fg);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s var(--ease);
+}
+.player.is-started.is-active .player-bar,
+.player.is-started:not(.is-playing) .player-bar,
+.player.is-scrubbing .player-bar { opacity: 1; pointer-events: auto; }
+.player-btn {
+  flex: none;
+  width: 1.9rem; height: 1.9rem;
+  padding: 0.3rem;
+  border: 0; background: none;
+  color: inherit;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.player-btn:hover { color: var(--accent); }
+.player-btn svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.player-btn path { fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.player-toggle path:first-child { fill: currentColor; }
+.player-toggle svg + svg { display: none; }
+.player.is-playing .player-toggle svg:first-child { display: none; }
+.player.is-playing .player-toggle svg + svg { display: block; }
+.player-sound .pl-off, .player.is-muted .player-sound .pl-on { display: none; }
+.player.is-muted .player-sound .pl-off { display: inline; }
+/* the track: a hairline that thickens under the pointer; the played part red */
+.player-track {
+  flex: 1;
+  height: 1.5rem;
+  display: flex; align-items: center;
+  cursor: pointer;
+  touch-action: none;
+  position: relative;
+}
+.player-track::before, .player-fill {
+  content: '';
+  position: absolute; left: 0; right: 0; top: 50%;
+  height: 2px; margin-top: -1px;
+  border-radius: 2px;
+  transition: height 0.15s, margin-top 0.15s;
+}
+.player-track::before { background: rgba(232, 224, 212, 0.28); }
+.player-fill { background: var(--accent); transform-origin: left center; transform: scaleX(0); }
+.player-track:hover::before, .player-track:hover .player-fill,
+.player.is-scrubbing .player-track::before, .player.is-scrubbing .player-fill { height: 4px; margin-top: -2px; }
+.player-time {
+  flex: none;
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  color: rgba(232, 224, 212, 0.8);
+}
+/* full screen: the picture fills the screen, letterboxed on black */
+.player:fullscreen { display: grid; place-items: center; width: 100%; height: 100%; }
+.player:fullscreen video { width: 100%; height: 100%; object-fit: contain; }
+.player:-webkit-full-screen { display: grid; place-items: center; width: 100%; height: 100%; }
+.player:-webkit-full-screen video { width: 100%; height: 100%; object-fit: contain; }
+@media (max-width: 640px) {
+  .player-time { display: none; }   /* a phone's bar keeps play, the track, sound and full screen */
+}
+
 /* Work media opens in the lightbox (project-page.js): anything that isn't
    a player with its own controls, or inside a link. */
 .project-work img:not(a img),
-.project-work video:not([controls]):not(a video) { cursor: pointer; }
+.project-work video:not([controls]):not([data-player]):not(a video) { cursor: pointer; }
 
 .project-work [class^="img-grid"] img,
 .project-work [class^="img-grid"] video {
@@ -2443,7 +2548,6 @@ main.product + .site-foot { padding-top: clamp(3rem, 7vh, 4.5rem); }
   --arrow-w: calc(var(--logo-h) * 0.5);
   --arrow-h: calc(var(--logo-h) * 0.68);
   --arrow-hit: 14px;                       /* extra hit area round the glyph */
-  --arrow-gap: clamp(14px, 1.8vw, 36px);   /* glyph to the hero's edge (lightbox) */
 }
 .side-arrows, .arrow-pager {
   display: flex;
@@ -2511,15 +2615,20 @@ main.product + .site-foot { padding-top: clamp(3rem, 7vh, 4.5rem); }
 @media (max-width: 640px) {
   .side-arrows.tile-pager { grid-template-columns: minmax(0, 1fr); }
 }
-/* the lightbox's arrows: fixed at the sides, just outside a full-width hero */
+/* the lightbox's arrows: out at the page's edges, in line with the header.
+   The left chevron's point sits on the logo's left edge (--frame-x); the
+   right one's point on the right end of the X the burger turns into, which
+   is centred in the button, (1.4 - 0.8 x 0.707) / 2 = 0.417 logo-heights in
+   from its edge. The chevron is drawn 4/20 of its box in from each side
+   (0.1 logo-heights), so the box steps out by that much. */
 .lightbox { --hero-edge: calc((100% - min(var(--herow), 100%)) / 2 + var(--pad)); }
 .lightbox .side-arrow {
   position: absolute;
   top: 50%;
   margin: calc(var(--arrow-h) / -2 - var(--arrow-hit)) 0 0;
 }
-.lightbox .side-arrow--prev { left:  max(calc(var(--frame-x) - var(--arrow-hit)), calc(var(--hero-edge) - var(--arrow-gap) - var(--arrow-w) - var(--arrow-hit))); }
-.lightbox .side-arrow--next { right: max(calc(var(--frame-x) - var(--arrow-hit)), calc(var(--hero-edge) - var(--arrow-gap) - var(--arrow-w) - var(--arrow-hit))); }
+.lightbox .side-arrow--prev { left:  calc(var(--frame-x) - var(--logo-h) * 0.1 - var(--arrow-hit)); }
+.lightbox .side-arrow--next { right: calc(var(--frame-x) + var(--logo-h) * 0.317 - var(--arrow-hit)); }
 
 /* ══ RESPONSIVE (desktop-first; full mobile pass still to come) ══ */
 @media (max-width: 900px) {
@@ -2592,8 +2701,6 @@ main.product + .site-foot { padding-top: clamp(3rem, 7vh, 4.5rem); }
   cursor: pointer;
   box-sizing: content-box;
 }
-.lightbox:focus, .lightbox button:focus { outline: none; }
-.lightbox button:focus-visible { outline: 1px solid var(--accent); outline-offset: 2px; }
 .lightbox svg { display: block; width: 100%; height: 100%; overflow: visible; }
 .lightbox path {
   fill: none;
@@ -2604,10 +2711,9 @@ main.product + .site-foot { padding-top: clamp(3rem, 7vh, 4.5rem); }
   vector-effect: non-scaling-stroke;
 }
 /* the X: same size and spot as the burger. Kept for keyboard focus and
-   screen readers but drawn invisible: the X you see is the burger itself,
-   morphed (body.lb-open above), so it animates like the menu's. */
+   screen readers but drawn invisible, focused or not: the X you see is the
+   burger itself, morphed (body.lb-open above), so it animates like the menu's. */
 .lightbox-close { opacity: 0; }
-.lightbox-close:focus-visible { opacity: 1; }
 .lightbox-close {
   top: calc(var(--nav-y) + var(--logo-h) * 0.7 - var(--logo-h) * 0.3 - var(--arrow-hit));
   right: calc(var(--frame-x) + var(--logo-h) * 0.4 - var(--arrow-hit));
@@ -2633,6 +2739,13 @@ main.product + .site-foot { padding-top: clamp(3rem, 7vh, 4.5rem); }
    Parchment-tinted glass: flat, lightly softening and lifting what's under it,
    with a hairline edge. No inner glow (Mike's call), no shimmer. */
 html.has-cursor, html.has-cursor * { cursor: none !important; }
+/* A player in full screen is the only thing on screen: the dot (a child of
+   body) isn't, so the system pointer comes back there, the hand over the
+   controls. */
+html.has-cursor .player:fullscreen, html.has-cursor .player:fullscreen * { cursor: default !important; }
+html.has-cursor .player:fullscreen :is(button, [role="slider"]) { cursor: pointer !important; }
+html.has-cursor .player:-webkit-full-screen, html.has-cursor .player:-webkit-full-screen * { cursor: default !important; }
+html.has-cursor .player:-webkit-full-screen :is(button, [role="slider"]) { cursor: pointer !important; }
 /* !important on its fade: each page's inline first-paint rule (body > *)
    and the leaving fade both outrank a class, and either one took the dot
    over, fading it in at 0,0 or snapping it there as a page went. */

@@ -144,12 +144,14 @@ const plugins = [
     price: '$19.99',
     was: '$29.99',
     buy: 'https://michaelloyastudio.gumroad.com/l/receipts',
-    cover: 'projects/plugins/receipts-tile.jpg?v=7',   // the panel behind, the TikTok phone in front (receipts repo tools/promo/cover/thumbnail.html)
-    // coverVideo: off while Mike makes a new one (was receipts-square.mp4?v=3)
+    /* The panel behind, the TikTok phone in front playing the Stack look: recorded
+       frame by frame from the old live demo (Nov 17 '26; panel-demos.js, now off the
+       site). The tile plays it on hover and goes back to the still; the product page
+       opens on it playing, looped. The still is its first frame. */
+    cover: 'projects/plugins/receipts-hover.jpg?v=1',
+    coverVideo: 'projects/plugins/receipts-hover.mp4?v=1',
     shots: [
-      // the hero, live (panel-demos.js): the real panel behind, the TikTok phone in front; a look card
-      // clicked on the panel plays that look on the phone. Its thumbnail is the Tools tile's picture.
-      { demo: 'receipts', src: 'projects/plugins/receipts-tile.jpg?v=7', alt: 'The Receipts panel: click a look to see it on the phone' },
+      { video: 'projects/plugins/receipts-hover.mp4?v=1', src: 'projects/plugins/receipts-hover.jpg?v=1', alt: 'The Receipts panel, and the process video it made playing in the TikTok feed' },
       { video: 'projects/plugins/receipts-pair.mp4?v=1', src: 'projects/plugins/receipts-pair.jpg?v=1', overlay: 'projects/plugins/receipts-social.svg?v=10', alt: 'A Receipts process video, and the same video in the TikTok feed' },
       { src: 'projects/plugins/receipts-ui-options.jpg?v=7', alt: 'The Receipts panel with its options open: primary, background, range, render and timeline' }
     ],
@@ -186,11 +188,14 @@ const plugins = [
     tagline: 'Ransom-note text in one click',
     price: '$14.99',
     buy: 'https://michaelloyastudio.gumroad.com/l/clippings',
-    cover: 'projects/plugins/clippings-ui.jpg?v=2',
-    // coverVideo: off for now, the tile just zooms (was clippings-square.mp4)
+    /* The panel with PAY UP / OR ELSE, recorded from the old live demo (Nov 17 '26):
+       the still is Boil off; the loop is Boil on, 32 jitters at 3 frames a step, the
+       panel's own boil rate. The tile boils on hover and goes back to the still; the
+       product page opens on it boiling, looped. */
+    cover: 'projects/plugins/clippings-hover.jpg?v=1',
+    coverVideo: 'projects/plugins/clippings-boil.mp4?v=1',
     shots: [
-      // the real panel, live (panel-demos.js): shuffle, align, boil; the text is fixed
-      { demo: 'clippings', src: 'projects/plugins/clippings-ui.jpg?v=2', alt: 'The Clippings panel: shuffle the letters' },
+      { video: 'projects/plugins/clippings-boil.mp4?v=1', src: 'projects/plugins/clippings-hover.jpg?v=1', alt: 'The Clippings panel, its PAY UP / OR ELSE note boiling' },
       // a still, not the loop: the 1,140 LETTERS card (promo/clippings at 16.2 s, no piece twice in a note, the wall blurred)
       { src: 'projects/plugins/clippings-1140.jpg?v=2', alt: '1,140 cutout letters' }
     ],

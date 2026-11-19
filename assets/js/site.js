@@ -28,9 +28,8 @@
      site.css under CURSOR. */
   var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
   if (finePointer.matches) {
-    // .shot-phone: the phone half of a side-by-side product video, which you can like
     // .lightbox-media: the piece open in a project's lightbox (a click steps on)
-    var CLICKABLE = 'a[href], button, [role="button"], summary, label, select, .tile, .band, .product-thumb, .shot-phone, .lightbox-media';
+    var CLICKABLE = 'a[href], button, [role="button"], [role="slider"], summary, label, select, .tile, .band, .product-thumb, .lightbox-media';
     // the lightbox's own rule (project-page.js lbItems): work that isn't a
     // player with controls and isn't already a link. And a project's hero,
     // whose parallax layers answer the pointer.
@@ -52,7 +51,7 @@
       if (el.closest('#projectHero')) return overHero(x, y);
       if (el.closest(CLICKABLE)) return true;
       var m = el.closest('#projectWork img, #projectWork video');
-      return !!m && !(m.tagName === 'VIDEO' && m.hasAttribute('controls'));
+      return !!m && !(m.tagName === 'VIDEO' && (m.hasAttribute('controls') || m.hasAttribute('data-player')));
     };
     var cursor = document.createElement('div');
     cursor.className = 'cursor';
@@ -570,6 +569,20 @@
     });
   }
 
+  /* Runs fn once el comes within about a screen of the viewport. Tiles,
+     bands and the Related pair at a page's foot use it to fetch their
+     layers and hover loops only when they're about to be seen, instead of
+     all at once on load, where they crowded out what's on screen (Nov 17
+     '26: a project page was pulling the next project's 1.5MB layers before
+     its own work). */
+  function whenNear(el, fn) {
+    if (!('IntersectionObserver' in window)) { fn(); return; }
+    var io = new IntersectionObserver(function (es) {
+      if (es.some(function (e) { return e.isIntersecting; })) { io.disconnect(); fn(); }
+    }, { rootMargin: '100% 0px' });
+    io.observe(el);
+  }
+
   /* ── Layered thumbnails ────────────────────────────────────────────
      A project with heroLayers gets its layers stacked inside the thumbnail
      instead of the flat cover. At rest they are the cover exactly; on
@@ -600,10 +613,11 @@
         if (!ar) ar = im.naturalWidth / im.naturalHeight;   // padding is symmetric, so this is the hero's aspect
         if (++loaded === n) { media.appendChild(box); fit(); set(false); }
       };
-      im.src = l.src;
       inner.appendChild(im);
       return im;
     });
+    // the flat cover stands in until the tile is near: only then the layers
+    whenNear(media, function () { els.forEach(function (im, i) { im.src = layers[i].src; }); });
     // the inner box is the hero, cover-fitted to the thumbnail like object-fit
     function fit() {
       var w = media.clientWidth, h = media.clientHeight;
@@ -638,7 +652,8 @@
     v.className = 'thumb-video';
     v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'auto';
     v.setAttribute('aria-hidden', 'true');
-    v.src = p.hero;
+    // fetched once the tile is near the screen, not on load (whenNear)
+    whenNear(media, function () { v.src = p.hero; });
     /* coverAt: no still at all. The video itself sits paused on that frame
        (shown once it has seeked there), so a hover just presses play: a
        still swapped for the video, however close, gave a visible blip. */

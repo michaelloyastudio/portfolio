@@ -66,7 +66,9 @@ modes were renamed CHORDS/PRO/SOLO → CHORDS/NOTES/SOLO and the zip gained
 the standalone app, while the site still described the older build). Re-copy
 the zip at the same time; its size is quoted on the page.
 
-## Live panel demos
+## Live panel demos (off the site since Nov 17 '26)
+Mike pulled them: no HTML interactions in the product shots. Receipts and Clippings now open on plain looping videos recorded from these demos (`receipts-hover.mp4` / `clippings-boil.mp4`, stills `-hover.jpg`; the capture script was a one-off playwright pass that pinned `#pluginShotMain` at 1200px and screenshotted each frame), the same files their Tools tiles play on hover. The phone's tappable like on the Receipts gallery video went too (the TikTok overlay stays, as a picture). `panel-demos.js` and `demos/` are still on disk and `plugin-page.js` still honours `shots[0].demo`, so bringing one back is that field plus the script tag. What follows describes them as they were.
+
 A product page's first shot can be the real panel, live (`shots[0].demo` in `plugins.js`; `assets/js/panel-demos.js` draws it, `plugin-page.js` calls it). The panels are copies of their real `index.html` / `style.css` / `panel.js` in `demos/<slug>/`, with After Effects (and, for Receipts, Node) faked in a stub `<script>` at the top of that copy, so they run in a plain page inside an iframe.
 - **Receipts:** the panel behind, the TikTok phone in front, on the thumbnail's 1200px layout. Only the look cards answer; a click posts `receipts:look` to the page, which plays `projects/plugins/receipts-look-<look>.mp4` on the phone from the same moment (all four share one timeline; rendered from the Better Off Alone capture with Primary = Handles).
 - **Clippings:** the panel alone, text fixed to PAY UP / OR ELSE (so the site never shows the whole pack): click a letter, shuffle, align, Boil (the demo shakes the same letters in place: a jitter patched onto the preview canvas's translate/rotate, panel.js untouched), the text box can't be resized, Add (clickable, does nothing). `demos/clippings/letters/` holds only those characters, 4 pieces per case (220px WebP, 72 files), with its own `letters.js` (versioned in the demo's script tag). It resets on every visit to PAY UP / OR ELSE at seed 7, and `letters.js` is ordered so that seed picks the exact pieces on the Tools tile (`list[seed % length]`; re-run the arrange script if the web set is rebuilt).
@@ -104,6 +106,10 @@ a fresh unzip; without the flag Gatekeeper never fires), and Finder / System
 Settings had to be cropped to the content pane because the sidebars carry
 Mike's name, folders and family photo. `.step-shot` needs `height: auto` or the
 img's height attribute survives as a presentational hint and squashes it.
+
+## Project videos
+- **Players.** A work video with `controls` in `projects.js` (the full spots and the visualizer) is turned into the site's own player by `makePlayer` in `project-page.js`: poster + play disc, then click to play/pause and a bar (play, scrub, time, sound, full screen). The browser's controls are gone because the site cursor couldn't read them. Its `<video>` carries `data-player`, which keeps it out of the lightbox.
+- **Lazy loading.** No work video gets its `src` until it's about a screen from view (`nearVideos`), and loops lose their `autoplay` at render (`data-loop`); the on-screen observer plays and pauses them. An autoplay video with a src downloads in full at once, so Misc and Loya were pulling ~40MB in their first seconds. Tiles, bands and the Related pair fetch their layers and hover loops the same way (`whenNear` in `site.js`).
 
 ## Grids
 **Every row is justified, including the last, so a grid always comes out rectangular.** `layoutMosaic` in `project-page.js` collects the rows before laying any out, then rebalances the tail: if the last row is left with one tile, or would justify to an absurd height, it borrows tiles from the row above until it can fill the width sensibly. Never revert this to flushing rows as they fill, and never leave the trailing row unjustified — that is what produced the ragged bottoms.
@@ -163,3 +169,4 @@ GitHub Pages from `michaelloyastudio/portfolio`, branch `main`, root. Cloudflare
 - Anti-slop: no generic AI aesthetics, no purple gradients, no rounded-corner-Inter-font look.
 - No em dashes in formal writing.
 - Confirm before pushing. Committing locally is fine.
+- No focus rings or any visible hitbox, ever (Mike, Nov 19 '26): site.css kills outlines on :focus/:focus-visible globally. Show keyboard focus some other way only if he asks.

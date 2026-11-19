@@ -17,6 +17,133 @@
 
   var $ = function (id) { return document.getElementById(id); };
 
+  /* ── Player ───────────────────────────────────────────────────────
+     A video you play by hand (the full spots and the visualizer: markup
+     `controls`) gets this page's own player in place of the browser's.
+     The browser's controls are another surface the site cursor can't
+     read, so over them the dot and the system arrow fought; here every
+     control is an element of the page, so the cursor behaves as it does
+     everywhere else (glass over the buttons, the frame and the track).
+     Before it starts: the poster and a play button. After: a click on the
+     picture plays and pauses, and a bar at the foot (play, scrub, time,
+     sound, full screen) shows while paused or while the pointer moves. */
+  var PL_PLAY = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6 3.5 L16 10 L6 16.5 Z"/></svg>';
+  var PL_PAUSE = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6.5 4 V16 M13.5 4 V16"/></svg>';
+  var PL_SOUND = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 7.5 H6 L10.5 4 V16 L6 12.5 H3 Z"/><path class="pl-on" d="M13.5 7 Q15.5 10 13.5 13 M15.5 5 Q19 10 15.5 15"/><path class="pl-off" d="M13.5 7.5 L18 12.5 M18 7.5 L13.5 12.5"/></svg>';
+  var PL_FULL = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 7.5 V3 H7.5 M12.5 3 H17 V7.5 M17 12.5 V17 H12.5 M7.5 17 H3 V12.5"/></svg>';
+  function clock(s) {
+    if (!isFinite(s) || s < 0) s = 0;
+    s = Math.floor(s);
+    return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2);
+  }
+  function makePlayer(v) {
+    var name = v.getAttribute('aria-label') || 'video';
+    v.removeAttribute('controls');
+    v.setAttribute('data-player', '');
+    var box = document.createElement('div');
+    box.className = 'player';
+    v.parentNode.insertBefore(box, v);
+    box.appendChild(v);
+    box.insertAdjacentHTML('beforeend',
+      '<button type="button" class="player-cover" aria-label="Play ' + name + '"><span class="player-big">' + PL_PLAY + '</span></button>' +
+      '<div class="player-bar">' +
+        '<button type="button" class="player-btn player-toggle" aria-label="Play">' + PL_PLAY + PL_PAUSE + '</button>' +
+        '<div class="player-track" role="slider" tabindex="0" aria-label="Seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="player-fill"></div></div>' +
+        '<span class="player-time">0:00 / 0:00</span>' +
+        '<button type="button" class="player-btn player-sound" aria-label="Mute">' + PL_SOUND + '</button>' +
+        '<button type="button" class="player-btn player-full" aria-label="Full screen">' + PL_FULL + '</button>' +
+      '</div>');
+    var cover = box.querySelector('.player-cover');
+    var toggleBtn = box.querySelector('.player-toggle');
+    var track = box.querySelector('.player-track');
+    var fill = box.querySelector('.player-fill');
+    var time = box.querySelector('.player-time');
+    var soundBtn = box.querySelector('.player-sound');
+    var fullBtn = box.querySelector('.player-full');
+    var idleT = null, raf = 0;
+
+    function paint() {
+      var d = v.duration, f = d ? v.currentTime / d : 0;
+      fill.style.transform = 'scaleX(' + f + ')';
+      track.setAttribute('aria-valuenow', Math.round(f * 100));
+      time.textContent = clock(v.currentTime) + ' / ' + clock(d);
+    }
+    function loop() { paint(); raf = v.paused ? 0 : requestAnimationFrame(loop); }
+    function wake() {
+      box.classList.add('is-active');
+      clearTimeout(idleT);
+      idleT = setTimeout(function () { if (!v.paused) box.classList.remove('is-active'); }, 2200);
+    }
+    function play() {
+      // one at a time: starting this one stops any other player
+      document.querySelectorAll('video[data-player]').forEach(function (o) { if (o !== v && !o.paused) o.pause(); });
+      v.muted = false;
+      var q = v.play();
+      if (q && q.catch) q.catch(function () { v.muted = true; var r = v.play(); if (r && r.catch) r.catch(function () {}); });
+    }
+    function toggle() { if (v.paused || v.ended) play(); else v.pause(); }
+
+    cover.addEventListener('click', function () { toggle(); wake(); });
+    toggleBtn.addEventListener('click', toggle);
+    soundBtn.addEventListener('click', function () { v.muted = !v.muted; });
+    fullBtn.addEventListener('click', function () {
+      if (document.fullscreenElement || document.webkitFullscreenElement) {
+        (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+      } else if (box.requestFullscreen) box.requestFullscreen();
+      else if (box.webkitRequestFullscreen) box.webkitRequestFullscreen();
+      else if (v.webkitEnterFullscreen) v.webkitEnterFullscreen();   // iPhone: only the video itself can go full screen
+    });
+    box.addEventListener('mousemove', wake);
+    box.addEventListener('mouseleave', function () { if (!v.paused) box.classList.remove('is-active'); });
+
+    // scrub: press anywhere on the track and drag
+    var seekAt = function (x) {
+      var r = track.getBoundingClientRect();
+      if (!v.duration || !r.width) return;
+      v.currentTime = Math.max(0, Math.min(1, (x - r.left) / r.width)) * v.duration;
+      paint();
+    };
+    track.addEventListener('pointerdown', function (e) {
+      track.setPointerCapture(e.pointerId);
+      box.classList.add('is-scrubbing');
+      seekAt(e.clientX);
+    });
+    track.addEventListener('pointermove', function (e) { if (track.hasPointerCapture(e.pointerId)) seekAt(e.clientX); });
+    var unscrub = function () { box.classList.remove('is-scrubbing'); };
+    track.addEventListener('pointerup', unscrub);
+    track.addEventListener('pointercancel', unscrub);
+    track.addEventListener('keydown', function (e) {
+      if (!v.duration) return;
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        e.preventDefault();
+        v.currentTime = Math.max(0, Math.min(v.duration, v.currentTime + (e.key === 'ArrowLeft' ? -5 : 5)));
+        paint();
+      }
+    });
+
+    v.addEventListener('play', function () {
+      box.classList.add('is-started', 'is-playing');
+      cover.setAttribute('aria-label', 'Pause ' + name);
+      toggleBtn.setAttribute('aria-label', 'Pause');
+      if (!raf) raf = requestAnimationFrame(loop);
+      wake();
+    });
+    v.addEventListener('pause', function () {
+      box.classList.remove('is-playing');
+      box.classList.add('is-active');
+      cover.setAttribute('aria-label', 'Play ' + name);
+      toggleBtn.setAttribute('aria-label', 'Play');
+      paint();
+    });
+    v.addEventListener('volumechange', function () {
+      box.classList.toggle('is-muted', v.muted);
+      soundBtn.setAttribute('aria-label', v.muted ? 'Unmute' : 'Mute');
+    });
+    v.addEventListener('loadedmetadata', paint);
+    v.addEventListener('seeked', paint);
+    paint();
+  }
+
   function render(slug) {
   var pageStart = performance.now();   // ~ when the CSS load-in starts
 
@@ -301,22 +428,54 @@
   $('projectWork').innerHTML = '';
   var tpl = document.createElement('template');
   tpl.innerHTML = p.work;                      // parsed inert: nothing fetches yet
+  var hold = function (m, a) {
+    if (m.hasAttribute(a)) { m.setAttribute('data-held-' + a, m.getAttribute(a)); m.removeAttribute(a); }
+  };
+  var release = function (m, a) {
+    var v = m.getAttribute('data-held-' + a);
+    if (v !== null) { m.setAttribute(a, v); m.removeAttribute('data-held-' + a); }
+  };
+  /* A video gets its file only once it's near the screen (nearVideos,
+     below), never all at once: an autoplay video downloads in full as soon
+     as it has a src, so Misc and Loya were pulling 40MB of loops in the
+     first seconds and the ones on screen crawled. A loop's autoplay goes
+     too; the on-screen observer further down plays and pauses it. */
+  tpl.content.querySelectorAll('video').forEach(function (v) {
+    hold(v, 'src');
+    if (v.hasAttribute('autoplay')) { v.removeAttribute('autoplay'); v.setAttribute('data-loop', ''); }
+  });
   if (!heroDone) {
     tpl.content.querySelectorAll('img, video, source').forEach(function (m) {
-      ['src', 'poster'].forEach(function (a) {
-        if (m.hasAttribute(a)) { m.setAttribute('data-held-' + a, m.getAttribute(a)); m.removeAttribute(a); }
-      });
+      if (m.tagName !== 'VIDEO') hold(m, 'src');
+      hold(m, 'poster');
     });
     onHeroDone.push(function () {
-      document.querySelectorAll('#projectWork [data-held-src], #projectWork [data-held-poster]').forEach(function (m) {
-        ['poster', 'src'].forEach(function (a) {
-          var v = m.getAttribute('data-held-' + a);
-          if (v !== null) { m.setAttribute(a, v); m.removeAttribute('data-held-' + a); }
-        });
+      document.querySelectorAll('#projectWork img[data-held-src], #projectWork source[data-held-src], #projectWork [data-held-poster]').forEach(function (m) {
+        release(m, 'poster');
+        if (m.tagName !== 'VIDEO') release(m, 'src');
       });
     });
   }
   $('projectWork').appendChild(tpl.content);
+  document.querySelectorAll('#projectWork video[controls]').forEach(makePlayer);
+  // a loop that comes on screen before its file is in plays as soon as it is
+  function playIfShown(v) { if (v._shown && v.hasAttribute('src')) { var q = v.play(); if (q && q.catch) q.catch(function () {}); } }
+  function nearVideos() {
+    var vids = document.querySelectorAll('#projectWork video[data-held-src]');
+    if (!vids.length) return;
+    if (!('IntersectionObserver' in window)) { vids.forEach(function (v) { release(v, 'src'); }); return; }
+    var nio = watch(new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        nio.unobserve(e.target);
+        release(e.target, 'src');
+        playIfShown(e.target);
+      });
+    }, { rootMargin: '120% 0px' }));   // about a screen ahead, so it's in before you get there
+    vids.forEach(function (v) { nio.observe(v); });
+  }
+  // after the hero, so the work's first videos don't crowd its layers off the connection
+  if (heroDone) nearVideos(); else onHeroDone.push(nearVideos);
 
   // ── prev / next ──
   var prev = projects[(i - 1 + projects.length) % projects.length];
@@ -470,18 +629,21 @@
     clearTimeout(rt); rt = later(layoutMosaic, 120);
   }, sig);
 
-  // Autoplay loops only once they're on screen — a project page can hold a
-  // lot of video, and decoding them all at once stutters the scroll.
-  var loops = document.querySelectorAll('#projectWork video[autoplay]');
+  // Loops play only while they're on screen — a project page can hold a
+  // lot of video, and decoding them all at once stutters the scroll. (Their
+  // autoplay attribute came off at render: this is what plays them.)
+  var loops = document.querySelectorAll('#projectWork video[data-loop]');
   if (loops.length && 'IntersectionObserver' in window) {
-    loops.forEach(function (v) { v.pause(); });
     var vio = watch(new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
-        if (e.isIntersecting) { var q = e.target.play(); if (q && q.catch) q.catch(function () {}); }
+        e.target._shown = e.isIntersecting;
+        if (e.isIntersecting) playIfShown(e.target);
         else e.target.pause();
       });
     }, { rootMargin: '150px 0px' }));
     loops.forEach(function (v) { vio.observe(v); });
+  } else {
+    loops.forEach(function (v) { v.autoplay = true; });
   }
 
   return function teardown() {
@@ -536,7 +698,7 @@
   function srcOf(m, a) { return m.getAttribute(a) || m.getAttribute('data-held-' + a); }
   function lbItems() {
     return Array.prototype.filter.call(document.querySelectorAll('#projectWork img, #projectWork video'), function (m) {
-      return !(m.tagName === 'VIDEO' && m.hasAttribute('controls')) && !m.closest('a') && srcOf(m, 'src');
+      return !(m.tagName === 'VIDEO' && (m.hasAttribute('controls') || m.hasAttribute('data-player'))) && !m.closest('a') && srcOf(m, 'src');
     });
   }
   function killMedia(el) {
@@ -657,7 +819,7 @@
   }
   document.addEventListener('click', function (e) {
     var m = e.target.closest && e.target.closest('#projectWork img, #projectWork video');
-    if (!m || (m.tagName === 'VIDEO' && m.hasAttribute('controls')) || m.closest('a')) return;
+    if (!m || (m.tagName === 'VIDEO' && (m.hasAttribute('controls') || m.hasAttribute('data-player'))) || m.closest('a')) return;
     e.preventDefault();
     openLb(m);
   });
