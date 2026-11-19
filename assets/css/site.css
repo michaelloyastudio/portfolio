@@ -1169,6 +1169,9 @@ button, .btn, summary, [role="button"], .side-arrow, .product-thumb, .browse-lin
   transition: transform 0.8s var(--ease);
 }
 .thumb-video.is-on { opacity: 1; }
+/* coverAt tiles (GH MIDI): the paused video replaces the still on load, not
+   on a hover, so it fades over it rather than popping in */
+.thumb-video.is-at { transition: opacity 0.4s var(--ease), transform 0.8s var(--ease); }
 .tile:hover .thumb-video { transform: scale(1.045); }
 .band:hover .thumb-video { transform: scale(1.035); }
 

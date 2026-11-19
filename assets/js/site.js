@@ -404,7 +404,12 @@
     if (home && window.trimLogoOut) window.trimLogoOut(360);
     // going home, the X trims off as an X (no turn back first)
     if (fromMenu && !home) document.body.classList.add('menu-leaving');
-    setTimeout(function () { window.location.href = a.href; }, home || fromMenu ? 400 : LEAVE_MS);
+    /* /work and /tools are redirect stubs for all.html; go straight there
+       instead of loading the stub first. The hop painted the empty stub for
+       a frame on the way, the flash on Tools (Nov 19 '26). all.html puts
+       /work or /tools back in the address bar once it lands. */
+    var go = a.pathname === '/tools' ? '/all#tools' : a.pathname === '/work' ? '/all' : a.href;
+    setTimeout(function () { window.location.href = go; }, home || fromMenu ? 400 : LEAVE_MS);
   });
   // Back/forward can restore this page from the cache mid-leave: undo it.
   window.addEventListener('pageshow', function (e) {
@@ -658,6 +663,7 @@
        (shown once it has seeked there), so a hover just presses play: a
        still swapped for the video, however close, gave a visible blip. */
     if (start) {
+      v.classList.add('is-at');   // fades in over the still (site.css), no pop on load
       v.addEventListener('loadedmetadata', function () { v.currentTime = start; }, { once: true });
       v.addEventListener('seeked', function () { v.classList.add('is-on'); }, { once: true });
     }

@@ -107,6 +107,9 @@ Settings had to be cropped to the content pane because the sidebars carry
 Mike's name, folders and family photo. `.step-shot` needs `height: auto` or the
 img's height attribute survives as a presentational hint and squashes it.
 
+## Hero TV (parked Nov 19 '26)
+A Blender-rendered CRT with a 4:3 loop (Slashay) corner-pinned onto its screen was built for the homepage hero, then pulled before shipping ("remove the tv for now"). It lives on the local branch `parked/hero-tv` (commit 3adcb6e: index.html markup, the `.hero-tv` CSS block, the TV_Q pin code in hero.js, `assets/hero/`, `assets/video/hero-slashay*`) with its own CLAUDE.md section there. Blender source: `~/Desktop/01_Projects/personal/Blender/261119_HeroTV/`. Never push that branch unless Mike asks.
+
 ## Project videos
 - **Players.** A work video with `controls` in `projects.js` (the full spots and the visualizer) is turned into the site's own player by `makePlayer` in `project-page.js`: poster + play disc, then click to play/pause and a bar (play, scrub, time, sound, full screen). The browser's controls are gone because the site cursor couldn't read them. Its `<video>` carries `data-player`, which keeps it out of the lightbox.
 - **Lazy loading.** No work video gets its `src` until it's about a screen from view (`nearVideos`), and loops lose their `autoplay` at render (`data-loop`); the on-screen observer plays and pauses them. An autoplay video with a src downloads in full at once, so Misc and Loya were pulling ~40MB in their first seconds. Tiles, bands and the Related pair fetch their layers and hover loops the same way (`whenNear` in `site.js`).

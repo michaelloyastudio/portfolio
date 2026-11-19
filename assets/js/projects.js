@@ -113,9 +113,10 @@ const projects = [
     ],
     intro: `<p>I spent the summer of 2025 interning with BODYARMOR and Powerade in Queens, NY. Day to day I reformatted brand creative into point-of-sale ads (window clings, cooler clings, end caps) and produced an original video ad for Powerade's fall football campaign.</p>
 <p>Every intern had to complete a capstone project over their two-month tenure, and my manager wanted me to explore AI-generated creative. In only a few days, I built an entire AI-generated BODYARMOR commercial with generated imagery, pixel upscale, and voiceover, assembling it all in After Effects. It was presented to C-suite executives and it was, humbly, the one that got the CEO to look up from his phone.</p>`,
+    /* The Kling loop that sat between the two spots came off Nov 19 '26
+       (Mike); kling.mp4 is still in the folder. */
     work: `<div class="project-video"><video src="projects/bodyarmor-powerade/pa-fall-football.mp4" controls playsinline preload="metadata" poster="projects/bodyarmor-powerade/pa-first.jpg" width="1920" height="1080"></video></div>
-<div class="project-video"><video src="projects/bodyarmor-powerade/kling.mp4" data-silent autoplay loop muted playsinline width="1900" height="1200"></video></div>
-<div class="project-video"><video src="projects/bodyarmor-powerade/aiba-commercial.mp4" controls playsinline preload="metadata" poster="projects/bodyarmor-powerade/aiba-poster.jpg" width="1280" height="720"></video></div>`
+<div class="project-video"><video src="projects/bodyarmor-powerade/aiba-commercial.mp4" controls playsinline preload="metadata" poster="projects/bodyarmor-powerade/aiba-poster.jpg?v=2" width="1280" height="720"></video></div>`
   },
   {
     slug: "university-union",
